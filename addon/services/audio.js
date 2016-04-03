@@ -7,6 +7,12 @@ export default Ember.Service.extend({
   **/
   Howler,
 
+
+  /**
+   * The base Howl object: Has no use to the consuming app, exists here for testing purposes
+   */
+  Howl,
+
   /**
   * Array of strings (names of sounds) that acts as a registry for sound instances
   **/
@@ -21,6 +27,8 @@ export default Ember.Service.extend({
   * @return {object}                A Howler "Howl" object instance
   **/
   load(name, src, opts={}) {
+    const Howl = this.get('Howl');
+
     if (Ember.isArray(src)) {
       opts.src = src;
     } else {
@@ -48,7 +56,7 @@ export default Ember.Service.extend({
    *
    * @param  {type} name  The name of the sound you would like to pan
    * @param  {int} value  The direction and amount between -1 (hard left) and 1 (hard right)
-   * @return {object}     The "sound" object instance, so that this method can be "chained"
+   * @return {object}     The Howler "Howl" object instance
    */
   pan(name, value) {
     this.get(name).pos(value);
