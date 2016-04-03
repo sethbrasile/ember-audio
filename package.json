@@ -42,7 +42,8 @@
     "ember-addon"
   ],
   "dependencies": {
-    "ember-cli-babel": "^5.1.6"
+    "ember-cli-babel": "^5.1.6",
+    "howler": "2.0.0-beta10"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
