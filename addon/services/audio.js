@@ -33,15 +33,6 @@ export default Ember.Service.extend({
   },
 
   /**
-   * play - Plays a sound instance by "name"
-   *
-   * @param  {string} name The name of the "sound" you want to play. This must have been already loaded via "loadSound"
-   */
-  play(name) {
-    this.get(name).play();
-  },
-
-  /**
    * unload - Removes a sound from this service by "name" and unloads it from Howler
    *
    * @param  {string} name The name of the sound you would like to unload
