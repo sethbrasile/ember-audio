@@ -5,7 +5,12 @@ export default Ember.Controller.extend({
 
   actions: {
     doSomething() {
-      this.get('audio').load('piano', 'vendor/Eb5.mp3').play();
+      const audio = this.get('audio');
+
+      audio.load('piano', 'vendor/Eb5.mp3');
+      audio.load('piano2', 'vendor/Db5.mp3');
+      audio.pan('piano', -1).play();
+      audio.pan('piano2', 1).play();
     }
   }
 });

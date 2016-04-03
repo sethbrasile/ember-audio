@@ -41,5 +41,17 @@ export default Ember.Service.extend({
     this.get(name).unload();
     this.set(name, null);
     this.get('sounds').removeObject(name);
+  },
+
+  /**
+   * pan - Pans a sound left or right
+   *
+   * @param  {type} name  The name of the sound you would like to pan
+   * @param  {int} value  The direction and amount between -1 (hard left) and 1 (hard right)
+   * @return {object}     The "sound" object instance, so that this method can be "chained"
+   */
+  pan(name, value) {
+    this.get(name).pos(value);
+    return this.get(name);
   }
 });

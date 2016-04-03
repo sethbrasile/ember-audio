@@ -16,6 +16,7 @@ module.exports = function(defaults) {
 
   app.import('bower_components/howler.js/howler.min.js');
   app.import('vendor/Eb5.mp3');
+  app.import('vendor/Db5.mp3');
 
   return app.toTree();
 };
