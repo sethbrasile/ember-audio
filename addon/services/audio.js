@@ -78,7 +78,10 @@ export default Ember.Service.extend({
       })
       .then((audio) => {
         // Set audio data on previously created Ember.Object called ${name}
-        audio.map((note) => this.set(`${name}.${note[0]}`, note[1]));
+        return audio.map((note) => {
+          this.set(`${name}.${note[0]}`, note[1]);
+          return note[0];
+        });
       });
   },
 
