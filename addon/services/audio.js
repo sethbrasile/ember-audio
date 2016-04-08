@@ -7,7 +7,6 @@ export default Ember.Service.extend({
   **/
   Howler,
 
-
   /**
    * The base Howl object: Has no use to the consuming app, exists here for testing purposes
    */
@@ -18,6 +17,8 @@ export default Ember.Service.extend({
   **/
   sounds: Ember.A(),
 
+  context: new AudioContext(),
+
   /**
   * Instantiate a "sound" and place on this service by name
   *
@@ -27,17 +28,81 @@ export default Ember.Service.extend({
   * @return {object}                A Howler "Howl" object instance
   **/
   load(name, src, opts={}) {
-    const Howl = this.get('Howl');
+    const ctx = this.get('context');
+    return fetch(`http://localhost:4200/${src}`)
+      .then((response) => response.arrayBuffer())
+      .then((response) => ctx.decodeAudioData(response))
+      .then((decodedAudio) => {
+        this.set(name, decodedAudio);
+        this.get('sounds').pushObject(name);
+      });
+  },
 
-    if (Ember.isArray(src)) {
-      opts.src = src;
+  loadSoundFont(name, src) {
+    const ctx = this.get('context');
+
+    this.set(name, Ember.Object.create());
+
+    return fetch(`http://localhost:4200/${src}`)
+      .then((response) => response.text())
+      .then((text) => {
+        // Strip out all the unnecessary stuff
+        const array = text
+          .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
+          .replace(new RegExp(':', 'g'), '')
+          .replace(new RegExp('"', 'g'), '')
+          .split('\n')
+          .slice(3);
+
+        // remove the trailing "}"
+        array.pop();
+
+        return array;
+      })
+      .then((data) => {
+        const promises = data.map((item) => {
+          // Note names and values are separated with a space
+          const note = item.split(' ');
+          const noteName = note[0];
+
+          // Transform base64 note value to Uint8Array
+          const noteValue = this.base64DecodeToArray(note[1]);
+
+          // Get web audio api audio data from array buffer, include note name
+          return ctx.decodeAudioData(noteValue.buffer)
+            .then((buffer) => [noteName, buffer]);
+        });
+
+        // Wait for array of promises to resolve before continuing
+        return Ember.RSVP.all(promises);
+      })
+      .then((audio) => {
+        // Set audio data on previously created Ember.Object called ${name}
+        audio.map((note) => this.set(`${name}.${note[0]}`, note[1]));
+      });
+  },
+
+  play(name, note) {
+    const ctx = this.get('context');
+    const panner = this.get(`${name}Panner`);
+    const node = ctx.createBufferSource();
+    let decodedAudio;
+
+    if (note) {
+      decodedAudio = this.get(`${name}.${note}`);
     } else {
-      opts.src = [src];
+      decodedAudio = this.get(name);
     }
 
-    this.set(name, new Howl(opts));
-    this.get('sounds').pushObject(name);
-    return this.get(name);
+    if (panner) {
+      node.connect(panner);
+      panner.connect(ctx.destination);
+    } else {
+      node.connect(ctx.destination);
+    }
+
+    node.buffer = decodedAudio;
+    node.start();
   },
 
   /**
@@ -59,7 +124,47 @@ export default Ember.Service.extend({
    * @return {object}     The Howler "Howl" object instance
    */
   pan(name, value) {
-    this.get(name).pos(value);
-    return this.get(name);
-  }
+    const panner = this.get('context').createStereoPanner();
+    panner.pan.value = value;
+
+    this.set(`${name}Panner`, panner);
+  },
+
+  base64DecodeToArray(sBase64, nBlocksSize) {
+    var sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, "");
+    var nInLen = sB64Enc.length;
+    var nOutLen = nBlocksSize ?
+      Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize :
+      nInLen * 3 + 1 >> 2;
+    var taBytes = new Uint8Array(nOutLen);
+
+    for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+      nMod4 = nInIdx & 3;
+      nUint24 |= this.b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
+      if (nMod4 === 3 || nInLen - nInIdx === 1) {
+        for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+          taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+        }
+        nUint24 = 0;
+      }
+    }
+
+    return taBytes;
+  },
+
+  b64ToUint6 (nChr) {
+  return nChr > 64 && nChr < 91 ?
+      nChr - 65
+    : nChr > 96 && nChr < 123 ?
+      nChr - 71
+    : nChr > 47 && nChr < 58 ?
+      nChr + 4
+    : nChr === 43 ?
+      62
+    : nChr === 47 ?
+      63
+    :
+      0;
+
+}
 });
