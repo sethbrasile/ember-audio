@@ -29,7 +29,7 @@ export default Ember.Service.extend({
   **/
   load(name, src, opts={}) {
     const ctx = this.get('context');
-    return fetch(`http://localhost:4200/${src}`)
+    return fetch(src)
       .then((response) => response.arrayBuffer())
       .then((response) => ctx.decodeAudioData(response))
       .then((decodedAudio) => {
@@ -43,21 +43,26 @@ export default Ember.Service.extend({
 
     this.set(name, Ember.Object.create());
 
-    return fetch(`http://localhost:4200/${src}`)
+    return fetch(src)
       .then((response) => response.text())
       .then((text) => {
         // Strip out all the unnecessary stuff
         const array = text
+          .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
           .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
+          .replace(new RegExp('data:audio/ogg;base64,', 'g'), '')
           .replace(new RegExp(':', 'g'), '')
           .replace(new RegExp('"', 'g'), '')
+          // sometimes sound fonts have a blank line at the top and bottom
+          .trim()
           .split('\n')
           .slice(3);
 
         // remove the trailing "}"
         array.pop();
 
-        return array;
+        // Filter out empty string values
+        return array.filter(Boolean);
       })
       .then((data) => {
         const promises = data.map((item) => {
