@@ -1,10 +1,15 @@
-import decodeBase64 from 'dummy/utils/decode-base64';
+import { base64ToUint8 } from 'ember-audio/utils/decode-base64';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | decode base64');
 
 // Replace this with your real tests.
-test('it works', function(assert) {
-  let result = decodeBase64();
+test('base64ToUint8 works', function(assert) {
+  let result = base64ToUint8('//uABCDEFGHIJKLMNOPQRSTUVWXYZ=');
   assert.ok(result);
+});
+
+test('base64ToUint8 returns a Uint8Array', function(assert) {
+  let result = base64ToUint8('//uABCDEFGHIJKLMNOPQRSTUVWXYZ=');
+  assert.ok(result instanceof Uint8Array);
 });
