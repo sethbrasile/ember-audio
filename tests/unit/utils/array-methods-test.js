@@ -1,10 +1,14 @@
-import arrayMethods from 'dummy/utils/array-methods';
+import { arraySwap, flatten } from 'ember-audio/utils/array-methods';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | array methods');
 
-// Replace this with your real tests.
-test('it works', function(assert) {
-  let result = arrayMethods();
-  assert.ok(result);
+test('arraySwap works', function(assert) {
+  let result = arraySwap(['a', 'b', 'c', 'd', 'e'], 2);
+  assert.deepEqual(['c', 'd', 'e', 'a', 'b'], result);
+});
+
+test('flatten works', function(assert) {
+  let result = flatten([[1,2],[3,4]]);
+  assert.deepEqual([1,2,3,4], result);
 });
