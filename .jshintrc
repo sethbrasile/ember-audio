@@ -3,7 +3,8 @@
     "document",
     "window",
     "-Promise",
-    "AudioContext"
+    "AudioContext",
+    "Uint8Array"
   ],
   "browser": true,
   "boss": true,
