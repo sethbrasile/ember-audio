@@ -14,9 +14,5 @@ module.exports = function(defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
 
-  app.import('bower_components/howler.js/howler.min.js');
-  app.import('vendor/Eb5.mp3');
-  app.import('vendor/Db5.mp3');
-
   return app.toTree();
 };
