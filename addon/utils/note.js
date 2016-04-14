@@ -2,7 +2,8 @@ import Ember from 'ember';
 import { arraySwap } from './array-methods';
 
 const {
-  A
+  A,
+  computed
 } = Ember;
 
 export const Note = Ember.Object.extend({
@@ -10,7 +11,7 @@ export const Note = Ember.Object.extend({
   accidental: null,
   octave: null,
 
-  string: Ember.computed('letter', 'accidental', 'octave', {
+  string: computed('letter', 'accidental', 'octave', {
     get() {
       const accidental = this.get('accidental');
       const letter = this.get('letter');
@@ -27,7 +28,7 @@ export const Note = Ember.Object.extend({
     }
   }),
 
-  noteName: Ember.computed('letter', 'accidental', {
+  noteName: computed('letter', 'accidental', {
     get() {
       const accidental = this.get('accidental');
       const letter = this.get('letter');
