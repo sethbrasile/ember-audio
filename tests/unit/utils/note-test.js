@@ -1,4 +1,4 @@
-import { Note, octaveShift, octaveSort } from 'ember-audio/utils/note';
+import { Note, noteSort, octaveShift, octaveSort } from 'ember-audio/utils/note';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | note');
@@ -45,4 +45,24 @@ test('octaveSort works', function(assert) {
   assert.expect(1);
   let result = octaveSort(correctOctaves);
   assert.deepEqual(result, alphabeticalOctaves);
+});
+
+test('noteSort compares two letters correctly', function(assert) {
+  assert.expect(2);
+
+  let compA = noteSort(A0, B0);
+  let compB = noteSort(B0, A0);
+
+  assert.equal(compA, -1);
+  assert.equal(compB, 1);
+});
+
+test('noteSort compares a natural and an accidental correctly', function(assert) {
+  assert.expect(2);
+
+  let compA = noteSort(Ab1, A0);
+  let compB = noteSort(A0, Ab1);
+
+  assert.equal(compA, -1);
+  assert.equal(compB, 1);
 });
