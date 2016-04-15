@@ -1,3 +1,18 @@
+function b64ToUint6(nChr) {
+  return nChr > 64 && nChr < 91 ?
+      nChr - 65
+    : nChr > 96 && nChr < 123 ?
+      nChr - 71
+    : nChr > 47 && nChr < 58 ?
+      nChr + 4
+    : nChr === 43 ?
+      62
+    : nChr === 47 ?
+      63
+    :
+      0;
+}
+
 export function base64ToUint8(sBase64, nBlocksSize) {
   var sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, "");
   var nInLen = sB64Enc.length;
@@ -20,17 +35,22 @@ export function base64ToUint8(sBase64, nBlocksSize) {
   return taBytes;
 }
 
-export function b64ToUint6(nChr) {
-  return nChr > 64 && nChr < 91 ?
-      nChr - 65
-    : nChr > 96 && nChr < 123 ?
-      nChr - 71
-    : nChr > 47 && nChr < 58 ?
-      nChr + 4
-    : nChr === 43 ?
-      62
-    : nChr === 47 ?
-      63
-    :
-      0;
+export function mungeSoundFont(text) {
+  // Strip out all the unnecessary stuff
+  const array = text
+    .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
+    .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
+    .replace(new RegExp('data:audio/ogg;base64,', 'g'), '')
+    .replace(new RegExp(':', 'g'), '')
+    .replace(new RegExp('"', 'g'), '')
+    // sometimes sound fonts have a blank line at the top and bottom
+    .trim()
+    .split('\n')
+    .slice(3);
+
+  // remove the trailing "}"
+  array.pop();
+
+  // Filter out empty string values
+  return array.filter(Boolean);
 }

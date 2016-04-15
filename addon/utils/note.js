@@ -14,7 +14,7 @@ const {
  *
  * get {string} string    examples: "Db1", "D0"
  * get {string} noteName  examples: "Db", "D"
- */ 
+ */
 export const Note = Ember.Object.extend({
   letter: null,
   accidental: null,
@@ -96,6 +96,18 @@ export function octaveShift(octaves) {
  */
 export function octaveSort(octaves) {
   return octaves.map((octave) => octave.sort(noteSort));
+}
+
+export function extractOctaves(notes) {
+  return [ notes, A(A(notes).getEach('octave')) ];
+}
+
+export function stripDuplicateOctaves([ notes, octaves ]) {
+  return [ notes, octaves.uniq().sort() ];
+}
+
+export function createOctavesWithNotes(data) {
+  return data[1].map((octave) => data[0].filterBy('octave', octave));
 }
 
 /**

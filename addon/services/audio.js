@@ -1,11 +1,17 @@
 import Ember from 'ember';
 import request from '../utils/request';
 import { flatten } from '../utils/array-methods';
-import { Note, octaveShift, octaveSort } from '../utils/note';
-import { base64ToUint8 } from '../utils/decode-base64';
+import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
+import {
+  Note,
+  octaveShift,
+  octaveSort,
+  extractOctaves,
+  stripDuplicateOctaves,
+  createOctavesWithNotes
+} from '../utils/note';
 
 const {
-  A,
   RSVP: { all },
   Service
 } = Ember;
@@ -55,71 +61,26 @@ export default Service.extend({
     this.set(name, Ember.Object.create());
 
     return request(src, 'text')
-      .then((text) => {
-        // Strip out all the unnecessary stuff
-        const array = text
-          .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
-          .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
-          .replace(new RegExp('data:audio/ogg;base64,', 'g'), '')
-          .replace(new RegExp(':', 'g'), '')
-          .replace(new RegExp('"', 'g'), '')
-          // sometimes sound fonts have a blank line at the top and bottom
-          .trim()
-          .split('\n')
-          .slice(3);
 
-        // remove the trailing "}"
-        array.pop();
+      // Strip extraneous stuff from soundfont (which is currently a long string)
+      // and split by line into an array
+      .then(mungeSoundFont)
 
-        // Filter out empty string values
-        return array.filter(Boolean);
-      })
-      .then((data) => {
-        const promises = data.map((item) => {
-          // Note values always start with "//u"
-          const note = item.split('//u');
-          const noteName = note[0].trim();
+      // Split each line from the sound font into a key and value
+      // key = note name, value = ready-to-play audio decoded from base64
+      .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
 
-          // Transform base64 note value to Uint8Array
-          const noteValue = base64ToUint8(`//u${note[1]}`);
-
-          // Get web audio api audio data from array buffer, include note name
-          return this._decodeAudioData(noteValue.buffer)
-            .then((buffer) => [noteName, buffer]);
-        });
-
-        // Wait for array of promises to resolve before continuing
-        return all(promises);
-      })
-      .then((audio) => {
-        // Set audio data on previously created Ember.Object called ${name}
-        return audio.map((note) => {
-          const noteName = note[0];
-          const noteBuffer = note[1];
-          const letter = noteName[0];
-
-          let octave = noteName[2];
-          let accidental;
-
-          if (octave) {
-            accidental = noteName[1];
-          } else {
-            octave = noteName[1];
-          }
-
-          this.set(`${name}.${noteName}`, noteBuffer);
-
-          return Note.create({ letter, octave, accidental });
-        });
-      })
+      // Create a "note" Ember.Object for each note from the decoded audio data
+      .then((audioData) => this._createNoteObjects(audioData, name))
 
       // get octaves so that we can sort based on them
-      .then((notes) => [ notes, A(A(notes).getEach('octave')) ])
+      .then(extractOctaves)
 
-      .then(([ notes, octaves ]) => [ notes, octaves.uniq().sort() ])
+      // Each octave has tons of duplicates
+      .then(stripDuplicateOctaves)
 
       // Create array of arrays. Each inner array contains all the notes in an octave
-      .then((data) => data[1].map((octave) => data[0].filterBy('octave', octave)))
+      .then(createOctavesWithNotes)
 
       // Sort the notes in each octave, alphabetically, flats before naturals
       .then(octaveSort)
@@ -204,5 +165,45 @@ export default Service.extend({
    */
   _alreadyLoadedError(name) {
     throw new Ember.Error(`You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
+  },
+
+  _createNoteObjects(audioData, name) {
+    // Set audio data on previously created Ember.Object called ${name}
+    return audioData.map((note) => {
+      const noteName = note[0];
+      const noteBuffer = note[1];
+      const letter = noteName[0];
+
+      let octave = noteName[2];
+      let accidental;
+
+      if (octave) {
+        accidental = noteName[1];
+      } else {
+        octave = noteName[1];
+      }
+
+      this.set(`${name}.${noteName}`, noteBuffer);
+
+      return Note.create({ letter, octave, accidental });
+    });
+  },
+
+  _extractDecodedKeyValuePairs(data) {
+    const promises = data.map((item) => {
+      // Note values always start with "//u"
+      const note = item.split('//u');
+      const noteName = note[0].trim();
+
+      // Transform base64 note value to Uint8Array
+      const noteValue = base64ToUint8(`//u${note[1]}`);
+
+      // Get web audio api audio data from array buffer, include note name
+      return this._decodeAudioData(noteValue.buffer)
+        .then((buffer) => [noteName, buffer]);
+    });
+
+    // Wait for array of promises to resolve before continuing
+    return all(promises);
   }
 });
