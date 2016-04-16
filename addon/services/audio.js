@@ -47,9 +47,9 @@ export default Service.extend({
    * loadSoundFont - Loads a soundfont.js file and decodes it, placing it on
    * this service by "name"
    *
-   * @param  {type}     name  the name that you will refer to this sound font by.
-   * @param  {type}     src   URL (relative or fully qualified) to the sound font.
-   * @return {promise}        a promise that resolves when the sound font has
+   * @param  {type}     instrumentName  the name that you will refer to this sound font by.
+   * @param  {type}     src             URL (relative or fully qualified) to the sound font.
+   * @return {promise}                  a promise that resolves when the sound font has
    * been successfully decoded. The promise resolves to an array of sorted note
    * names.
    */
@@ -112,12 +112,18 @@ export default Service.extend({
     const ctx = this.get('context');
     const panner = this.get(`${name}Panner`);
     const node = ctx.createBufferSource();
-    let decodedAudio;
+    let noteName;
 
     if (note) {
-      decodedAudio = this.get(`${name}.${note}`);
+      noteName = `${name}.${note}`;
     } else {
-      decodedAudio = this.get(name);
+      noteName = name;
+    }
+
+    let decodedAudio = this.get(noteName);
+
+    if (!decodedAudio) {
+      throw new Ember.Error(`ember-audio: You tried to play a sound called "${noteName}" but that sound has not been loaded.`);
     }
 
     if (panner) {
@@ -171,7 +177,7 @@ export default Service.extend({
    * @private
    */
   _alreadyLoadedError(name) {
-    throw new Ember.Error(`You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
+    throw new Ember.Error(`ember-audio: You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
   },
 
   /**
