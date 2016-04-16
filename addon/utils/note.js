@@ -20,6 +20,10 @@ export const Note = Ember.Object.extend({
   accidental: null,
   octave: null,
 
+  /**
+   * @computed string (like "toString")
+   * @return {string} computed note name including the octave
+   */
   string: computed('letter', 'accidental', 'octave', {
     get() {
       const accidental = this.get('accidental');
@@ -37,6 +41,10 @@ export const Note = Ember.Object.extend({
     }
   }),
 
+  /**
+   * @computed noteName
+   * @return {string} computed "friendly" name, not including octave
+   */
   noteName: computed('letter', 'accidental', {
     get() {
       const accidental = this.get('accidental');
