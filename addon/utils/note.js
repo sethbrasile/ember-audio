@@ -12,8 +12,8 @@ const {
  *
  * Computed Properties (examples for notes "Db1" and "D0" respectively):
  *
- * get {string} string    examples: "Db1", "D0"
- * get {string} noteName  examples: "Db", "D"
+ * get {string} identifier  examples: "Db1", "D0"
+ * get {string} name        examples: "Db", "D"
  */
 export const Note = Ember.Object.extend({
   letter: null,
@@ -21,10 +21,10 @@ export const Note = Ember.Object.extend({
   octave: null,
 
   /**
-   * @computed string (like "toString")
+   * @computed identifier
    * @return {string} computed note name including the octave
    */
-  string: computed('letter', 'accidental', 'octave', {
+  identifier: computed('letter', 'accidental', 'octave', {
     get() {
       const accidental = this.get('accidental');
       const letter = this.get('letter');
@@ -42,10 +42,10 @@ export const Note = Ember.Object.extend({
   }),
 
   /**
-   * @computed noteName
-   * @return {string} computed "friendly" name, not including octave
+   * @computed name
+   * @return {string} computed note name, not including octave
    */
-  noteName: computed('letter', 'accidental', {
+  name: computed('letter', 'accidental', {
     get() {
       const accidental = this.get('accidental');
       const letter = this.get('letter');

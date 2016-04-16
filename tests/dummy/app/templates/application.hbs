@@ -1,6 +1,17 @@
-<h2 id="title">Welcome to Ember</h2>
+<div class="content">
+  <h2>Play a single note</h2>
 
-<button {{action 'playSingleNote'}}>Play Single Note</button>
-<button {{action 'playNoteFromSoundFont'}}>Play Note from Sound Font</button>
+  <button {{action 'playSingleNoteLeft'}}>Play Single Note Panned Left</button>
+  <button {{action 'playSingleNoteRight'}}>Play Single Note Panned Right</button>
+  <button {{action 'playTwoPannedNotes'}}>Play Two Panned Notes</button>
+</div>
+
+<div class="content">
+  <h2>Play a sound font</h2>
+
+  {{#each notes as |note|}}
+    <button {{action 'playNoteFromSoundFont' note.identifier}}>{{note.identifier}}</button>
+  {{/each}}
+</div>
 
 {{outlet}}
