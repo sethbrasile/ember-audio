@@ -53,12 +53,12 @@ export default Service.extend({
    * been successfully decoded. The promise resolves to an array of sorted note
    * names.
    */
-  loadSoundFont(name, src) {
-    if (this.get(name)) {
-      return this._alreadyLoadedError(name);
+  loadSoundFont(instrumentName, src) {
+    if (this.get(instrumentName)) {
+      return this._alreadyLoadedError(instrumentName);
     }
 
-    this.set(name, Ember.Object.create());
+    this.set(instrumentName, Ember.Object.create());
 
     return request(src, 'text')
 
@@ -66,12 +66,19 @@ export default Service.extend({
       // and split by line into an array
       .then(mungeSoundFont)
 
-      // Split each line from the sound font into a key and value
-      // key = note name, value = ready-to-play audio decoded from base64
+      // Decode base64 to audio data, splitting each line from the sound font
+      // into a key and value like, [noteName, decodedAudio]
       .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
 
-      // Create a "note" Ember.Object for each note from the decoded audio data
-      .then((audioData) => this._createNoteObjects(audioData, name))
+      // Create a "note" Ember.Object for each note from the decoded audio data.
+      // Also does this.set(`${instrumentName}.${noteName}`, audioData);
+      .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
+
+      /**
+       * At this point, notes are playable. All further processing is so that
+       * this method can return a sorted array of note names corresponding to
+       * the notes that were decoded from the soundfont.
+       */
 
       // get octaves so that we can sort based on them
       .then(extractOctaves)
@@ -167,7 +174,45 @@ export default Service.extend({
     throw new Ember.Error(`You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
   },
 
-  _createNoteObjects(audioData, name) {
+  /**
+   * _extractDecodedKeyValuePairs - Takes an array of base64 encoded strings
+   * (notes) and returns an array of arrays like [[name, audio], [name, audio]]
+   *
+   * @param  {array} data Array of base64 encoded strings.
+   * @return {array}      Array of arrays. Each inner array has two values,
+   * [noteName, decodedAudio]
+   */
+  _extractDecodedKeyValuePairs(data) {
+    const promises = data.map((item) => {
+      // Note values always start with "//u"
+      const note = item.split('//u');
+      const noteName = note[0].trim();
+
+      // Transform base64 note value to Uint8Array
+      const noteValue = base64ToUint8(`//u${note[1]}`);
+
+      // Get web audio api audio data from array buffer, include note name
+      return this._decodeAudioData(noteValue.buffer)
+        .then((decodedAudio) => [noteName, decodedAudio]);
+    });
+
+    // Wait for array of promises to resolve before continuing
+    return all(promises);
+  },
+
+  /**
+   * _createNoteObjects - Takes an array of arrays, each inner array acting as
+   * a key-value pair in the form [noteName, audioData]. Each inner array is
+   * transformed into an Ember.Object and the outer array is returned. This
+   * method also sets each note on it's corresponding instrument's Ember.Object
+   * instance by name. Each note is gettable by
+   * this.get(`${instrumentName}.${noteName}`)
+   *
+   * @param  {array}  audioData       Array of arrays, each inner array like [noteName, audioData]
+   * @param  {string} instrumentName  Name of the instrument each note belongs to
+   * @return {array}                  Array of Ember.Objects
+   */
+  _createNoteObjects(audioData, instrumentName) {
     // Set audio data on previously created Ember.Object called ${name}
     return audioData.map((note) => {
       const noteName = note[0];
@@ -183,27 +228,9 @@ export default Service.extend({
         octave = noteName[1];
       }
 
-      this.set(`${name}.${noteName}`, noteBuffer);
+      this.set(`${instrumentName}.${noteName}`, noteBuffer);
 
       return Note.create({ letter, octave, accidental });
     });
-  },
-
-  _extractDecodedKeyValuePairs(data) {
-    const promises = data.map((item) => {
-      // Note values always start with "//u"
-      const note = item.split('//u');
-      const noteName = note[0].trim();
-
-      // Transform base64 note value to Uint8Array
-      const noteValue = base64ToUint8(`//u${note[1]}`);
-
-      // Get web audio api audio data from array buffer, include note name
-      return this._decodeAudioData(noteValue.buffer)
-        .then((buffer) => [noteName, buffer]);
-    });
-
-    // Wait for array of promises to resolve before continuing
-    return all(promises);
   }
 });
