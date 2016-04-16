@@ -13,21 +13,30 @@ function b64ToUint6(nChr) {
       0;
 }
 
-export function base64ToUint8(sBase64, nBlocksSize) {
-  var sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, "");
-  var nInLen = sB64Enc.length;
-  var nOutLen = nBlocksSize ?
-    Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize :
-    nInLen * 3 + 1 >> 2;
-  var taBytes = new Uint8Array(nOutLen);
 
-  for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+/**
+ * base64ToUint8 - Converts a base64 string into a Uint8Array of "binary" data
+ *
+ * @param  {string} sBase64   The base64 string that you'd like to be converted
+ * @return {Uint8Array}       A Uint8Array of converted "binary" audio data
+ */
+export function base64ToUint8(sBase64) {
+  const sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, "");
+  const nInLen = sB64Enc.length;
+  const nOutLen = nInLen * 3 + 1 >> 2;
+  const taBytes = new Uint8Array(nOutLen);
+
+  for (let nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
     nMod4 = nInIdx & 3;
+
     nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
+
     if (nMod4 === 3 || nInLen - nInIdx === 1) {
+
       for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
         taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
       }
+
       nUint24 = 0;
     }
   }
@@ -35,6 +44,13 @@ export function base64ToUint8(sBase64, nBlocksSize) {
   return taBytes;
 }
 
+/**
+ * mungeSoundFont - Strips extraneous stuff from a soundfont and splits the
+ * soundfont into an array of base64 strings, each item represents a "note"
+ *
+ * @param  {string} text  A soundfont as a long base64 text string
+ * @return {array}        Each line (note) from the soundfont
+ */
 export function mungeSoundFont(text) {
   // Strip out all the unnecessary stuff
   const array = text
