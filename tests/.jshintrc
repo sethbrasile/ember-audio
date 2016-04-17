@@ -22,6 +22,7 @@
     "currentURL",
     "currentPath",
     "currentRouteName",
+    "AudioContext",
     "Uint8Array"
   ],
   "node": false,
