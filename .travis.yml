@@ -3,7 +3,7 @@ language: node_js
 node_js:
   - "5.10.1"
 
-sudo: true
+sudo: false
 
 cache:
   directories:
@@ -26,13 +26,7 @@ matrix:
     - env: EMBER_TRY_SCENARIO=ember-canary
 
 before_install:
-  - export CHROME_BIN=/usr/bin/google-chrome
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - sudo apt-get update
-  - sudo apt-get install -y libappindicator1 fonts-liberation
-  - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  - sudo dpkg -i google-chrome*.deb
+  - export PATH=/usr/local/phantomjs-2.0.0/bin:$PATH
   - "npm config set spin false"
   - "npm install -g npm@^2"
 
