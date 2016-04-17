@@ -12,8 +12,7 @@ it out.
 Still needs:
 
 - demo app / docs
-- coverage and blanket
-- travis setup
+- tests for audio service
 - a way to add effects. "pan" currently exists, but I would love to add more and add support for:
   - "plugging in" custom effects
   - customizing audio routing.
