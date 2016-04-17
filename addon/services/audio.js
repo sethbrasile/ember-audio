@@ -21,6 +21,8 @@ export default Service.extend({
    * context - An AudioContext instance from the web audio api. **NOT**
    * available in all browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
+   *
+   * http://caniuse.com/#feat=audio-api
    */
   context: new AudioContext(),
 
