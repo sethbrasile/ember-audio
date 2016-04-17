@@ -38,3 +38,7 @@ install:
 
 script:
   - ember try:one $EMBER_TRY_SCENARIO --skip-cleanup=true --- ember test
+
+after_script:
+  - npm install -g codeclimate-test-reporter
+  - codeclimate-test-reporter < lcov.dat
