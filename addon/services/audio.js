@@ -97,7 +97,9 @@ export default Service.extend({
       .then(octaveShift)
 
       // Flatten array of arrays into a flat array
-      .then(flatten);
+      .then(flatten)
+
+      .catch((err) => console.error('ember-audio:', err));
   },
 
   /**
@@ -183,7 +185,7 @@ export default Service.extend({
   /**
    * _soundNotLoadedError - Just throws an error. For when "play" tries to play
    * a sound that has not previously been loaded.
-   *    
+   *
    * @param  {string} name  The name of the sound that has not yet been loaded.
    * @private
    */
