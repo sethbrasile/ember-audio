@@ -21,6 +21,8 @@ export default Service.extend({
    * context - An AudioContext instance from the web audio api. **NOT**
    * available in all browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
+   *
+   * http://caniuse.com/#feat=audio-api
    */
   context: new AudioContext(),
 
@@ -44,8 +46,11 @@ export default Service.extend({
   },
 
   /**
-   * loadSoundFont - Loads a soundfont.js file and decodes it, placing it on
-   * this service by "name"
+   * loadSoundFont - creates an Ember.Object called ${instrumentName} then
+   * loads a soundfont.js file and decodes all the notes, placing each note on
+   * "this.get(instrumentName)" like this.set(`${instrumentName}.${noteName}`)
+   * and returns a promise that resolves to an array of properly sorted note
+   * names. The notes are sorted the way that they would appear on a piano.
    *
    * @param  {string}     instrumentName  the name that you will refer to this sound font by.
    * @param  {string}     src             URL (relative or fully qualified) to the sound font.
@@ -97,7 +102,9 @@ export default Service.extend({
       .then(octaveShift)
 
       // Flatten array of arrays into a flat array
-      .then(flatten);
+      .then(flatten)
+
+      .catch((err) => console.error('ember-audio:', err));
   },
 
   /**
@@ -123,7 +130,7 @@ export default Service.extend({
     let decodedAudio = this.get(noteName);
 
     if (!decodedAudio) {
-      throw new Ember.Error(`ember-audio: You tried to play a sound called "${noteName}" but that sound has not been loaded.`);
+      this._soundNotLoadedError(noteName);
     }
 
     if (panner) {
@@ -178,6 +185,17 @@ export default Service.extend({
    */
   _alreadyLoadedError(name) {
     throw new Ember.Error(`ember-audio: You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
+  },
+
+  /**
+   * _soundNotLoadedError - Just throws an error. For when "play" tries to play
+   * a sound that has not previously been loaded.
+   *
+   * @param  {string} name  The name of the sound that has not yet been loaded.
+   * @private
+   */
+  _soundNotLoadedError(name) {
+    throw new Ember.Error(`ember-audio: You tried to play a sound called "${name}" but that sound has not been loaded.`);
   },
 
   /**

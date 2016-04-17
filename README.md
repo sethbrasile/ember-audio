@@ -9,6 +9,8 @@ This is not done and not released yet! It does however, work. Feel free to take
 a look at the code (there are inline docs) and the dummy app if you want to try
 it out.
 
+**Note**: You must be using a modern browser: http://caniuse.com/#feat=audio-api
+
 Still needs:
 
 - demo app / docs
