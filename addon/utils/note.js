@@ -105,14 +105,38 @@ export function octaveSort(octaves) {
   return octaves.map((octave) => octave.sort(noteSort));
 }
 
+/**
+ * extractOctaves - Accepts an array of Note objects and passes back an array
+ * like this: [original array, array of each octave in the orginal array]
+ *
+ * @param  {array} notes array of note objects
+ * @return {array}       array containing two inner arrays, [0] is the untouched
+ * input array, [1] is an array of all the octaves in the original array
+ */
 export function extractOctaves(notes) {
   return [ notes, A(A(notes).getEach('octave')) ];
 }
 
+/**
+ * stripDuplicateOctaves - Accepts an array of two arrays and returns the same
+ * array, but with array at index [1] uniq'd and sorted alphabetically
+ *
+ * @param  {array} [ notes, octaves ] the output from extractOctaves (above)
+ * @return {array}
+ */
 export function stripDuplicateOctaves([ notes, octaves ]) {
   return [ notes, octaves.uniq().sort() ];
 }
 
+/**
+ * createOctavesWithNotes - Accepts an array of two arrays, [0] being an array
+ * of Note objects, [1] being all the available octaves. Returns a single array
+ * made up of arrays of Note objects, organized by octave. Each inner array
+ * represents all of the notes in an octave.
+ *
+ * @param  {array} data The output of stripDuplicateOctaves (above)
+ * @return {array}
+ */
 export function createOctavesWithNotes(data) {
   return data[1].map((octave) => data[0].filterBy('octave', octave));
 }
