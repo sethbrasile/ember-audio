@@ -123,7 +123,7 @@ export default Service.extend({
     let decodedAudio = this.get(noteName);
 
     if (!decodedAudio) {
-      throw new Ember.Error(`ember-audio: You tried to play a sound called "${noteName}" but that sound has not been loaded.`);
+      this._soundNotLoadedError(noteName);
     }
 
     if (panner) {
@@ -178,6 +178,17 @@ export default Service.extend({
    */
   _alreadyLoadedError(name) {
     throw new Ember.Error(`ember-audio: You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
+  },
+
+  /**
+   * _soundNotLoadedError - Just throws an error. For when "play" tries to play
+   * a sound that has not previously been loaded.
+   *    
+   * @param  {string} name  The name of the sound that has not yet been loaded.
+   * @private
+   */
+  _soundNotLoadedError(name) {
+    throw new Ember.Error(`ember-audio: You tried to play a sound called "${name}" but that sound has not been loaded.`);
   },
 
   /**
