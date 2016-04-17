@@ -1,15 +1,14 @@
 # Ember-audio
 
-A light-weight wrapper for the
-[howler.js](https://github.com/goldfire/howler.js/) WebAudio library, packaged
-as an ember addon.
+This is not done and not released yet! It does however, work. Feel free to take
+a look at the code (there are inline docs) and the dummy app if you want to try
+it out.
 
-It aims to provide an `audio` service that makes working with howler.js in ember
-projects super EZ.
+Ember-audio provides an `audio` service that makes working with the Web
+Audio API super EZ.
 
-This is experimental!! The API is not fully fleshed out so it has not been
-published! Please feel free to contribute if this is something that interests
-you.
+Please see the [demo app](http://sethbrasile.github.io/ember-audio) for
+documentation.
 
 ## Installation
 
