@@ -17,6 +17,13 @@ const {
 } = Ember;
 
 export default Service.extend({
+
+  /**
+   * request - Only set on this service so that it's easier to stub without
+   * having to create another service.
+   */
+  request,
+
   /**
    * context - An AudioContext instance from the web audio api. **NOT**
    * available in all browsers. Not available in any version of IE (except EDGE)
@@ -39,7 +46,7 @@ export default Service.extend({
       return this._alreadyLoadedError(name);
     }
 
-    return request(src)
+    return this.get('request')(src)
       .then((arrayBuffer) => this._decodeAudioData(arrayBuffer))
       .then((decodedAudio) => this.set(name, decodedAudio))
       .catch((err) => console.error('ember-audio:', err));
@@ -65,7 +72,7 @@ export default Service.extend({
 
     this.set(instrumentName, Ember.Object.create());
 
-    return request(src, 'text')
+    return this.get('request')(src, 'text')
 
       // Strip extraneous stuff from soundfont (which is currently a long string)
       // and split by line into an array
