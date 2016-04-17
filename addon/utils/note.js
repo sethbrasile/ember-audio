@@ -137,8 +137,8 @@ export function stripDuplicateOctaves([ notes, octaves ]) {
  * @param  {array} data The output of stripDuplicateOctaves (above)
  * @return {array}
  */
-export function createOctavesWithNotes(data) {
-  return data[1].map((octave) => data[0].filterBy('octave', octave));
+export function createOctavesWithNotes([ notes, octaves ]) {
+  return octaves.map((octave) => notes.filterBy('octave', octave));
 }
 
 /**
