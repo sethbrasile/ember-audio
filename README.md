@@ -1,6 +1,6 @@
 # Ember-audio
 
-[![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)[![Test Coverage](https://codeclimate.com/github/sethbrasile/ember-audio/badges/coverage.svg)](https://codeclimate.com/github/sethbrasile/ember-audio/coverage)
+[![Build Status](https://travis-ci.org/sethbrasile/ember-audio.svg?branch=master)](https://travis-ci.org/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Test Coverage](https://codeclimate.com/github/sethbrasile/ember-audio/badges/coverage.svg)](https://codeclimate.com/github/sethbrasile/ember-audio/coverage) [![Dependencies](https://david-dm.org/sethbrasile/ember-audio.svg)](https://david-dm.org/sethbrasile/ember-audio)
 
 Ember-audio provides an `audio` service that makes working with the Web
 Audio API super EZ.
