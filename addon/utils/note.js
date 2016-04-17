@@ -62,7 +62,6 @@ export const Note = Ember.Object.extend({
   })
 });
 
-
 /**
  * octaveShift - Takes an array of arrays of notes, determines the last note of
  * the first array, then splits the rest of the arrays in the array at the last
@@ -83,9 +82,9 @@ export function octaveShift(octaves) {
   // Pull first octave from beginning of array
   const firstOctave = A(A(octaves).shiftObject());
   // Get all the note names from the second octave for comparison
-  const secondOctaveNames = A(octaves.get('firstObject')).getEach('noteName');
+  const secondOctaveNames = A(octaves.get('firstObject')).getEach('name');
   // Get the note name of the last note in the first octave
-  const lastNote = firstOctave.get('lastObject.noteName');
+  const lastNote = firstOctave.get('lastObject.name');
   // Get the index of the occurrence of the last note from the first
   // octave, in the second octave
   const indexToShiftAt = secondOctaveNames.lastIndexOf(lastNote) + 1;

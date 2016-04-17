@@ -20,14 +20,14 @@ const Db1 = noteFactory('D', 'b', 1);
 const correctOctaves      = [[A0, Bb0, B0], [C1, Db1, Ab1, A1, Bb1, B1]];
 const alphabeticalOctaves = [[A0, Bb0, B0], [Ab1, A1, Bb1, B1, C1, Db1]];
 
-test('string is formatted properly', function(assert) {
+test('identifier is formatted properly', function(assert) {
   assert.expect(1);
-  assert.equal(Ab1.get('string'), 'Ab1');
+  assert.equal(Ab1.get('identifier'), 'Ab1');
 });
 
-test('noteName is formatted properly', function(assert) {
+test('name is formatted properly', function(assert) {
   assert.expect(1);
-  assert.equal(Ab1.get('noteName'), 'Ab');
+  assert.equal(Ab1.get('name'), 'Ab');
 });
 
 test('octaveShift works', function(assert) {
