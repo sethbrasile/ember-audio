@@ -1,5 +1,7 @@
 # Ember-audio
 
+[![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)[![Test Coverage](https://codeclimate.com/github/sethbrasile/ember-audio/badges/coverage.svg)](https://codeclimate.com/github/sethbrasile/ember-audio/coverage)
+
 Ember-audio provides an `audio` service that makes working with the Web
 Audio API super EZ.
 
