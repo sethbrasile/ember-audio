@@ -10,6 +10,7 @@ cache:
     - node_modules
 
 addons:
+  firefox: latest
   code_climate:
     repo_token: 0e4875fa652edb14844274a0ccc89a7fe327e8a05ab241c3f53e196f8c79eb87
 
@@ -26,7 +27,6 @@ matrix:
     - env: EMBER_TRY_SCENARIO=ember-canary
 
 before_install:
-  - export PATH=/usr/local/phantomjs-2.0.0/bin:$PATH
   - "npm config set spin false"
   - "npm install -g npm@^2"
 
