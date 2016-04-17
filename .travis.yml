@@ -9,6 +9,10 @@ cache:
   directories:
     - node_modules
 
+addons:
+  code_climate:
+    repo_token: 0e4875fa652edb14844274a0ccc89a7fe327e8a05ab241c3f53e196f8c79eb87
+
 env:
   - EMBER_TRY_SCENARIO=default
   - EMBER_TRY_SCENARIO=ember-1.13
