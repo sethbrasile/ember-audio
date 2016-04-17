@@ -44,8 +44,11 @@ export default Service.extend({
   },
 
   /**
-   * loadSoundFont - Loads a soundfont.js file and decodes it, placing it on
-   * this service by "name"
+   * loadSoundFont - creates an Ember.Object called ${instrumentName} then
+   * loads a soundfont.js file and decodes all the notes, placing each note on
+   * "this.get(instrumentName)" like this.set(`${instrumentName}.${noteName}`)
+   * and returns a promise that resolves to an array of properly sorted note
+   * names. The notes are sorted the way that they would appear on a piano.
    *
    * @param  {string}     instrumentName  the name that you will refer to this sound font by.
    * @param  {string}     src             URL (relative or fully qualified) to the sound font.
