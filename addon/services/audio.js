@@ -47,9 +47,9 @@ export default Service.extend({
    * loadSoundFont - Loads a soundfont.js file and decodes it, placing it on
    * this service by "name"
    *
-   * @param  {type}     instrumentName  the name that you will refer to this sound font by.
-   * @param  {type}     src             URL (relative or fully qualified) to the sound font.
-   * @return {promise}                  a promise that resolves when the sound font has
+   * @param  {string}     instrumentName  the name that you will refer to this sound font by.
+   * @param  {string}     src             URL (relative or fully qualified) to the sound font.
+   * @return {promise}                    a promise that resolves when the sound font has
    * been successfully decoded. The promise resolves to an array of sorted note
    * names.
    */
