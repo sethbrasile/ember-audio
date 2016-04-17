@@ -2,7 +2,9 @@
   "predef": [
     "document",
     "window",
-    "-Promise"
+    "-Promise",
+    "AudioContext",
+    "Uint8Array"
   ],
   "browser": true,
   "boss": true,

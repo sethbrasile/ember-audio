@@ -21,7 +21,9 @@
     "andThen",
     "currentURL",
     "currentPath",
-    "currentRouteName"
+    "currentRouteName",
+    "AudioContext",
+    "Uint8Array"
   ],
   "node": false,
   "browser": false,
