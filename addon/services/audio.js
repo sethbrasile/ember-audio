@@ -47,7 +47,7 @@ export default Service.extend({
     }
 
     return this.get('request')(src)
-      .then((arrayBuffer) => this._decodeAudioData(arrayBuffer))
+      .then((arrayBuffer) => this.get('context').decodeAudioData(arrayBuffer))
       .then((decodedAudio) => this.set(name, decodedAudio))
       .catch((err) => console.error('ember-audio:', err));
   },
@@ -168,19 +168,6 @@ export default Service.extend({
 
     panner.pan.value = value;
     this.set(`${name}Panner`, panner);
-  },
-
-  /**
-   * _decodeAudioData - calls context's decodeAudioData()
-   * just a convenience method. Avoids having to call "this.get('context')" in
-   * a couple places.
-   *
-   * @param  {ArrayBuffer}  data
-   * @return {promise}      description
-   * @private
-   */
-  _decodeAudioData(data) {
-    return this.get('context').decodeAudioData(data);
   },
 
   /**
