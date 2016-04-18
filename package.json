@@ -17,6 +17,9 @@
   },
   "author": "Seth Brasile <seth.brasile@gmail.com>",
   "license": "MIT",
+  "ember-addon": {
+    "demoURL": "http://sethbrasile.github.io/ember-audio"
+  },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.2",
     "ember-ajax": "0.7.1",
