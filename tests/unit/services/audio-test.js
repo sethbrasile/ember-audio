@@ -162,3 +162,43 @@ test('pan uses existing "namePanner" if it exists, instead of creating a new one
   service.pan('test-sound', 0.3);
   assert.equal(service.get('test-soundPanner'), existingPanner);
 });
+
+test('load calls "_alreadyLoadedError" when sound by the same name has already been loaded', function(assert) {
+  assert.expect(2);
+  let service = this.subject({ errorCalled: false, testSound: true });
+
+  service.set('_alreadyLoadedError', () => service.set('errorCalled', true));
+
+  assert.notOk(service.get('errorCalled'));
+  service.load('testSound');
+  assert.ok(service.get('errorCalled'));
+});
+
+test('loadSoundFont calls "_alreadyLoadedError" when soundfont by the same name has already been loaded', function(assert) {
+  assert.expect(2);
+  let service = this.subject({ errorCalled: false, testSound: true });
+
+  service.set('_alreadyLoadedError', () => service.set('errorCalled', true));
+
+  assert.notOk(service.get('errorCalled'));
+  service.loadSoundFont('testSound');
+  assert.ok(service.get('errorCalled'));
+});
+
+test('load uses request and decodeAudioData and final "then" is successfully executed', function(assert) {
+  assert.expect(1);
+  let service = this.subject({ context: ContextMock.create() });
+  service.set('request', (src) => new Ember.RSVP.Promise((resolve) => resolve(src)));
+  service.load('piano', 'Eb5.mp3').then(() => {
+    assert.ok(true);
+  });
+});
+
+test('loadSoundFont final "then" is successfully executed', function(assert) {
+  assert.expect(1);
+  let service = this.subject({ context: ContextMock.create() });
+  service.set('request', (src) => new Ember.RSVP.Promise((resolve) => resolve(src)));
+  service.loadSoundFont('piano', 'piano.js').then(() => {
+    assert.ok(true);
+  });
+});

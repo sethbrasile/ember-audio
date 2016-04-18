@@ -1,5 +1,11 @@
-import { Note, noteSort, octaveShift, octaveSort } from 'ember-audio/utils/note';
 import { module, test } from 'qunit';
+import {
+  Note,
+  noteSort,
+  octaveShift,
+  octaveSort,
+  createOctavesWithNotes
+} from 'ember-audio/utils/note';
 
 module('Unit | Utility | note');
 
@@ -25,6 +31,11 @@ test('identifier is formatted properly', function(assert) {
   assert.equal(Ab1.get('identifier'), 'Ab1');
 });
 
+test('identifier is formatted properly when note has no accidental', function(assert) {
+  assert.expect(1);
+  assert.equal(A1.get('identifier'), 'A1');
+});
+
 test('name is formatted properly', function(assert) {
   assert.expect(1);
   assert.equal(Ab1.get('name'), 'Ab');
@@ -45,6 +56,13 @@ test('octaveSort works', function(assert) {
   assert.expect(1);
   let result = octaveSort(correctOctaves);
   assert.deepEqual(result, alphabeticalOctaves);
+});
+
+test('createOctavesWithNotes works', function(assert) {
+  assert.expect(1);
+  let arr = [ [ Ab1, Bb0, B0 ], [ 0, 1 ]];
+  let result = createOctavesWithNotes(arr);
+  assert.deepEqual(result, [ [ Bb0, B0 ], [ Ab1 ] ]);
 });
 
 test('noteSort compares two letters correctly', function(assert) {

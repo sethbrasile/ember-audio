@@ -125,7 +125,7 @@ export function extractOctaves(notes) {
  * @return {array}
  */
 export function stripDuplicateOctaves([ notes, octaves ]) {
-  return [ notes, octaves.uniq().sort() ];
+  return [ notes, A(octaves).uniq().sort() ];
 }
 
 /**
@@ -138,7 +138,7 @@ export function stripDuplicateOctaves([ notes, octaves ]) {
  * @return {array}
  */
 export function createOctavesWithNotes([ notes, octaves ]) {
-  return octaves.map((octave) => notes.filterBy('octave', octave));
+  return A(octaves).map((octave) => A(notes).filterBy('octave', octave));
 }
 
 /**
