@@ -15,9 +15,12 @@ it out.
 
 Still needs:
 
-- a way to add effects. "pan" currently exists, but I would love to add more and add support for:
+- A way to add effects. "pan" currently exists, but I would love to add more and add support for:
   - "plugging in" custom effects
   - customizing audio routing.
+- Timing helpers
+    - http://www.html5rocks.com/en/tutorials/audio/scheduling/
+- Something (I think it's ember's fingerprinting) seems to be messing up soundfonts.
 
 
 ## Installation
