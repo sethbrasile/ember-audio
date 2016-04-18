@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/sethbrasile/ember-audio.svg?branch=master)](https://travis-ci.org/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Test Coverage](https://codeclimate.com/github/sethbrasile/ember-audio/badges/coverage.svg)](https://codeclimate.com/github/sethbrasile/ember-audio/coverage) [![Dependencies](https://david-dm.org/sethbrasile/ember-audio.svg)](https://david-dm.org/sethbrasile/ember-audio) [![Ember Observer Score](http://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)
 
+#### [Interactive Demo/Documentation](http://sethbrasile.github.io/ember-audio)
+
 Ember-audio provides an `audio` service that makes working with the Web
 Audio API super EZ.
 
@@ -13,7 +15,6 @@ it out.
 
 Still needs:
 
-- demo app / docs
 - a way to add effects. "pan" currently exists, but I would love to add more and add support for:
   - "plugging in" custom effects
   - customizing audio routing.
