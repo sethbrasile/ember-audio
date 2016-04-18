@@ -6,6 +6,8 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.route('soundfonts');
+  this.route('audio-files');
 });
 
 export default Router;

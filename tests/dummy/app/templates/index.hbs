@@ -1,15 +1,38 @@
+<h1>Ember Audio</h1>
+<h3>Making the WebAudio API super EZ since 2016</h3>
+
+<hr />
+
+<p>
+  The WebAudio API is great. It's been designed to allow for extreme flexibility
+  and control, as well as speed and efficiency. Unfortunately, this means that
+  it's a little bit cumbersome to use.
+</p>
+
+<p>
+  Ember Audio allows you to easily load up and play local or remote audio files
+  and sound fonts as easy as this:
+</p>
+
 <div class="content">
-  <h2>Play a single note</h2>
 
-  <button {{action 'playSingleNoteLeft'}}>Play Single Note Panned Left</button>
-  <button {{action 'playSingleNoteRight'}}>Play Single Note Panned Right</button>
-  <button {{action 'playTwoPannedNotes'}}>Play Two Panned Notes</button>
-</div>
+  <button class="btn btn-primary" {{action 'playSound'}}>Play Sound</button>
 
-<div class="content">
-  <h2>Play a sound font</h2>
+{{#code-block language='javascript'}}
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
 
-  {{#each notes as |note|}}
-    <button {{action 'playNoteFromSoundFont' note.identifier}}>{{note.identifier}}</button>
-  {{/each}}
+    initAudioFile: Ember.on('init', function() {
+      // Eb5.mp3 is an mp3 file located in the "public" folder
+      this.get('audio').load('piano-note', 'Eb5.mp3');
+    }),
+
+    actions: {
+      playSound() {
+        this.get('audio').play('piano-note');
+      }
+    }
+  });
+{{/code-block}}
+
 </div>

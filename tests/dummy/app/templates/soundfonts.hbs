@@ -1,0 +1,7 @@
+<div class="content">
+  <h2>Play a sound font</h2>
+
+  {{#each notes as |note|}}
+    <button {{action 'playNoteFromSoundFont' note.identifier}}>{{note.identifier}}</button>
+  {{/each}}
+</div>
