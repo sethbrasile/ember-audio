@@ -210,7 +210,7 @@ export default Service.extend({
       const noteValue = base64ToUint8(`//u${note[1]}`);
 
       // Get web audio api audio data from array buffer, include note name
-      return this._decodeAudioData(noteValue.buffer)
+      return this.get('context').decodeAudioData(noteValue.buffer)
         .then((decodedAudio) => [noteName, decodedAudio]);
     });
 
