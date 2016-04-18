@@ -22,6 +22,9 @@ const ContextMock = Ember.Object.extend({
   createStereoPanner() {
     this.set('panner', { pan: { value: 0 } });
     return this.get('panner');
+  },
+  decodeAudioData(data) {
+    return new Ember.RSVP.Promise((resolve) => resolve(data));
   }
 });
 
