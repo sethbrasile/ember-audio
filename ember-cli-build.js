@@ -11,6 +11,16 @@ module.exports = function(defaults) {
     'ember-prism': {
       theme: 'okaidia',
       components: ['javascript', 'handlebars']
+    },
+
+    minifyJS: {
+      options: {
+        exclude: ['piano.js']
+      }
+    },
+
+    fingerprint: {
+      exclude: ['piano.js']
     }
   });
 
