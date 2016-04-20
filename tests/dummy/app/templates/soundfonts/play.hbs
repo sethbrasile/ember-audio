@@ -1,0 +1,9 @@
+<div class="content">
+  {{#if isLoading}}
+    <h3>Loading....</h3>
+  {{else}}
+    {{#each notes as |note|}}
+      <button {{action 'playNoteFromSoundFont' note.identifier}}>{{note.identifier}}</button>
+    {{/each}}
+  {{/if}}
+</div>

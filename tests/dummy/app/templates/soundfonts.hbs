@@ -1,51 +1,17 @@
-<div class="content">
-  <h2>Play a sound font</h2>
+<h2>Play a Soundfont</h2>
 
-  {{#if isLoading}}
-    <h3>Loading....</h3>
-  {{else}}
-    {{#each notes as |note|}}
-      <button {{action 'playNoteFromSoundFont' note.identifier}}>{{note.identifier}}</button>
-    {{/each}}
-  {{/if}}
-</div>
+<ul class="nav nav-tabs">
+  {{#link-to 'soundfonts.play' tagName='li' classNames='link'}}
+    <a>Play</a>
+  {{/link-to}}
 
-<div class="content">
-{{#code-block language='javascript'}}
-  export default Ember.Whatever.extend({
-    audio: Ember.inject.service(),
-    isLoading: false,
-    notes: null,
+  {{#link-to 'soundfonts.code' tagName='li' classNames='link'}}
+    <a>Code</a>
+  {{/link-to}}
 
-    initSoundFont: Ember.on('init', function() {
-      // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
-      // It is located in this app's "public" folder
-      this.get('audio').loadSoundFont('piano-font', 'piano.js')
-        // The promise from loadSountFont resolves to an array of sorted
-        // note objects (sorted the way they would appear on a piano).
-        .then((notes) => {
-          this.set('notes', notes);
-          this.set('isLoading', false);
-        });
-    }),
+  {{#link-to 'soundfonts.notes' tagName='li' classNames='link'}}
+    <a>Note Objects</a>
+  {{/link-to}}
+</ul>
 
-    actions: {
-      playNoteFromSoundFont(note) {
-        // First arg is the name of the sound font, second arg is the note identifier
-        // The note identifier looks like 'Db1'
-        this.get('audio').play('piano-font', note);
-      }
-    }
-  });
-{{/code-block}}
-
-{{#code-block language='handlebars'}}
-  \{{#if isLoading}}
-    <h3>Loading....</h3>
-  \{{else}}
-    \{{#each notes as |note|}}
-      &lt;button \{{action 'playNoteFromSoundFont' note.identifier}}>\{{note.identifier}}&lt;/button>
-    \{{/each}}
-  \{{/if}}
-{{/code-block}}
-</div>
+{{outlet}}

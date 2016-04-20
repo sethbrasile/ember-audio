@@ -6,7 +6,11 @@ const Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  this.route('soundfonts');
+  this.route('soundfonts', function() {
+    this.route('play', { path: '/' });
+    this.route('code');
+    this.route('notes');
+  });
   this.route('audio-files');
 });
 
