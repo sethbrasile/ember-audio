@@ -2,8 +2,12 @@
   {{#if isLoading}}
     <h3>Loading....</h3>
   {{else}}
-    {{#each notes as |note|}}
-      <button {{action 'playNoteFromSoundFont' note.identifier}}>{{note.identifier}}</button>
-    {{/each}}
+    <div id="piano">
+      <ol>
+        {{#each notes as |note|}}
+          <li {{action 'playNoteFromSoundFont' note.identifier}} class={{if note.accidental 'black'}}>{{note.identifier}}</li>
+        {{/each}}
+      </ol>
+    </div>
   {{/if}}
 </div>
