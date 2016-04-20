@@ -5,7 +5,7 @@
     <div id="piano">
       <ol>
         {{#each notes as |note|}}
-          <li {{action 'playNoteFromSoundFont' note.identifier}} class={{if note.accidental 'black'}}>{{note.identifier}}</li>
+          <li {{action 'playNoteFromSoundFont' note.identifier}} class={{if note.accidental 'black'}}>{{note.name}}</li>
         {{/each}}
       </ol>
     </div>

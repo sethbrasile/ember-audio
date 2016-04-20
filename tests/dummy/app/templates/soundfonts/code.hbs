@@ -45,9 +45,13 @@
   \{{#if isLoading}}
     <h3>Loading....</h3>
   \{{else}}
-    \{{#each notes as |note|}}
-      &lt;button \{{action 'playNoteFromSoundFont' note.identifier}}>\{{note.identifier}}&lt;/button>
-    \{{/each}}
+    &lt;div id="piano">
+      &lt;ol>
+        \{{#each notes as |note|}}
+          &lt;li \{{action 'playNoteFromSoundFont' note.identifier}} class=\{{if note.accidental 'black'}}>\{{note.name}}&lt;/li>
+        \{{/each}}
+      &lt;/ol>
+    &lt;/div>
   \{{/if}}
 {{/code-block}}
 </div>
