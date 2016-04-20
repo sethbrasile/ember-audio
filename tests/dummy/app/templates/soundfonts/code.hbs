@@ -1,0 +1,57 @@
+<div class="content">
+
+  <div class="content">
+    <p>
+      <strong>Important Note</strong>: Soundfonts are javascript files, so if you
+      keep your soundfonts inside your project, ember-cli is going to minify them.
+    </p>
+    <p>
+      This is not ok.
+      <a href="http://ember-cli.com/user-guide/#minifying">
+        Exclude your soundfonts from minification.
+      </a>
+    </p>
+  </div>
+
+{{#code-block language='javascript'}}
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+    isLoading: false,
+    notes: null,
+
+    initSoundFont: Ember.on('init', function() {
+      // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
+      // It is located in this app's "public" folder
+      this.get('audio').loadSoundFont('piano-font', 'piano.js')
+        // The promise from loadSountFont resolves to an array of sorted
+        // note objects (sorted the way they would appear on a piano).
+        .then((notes) => {
+          this.set('notes', notes);
+          this.set('isLoading', false);
+        });
+    }),
+
+    actions: {
+      playNoteFromSoundFont(note) {
+        // First arg is the name of the sound font, second arg is the note identifier
+        // The note identifier looks like 'Db1'
+        this.get('audio').play('piano-font', note);
+      }
+    }
+  });
+{{/code-block}}
+
+{{#code-block language='handlebars'}}
+  \{{#if isLoading}}
+    <h3>Loading....</h3>
+  \{{else}}
+    &lt;div id="piano">
+      &lt;ol>
+        \{{#each notes as |note|}}
+          &lt;li \{{action 'playNoteFromSoundFont' note.identifier}} class=\{{if note.accidental 'black'}}>\{{note.name}}&lt;/li>
+        \{{/each}}
+      &lt;/ol>
+    &lt;/div>
+  \{{/if}}
+{{/code-block}}
+</div>
