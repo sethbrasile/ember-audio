@@ -20,6 +20,9 @@ Still needs:
   - customizing audio routing.
 - Timing helpers
     - http://www.html5rocks.com/en/tutorials/audio/scheduling/
+- Support for visualizations (technically, this is the same feature as
+  "audio routing" but I thought it would be nice to mention it explicitly) and
+  "play time" helpers.
 
 
 ## Installation
