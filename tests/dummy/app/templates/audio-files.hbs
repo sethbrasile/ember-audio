@@ -13,6 +13,7 @@
     initAudioFiles: Ember.on('init', function() {
       const audio = this.get('audio');
 
+      // 'single-note-left' is the name I've decided to use to refer to the audio.
       // Db5.mp3 is an mp3 file located in this project's "public" folder
       audio.load('single-note-left', 'Db5.mp3').then(() => {
         // .load() returns a promise, in case you wanted to do some "isLoading"

@@ -20,6 +20,7 @@
     notes: null,
 
     initSoundFont: Ember.on('init', function() {
+      // 'piano-font' is the name I've decided to use to refer to the soundfont
       // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
       // It is located in this app's "public" folder
       this.get('audio').loadSoundFont('piano-font', 'piano.js')
