@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import { sortNotes } from 'ember-audio/utils/note';
 
 export default Ember.Controller.extend({
   audio: Ember.inject.service(),
@@ -11,7 +10,7 @@ export default Ember.Controller.extend({
     this.get('audio').loadSoundFont('piano-font', 'piano.js')
       // The promise from loadSountFont resolves to an array of note objects
       .then((notes) => {
-        this.set('notes', sortNotes(notes).slice(39, 51));
+        this.set('notes', notes.slice(39, 51));
         this.set('isLoading', false);
       });
   }),

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import request from '../utils/request';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
-import { Note } from '../utils/note';
+import { Note, sortNotes } from '../utils/note';
 
 const {
   RSVP: { all },
@@ -77,6 +77,8 @@ export default Service.extend({
       // Create a "note" Ember.Object for each note from the decoded audio data.
       // Also does this.set(`${instrumentName}.${noteName}`, audioData);
       .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
+
+      .then(sortNotes)
 
       .catch((err) => console.error('ember-audio:', err));
   },
