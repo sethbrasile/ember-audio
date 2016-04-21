@@ -1,15 +1,7 @@
 import Ember from 'ember';
 import request from '../utils/request';
-import { flatten } from '../utils/array-methods';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
-import {
-  Note,
-  octaveShift,
-  octaveSort,
-  extractOctaves,
-  stripDuplicateOctaves,
-  createOctavesWithNotes
-} from '../utils/note';
+import { Note, sortNotes } from '../utils/note';
 
 const {
   RSVP: { all },
@@ -86,30 +78,7 @@ export default Service.extend({
       // Also does this.set(`${instrumentName}.${noteName}`, audioData);
       .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
 
-      /**
-       * At this point, notes are playable. All further processing is so that
-       * this method can return a sorted array of note names corresponding to
-       * the notes that were decoded from the soundfont.
-       */
-
-      // get octaves so that we can sort based on them
-      .then(extractOctaves)
-
-      // Each octave has tons of duplicates
-      .then(stripDuplicateOctaves)
-
-      // Create array of arrays. Each inner array contains all the notes in an octave
-      .then(createOctavesWithNotes)
-
-      // Sort the notes in each octave, alphabetically, flats before naturals
-      .then(octaveSort)
-
-      // Determine last note of first octave, then for each octave, split at
-      // that note, then shift the beginning notes to the end
-      .then(octaveShift)
-
-      // Flatten array of arrays into a flat array
-      .then(flatten)
+      .then(sortNotes)
 
       .catch((err) => console.error('ember-audio:', err));
   },
@@ -200,19 +169,27 @@ export default Service.extend({
    * @return {array}      Array of arrays. Each inner array has two values,
    * [noteName, decodedAudio]
    */
-  _extractDecodedKeyValuePairs(data) {
-    const promises = data.map((item) => {
-      // Note values always start with "//u"
-      const note = item.split('//u');
-      const noteName = note[0].trim();
+  _extractDecodedKeyValuePairs(notes) {
+    const ctx = this.get('context');
+    const promises = [];
 
-      // Transform base64 note value to Uint8Array
-      const noteValue = base64ToUint8(`//u${note[1]}`);
+    function decodeNote(noteName, buffer) {
+      // Get web audio api audio data from array buffer
+      return ctx.decodeAudioData(buffer)
 
-      // Get web audio api audio data from array buffer, include note name
-      return this.get('context').decodeAudioData(noteValue.buffer)
-        .then((decodedAudio) => [noteName, decodedAudio]);
-    });
+      // Set promise value to array with note name and decoded note data
+      .then((decodedNote) => [noteName, decodedNote]);
+    }
+
+    for (let noteName in notes) {
+      if (notes.hasOwnProperty(noteName)) {
+
+        // Transform base64 note value to Uint8Array
+        const noteValue = base64ToUint8(notes[noteName]);
+
+        promises.push(decodeNote(noteName, noteValue.buffer));
+      }
+    }
 
     // Wait for array of promises to resolve before continuing
     return all(promises);
