@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { arraySwap } from './array-methods';
+import { arraySwap, flatten } from './array-methods';
 
 const {
   A,
@@ -160,4 +160,25 @@ export function noteSort(a, b) {
   }
 
   return 1;
+}
+
+export function sortNotes(notes) {
+  // get octaves so that we can sort based on them
+  let sortedNotes = extractOctaves(notes);
+
+  // Each octave has tons of duplicates
+  sortedNotes = stripDuplicateOctaves(sortedNotes);
+
+  // Create array of arrays. Each inner array contains all the notes in an octave
+  sortedNotes = createOctavesWithNotes(sortedNotes);
+
+  // Sort the notes in each octave, alphabetically, flats before naturals
+  sortedNotes = octaveSort(sortedNotes);
+
+  // Determine last note of first octave, then for each octave, split at
+  // that note, then shift the beginning notes to the end
+  sortedNotes = octaveShift(sortedNotes);
+
+  // Flatten array of arrays into a flat array
+  return flatten(sortedNotes);
 }

@@ -1,15 +1,7 @@
 import Ember from 'ember';
 import request from '../utils/request';
-import { flatten } from '../utils/array-methods';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
-import {
-  Note,
-  octaveShift,
-  octaveSort,
-  extractOctaves,
-  stripDuplicateOctaves,
-  createOctavesWithNotes
-} from '../utils/note';
+import { Note } from '../utils/note';
 
 const {
   RSVP: { all },
@@ -87,27 +79,6 @@ export default Service.extend({
       .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
 
       .catch((err) => console.error('ember-audio:', err));
-  },
-
-  sortNotes(notes) {
-    // get octaves so that we can sort based on them
-    let sortedNotes = extractOctaves(notes);
-
-    // Each octave has tons of duplicates
-    sortedNotes = stripDuplicateOctaves(sortedNotes);
-
-    // Create array of arrays. Each inner array contains all the notes in an octave
-    sortedNotes = createOctavesWithNotes(sortedNotes);
-
-    // Sort the notes in each octave, alphabetically, flats before naturals
-    sortedNotes = octaveSort(sortedNotes);
-
-    // Determine last note of first octave, then for each octave, split at
-    // that note, then shift the beginning notes to the end
-    sortedNotes = octaveShift(sortedNotes);
-
-    // Flatten array of arrays into a flat array
-    return flatten(sortedNotes);
   },
 
   /**
