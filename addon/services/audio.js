@@ -167,7 +167,7 @@ export default Service.extend({
    * @return {array}      Array of arrays. Each inner array has two values,
    * [noteName, decodedAudio]
    */
-  _extractDecodedKeyValuePairs(data) {
+  _extractDecodedKeyValuePairs(notes) {
     const ctx = this.get('context');
     const promises = [];
 
@@ -179,11 +179,11 @@ export default Service.extend({
       .then((decodedNote) => [noteName, decodedNote]);
     }
 
-    for (let noteName in data) {
-      if (data.hasOwnProperty(noteName)) {
+    for (let noteName in notes) {
+      if (notes.hasOwnProperty(noteName)) {
 
         // Transform base64 note value to Uint8Array
-        const noteValue = base64ToUint8(data[noteName]);
+        const noteValue = base64ToUint8(notes[noteName]);
 
         promises.push(decodeNote(noteName, noteValue.buffer));
       }
