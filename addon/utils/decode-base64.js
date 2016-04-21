@@ -52,13 +52,13 @@ export function base64ToUint8(sBase64) {
  * @param  {string} text  A soundfont as a long base64 text string
  * @return {json}         A JSON representation of all the notes in the font
  */
-export function mungeSoundFont(text) {
-  const begin = text.indexOf('=', text.indexOf('MIDI.Soundfont.')) + 2;
-  const end = text.lastIndexOf(',');
-  const string = (text.slice(begin, end) + '}')
-    .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
-    .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
-    .replace(new RegExp('data:audio/ogg;base64,', 'g'), '');
-
-  return JSON.parse(string);
-}
+ export function mungeSoundFont(text) {
+   const begin = text.indexOf('=', text.indexOf('MIDI.Soundfont.')) + 2;
+   const end = text.lastIndexOf('"') + 1;
+   const string = (text.slice(begin, end) + '}')
+     .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
+     .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
+     .replace(new RegExp('data:audio/ogg;base64,', 'g'), '');
+     // console.log(string);
+   return JSON.parse(string);
+ }
