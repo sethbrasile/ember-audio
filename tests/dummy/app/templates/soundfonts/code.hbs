@@ -24,7 +24,8 @@
       // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
       // It is located in this app's "public" folder
       this.get('audio').loadSoundFont('piano-font', 'piano.js')
-        // The promise from loadSountFont resolves to an array of note objects
+        // The promise from loadSountFont resolves to an array of sorted
+        // note objects (sorted the way they would appear on a piano).
         .then((notes) => {
           this.set('notes', notes);
           this.set('isLoading', false);

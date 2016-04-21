@@ -59,6 +59,6 @@ export function base64ToUint8(sBase64) {
      .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
      .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
      .replace(new RegExp('data:audio/ogg;base64,', 'g'), '');
-     // console.log(string);
+
    return JSON.parse(string);
  }
