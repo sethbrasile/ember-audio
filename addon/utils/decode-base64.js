@@ -46,27 +46,19 @@ export function base64ToUint8(sBase64) {
 
 /**
  * mungeSoundFont - Strips extraneous stuff from a soundfont and splits the
- * soundfont into an array of base64 strings, each item represents a "note"
+ * soundfont into a JSON object. Keys are note names and values are base64
+ * encoded strings.
  *
  * @param  {string} text  A soundfont as a long base64 text string
- * @return {array}        Each line (note) from the soundfont
+ * @return {json}         A JSON representation of all the notes in the font
  */
 export function mungeSoundFont(text) {
-  // Strip out all the unnecessary stuff
-  const array = text
+  const begin = text.indexOf('=', text.indexOf('MIDI.Soundfont.')) + 2;
+  const end = text.lastIndexOf(',');
+  const string = (text.slice(begin, end) + '}')
     .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
     .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
-    .replace(new RegExp('data:audio/ogg;base64,', 'g'), '')
-    .replace(new RegExp(':', 'g'), '')
-    .replace(new RegExp('"', 'g'), '')
-    // sometimes sound fonts have a blank line at the top and bottom
-    .trim()
-    .split('\n')
-    .slice(3);
+    .replace(new RegExp('data:audio/ogg;base64,', 'g'), '');
 
-  // remove the trailing "}"
-  array.pop();
-
-  // Filter out empty string values
-  return array.filter(Boolean);
+  return JSON.parse(string);
 }
