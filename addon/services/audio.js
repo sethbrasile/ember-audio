@@ -25,6 +25,8 @@ export default Service.extend({
    */
   context: new AudioContext(),
 
+  nodes: new Map(),
+
   /**
   * load - Loads and decodes an audio file and sets it on this service by "name"
   *
@@ -34,8 +36,10 @@ export default Service.extend({
   * been successfully decoded. The resolved promise does not have a value.
   **/
   load(name, src) {
-    if (this.get(name)) {
-      return this._alreadyLoadedError(name);
+    const existingAudio = this.get(name);
+
+    if (existingAudio) {
+      return Ember.RSVP.resolve(existingAudio);
     }
 
     return this.get('request')(src)
@@ -118,6 +122,27 @@ export default Service.extend({
 
     node.buffer = decodedAudio;
     node.start();
+
+    this.get('nodes').set(name, node);
+  },
+
+  stop(name) {
+    const nodes = this.get('nodes');
+
+    if (!name) {
+      for (let node of nodes.values()) {
+        node.stop();
+      }
+    }
+
+    if (nodes.has(name)) {
+      nodes.get(name).stop();
+    }
+  },
+
+  seek(name, time) {
+    // something like this?
+    // this.get(name).position = time;
   },
 
   /**

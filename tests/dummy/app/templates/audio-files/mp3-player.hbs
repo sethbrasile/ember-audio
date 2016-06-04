@@ -1,0 +1,30 @@
+<div class="content">
+  <h1>MP3 Player</h1>
+
+  <ul class="track-list">
+    {{#each tracks as |track|}}
+      <li {{action 'selectTrack' track}} class="{{if (eq track selectedTrack) 'active'}} item">
+        {{track.name}}
+      </li>
+    {{/each}}
+  </ul>
+
+  {{#if selectedTrack}}
+    {{#if isPlaying}}
+      <button {{action 'stop'}}>Stop</button>
+    {{else}}
+      <button {{action 'play'}}>
+        {{#if loadingTrack}}
+          Loading...
+        {{else}}
+          Play
+        {{/if}}
+      </button>
+    {{/if}}
+    <p>
+      {{selectedTrack.description}}
+    </p>
+  {{else}}
+    Please select a track...
+  {{/if}}
+</div>
