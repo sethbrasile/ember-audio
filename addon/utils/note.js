@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import { arraySwap, flatten } from './array-methods';
+import { Sound } from './sound';
 
 const {
   A,
@@ -15,7 +16,7 @@ const {
  * get {string} identifier  examples: "Db1", "D0"
  * get {string} name        examples: "Db", "D"
  */
-export const Note = Ember.Object.extend({
+export const Note = Sound.extend({
   letter: null,
   accidental: null,
   octave: null,

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import request from '../utils/request';
+import { Sound } from '../utils/sound';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
 
@@ -8,12 +9,7 @@ const {
   Service
 } = Ember;
 
-const Sound = Ember.Object.extend({
-  node: null
-});
-
 export default Service.extend({
-
   /**
    * request - Only set on this service so that it's easier to stub without
    * having to create another service.
@@ -40,15 +36,20 @@ export default Service.extend({
   * been successfully decoded. The resolved promise does not have a value.
   **/
   load(name, src) {
-    const existingAudio = this.get(name);
+    const existingAudio = this.get('sounds').get(name);
+    const audioContext = this.get('context');
 
     if (existingAudio) {
       return Ember.RSVP.resolve(existingAudio);
     }
 
     return this.get('request')(src)
-      .then((arrayBuffer) => this.get('context').decodeAudioData(arrayBuffer))
-      .then((decodedAudio) => this.set(name, decodedAudio))
+      .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+      .then((audioBuffer) => {
+        const sound = Sound.create({ audioBuffer, audioContext });
+        this.get('sounds').set(name, sound);
+        return sound;
+      })
       .catch((err) => console.error('ember-audio:', err));
   },
 
@@ -66,11 +67,11 @@ export default Service.extend({
    * names.
    */
   loadSoundFont(instrumentName, src) {
-    if (this.get(instrumentName)) {
+    if (this.get('sounds').has(instrumentName)) {
       return this._alreadyLoadedError(instrumentName);
     }
 
-    this.set(instrumentName, Ember.Object.create());
+    this.get('sounds').set(instrumentName, new Map());
 
     return this.get('request')(src, 'text')
 
@@ -83,7 +84,8 @@ export default Service.extend({
       .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
 
       // Create a "note" Ember.Object for each note from the decoded audio data.
-      // Also does this.set(`${instrumentName}.${noteName}`, audioData);
+      // Also does this.set(`sounds.${instrumentName}.${noteName}`, note);
+      // for each note
       .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
 
       .then(sortNotes)
@@ -100,34 +102,22 @@ export default Service.extend({
    * is **required**
    */
   play(name, note) {
-    const ctx = this.get('context');
-    const panner = this.get(`${name}Panner`);
-    const node = ctx.createBufferSource();
-    let noteName;
+    const sounds = this.get('sounds');
+    const sound = sounds.get(name);
 
-    if (note) {
-      noteName = `${name}.${note}`;
+    if (!sounds.has(name)) {
+      return this._soundNotLoadedError(name);
+    }
+
+    if (!note) {
+      sound.play();
     } else {
-      noteName = name;
+      if (sound.has(note)) {
+        sound.get(note).play();
+      } else {
+        return this._soundNotLoadedError(name, note);
+      }
     }
-
-    let decodedAudio = this.get(noteName);
-
-    if (!decodedAudio) {
-      this._soundNotLoadedError(noteName);
-    }
-
-    if (panner) {
-      node.connect(panner);
-      panner.connect(ctx.destination);
-    } else {
-      node.connect(ctx.destination);
-    }
-
-    node.buffer = decodedAudio;
-    node.start();
-
-    this.get('sounds').set(name, Sound.create({ node }));
   },
 
   stop(name) {
@@ -144,10 +134,10 @@ export default Service.extend({
     }
   },
 
-  seek(name, time) {
+  // seek(name, time) {
     // something like this?
     // this.get(name).position = time;
-  },
+  // },
 
   /**
    * pan - Pans a sound left or right - must be called after the sound has been
@@ -158,14 +148,7 @@ export default Service.extend({
    * 1 (hard right)
    */
   pan(name, value) {
-    let panner = this.get(`${name}Panner`);
-
-    if (!panner) {
-      panner = this.get('context').createStereoPanner();
-    }
-
-    panner.pan.value = value;
-    this.set(`${name}Panner`, panner);
+    this.get('sounds').get(name).pan(value);
   },
 
   /**
@@ -186,8 +169,12 @@ export default Service.extend({
    * @param  {string} name  The name of the sound that has not yet been loaded.
    * @private
    */
-  _soundNotLoadedError(name) {
-    throw new Ember.Error(`ember-audio: You tried to play a sound called "${name}" but that sound has not been loaded.`);
+  _soundNotLoadedError(name, note) {
+    if (note) {
+      throw new Ember.Error(`ember-audio: You tried to play a note called "${note}" from the instrument "${name}" but that note does not exist.`);
+    } else {
+      throw new Ember.Error(`ember-audio: You tried to play a sound called "${name}" but that sound has not been loaded.`);
+    }
   },
 
   /**
@@ -237,10 +224,11 @@ export default Service.extend({
    * @return {array}                  Array of Ember.Objects
    */
   _createNoteObjects(audioData, instrumentName) {
-    // Set audio data on previously created Ember.Object called ${name}
+    const audioContext = this.get('context');
+
     return audioData.map((note) => {
       const noteName = note[0];
-      const noteBuffer = note[1];
+      const audioBuffer = note[1];
       const letter = noteName[0];
 
       let octave = noteName[2];
@@ -252,9 +240,11 @@ export default Service.extend({
         octave = noteName[1];
       }
 
-      this.set(`${instrumentName}.${noteName}`, noteBuffer);
+      note = Note.create({ letter, octave, accidental, audioBuffer, audioContext });
 
-      return Note.create({ letter, octave, accidental });
+      this.get('sounds').get(instrumentName).set(noteName, note);
+
+      return note;
     });
   }
 });
