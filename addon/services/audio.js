@@ -8,6 +8,10 @@ const {
   Service
 } = Ember;
 
+const Sound = Ember.Object.extend({
+  node: null
+});
+
 export default Service.extend({
 
   /**
@@ -25,7 +29,7 @@ export default Service.extend({
    */
   context: new AudioContext(),
 
-  nodes: new Map(),
+  sounds: new Map(),
 
   /**
   * load - Loads and decodes an audio file and sets it on this service by "name"
@@ -123,20 +127,20 @@ export default Service.extend({
     node.buffer = decodedAudio;
     node.start();
 
-    this.get('nodes').set(name, node);
+    this.get('sounds').set(name, Sound.create({ node }));
   },
 
   stop(name) {
-    const nodes = this.get('nodes');
+    const sounds = this.get('sounds');
 
     if (!name) {
-      for (let node of nodes.values()) {
-        node.stop();
+      for (let sound of sounds.values()) {
+        sound.get('node').stop();
       }
     }
 
-    if (nodes.has(name)) {
-      nodes.get(name).stop();
+    if (sounds.has(name)) {
+      sounds.get(name).get('node').stop();
     }
   },
 
@@ -177,7 +181,7 @@ export default Service.extend({
 
   /**
    * _soundNotLoadedError - Just throws an error. For when "play" tries to play
-   * a sound that has not previously been loaded.
+   * a sound that has not been loaded.
    *
    * @param  {string} name  The name of the sound that has not yet been loaded.
    * @private
