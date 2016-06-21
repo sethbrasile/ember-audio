@@ -6,6 +6,8 @@ export const Sound = Ember.Object.extend({
   panner: null,
   audioContext: null,
   audioBuffer: null,
+  startTime: 0,
+  position: 0,
   durationOutputType: false, // default
 
   duration: Ember.computed('audioBuffer.duration', function() {
@@ -46,9 +48,28 @@ export const Sound = Ember.Object.extend({
     }
 
     node.buffer = buffer;
-    node.start();
+
+    this.set('startTime', ctx.currentTime);
+
+    node.start(0, this.get('position') % buffer.duration);
 
     this.set('node', node);
+  },
+
+  pause() {
+    const ctx = this.get('audioContext');
+    const startTime = this.get('startTime');
+    const position = this.get('position');
+    const newOffset = position + (ctx.currentTime - startTime);
+
+    this.get('node').stop();
+
+    this.set('position', newOffset);
+  },
+
+  stop() {
+    this.set('position', 0);
+    this.get('node').stop();
   },
 
   pan(value) {

@@ -160,6 +160,10 @@ export default Service.extend({
     }
   },
 
+  pause(name) {
+    this.get('sounds').get(name).pause();
+  },
+
   // seek(name, time) {
     // something like this?
     // this.get(name).position = time;

@@ -57,8 +57,9 @@ export default Controller.extend({
       });
     },
 
-    stop() {
-      this.get('audio').stop();
+    pause() {
+      const trackName = this.get('selectedTrack.name');
+      this.get('audio').pause(trackName);
       this.set('isPlaying', false);
     }
   }
