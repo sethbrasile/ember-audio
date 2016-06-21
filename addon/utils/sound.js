@@ -1,10 +1,28 @@
 import Ember from 'ember';
 
 export const Sound = Ember.Object.extend({
+  name: null,
   node: null,
   panner: null,
   audioContext: null,
   audioBuffer: null,
+  durationOutputType: false, // default
+
+  duration: Ember.computed('audioBuffer.duration', function() {
+    const duration = this.get('audioBuffer.duration');
+    const outputType = this.get('durationOutputType');
+    const minutes = (duration / 60).toFixed();
+    const seconds = (duration % 60).toFixed();
+
+    switch(outputType) {
+      case 'raw':
+        return duration;
+      case 'string':
+        return `${minutes}:${seconds}`;
+      default:
+        return { minutes, seconds };
+    }
+  }),
 
   /**
    * play - play an audio file or a note from a sound font.

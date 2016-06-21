@@ -4,12 +4,31 @@ import { Sound } from '../utils/sound';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
 
+// This only exists at the moment because I'd like to use "new Map()" but
+// haven't spent the time to verify that all browsers with web audio api also
+// have Map()
+const ObjectLikeMap = Ember.Object.extend({
+  has(name) {
+    if (name) {
+      return !!this.get(name);
+    }
+
+    return false;
+  },
+
+  values() {
+    return Object.keys(this).map((key) => this.get(key));
+  }
+});
+
 const {
   RSVP: { all },
   Service
 } = Ember;
 
 export default Service.extend({
+  durationOutputType: false,
+
   /**
    * request - Only set on this service so that it's easier to stub without
    * having to create another service.
@@ -25,7 +44,7 @@ export default Service.extend({
    */
   context: new AudioContext(),
 
-  sounds: new Map(),
+  sounds: ObjectLikeMap.create(),
 
   /**
   * load - Loads and decodes an audio file and sets it on this service by "name"
@@ -46,8 +65,15 @@ export default Service.extend({
     return this.get('request')(src)
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        const sound = Sound.create({ audioBuffer, audioContext });
+        const sound = Sound.create({
+          durationOutputType: this.get('durationOutputType'),
+          audioBuffer,
+          audioContext,
+          name
+        });
+
         this.get('sounds').set(name, sound);
+
         return sound;
       })
       .catch((err) => console.error('ember-audio:', err));
@@ -71,7 +97,7 @@ export default Service.extend({
       return this._alreadyLoadedError(instrumentName);
     }
 
-    this.get('sounds').set(instrumentName, new Map());
+    this.get('sounds').set(instrumentName, ObjectLikeMap.create());
 
     return this.get('request')(src, 'text')
 

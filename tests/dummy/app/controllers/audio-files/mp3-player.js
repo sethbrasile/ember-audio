@@ -1,10 +1,18 @@
 import Ember from 'ember';
+import getDurationFor from 'ember-audio/utils/get-duration-for';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
+const {
+  inject: { service },
+  Controller
+} = Ember;
+
+export default Controller.extend({
+  audio: service(),
   selectedTrack: null,
-  loadingTrack: false,
+  trackLoading: false,
   isPlaying: false,
+
+  duration: getDurationFor('selectedTrack.name'),
 
   tracks: [
     {
@@ -13,29 +21,39 @@ export default Ember.Controller.extend({
     },
     {
       name: 'do-wah-diddy',
-      description: 'blah blah'
+      description: 'words and words'
     }
   ],
 
   actions: {
     selectTrack(track) {
+      const audio = this.get('audio');
+      const trackName = track.name;
+
+      audio.set('durationOutputType', 'string');
+      this.set('trackLoading', true);
+
+      const promise = audio.load(trackName, `${trackName}.mp3`)
+        .then((sound) => {
+          this.set('trackLoading', true);
+          return sound;
+        });
+
       this.set('selectedTrack', track);
+      this.set('selectedTrack.promise', promise);
     },
 
     play() {
       const audio = this.get('audio');
-      const track = this.get('selectedTrack.name');
+      const track = this.get('selectedTrack');
 
       if (this.get('isPlaying')) {
         this.send('stop');
       }
 
-      this.set('loadingTrack', true);
-
-      audio.load(track, `${track}.mp3`).then(() => {
-        this.set('loadingTrack', false);
+      track.promise.then(() => {
         this.set('isPlaying', true);
-        audio.play(track);
+        audio.play(track.name);
       });
     },
 
