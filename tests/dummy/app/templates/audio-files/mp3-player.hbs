@@ -7,7 +7,7 @@
         {{#each tracks as |track|}}
           <tbody>
             <tr {{action 'selectTrack' track}} class="{{if (eq track selectedTrack) 'info'}} item">
-              <td>{{track.name}}</td>
+              <td>{{undasherize track.name}}</td>
             </tr>
           </tbody>
         {{/each}}
@@ -16,7 +16,7 @@
 
     <div class="description col-sm-9">
       {{#if selectedTrack}}
-        <p>{{selectedTrack.description}}</p>
+        <p>{{{selectedTrack.description}}}</p>
       {{else}}
         <p>Select a Track...</p>
       {{/if}}
