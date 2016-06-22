@@ -27,8 +27,6 @@ const {
 } = Ember;
 
 export default Service.extend({
-  durationOutputType: false,
-
   /**
    * request - Only set on this service so that it's easier to stub without
    * having to create another service.
@@ -65,12 +63,7 @@ export default Service.extend({
     return this.get('request')(src)
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        const sound = Sound.create({
-          durationOutputType: this.get('durationOutputType'),
-          audioBuffer,
-          audioContext,
-          name
-        });
+        const sound = Sound.create({ audioBuffer, audioContext, name });
 
         this.get('sounds').set(name, sound);
 
@@ -128,18 +121,32 @@ export default Service.extend({
    * is **required**
    */
   play(name, note) {
+    this.checkForSound(name, note).and('play');
+  },
+
+  checkForSound(name, note) {
     const sounds = this.get('sounds');
     const sound = sounds.get(name);
+
+    function cb(param) {
+      return {
+        and() {
+          const args = Array.prototype.slice.call(arguments);
+          const action = args.shift();
+          return param[action](args);
+        }
+      };
+    }
 
     if (!sounds.has(name)) {
       return this._soundNotLoadedError(name);
     }
 
     if (!note) {
-      sound.play();
+      return cb(sound);
     } else {
       if (sound.has(note)) {
-        sound.get(note).play();
+        return cb(sound.get(note));
       } else {
         return this._soundNotLoadedError(name, note);
       }
@@ -161,13 +168,16 @@ export default Service.extend({
   },
 
   pause(name) {
-    this.get('sounds').get(name).pause();
+    this.checkForSound(name).and('pause');
   },
 
-  // seek(name, time) {
-    // something like this?
-    // this.get(name).position = time;
-  // },
+  seek(name, amount) {
+    return this.checkForSound(name).and('seek', amount);
+  },
+
+  getSound(name) {
+    return this.get('sounds').get(name);
+  },
 
   /**
    * pan - Pans a sound left or right - must be called after the sound has been
@@ -178,7 +188,7 @@ export default Service.extend({
    * 1 (hard right)
    */
   pan(name, value) {
-    this.get('sounds').get(name).pan(value);
+    this.getSound(name).pan(value);
   },
 
   /**

@@ -1,6 +1,5 @@
 import Ember from 'ember';
-import getDurationFor from 'ember-audio/utils/get-duration-for';
-import getPositionFor from 'ember-audio/utils/get-position-for';
+import getProp from 'ember-audio/utils/get-prop-from-sound';
 
 const {
   inject: { service },
@@ -13,8 +12,13 @@ export default Controller.extend({
   trackLoading: false,
   isPlaying: false,
 
-  duration: getDurationFor('selectedTrack.name'),
-  position: getPositionFor('selectedTrack.name'),
+  duration: getProp('duration').fromSound('selectedTrack.name'),
+  position: getProp('position').fromSound('selectedTrack.name'),
+  percentPlayed: getProp('percentPlayed')
+    .fromSound('selectedTrack.name', function(percent) {
+      return Ember.String.htmlSafe(`width: ${percent}%;`);
+    }
+  ),
 
   tracks: [
     {
@@ -28,11 +32,20 @@ export default Controller.extend({
   ],
 
   actions: {
+    seek(x) {
+      const audio = this.get('audio');
+      const trackName = this.get('selectedTrack.name');
+
+      const width = Ember.$('#audioplayer-bar').width();
+      const ratio = x / width;
+
+      audio.seek(trackName, ratio).ratio();
+    },
+
     selectTrack(track) {
       const audio = this.get('audio');
       const trackName = track.name;
 
-      audio.set('durationOutputType', 'string');
       this.set('trackLoading', true);
 
       const promise = audio.load(trackName, `${trackName}.mp3`)

@@ -9,21 +9,32 @@ export const Sound = Ember.Object.extend({
   startTime: 0,
   startOffset: 0,
   isPlaying: false,
-  durationOutputType: false, // default
 
   position: Ember.computed('startOffset', function() {
     const startOffset = this.get('startOffset');
-    const minutes = (startOffset / 60).toFixed();
-    let seconds = (startOffset % 60).toFixed();
+    let minutes = Math.floor(startOffset / 60);
+    let seconds = (startOffset - (minutes * 60)).toFixed();
 
-    if (seconds < 10) {
+    if (seconds === '60') {
+      seconds = '00';
+      minutes += 1;
+    } else if (seconds < 10) {
       seconds = `0${seconds}`;
     }
 
-    return `${minutes}:${seconds}`;
+    return {
+      raw: startOffset,
+      string: `${minutes}:${seconds}`,
+      obj: { minutes, seconds }
+    };
   }),
 
-  trackPlayhead: Ember.observer('isPlaying', function() {
+  percentPlayed: Ember.computed('duration', 'startOffset', function() {
+    const ratio = this.get('startOffset') / this.get('duration.raw');
+    return ratio * 100;
+  }),
+
+  watchPosition: Ember.observer('isPlaying', function() {
     const ctx = this.get('audioContext');
     const startOffset = this.get('startOffset');
     const startTime = this.get('startTime');
@@ -33,25 +44,30 @@ export const Sound = Ember.Object.extend({
         this.set('startOffset', startOffset + ctx.currentTime - startTime);
         requestAnimationFrame(animate);
       }
-    }
+    };
 
     requestAnimationFrame(animate);
   }),
 
   duration: Ember.computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
-    const outputType = this.get('durationOutputType');
     const minutes = (duration / 60).toFixed();
     const seconds = (duration % 60).toFixed();
 
-    switch(outputType) {
-      case 'raw':
-        return duration;
-      case 'string':
-        return `${minutes}:${seconds}`;
-      default:
-        return { minutes, seconds };
-    }
+    return {
+      raw: duration,
+      string: `${minutes}:${seconds}`,
+      obj: { minutes, seconds }
+    };
+
+    // switch(outputType) {
+    //   case 'raw':
+    //     return duration;
+    //   case 'string':
+    //     return `${minutes}:${seconds}`;
+    //   default:
+    //     return { minutes, seconds };
+    // }
   }),
 
   /**
@@ -113,5 +129,33 @@ export const Sound = Ember.Object.extend({
     panner.pan.value = value;
 
     this.set('panner', panner);
+  },
+
+  seek(amount) {
+    const duration = this.get('duration.raw');
+
+    const moveToOffset = (offset) => {
+      const isPlaying = this.get('isPlaying');
+
+      if (isPlaying) {
+        this.stop();
+        this.set('startOffset', offset);
+        this.play();
+      } else {
+        this.set('startOffset', offset);
+      }
+    };
+
+    moveToOffset(amount);
+
+    return {
+      percent() {
+        moveToOffset(amount * duration * 0.01);
+      },
+
+      ratio() {
+        moveToOffset(amount * duration);
+      }
+    };
   }
 });
