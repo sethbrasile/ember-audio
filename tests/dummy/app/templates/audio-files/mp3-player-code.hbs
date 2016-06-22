@@ -1,0 +1,107 @@
+<div class="content">
+  <h2>MP3 Player Code</h2>
+
+  {{#code-block language='handlebars'}}
+  &lt;div class="audioplayer">
+    &lt;div class="play-pause \{{if isPlaying 'playing'}}" \{{action (if isPlaying 'pause' 'play')}}>&lt;a>&lt;/a>&lt;/div>
+    &lt;div class="time current">\{{position.string}}&lt;/div>
+
+    &lt;div onclick=\{{action 'seek'}} class="bar">
+      &lt;div style="width: 100%;">&lt;/div>
+      &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
+    &lt;/div>
+
+    &lt;div class="time duration">\{{duration.string}}&lt;/div>
+
+    &lt;div class="volume" onclick=\{{action 'changeVolume'}} onclick=\{{action 'changeVolume'}}>
+      &lt;div class="volume-button">&lt;a>&lt;/a>&lt;/div>
+
+      &lt;div class="volume-adjust">
+        &lt;div>
+          &lt;div style=\{{percentGain}}>&lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+  {{/code-block}}
+
+  {{#code-block language='javascript'}}
+  import Ember from 'ember';
+  import getProp from 'ember-audio/utils/get-prop-from-sound';
+
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+    selectedTrack: null,
+    isPlaying: false,
+
+    duration: getProp('duration').fromSound('selectedTrack.name'),
+    position: getProp('position').fromSound('selectedTrack.name'),
+
+    percentPlayed: getProp('percentPlayed')
+      .fromSound('selectedTrack.name', function(percent) {
+        return Ember.String.htmlSafe(`width: ${percent}%;`);
+      }
+    ),
+
+    percentGain: getProp('percentGain')
+      .fromSound('selectedTrack.name', function(percent) {
+        return Ember.String.htmlSafe(`height: ${percent}%;`);
+      }
+    ),
+
+    // There are two mp3 files in my public folder: "barely-there.mp3" and "do-wah-diddy.mp3"
+    tracks: [
+      {
+        name: 'barely-there',
+        description: 'a description here...'
+      },
+      {
+        name: 'do-wah-diddy',
+        description: 'a description here...'
+      }
+    ],
+
+    actions: {
+      selectTrack(track) {
+        const trackName = track.name;
+        const promise = this.get('audio').load(trackName, `${trackName}.mp3`, 'track');
+
+        this.set('selectedTrack', track);
+
+        // setting "promise" here so that we can use it ensure the sound is loaded before it is played
+        this.set('selectedTrack.promise', promise);
+      },
+
+      play() {
+        const track = this.get('selectedTrack');
+
+        track.promise.then(() => {
+          this.set('isPlaying', true);
+          this.get('audio').play(track.name);
+        });
+      },
+
+      pause() {
+        const trackName = this.get('selectedTrack.name');
+        this.get('audio').pause(trackName);
+        this.set('isPlaying', false);
+      },
+
+      seek(e) {
+        const trackName = this.get('selectedTrack.name');
+        const newPosition = // a bunch of code to get the new seek position, see the code walkthrough
+
+        // seek() can handle a ratio, a percentage, or seconds.
+        this.get('audio').seek(trackName, newPosition).ratio();
+      },
+
+      changeVolume(e) {
+        const trackName = this.get('selectedTrack.name');
+        const newGain = // a bunch of code to get `gain` from the UI, see the code walkthrough
+
+        this.get('audio').getSound(trackName).changeGain(newGain);
+      }
+    }
+  });
+  {{/code-block}}
+</div>
