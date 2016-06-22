@@ -39,12 +39,12 @@ export default Controller.extend({
   ],
 
   actions: {
-    seek(x) {
+    seek(e) {
       const audio = this.get('audio');
       const trackName = this.get('selectedTrack.name');
 
-      const width = Ember.$('#audioplayer-bar').width();
-      const ratio = x / width;
+      const width = e.target.offsetParent.offsetWidth;
+      const ratio = e.offsetX / width;
 
       audio.seek(trackName, ratio).ratio();
     },

@@ -29,7 +29,7 @@
         <a>{{if isPlaying 'Pause' 'Play'}}</a>
       </div>
       <div class="audioplayer-time audioplayer-time-current">{{position.string}}</div>
-      <div onclick={{action 'seek' value='offsetX'}} class="audioplayer-bar" id="audioplayer-bar">
+      <div onclick={{action 'seek'}} class="audioplayer-bar">
         <div class="audioplayer-bar-loaded" style="width: 100%;"></div>
         <div class="audioplayer-bar-played" style={{percentPlayed}}></div>
       </div>
