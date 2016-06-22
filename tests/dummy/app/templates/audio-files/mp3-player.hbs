@@ -28,7 +28,7 @@
       <div class="audioplayer-playpause" {{action (if isPlaying 'pause' 'play')}}>
         <a>{{if isPlaying 'Pause' 'Play'}}</a>
       </div>
-      <div class="audioplayer-time audioplayer-time-current">{{selectedTrack.currentPosition}}</div>
+      <div class="audioplayer-time audioplayer-time-current">{{position}}</div>
       <div class="audioplayer-bar">
         <div class="audioplayer-bar-loaded" style="width: 100%;"></div>
         <div class="audioplayer-bar-played"></div>

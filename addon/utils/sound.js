@@ -7,8 +7,36 @@ export const Sound = Ember.Object.extend({
   audioContext: null,
   audioBuffer: null,
   startTime: 0,
-  position: 0,
+  startOffset: 0,
+  isPlaying: false,
   durationOutputType: false, // default
+
+  position: Ember.computed('startOffset', function() {
+    const startOffset = this.get('startOffset');
+    const minutes = (startOffset / 60).toFixed();
+    let seconds = (startOffset % 60).toFixed();
+
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+
+    return `${minutes}:${seconds}`;
+  }),
+
+  trackPlayhead: Ember.observer('isPlaying', function() {
+    const ctx = this.get('audioContext');
+    const startOffset = this.get('startOffset');
+    const startTime = this.get('startTime');
+
+    const animate = () => {
+      if (this.get('isPlaying')) {
+        this.set('startOffset', startOffset + ctx.currentTime - startTime);
+        requestAnimationFrame(animate);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }),
 
   duration: Ember.computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
@@ -39,37 +67,40 @@ export const Sound = Ember.Object.extend({
     const buffer = this.get('audioBuffer');
     const panner = this.get('panner');
     const node = ctx.createBufferSource();
-
-    if (panner) {
-      node.connect(panner);
-      panner.connect(ctx.destination);
-    } else {
-      node.connect(ctx.destination);
-    }
+    const analyser = ctx.createAnalyser();
+    let lastConnection;
 
     node.buffer = buffer;
 
+    node.connect(analyser);
+
+    if (panner) {
+      analyser.connect(panner);
+      lastConnection = panner;
+    } else {
+      lastConnection = analyser;
+    }
+
+    lastConnection.connect(ctx.destination);
+
     this.set('startTime', ctx.currentTime);
 
-    node.start(0, this.get('position') % buffer.duration);
+    node.start(0, this.get('startOffset') % buffer.duration);
 
+    this.set('analyser', analyser);
     this.set('node', node);
+    this.set('isPlaying', true);
   },
 
   pause() {
-    const ctx = this.get('audioContext');
-    const startTime = this.get('startTime');
-    const position = this.get('position');
-    const newOffset = position + (ctx.currentTime - startTime);
-
     this.get('node').stop();
-
-    this.set('position', newOffset);
+    this.set('isPlaying', false);
   },
 
   stop() {
-    this.set('position', 0);
+    this.set('startOffset', 0);
     this.get('node').stop();
+    this.set('isPlaying', false);
   },
 
   pan(value) {

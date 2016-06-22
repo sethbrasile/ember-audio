@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import getDurationFor from 'ember-audio/utils/get-duration-for';
+import getPositionFor from 'ember-audio/utils/get-position-for';
 
 const {
   inject: { service },
@@ -13,6 +14,7 @@ export default Controller.extend({
   isPlaying: false,
 
   duration: getDurationFor('selectedTrack.name'),
+  position: getPositionFor('selectedTrack.name'),
 
   tracks: [
     {
