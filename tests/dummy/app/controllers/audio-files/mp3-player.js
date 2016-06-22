@@ -69,7 +69,7 @@ export default Controller.extend({
 
       this.set('trackLoading', true);
 
-      const promise = audio.load(trackName, `${trackName}.mp3`)
+      const promise = audio.load(trackName, `${trackName}.mp3`, 'track')
         .then((sound) => {
           this.set('trackLoading', true);
           return sound;

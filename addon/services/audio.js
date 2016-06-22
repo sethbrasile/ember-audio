@@ -53,7 +53,7 @@ export default Service.extend({
   * @return {promise}       a promise that resolves when the sound file has
   * been successfully decoded. The resolved promise does not have a value.
   **/
-  load(name, src) {
+  load(name, src, type='sound') {
     const existingAudio = this.get('sounds').get(name);
     const audioContext = this.get('context');
 
@@ -64,7 +64,13 @@ export default Service.extend({
     return this.get('request')(src)
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        const sound = Track.create({ audioBuffer, audioContext, name });
+        let sound;
+
+        if (type === 'sound') {
+          sound = Sound.create({ audioBuffer, audioContext, name })
+        } else if (type === 'track') {
+          sound = Track.create({ audioBuffer, audioContext, name })
+        }
 
         this.get('sounds').set(name, sound);
 

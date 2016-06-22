@@ -9,6 +9,7 @@ const Sound = Ember.Object.extend({
   startTime: 0,
   startOffset: 0,
   isPlaying: false,
+  simultaneousPlayAllowed: true,
 
   pannerNode: null,
   gainNode: null,
@@ -72,25 +73,21 @@ const Sound = Ember.Object.extend({
 
     this.set('startTime', ctx.currentTime);
 
-    node.start(0, this.get('startOffset') % buffer.duration);
-
-    node.onended = () => this.stop();
+    if (this.get('simultaneousPlayAllowed')) {
+      node.start();
+    } else {
+      node.start(0, this.get('startOffset') % buffer.duration);
+    }
 
     this.set('node', node);
     this.set('isPlaying', true);
   },
 
-  pause() {
-    this.get('node').onended = function() {};
-    this.get('node').stop();
-    this.set('isPlaying', false);
-  },
-
   stop() {
-    this.get('node').onended = function() {};
-    this.set('startOffset', 0);
-    this.get('node').stop();
-    this.set('isPlaying', false);
+    if (this.get('node')) {
+      this.get('node').stop();
+      this.set('isPlaying', false);
+    }
   },
 
   pan(value) {
