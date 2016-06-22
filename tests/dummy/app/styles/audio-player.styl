@@ -17,7 +17,7 @@
 .audioplayer > div
   position: absolute
 
-.audioplayer-playpause
+.play-pause
   border-right: 1px solid #555
   border-right-color: rgba( 255, 255, 255, .1 )
   width: 2.5em
@@ -29,7 +29,7 @@
   top: 0
   left: 0
 
-.audioplayer:not(.audioplayer-playing) .audioplayer-playpause a
+.play-pause:not(.playing) a
   width: 0
   height: 0
   border: 0.5em solid transparent
@@ -41,7 +41,7 @@
   left: 50%
   margin: -0.5em 0 0 -0.25em
 
-.audioplayer-playing .audioplayer-playpause a
+.play-pause.playing a
   width: 0.75em
   height: 0.75em
   position: absolute
@@ -49,8 +49,8 @@
   left: 50%
   margin: -0.375em 0 0 -0.375em
 
-.audioplayer-playing .audioplayer-playpause a:before,
-.audioplayer-playing .audioplayer-playpause a:after
+.play-pause.playing a:before,
+.play-pause.playing a:after
   width: 40%
   height: 100%
   background-color: #fff
@@ -58,13 +58,13 @@
   position: absolute
   top: 0
 
-.audioplayer-playing .audioplayer-playpause a:before
+.play-pause.playing a:before
   left: 0
 
-.audioplayer-playing .audioplayer-playpause a:after
+.play-pause.playing a:after
   right: 0
 
-.audioplayer-time
+.time
   width: 4.375em
   height: 100%
   line-height: 2.375em
@@ -72,21 +72,21 @@
   z-index: 2
   top: 0
 
-.audioplayer-time-current
+.time-current
   border-left: 1px solid #111
   border-left-color: rgba( 0, 0, 0, .25 )
   left: 2.5em
 
-.audioplayer-time-duration
+.duration
   border-right: 1px solid #555
   border-right-color: rgba( 255, 255, 255, .1 )
   right: 2.5em
 
-.audioplayer-novolume .audioplayer-time-duration
+.audioplayer-novolume .duration
   border-right: 0
   right: 0
 
-.audioplayer-bar
+.bar
   height: 0.875em
   background-color: #337ab7
   cursor: pointer
@@ -96,25 +96,25 @@
   left: 6.875em
   margin-top: -0.438em
 
-.audioplayer-novolume .audioplayer-bar
+.audioplayer-novolume .bar
   right: 4.375em
 
-.audioplayer-bar div
+.bar div
   width: 0
   height: 100%
   position: absolute
   left: 0
   top: 0
 
-.audioplayer-bar-loaded
+.bar-loaded
   background-color: #337ab7
   z-index: 1
 
-.audioplayer-bar-played
+.played
   background: #d9edf7
   z-index: 2
 
-.audioplayer-volume
+.volume
   width: 2.5em
   height: 100%
   border-left: 1px solid #111
@@ -126,15 +126,15 @@
   top: 0
   right: 0
 
-.audioplayer-volume:hover,
-.audioplayer-volume:focus
+.volume:hover,
+.volume:focus
   background-color: #337ab7
 
-.audioplayer-volume-button
+.volume-button
   width: 100%
   height: 100%
 
-.audioplayer-volume-button a
+.volume-button a
   width: 0.313em
   height: 0.45em
   background-color: #fff
@@ -144,12 +144,12 @@
   top: 40%
   left: 35%
 
-.audioplayer-volume-button a:before,
-.audioplayer-volume-button a:after
+.volume-button a:before,
+.volume-button a:after
   content: ''
   position: absolute
 
-.audioplayer-volume-button a:before
+.volume-button a:before
   width: 0
   height: 0
   border: 0.5em solid transparent
@@ -160,7 +160,7 @@
   right: -0.25em
   margin-top: -0.5em
 
-.audioplayer-volume-adjust
+.volume-adjust
   height: 6.25em
   cursor: default
   position: absolute
@@ -171,14 +171,14 @@
   border-top-left-radius: 2px
   border-top-right-radius: 2px
 
-.audioplayer-volume:not(:hover) .audioplayer-volume-adjust
+.volume:not(:hover) .volume-adjust
   opacity: 0
 
-.audioplayer-volume:hover .audioplayer-volume-adjust
+.volume:hover .volume-adjust
   top: auto
   bottom: 100%
 
-.audioplayer-volume-adjust > div
+.volume-adjust > div
   width: 40%
   height: 80%
   background-color: #337ab7
@@ -187,7 +187,7 @@
   z-index: 1
   margin: 30% auto 0
 
-.audioplayer-volume-adjust div div
+.volume-adjust div div
   width: 100%
   height: 100%
   position: absolute
@@ -195,16 +195,16 @@
   left: 0
   background-color: #d9edf7
 
-.audioplayer-novolume .audioplayer-volume
+.audioplayer-novolume .volume
   display: none
 
-.audioplayer-bar,
-.audioplayer-bar div,
-.audioplayer-volume-adjust div
+.bar,
+.bar div,
+.volume-adjust div
   border-radius: 4px
 
-.audioplayer-bar,
-.audioplayer-volume-adjust > div
+.bar,
+.volume-adjust > div
   box-shadow: -1px -1px 0 rgba( 0, 0, 0, .5 ), 1px 1px 0 rgba( 255, 255, 255, .1 )
 
 .audioplayer *,
