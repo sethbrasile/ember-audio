@@ -14,9 +14,16 @@ export default Controller.extend({
 
   duration: getProp('duration').fromSound('selectedTrack.name'),
   position: getProp('position').fromSound('selectedTrack.name'),
+
   percentPlayed: getProp('percentPlayed')
     .fromSound('selectedTrack.name', function(percent) {
       return Ember.String.htmlSafe(`width: ${percent}%;`);
+    }
+  ),
+
+  percentGain: getProp('percentGain')
+    .fromSound('selectedTrack.name', function(percent) {
+      return Ember.String.htmlSafe(`height: ${percent}%;`);
     }
   ),
 
@@ -40,6 +47,20 @@ export default Controller.extend({
       const ratio = x / width;
 
       audio.seek(trackName, ratio).ratio();
+    },
+
+    changeVolume(e) {
+      const audio = this.get('audio');
+      const trackName = this.get('selectedTrack.name');
+
+      const height = e.target.offsetParent.offsetHeight;
+      const offset = e.pageY - Ember.$(e.target).parent().offset().top;
+      const adjustedHeight = height * 0.8;
+      const adjustedOffset = offset - ((height - adjustedHeight) / 2);
+
+      let ratio = (adjustedOffset / adjustedHeight);
+
+      audio.getSound(trackName).changeGain((ratio * -1) + 1);
     },
 
     selectTrack(track) {
