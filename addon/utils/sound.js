@@ -113,16 +113,20 @@ export const Sound = Ember.Object.extend({
 
     node.start(0, this.get('startOffset') % buffer.duration);
 
+    node.onended = () => this.stop();
+
     this.set('node', node);
     this.set('isPlaying', true);
   },
 
   pause() {
+    this.get('node').onended = function() {};
     this.get('node').stop();
     this.set('isPlaying', false);
   },
 
   stop() {
+    this.get('node').onended = function() {};
     this.set('startOffset', 0);
     this.get('node').stop();
     this.set('isPlaying', false);
