@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import request from '../utils/request';
-import { Sound } from '../utils/sound';
+import Sound from '../utils/sound';
+import Track from '../utils/track';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
 
@@ -63,7 +64,7 @@ export default Service.extend({
     return this.get('request')(src)
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        const sound = Sound.create({ audioBuffer, audioContext, name });
+        const sound = Track.create({ audioBuffer, audioContext, name });
 
         this.get('sounds').set(name, sound);
 

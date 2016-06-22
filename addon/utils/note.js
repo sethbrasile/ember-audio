@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { arraySwap, flatten } from './array-methods';
-import { Sound } from './sound';
+import Sound from './sound';
 
 const {
   A,
