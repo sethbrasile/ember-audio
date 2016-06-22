@@ -10,6 +10,19 @@ export const Sound = Ember.Object.extend({
   startOffset: 0,
   isPlaying: false,
 
+  pannerNode: null,
+  gainNode: null,
+  analyzerNode: null,
+  analyzePreGain: false,
+
+  _initNodes: Ember.on('init', function() {
+    const ctx = this.get('audioContext');
+
+    this.set('pannerNode', ctx.createStereoPanner());
+    this.set('gainNode', ctx.createGain());
+    this.set('analyzerNode', ctx.createAnalyser());
+  }),
+
   position: Ember.computed('startOffset', function() {
     const startOffset = this.get('startOffset');
     let minutes = Math.floor(startOffset / 60);
@@ -32,6 +45,10 @@ export const Sound = Ember.Object.extend({
   percentPlayed: Ember.computed('duration', 'startOffset', function() {
     const ratio = this.get('startOffset') / this.get('duration.raw');
     return ratio * 100;
+  }),
+
+  percentGain: Ember.computed('gainNode.gain.value', function() {
+    return this.get('gainNode.gain.value') * 100;
   }),
 
   watchPosition: Ember.observer('isPlaying', function() {
@@ -59,15 +76,6 @@ export const Sound = Ember.Object.extend({
       string: `${minutes}:${seconds}`,
       obj: { minutes, seconds }
     };
-
-    // switch(outputType) {
-    //   case 'raw':
-    //     return duration;
-    //   case 'string':
-    //     return `${minutes}:${seconds}`;
-    //   default:
-    //     return { minutes, seconds };
-    // }
   }),
 
   /**
@@ -80,30 +88,31 @@ export const Sound = Ember.Object.extend({
    */
   play() {
     const ctx = this.get('audioContext');
+
+    const panner = this.get('pannerNode');
+    const gainNode = this.get('gainNode');
+    const analyzer = this.get('analyzerNode');
+
     const buffer = this.get('audioBuffer');
-    const panner = this.get('panner');
     const node = ctx.createBufferSource();
-    const analyser = ctx.createAnalyser();
-    let lastConnection;
 
     node.buffer = buffer;
 
-    node.connect(analyser);
+    node.connect(panner);
+    panner.connect(gainNode);
 
-    if (panner) {
-      analyser.connect(panner);
-      lastConnection = panner;
+    if (this.get('analyzePreGain')) {
+      analyzer.connect(gainNode);
+      gainNode.connect(ctx.destination);
     } else {
-      lastConnection = analyser;
+      gainNode.connect(analyzer);
+      analyzer.connect(ctx.destination);
     }
-
-    lastConnection.connect(ctx.destination);
 
     this.set('startTime', ctx.currentTime);
 
     node.start(0, this.get('startOffset') % buffer.duration);
 
-    this.set('analyser', analyser);
     this.set('node', node);
     this.set('isPlaying', true);
   },
@@ -120,15 +129,21 @@ export const Sound = Ember.Object.extend({
   },
 
   pan(value) {
-    let panner = this.get('panner');
+    this.get('pannerNode').pan.value = value;
+  },
 
-    if (!panner) {
-      panner = this.get('audioContext').createStereoPanner();
+  changeGain(value) {
+    const gainNode = this.get('gainNode');
+
+    if (value > 1) {
+      value = 1;
+    } else if (value < 0) {
+      value = 0;
     }
 
-    panner.pan.value = value;
+    gainNode.gain.value = value;
 
-    this.set('panner', panner);
+    this.notifyPropertyChange('percentGain')
   },
 
   seek(amount) {
