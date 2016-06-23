@@ -55,11 +55,11 @@ export default Service.extend({
   **/
 
   load(name, src, type='sound') {
-    const existingAudio = this.getSound(name);
     const audioContext = this.get('context');
+    const sounds = this.get('sounds');
 
-    if (existingAudio) {
-      return Ember.RSVP.resolve(existingAudio);
+    if (sounds.has(name)) {
+      return Ember.RSVP.resolve(sounds.get(name));
     }
 
     return this.get('request')(src)
@@ -73,7 +73,7 @@ export default Service.extend({
           sound = Track.create({ audioBuffer, audioContext, name })
         }
 
-        this.get('sounds').set(name, sound);
+        sounds.set(name, sound);
 
         return sound;
       })
@@ -94,11 +94,17 @@ export default Service.extend({
    * names.
    */
   loadSoundFont(instrumentName, src) {
-    if (this.get('sounds').has(instrumentName)) {
-      return this._alreadyLoadedError(instrumentName);
+    const sounds = this.get('sounds');
+
+    if (sounds.has(instrumentName)) {
+      const err = new Ember.Error(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to "null" with "this.get('audio.sounds').set('${instrumentName}', null);".`);
+
+      Ember.Logger.error(err);
+
+      return Ember.RSVP.resolve(sounds.get(instrumentName));
     }
 
-    this.get('sounds').set(instrumentName, ObjectLikeMap.create());
+    sounds.set(instrumentName, ObjectLikeMap.create());
 
     return this.get('request')(src, 'text')
 
@@ -120,109 +126,8 @@ export default Service.extend({
       .catch((err) => console.error('ember-audio:', err));
   },
 
-  /**
-   * play - play an audio file or a note from a sound font.
-   *
-   * @param  {string}   name The name of the audio file or sound font you wish to play
-   * @param  {string}   note The name of the note you wish to play if "name"
-   * refers to a sound font. If "name" refers to a sound font, this parameter
-   * is **required**
-   */
-  play(name, note) {
-    this.checkForSound(name, note).and('play');
-  },
-
-  checkForSound(name, note) {
-    const sounds = this.get('sounds');
-    const sound = sounds.get(name);
-
-    function cb(param) {
-      return {
-        and() {
-          const args = Array.prototype.slice.call(arguments);
-          const action = args.shift();
-          return param[action](args);
-        }
-      };
-    }
-
-    if (!sounds.has(name)) {
-      return this._soundNotLoadedError(name);
-    }
-
-    if (!note) {
-      return cb(sound);
-    } else {
-      if (sound.has(note)) {
-        return cb(sound.get(note));
-      } else {
-        return this._soundNotLoadedError(name, note);
-      }
-    }
-  },
-
-  stop(name) {
-    const sounds = this.get('sounds');
-
-    if (!name) {
-      for (let sound of sounds.values()) {
-        sound.get('node').stop();
-      }
-    }
-
-    if (sounds.has(name)) {
-      sounds.get(name).get('node').stop();
-    }
-  },
-
-  pause(name) {
-    this.checkForSound(name).and('pause');
-  },
-
-  seek(name, amount) {
-    return this.checkForSound(name).and('seek', amount);
-  },
-
   getSound(name) {
     return this.get('sounds').get(name);
-  },
-
-  /**
-   * pan - Pans a sound left or right - must be called after the sound has been
-   * loaded
-   *
-   * @param  {type} name  The name of the sound you would like to pan
-   * @param  {int} value  The direction and amount between -1 (hard left) and
-   * 1 (hard right)
-   */
-  pan(name, value) {
-    this.getSound(name).pan(value);
-  },
-
-  /**
-   * _alreadyLoadedError - Just throws an error. For when a sound's name is
-   * accidentally used a 2nd time without being unloaded first
-   *
-   * @param  {string} name  The name of the sound that has already been loaded
-   * @private
-   */
-  _alreadyLoadedError(name) {
-    throw new Ember.Error(`ember-audio: You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
-  },
-
-  /**
-   * _soundNotLoadedError - Just throws an error. For when "play" tries to play
-   * a sound that has not been loaded.
-   *
-   * @param  {string} name  The name of the sound that has not yet been loaded.
-   * @private
-   */
-  _soundNotLoadedError(name, note) {
-    if (note) {
-      throw new Ember.Error(`ember-audio: You tried to play a note called "${note}" from the instrument "${name}" but that note does not exist.`);
-    } else {
-      throw new Ember.Error(`ember-audio: You tried to play a sound called "${name}" but that sound has not been loaded.`);
-    }
   },
 
   /**
