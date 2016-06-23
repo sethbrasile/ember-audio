@@ -53,9 +53,9 @@ export default Controller.extend({
       const trackName = this.get('selectedTrack.name');
 
       const width = e.target.offsetParent.offsetWidth;
-      const ratio = e.offsetX / width;
+      const newPosition = e.offsetX / width;
 
-      audio.seek(trackName, ratio).ratio();
+      audio.getSound(trackName).seek(newPosition).from('ratio');
     },
 
     changeVolume(e) {
@@ -84,8 +84,8 @@ export default Controller.extend({
           return sound;
         });
 
+      track.promise = promise;
       this.set('selectedTrack', track);
-      this.set('selectedTrack.promise', promise);
     },
 
     play() {

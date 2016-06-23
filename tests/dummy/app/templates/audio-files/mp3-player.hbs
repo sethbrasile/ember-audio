@@ -28,17 +28,17 @@
       <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
       <div class="time current">{{position.string}}</div>
 
-      <div onclick={{action 'seek'}} class="bar">
+      <div class="bar" onclick={{action 'seek'}}>
         <div style="width: 100%;"></div>
         <div class="played" style={{percentPlayed}}></div>
       </div>
 
       <div class="time duration">{{duration.string}}</div>
 
-      <div class="volume" onclick={{action 'changeVolume'}} onclick={{action 'changeVolume'}}>
-        <div class="volume-button"><a></a></div>
+      <div class="volume" onclick={{action 'changeVolume'}}>
+        <div class="button"><a></a></div>
 
-        <div class="volume-adjust">
+        <div class="adjust">
           <div>
             <div style={{percentGain}}></div>
           </div>

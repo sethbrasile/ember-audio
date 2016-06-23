@@ -123,15 +123,15 @@ const Sound = Ember.Object.extend({
       }
     };
 
-    moveToOffset(amount);
-
     return {
-      percent() {
-        moveToOffset(amount * duration * 0.01);
-      },
-
-      ratio() {
-        moveToOffset(amount * duration);
+      from(type) {
+        if (type === 'ratio') {
+          moveToOffset(amount * duration);
+        } else if (type === 'percent') {
+          moveToOffset(amount * duration * 0.01);
+        } else if (type === 'seconds') {
+          moveToOffset(amount);
+        }
       }
     };
   }

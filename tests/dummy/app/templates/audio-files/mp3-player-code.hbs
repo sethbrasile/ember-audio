@@ -2,26 +2,19 @@
   <h2>MP3 Player Code</h2>
 
   {{#code-block language='handlebars'}}
-  &lt;div class="audioplayer">
-    &lt;div class="play-pause \{{if isPlaying 'playing'}}" \{{action (if isPlaying 'pause' 'play')}}>&lt;a>&lt;/a>&lt;/div>
-    &lt;div class="time current">\{{position.string}}&lt;/div>
+  \{{!-- purely aesthetic stuff has been removed, see dummy app in repo if you're interested --}}
 
-    &lt;div onclick=\{{action 'seek'}} class="bar">
-      &lt;div style="width: 100%;">&lt;/div>
-      &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
-    &lt;/div>
+  &lt;div class="play-pause \{{if isPlaying 'playing'}}" \{{action (if isPlaying 'pause' 'play')}}>&lt;/div>
+  &lt;div class="time current">\{{position.string}}&lt;/div>
 
-    &lt;div class="time duration">\{{duration.string}}&lt;/div>
+  &lt;div class="bar" onclick=\{{action 'seek'}}>
+    &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
+  &lt;/div>
 
-    &lt;div class="volume" onclick=\{{action 'changeVolume'}} onclick=\{{action 'changeVolume'}}>
-      &lt;div class="volume-button">&lt;a>&lt;/a>&lt;/div>
+  &lt;div class="time duration">\{{duration.string}}&lt;/div>
 
-      &lt;div class="volume-adjust">
-        &lt;div>
-          &lt;div style=\{{percentGain}}>&lt;/div>
-        &lt;/div>
-      &lt;/div>
-    &lt;/div>
+  &lt;div class="volume" onclick=\{{action 'changeVolume'}}>
+    &lt;div style=\{{percentGain}}>&lt;/div>
   &lt;/div>
   {{/code-block}}
 
@@ -33,21 +26,6 @@
     audio: Ember.inject.service(),
     selectedTrack: null,
     isPlaying: false,
-
-    duration: getProp('duration').fromSound('selectedTrack.name'),
-    position: getProp('position').fromSound('selectedTrack.name'),
-
-    percentPlayed: getProp('percentPlayed')
-      .fromSound('selectedTrack.name', function(percent) {
-        return Ember.String.htmlSafe(`width: ${percent}%;`);
-      }
-    ),
-
-    percentGain: getProp('percentGain')
-      .fromSound('selectedTrack.name', function(percent) {
-        return Ember.String.htmlSafe(`height: ${percent}%;`);
-      }
-    ),
 
     // There are two mp3 files in my public folder: "barely-there.mp3" and "do-wah-diddy.mp3"
     tracks: [
@@ -61,15 +39,28 @@
       }
     ],
 
+    // getProp() is a computed property macro that lets you get a property
+    // directly from a "Sound" (more info in code walkthrough)
+    duration: getProp('duration').fromSound('selectedTrack.name'),
+    position: getProp('position').fromSound('selectedTrack.name'),
+
+    // the fromSound() part accepts an optional callback
+    percentPlayed: getProp('percentPlayed').fromSound('selectedTrack.name', function(percentPlayed) {
+      return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
+    }),
+
+    percentGain: getProp('percentGain').fromSound('selectedTrack.name', function(percentGain) {
+      return Ember.String.htmlSafe(`height: ${percentGain}%;`);
+    }),
+
     actions: {
       selectTrack(track) {
-        const trackName = track.name;
+        // Passing 'track' as the third param because we want a "Track" instance, not a "Sound"
         const promise = this.get('audio').load(trackName, `${trackName}.mp3`, 'track');
 
+        // We will use the returned promise to ensure the sound is loaded before it is played
+        track.promise = promise;
         this.set('selectedTrack', track);
-
-        // setting "promise" here so that we can use it ensure the sound is loaded before it is played
-        this.set('selectedTrack.promise', promise);
       },
 
       play() {
@@ -92,7 +83,7 @@
         const newPosition = // a bunch of code to get the new seek position, see the code walkthrough
 
         // seek() can handle a ratio, a percentage, or seconds.
-        this.get('audio').seek(trackName, newPosition).ratio();
+        this.get('audio').getSound(trackName).seek(newPosition).from('ratio');
       },
 
       changeVolume(e) {
