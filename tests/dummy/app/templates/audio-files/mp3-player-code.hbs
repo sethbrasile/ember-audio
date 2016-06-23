@@ -20,7 +20,7 @@
 
   {{#code-block language='javascript'}}
   import Ember from 'ember';
-  import getProp from 'ember-audio/utils/get-prop-from-sound';
+  import getProp from 'ember-audio/utils/get-prop';
 
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
@@ -31,51 +31,52 @@
     tracks: [
       {
         name: 'barely-there',
+        promise: null,
         description: 'a description here...'
       },
       {
         name: 'do-wah-diddy',
+        promise: null,
         description: 'a description here...'
       }
     ],
 
     // getProp() is a computed property macro that lets you get a property
     // directly from a "Sound" (more info in code walkthrough)
-    duration: getProp('duration').fromSound('selectedTrack.name'),
-    position: getProp('position').fromSound('selectedTrack.name'),
+    duration: getProp('duration').fromTrack('selectedTrack.name'),
+    position: getProp('position').fromTrack('selectedTrack.name'),
 
-    // the fromSound() part accepts an optional callback
-    percentPlayed: getProp('percentPlayed').fromSound('selectedTrack.name', function(percentPlayed) {
+    // the fromTrack() part accepts an optional callback
+    percentPlayed: getProp('percentPlayed').fromTrack('selectedTrack.name', function(percentPlayed) {
       return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
     }),
 
-    percentGain: getProp('percentGain').fromSound('selectedTrack.name', function(percentGain) {
+    percentGain: getProp('percentGain').fromTrack('selectedTrack.name', function(percentGain) {
       return Ember.String.htmlSafe(`height: ${percentGain}%;`);
     }),
 
     actions: {
       selectTrack(track) {
-        // Passing 'track' as the third param because we want a "Track" instance, not a "Sound"
-        const promise = this.get('audio').load(trackName, `${trackName}.mp3`, 'track');
+        const audio = this.get('audio');
 
         // We will use the returned promise to ensure the sound is loaded before it is played
-        track.promise = promise;
+        track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
+
         this.set('selectedTrack', track);
       },
 
       play() {
-        const track = this.get('selectedTrack');
-
-        track.promise.then(() => {
+        this.get('selectedTrack.promise').then((track) => {
           this.set('isPlaying', true);
-          this.get('audio').play(track.name);
+          track.play();
         });
       },
 
       pause() {
-        const trackName = this.get('selectedTrack.name');
-        this.get('audio').pause(trackName);
-        this.set('isPlaying', false);
+        this.get('selectedTrack.promise').then((track) => {
+          this.set('isPlaying', false);
+          track.pause();
+        });
       },
 
       seek(e) {
@@ -83,14 +84,14 @@
         const newPosition = // a bunch of code to get the new seek position, see the code walkthrough
 
         // seek() can handle a ratio, a percentage, or seconds.
-        this.get('audio').getSound(trackName).seek(newPosition).from('ratio');
+        this.get('audio').getTrack(trackName).seek(newPosition).from('ratio');
       },
 
       changeVolume(e) {
         const trackName = this.get('selectedTrack.name');
         const newGain = // a bunch of code to get `gain` from the UI, see the code walkthrough
 
-        this.get('audio').getSound(trackName).changeGain(newGain);
+        this.get('audio').getTrack(trackName).changeGain(newGain);
       }
     }
   });

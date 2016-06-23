@@ -40,14 +40,6 @@ const Sound = Ember.Object.extend({
     this.set('analyzerNode', ctx.createAnalyser());
   }),
 
-  /**
-   * play - play an audio file or a note from a sound font.
-   *
-   * @param  {string}   name The name of the audio file or sound font you wish to play
-   * @param  {string}   note The name of the note you wish to play if "name"
-   * refers to a sound font. If "name" refers to a sound font, this parameter
-   * is **required**
-   */
   play() {
     const ctx = this.get('audioContext');
 
@@ -105,7 +97,7 @@ const Sound = Ember.Object.extend({
 
     gainNode.gain.value = value;
 
-    this.notifyPropertyChange('percentGain')
+    this.notifyPropertyChange('percentGain');
   },
 
   seek(amount) {

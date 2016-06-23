@@ -44,22 +44,37 @@ export default Service.extend({
   context: new AudioContext(),
 
   sounds: ObjectLikeMap.create(),
+  fonts: ObjectLikeMap.create(),
+  tracks: ObjectLikeMap.create(),
 
-  /**
-  * load - Loads and decodes an audio file and sets it on this service by "name"
-  *
-  * @param {string}   name  The name that you will use to refer to the sound
-  * @param {string}   src   url (relative or fully qualified) to the audio file
-  * @return {promise}       a promise that resolves when the sound file has
-  * been successfully decoded. The resolved promise does not have a value.
-  **/
+  load(src) {
+    const _this = this;
 
-  load(name, src, type='sound') {
+    return {
+      asSound(name) {
+        return _this._load(name, src, 'sound');
+      },
+      asTrack(name) {
+        return _this._load(name, src, 'track');
+      },
+      asFont(name) {
+        return _this._loadFont(name, src, 'sound');
+      }
+    };
+  },
+
+  _load(name, src, type) {
     const audioContext = this.get('context');
-    const sounds = this.get('sounds');
+    let register;
 
-    if (sounds.has(name)) {
-      return Ember.RSVP.resolve(sounds.get(name));
+    if (type === 'sound') {
+      register = this.get('sounds');
+    } else if (type === 'track') {
+      register = this.get('tracks');
+    }
+
+    if (register.has(name)) {
+      return Ember.RSVP.resolve(register.get(name));
     }
 
     return this.get('request')(src)
@@ -68,12 +83,12 @@ export default Service.extend({
         let sound;
 
         if (type === 'sound') {
-          sound = Sound.create({ audioBuffer, audioContext, name })
+          sound = Sound.create({ audioBuffer, audioContext, name });
         } else if (type === 'track') {
-          sound = Track.create({ audioBuffer, audioContext, name })
+          sound = Track.create({ audioBuffer, audioContext, name });
         }
 
-        sounds.set(name, sound);
+        register.set(name, sound);
 
         return sound;
       })
@@ -81,7 +96,7 @@ export default Service.extend({
   },
 
   /**
-   * loadSoundFont - creates an Ember.Object called ${instrumentName} then
+   * loadfont - creates an Ember.Object called ${instrumentName} then
    * loads a soundfont.js file and decodes all the notes, placing each note on
    * "this.get(instrumentName)" like this.set(`${instrumentName}.${noteName}`)
    * and returns a promise that resolves to an array of properly sorted note
@@ -93,18 +108,18 @@ export default Service.extend({
    * been successfully decoded. The promise resolves to an array of sorted note
    * names.
    */
-  loadSoundFont(instrumentName, src) {
-    const sounds = this.get('sounds');
+  _loadFont(instrumentName, src) {
+    const fonts = this.get('fonts');
 
-    if (sounds.has(instrumentName)) {
+    if (fonts.has(instrumentName)) {
       const err = new Ember.Error(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to "null" with "this.get('audio.sounds').set('${instrumentName}', null);".`);
 
       Ember.Logger.error(err);
 
-      return Ember.RSVP.resolve(sounds.get(instrumentName));
+      return Ember.RSVP.resolve(fonts.get(instrumentName));
     }
 
-    sounds.set(instrumentName, ObjectLikeMap.create());
+    fonts.set(instrumentName, ObjectLikeMap.create());
 
     return this.get('request')(src, 'text')
 
@@ -130,8 +145,12 @@ export default Service.extend({
     return this.get('sounds').get(name);
   },
 
+  getTrack(name) {
+    return this.get('tracks').get(name);
+  },
+
   getFont(name) {
-    const font = this.get('sounds').get(name);
+    const font = this.get('fonts').get(name);
 
     return {
       play(note) {
@@ -141,22 +160,18 @@ export default Service.extend({
           throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
         }
       }
-    }
+    };
   },
 
-  stopAll() {
-    for (let sound of this.get('sounds').values()) {
-      if ('function' === typeof sound.stop) {
-        sound.stop();
-      }
+  stopAll(type='tracks') {
+    for (let sound of this.get(type).values()) {
+      sound.stop();
     }
   },
 
   pauseAll() {
-    for (let sound of this.get('sounds').values()) {
-      if ('function' === typeof sound.pause) {
-        sound.pause();
-      }
+    for (let sound of this.get('tracks').values()) {
+      sound.pause();
     }
   },
 
@@ -225,7 +240,7 @@ export default Service.extend({
 
       note = Note.create({ letter, octave, accidental, audioBuffer, audioContext });
 
-      this.get('sounds').get(instrumentName).set(noteName, note);
+      this.get('fonts').get(instrumentName).set(noteName, note);
 
       return note;
     });

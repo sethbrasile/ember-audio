@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import getProp from 'ember-audio/utils/get-prop-from-sound';
+import getProp from 'ember-audio/utils/get-prop';
 
 const {
   inject: { service },
@@ -11,18 +11,18 @@ export default Controller.extend({
   selectedTrack: null,
   isPlaying: false,
 
-  duration: getProp('duration').fromSound('selectedTrack.name'),
-  position: getProp('position').fromSound('selectedTrack.name'),
+  duration: getProp('duration').fromTrack('selectedTrack.name'),
+  position: getProp('position').fromTrack('selectedTrack.name'),
 
   percentPlayed: getProp('percentPlayed')
-    .fromSound('selectedTrack.name', function(percent) {
-      return Ember.String.htmlSafe(`width: ${percent}%;`);
+    .fromTrack('selectedTrack.name', function(percentPlayed) {
+      return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
     }
   ),
 
   percentGain: getProp('percentGain')
-    .fromSound('selectedTrack.name', function(percent) {
-      return Ember.String.htmlSafe(`height: ${percent}%;`);
+    .fromTrack('selectedTrack.name', function(percentGain) {
+      return Ember.String.htmlSafe(`height: ${percentGain}%;`);
     }
   ),
 
@@ -54,7 +54,7 @@ export default Controller.extend({
       const width = e.target.offsetParent.offsetWidth;
       const newPosition = e.offsetX / width;
 
-      audio.getSound(trackName).seek(newPosition).from('ratio');
+      audio.getTrack(trackName).seek(newPosition).from('ratio');
     },
 
     changeVolume(e) {
@@ -65,10 +65,9 @@ export default Controller.extend({
       const offset = e.pageY - Ember.$(e.target).parent().offset().top;
       const adjustedHeight = height * 0.8;
       const adjustedOffset = offset - ((height - adjustedHeight) / 2);
+      const ratio = adjustedOffset / adjustedHeight;
 
-      let ratio = (adjustedOffset / adjustedHeight);
-
-      audio.getSound(trackName).changeGain((ratio * -1) + 1);
+      audio.getTrack(trackName).changeGain((ratio * -1) + 1);
     },
 
     selectTrack(track) {
@@ -78,28 +77,23 @@ export default Controller.extend({
       audio.pauseAll();
       this.set('isPlaying', false);
 
-      const promise = audio.load(trackName, `${trackName}.mp3`, 'track')
-        .then((sound) => {
-          return sound;
-        });
+      track.promise = audio.load(`${trackName}.mp3`).asTrack(trackName);
 
-      track.promise = promise;
       this.set('selectedTrack', track);
     },
 
     play() {
-      const audio = this.get('audio');
-      const track = this.get('selectedTrack');
-
-      track.promise.then(() => {
+      this.get('selectedTrack.promise').then((track) => {
         this.set('isPlaying', true);
-        audio.getSound(track.name).play();
+        track.play();
       });
     },
 
     pause() {
-      this.get('audio').getSound(this.get('selectedTrack.name')).pause();
-      this.set('isPlaying', false);
+      this.get('selectedTrack.promise').then((track) => {
+        this.set('isPlaying', false);
+        track.pause();
+      });
     }
   }
 });
