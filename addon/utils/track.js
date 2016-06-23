@@ -4,11 +4,6 @@ import Sound from './sound';
 const Track = Sound.extend({
   simultaneousPlayAllowed: false,
 
-  play() {
-    this._super();
-    this.get('node').onended = () => this.stop();
-  },
-
   position: Ember.computed('startOffset', function() {
     const startOffset = this.get('startOffset');
     let minutes = Math.floor(startOffset / 60);
@@ -48,16 +43,26 @@ const Track = Sound.extend({
     requestAnimationFrame(animate);
   }),
 
+  play() {
+    this._super();
+    this.get('node').onended = () => this.stop();
+  },
+
   pause() {
-    this.get('node').onended = function() {};
-    this.get('node').stop();
-    this.set('isPlaying', false);
+    if (this.get('isPlaying')) {
+      this.get('node').onended = function() {};
+      this.get('node').stop();
+      this.set('isPlaying', false);
+    }
   },
 
   stop() {
-    this.get('node').onended = function() {};
     this.set('startOffset', 0);
-    this._super();
+
+    if (this.get('isPlaying')) {
+      this.get('node').onended = function() {};
+      this._super();
+    }
   },
 });
 

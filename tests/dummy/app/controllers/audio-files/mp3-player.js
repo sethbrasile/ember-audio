@@ -9,7 +9,6 @@ const {
 export default Controller.extend({
   audio: service(),
   selectedTrack: null,
-  trackLoading: false,
   isPlaying: false,
 
   duration: getProp('duration').fromSound('selectedTrack.name'),
@@ -76,11 +75,11 @@ export default Controller.extend({
       const audio = this.get('audio');
       const trackName = track.name;
 
-      this.set('trackLoading', true);
+      audio.pauseAll();
+      this.set('isPlaying', false);
 
       const promise = audio.load(trackName, `${trackName}.mp3`, 'track')
         .then((sound) => {
-          this.set('trackLoading', true);
           return sound;
         });
 
@@ -92,19 +91,14 @@ export default Controller.extend({
       const audio = this.get('audio');
       const track = this.get('selectedTrack');
 
-      if (this.get('isPlaying')) {
-        this.send('stop');
-      }
-
       track.promise.then(() => {
         this.set('isPlaying', true);
-        audio.play(track.name);
+        audio.getSound(track.name).play();
       });
     },
 
     pause() {
-      const trackName = this.get('selectedTrack.name');
-      this.get('audio').pause(trackName);
+      this.get('audio').getSound(this.get('selectedTrack.name')).pause();
       this.set('isPlaying', false);
     }
   }

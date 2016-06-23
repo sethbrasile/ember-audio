@@ -22,17 +22,17 @@ export default Ember.Controller.extend({
 
   actions: {
     playSingleNoteLeft() {
-      this.get('audio').play('note-left');
+      this.get('audio').getSound('note-left').play();
     },
 
     playSingleNoteRight() {
-      this.get('audio').play('note-right');
+      this.get('audio').getSound('note-right').play();
     },
 
     playBothNotes() {
       const audio = this.get('audio');
-      audio.play('note-left');
-      audio.play('note-right');
+      audio.getSound('note-left').play();
+      audio.getSound('note-right').play();
     }
   }
 });

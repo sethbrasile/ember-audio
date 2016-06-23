@@ -130,6 +130,18 @@ export default Service.extend({
     return this.get('sounds').get(name);
   },
 
+  stopAll() {
+    for (let sound of this.get('sounds').values()) {
+      sound.stop();
+    }
+  },
+
+  pauseAll() {
+    for (let sound of this.get('sounds').values()) {
+      sound.pause();
+    }
+  },
+
   /**
    * _extractDecodedKeyValuePairs - Takes an array of base64 encoded strings
    * (notes) and returns an array of arrays like [[name, audio], [name, audio]]
