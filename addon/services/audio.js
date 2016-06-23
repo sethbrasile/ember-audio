@@ -130,15 +130,33 @@ export default Service.extend({
     return this.get('sounds').get(name);
   },
 
+  getFont(name) {
+    const font = this.get('sounds').get(name);
+
+    return {
+      play(note) {
+        if (font.has(note)) {
+          font.get(note).play();
+        } else {
+          throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
+        }
+      }
+    }
+  },
+
   stopAll() {
     for (let sound of this.get('sounds').values()) {
-      sound.stop();
+      if ('function' === typeof sound.stop) {
+        sound.stop();
+      }
     }
   },
 
   pauseAll() {
     for (let sound of this.get('sounds').values()) {
-      sound.pause();
+      if ('function' === typeof sound.pause) {
+        sound.pause();
+      }
     }
   },
 

@@ -11,6 +11,7 @@ export default Ember.Controller.extend({
       // The promise from loadSountFont resolves to an array of sorted
       // note objects (sorted the way they would appear on a piano).
       .then((notes) => {
+        // Slicing here, just so the whole keyboard doesn't show up on the screen
         this.set('notes', notes.slice(39, 51));
         this.set('isLoading', false);
       });
@@ -18,7 +19,7 @@ export default Ember.Controller.extend({
 
   actions: {
     playNoteFromSoundFont(note) {
-      this.get('audio').play('piano-font', note);
+      this.get('audio').getFont('piano-font').play(note);
     }
   }
 });

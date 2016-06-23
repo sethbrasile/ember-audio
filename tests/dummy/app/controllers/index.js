@@ -9,7 +9,7 @@ export default Ember.Controller.extend({
 
   actions: {
     playSound() {
-      this.get('audio').play('piano-note');
+      this.get('audio').getSound('piano-note').play();
     }
   }
 });
