@@ -4,23 +4,7 @@ import Sound from '../utils/sound';
 import Track from '../utils/track';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
-
-// This only exists at the moment because I'd like to use "new Map()" but
-// haven't spent the time to verify that all browsers with web audio api also
-// have Map()
-const ObjectLikeMap = Ember.Object.extend({
-  has(name) {
-    if (name) {
-      return !!this.get(name);
-    }
-
-    return false;
-  },
-
-  values() {
-    return Object.keys(this).map((key) => this.get(key));
-  }
-});
+import ObjectLikeMap from '../utils/object-like-map';
 
 const {
   RSVP: { all },
