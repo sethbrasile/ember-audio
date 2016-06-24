@@ -120,6 +120,12 @@ const Sound = Ember.Object.extend({
     const moveToOffset = (offset) => {
       const isPlaying = this.get('isPlaying');
 
+      if (offset > duration) {
+        offset = duration;
+      } else if (offset < 0) {
+        offset = 0;
+      }
+
       if (isPlaying) {
         this.stop();
         this.set('startOffset', offset);
@@ -135,6 +141,8 @@ const Sound = Ember.Object.extend({
           moveToOffset(amount * duration);
         } else if (type === 'percent') {
           moveToOffset(amount * duration * 0.01);
+        } else if (type === 'inverseRatio') {
+          moveToOffset(duration - (amount * duration));
         } else if (type === 'seconds') {
           moveToOffset(amount);
         }
