@@ -98,6 +98,8 @@ const Sound = Ember.Object.extend({
     gainNode.gain.value = value;
 
     this.notifyPropertyChange('percentGain');
+
+    // return .from('ratio') = (value * -1) + 1
   },
 
   seek(amount) {

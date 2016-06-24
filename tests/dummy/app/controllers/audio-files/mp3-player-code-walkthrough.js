@@ -1,30 +1,10 @@
 import Ember from 'ember';
 import getProp from 'ember-audio/utils/get-prop';
 
-const {
-  inject: { service },
-  Controller
-} = Ember;
-
-export default Controller.extend({
-  audio: service(),
+export default Ember.Controller.extend({
+  audio: Ember.inject.service(),
   selectedTrack: null,
   isPlaying: false,
-
-  duration: getProp('duration').fromTrack('selectedTrack.name'),
-  position: getProp('position').fromTrack('selectedTrack.name'),
-
-  percentPlayed: getProp('percentPlayed')
-    .fromTrack('selectedTrack.name', function(percentPlayed) {
-      return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
-    }
-  ),
-
-  percentGain: getProp('percentGain')
-    .fromTrack('selectedTrack.name', function(percentGain) {
-      return Ember.String.htmlSafe(`height: ${percentGain}%;`);
-    }
-  ),
 
   tracks: [
     {
@@ -46,7 +26,54 @@ export default Controller.extend({
     }
   ],
 
+  duration: getProp('duration').fromTrack('selectedTrack.name'),
+  position: getProp('position').fromTrack('selectedTrack.name'),
+
+  percentPlayed: getProp('percentPlayed')
+    .fromTrack('selectedTrack.name', function(percentPlayed) {
+      return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
+    }
+  ),
+
+  percentGain: getProp('percentGain')
+    .fromTrack('selectedTrack.name', function(percentGain) {
+      return Ember.String.htmlSafe(`height: ${percentGain}%;`);
+    }
+  ),
+
   actions: {
+    selectTrack(track) {
+      const audio = this.get('audio');
+
+      this.set('isPlaying', false);
+      audio.pauseAll();
+
+      track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
+      this.set('selectedTrack', track);
+    },
+
+    fakePlay() {
+      this.set('isPlaying', true);
+    },
+
+    fakePause() {
+      this.set('isPlaying', false);
+    },
+
+    play() {
+      this.get('selectedTrack.promise').then((track) => {
+        this.set('isPlaying', true);
+        track.play();
+      });
+    },
+
+    pause() {
+      this.get('selectedTrack.promise').then((track) => {
+        this.set('isPlaying', false);
+        track.pause();
+      });
+    },
+
     seek(e) {
       const audio = this.get('audio');
       const trackName = this.get('selectedTrack.name');
@@ -68,30 +95,6 @@ export default Controller.extend({
       const newGain = adjustedOffset / adjustedHeight;
 
       audio.getTrack(trackName).changeGain(newGain).from('ratio');
-    },
-
-    selectTrack(track) {
-      const audio = this.get('audio');
-
-      this.set('isPlaying', false);
-      audio.pauseAll();
-
-      track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
-      this.set('selectedTrack', track);
-    },
-
-    play() {
-      this.get('selectedTrack.promise').then((track) => {
-        this.set('isPlaying', true);
-        track.play();
-      });
-    },
-
-    pause() {
-      this.get('selectedTrack.promise').then((track) => {
-        this.set('isPlaying', false);
-        track.pause();
-      });
     }
   }
 });

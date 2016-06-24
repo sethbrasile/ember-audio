@@ -1,1 +1,689 @@
-{{outlet}}
+<div class="content">
+  <h2>MP3 Player Walkthrough</h2>
+
+  <div class="content">
+    <p>
+      I'm going to do this "tutorial" style, since I don't know your level of
+      experience. If you're pretty well-versed in Ember, you may want to skip
+      down.
+    </p>
+    <p>
+      Before we get into the code, throw a couple audio files in your public
+      folder, or decide on a couple audio files from somewhere on the world wide
+      interweb. I'm going to use a couple tracks that I've got stashed in my
+      project's <code>public</code> folder:
+
+      <ul>
+        <li><code>barely-there.mp3</code></li>
+        <li><code>do-wah-diddy.mp3</code></li>
+      </ul>
+    </p>
+  </div>
+
+  <div class="content">
+    <p>
+      We need a way to select a track, so let's add the track info as an array
+      to our controller, a property called <code>selectedTrack</code> that
+      starts as <code>null</code>, and an action that sets
+      <code>selectedTrack</code> to the passed-in track:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  selectedTrack: null,
+
+  tracks: [
+    {
+      name: 'barely-there',
+      description: `description...`
+    },
+    {
+      name: 'do-wah-diddy',
+      description: `description...`
+    }
+  ],
+
+  actions: {
+    selectTrack(track) {
+      this.set('selectedTrack', track);
+    }
+  }
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      And we'll add some master-detail type markup to our template to display
+      a list of tracks.
+    </p>
+
+    <p class="note">
+      I'm going to add a couple presentational helpers to the template here,
+      (<code>undasherize</code> and <code>eq</code>) but you don't have to worry
+      about that.
+    </p>
+  </div>
+
+  {{#code-block language='handlebars'}}
+  &lt;div class="track-list well clearfix">
+    &lt;div class="col-sm-3">
+      &lt;table class="table table-bordered">
+        \{{#each tracks as |track|}}
+          &lt;tbody>
+            &lt;tr \{{action 'selectTrack' track}} class="item \{{if (eq track selectedTrack) 'info'}}">
+              &lt;td>\{{undasherize track.name}}&lt;/td>
+            &lt;/tr>
+          &lt;/tbody>
+        \{{/each}}
+      &lt;/table>
+    &lt;/div>
+
+    &lt;div class="description col-sm-9">
+      \{{#if selectedTrack}}
+        &lt;p>\{{{selectedTrack.description}}}&lt;/p>
+      \{{else}}
+        &lt;p>Select a Track...&lt;/p>
+      \{{/if}}
+    &lt;/div>
+  &lt;/div>
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      This is what we have so far:
+    </p>
+
+    <div class="track-list well clearfix">
+      <div class="col-sm-3">
+        <table class="table table-bordered">
+          {{#each tracks as |track|}}
+            <tbody>
+              <tr {{action 'selectTrack' track}} class="item {{if (eq track selectedTrack) 'info'}}">
+                <td>{{undasherize track.name}}</td>
+              </tr>
+            </tbody>
+          {{/each}}
+        </table>
+      </div>
+
+      <div class="description col-sm-9">
+        {{#if selectedTrack}}
+          <p>{{{selectedTrack.description}}}</p>
+        {{else}}
+          <p>Select a Track...</p>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <p>
+      Now we need the markup for the controls. I stole this from
+      <a href="http://tympanus.net/Development/AudioPlayer/">here</a>
+      and cleaned it up and tweaked it around a little bit.
+    </p>
+  </div>
+
+  {{#code-block language='handlebars'}}
+  \{{#if selectedTrack}}
+    &lt;div class="audioplayer">&lt;/div>
+      &lt;div class="play-pause \{{if isPlaying 'playing'}}" \{{action (if isPlaying 'pause' 'play')}}>&lt;a>&lt;/a>&lt;/div>
+      &lt;div class="time current">&lt;/div>
+
+      &lt;div class="bar">
+        &lt;div style="width: 100%;">&lt;/div>
+        &lt;div class="played" style="width: 50%;">&lt;/div>
+      &lt;/div>
+
+      &lt;div class="time duration">&lt;/div>
+
+      &lt;div class="volume">
+        &lt;div class="button">&lt;a>&lt;/a>&lt;/div>
+
+        &lt;div class="adjust">
+          &lt;div>
+            &lt;div style="height: 50%;">>&lt;/div>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  \{{/if}}
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      Now let's add the <code>isPlaying</code> boolean, and the play/pause
+      actions to our controller:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  selectedTrack: null,
+  isPlaying: false,
+
+  tracks: [
+    {
+      name: 'barely-there',
+      description: `description...`
+    },
+    {
+      name: 'do-wah-diddy',
+      description: `description...`
+    }
+  ],
+
+  actions: {
+    selectTrack(track) {
+      this.set('selectedTrack', track);
+    },
+
+    play() {
+      this.set('isPlaying', true);
+    },
+
+    pause() {
+      this.set('isPlaying', false);
+    }
+  }
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      And now we have this:
+    </p>
+
+    <div class="track-list well clearfix">
+      <div class="col-sm-3">
+        <table class="table table-bordered">
+          {{#each tracks as |track|}}
+            <tbody>
+              <tr {{action 'selectTrack' track}} class="item {{if (eq track selectedTrack) 'info'}}">
+                <td>{{undasherize track.name}}</td>
+              </tr>
+            </tbody>
+          {{/each}}
+        </table>
+      </div>
+
+      <div class="description col-sm-9">
+        {{#if selectedTrack}}
+          <p>{{{selectedTrack.description}}}</p>
+        {{else}}
+          <p>Select a Track...</p>
+        {{/if}}
+      </div>
+    </div>
+
+    {{#if selectedTrack}}
+      <div class="audioplayer">
+        <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'fakePause' 'fakePlay')}}><a></a></div>
+        <div class="time current"></div>
+
+        <div class="bar">
+          <div style="width: 100%;"></div>
+          <div class="played" style="width: 50%;"></div>
+        </div>
+
+        <div class="time duration"></div>
+
+        <div class="volume">
+          <div class="button"><a></a></div>
+
+          <div class="adjust">
+            <div>
+              <div style="height: 50%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+
+  <div class="content">
+    <p>
+      Here comes the fun part! It's time to use ember-audio to load up some
+      MP3s and play them! We're going to inject the <code>audio</code> service
+      into our controller:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  audio: Ember.inject.service(),
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      Then we use the <code>audio</code> service to load up a track in our
+      <code>selectTrack</code> action:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  selectTrack(track) {
+    const audio = this.get('audio');
+
+    this.set('isPlaying', false);
+
+    track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
+
+    this.set('selectedTrack', track);
+  }
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      <ul>
+        <li>
+          <code>track</code> is nothing special, it's just one of the objects
+          from the <code>tracks</code> array on our controller.
+        </li>
+        <li><code>audio.load()</code> accepts a path to an audio file.</li>
+        <li>
+          <code>.asTrack()</code> specifies that we want to create a
+          <code>Track</code> object instance and it accepts a name that we can
+          use to refer to the <code>Track</code> in the future. You can read
+          about the difference between a <code>Track</code>, a
+          <code>Sound</code>, and a <code>Font</code> in the API reference.
+        </li>
+        <li>
+          Loading up a sound always returns a promise that resolves when the
+          sound is finished loading, so we're setting the returned promise on
+          <code>track</code> so we can use it to make sure that the track is
+          finished loading before it is played.
+        </li>
+      </ul>
+    </p>
+  </div>
+
+  <div class="content">
+    <p>
+      Let's play a track! Inside of our <code>play</code> action, we're
+      going to get <code>selectedTrack</code>, use it's promise's resolved
+      value to access the <code>Track</code> instance that we created, and call
+      it's <code>play</code> method:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  play() {
+    this.get('selectedTrack.promise').then((track) => {
+      this.set('isPlaying', true);
+      track.play();
+    });
+  }
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      We can also use the <code>audio</code> service's
+      <code>getTrack</code> method to find the instance.
+    </p>
+
+    <p>
+      For <code>play</code>, we always want to use the promise returned from
+      <code>load</code> to get the instance, since we never want a user to
+      <code>play</code> before the track is loaded. But in this case, we know
+      that the track is loaded if <code>pause</code> is called, so we can do it
+      like this:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  pause() {
+    const trackName = this.get('selectedTrack.name');
+    this.set('isPlaying', false);
+    this.get('audio').getTrack(trackName).pause();
+  }
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      And now we have:
+    </p>
+
+    <div class="track-list well clearfix">
+      <div class="col-sm-3">
+        <table class="table table-bordered">
+          {{#each tracks as |track|}}
+            <tbody>
+              <tr {{action 'selectTrack' track}} class="item {{if (eq track selectedTrack) 'info'}}">
+                <td>{{undasherize track.name}}</td>
+              </tr>
+            </tbody>
+          {{/each}}
+        </table>
+      </div>
+
+      <div class="description col-sm-9">
+        {{#if selectedTrack}}
+          <p>{{{selectedTrack.description}}}</p>
+        {{else}}
+          <p>Select a Track...</p>
+        {{/if}}
+      </div>
+    </div>
+
+    {{#if selectedTrack}}
+      <div class="audioplayer">
+        <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
+        <div class="time current"></div>
+
+        <div class="bar">
+          <div style="width: 100%;"></div>
+          <div class="played" style="width: 50%;"></div>
+        </div>
+
+        <div class="time duration"></div>
+
+        <div class="volume">
+          <div class="button"><a></a></div>
+
+          <div class="adjust">
+            <div>
+              <div style="height: 50%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+
+  <div class="content">
+    <p>
+      All we have left is to hook up the UI controls and indicators.
+    </p>
+
+    <p>
+      A <code>Track</code> instance has some computed properties that are going
+      to come in handy here. Namely, <code>duration</code>,
+      <code>percentPlayed</code> and <code>percentGain</code>.
+    </p>
+
+    <p>
+      We <i>could</i> get to them in our controller like:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  duration: Ember.computed.reads('audio.tracks.barely-there.duration')
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      But that's not very convenient for us since in our case, the
+      <code>name</code> is dynamic:
+      <code>'audio.tracks.${dynamicPortion}.duration'</code>
+    </p>
+
+    <p>
+      To handle this case, ember-audio comes with a "computed property macro"
+      called <code>getProp</code>, which we will use to dynamically get
+      <code>duration</code> from the <code>Track</code> instance that
+      <code>selectedTrack</code> represents. At the top of our controller file,
+      we will import <code>getProp</code> with
+      <code>import getProp from 'ember-audio/utils/get-prop';</code>, then use
+      it like:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  duration: getProp('duration').fromTrack('selectedTrack.name'),
+  position: getProp('position').fromTrack('selectedTrack.name'),
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      The <code>fromTrack</code> method will accept the name of the track
+      directly (ie: <code>barely-there</code>) OR the local path to the name of
+      the track. In this case, <code>selectedTrack.name</code>.
+    </p>
+
+    <p>
+      We also need to get <code>percentPlayed</code> and
+      <code>percentGain</code>, but we want to customize the way that their data
+      is formatted so that we can bind directly to a couple <code>style</code>
+      attributes, like: <code>style=\{{percentPlayed}}</code>.
+    </p>
+
+    <p>
+      Luckily, <code>fromTrack</code> accepts an optional callback that will
+      allow us to do this. In our controller, we add:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  percentPlayed: getProp('percentPlayed').fromTrack('selectedTrack.name', function(percentPlayed) {
+    return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
+  }),
+
+  percentGain: getProp('percentGain').fromTrack('selectedTrack.name', function(percentGain) {
+    return Ember.String.htmlSafe(`height: ${percentGain}%;`);
+  }),
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      Lets add <code>duration</code>, <code>position</code>,
+      <code>percentPlayed</code> and <code>percentGain</code> to our template:
+    </p>
+
+    <p class="note">
+      (<code>position</code> and <code>duration</code> output multiple formats
+      as an object, so we're using the <code>string</code> variant)
+    </p>
+  </div>
+
+  {{#code-block language='handlebars'}}
+  &lt;div class="audioplayer">&lt;/div>
+    &lt;div class="play-pause \{{if isPlaying 'playing'}}" \{{action (if isPlaying 'pause' 'play')}}>&lt;a>&lt;/a>&lt;/div>
+    &lt;div class="time current">\{{position.string}}&lt;/div>
+
+    &lt;div class="bar">
+      &lt;div style="width: 100%;">&lt;/div>
+      &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
+    &lt;/div>
+
+    &lt;div class="time duration">\{{duration.string}}&lt;/div>
+
+    &lt;div class="volume">
+      &lt;div class="button">&lt;a>&lt;/a>&lt;/div>
+
+      &lt;div class="adjust">
+        &lt;div>
+          &lt;div style=\{{percentGain}}>>&lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      We're almost done! The last step is hooking up the volume and seek
+      controls to actions. There is going to be a lot of math, but don't worry
+      too much about understanding that part. We're basically just calculating
+      the height of a few elements to determine the ratio of the total available
+      volume vs applied volume, and width of a few elements to calculate the
+      ratio of the total available duration vs seek position.
+    </p>
+
+    <p>
+      There are better/easier ways to get these values (such as with form
+      controls) but I decided to get fancy with the styling early on, so this is
+      what happened :D
+    </p>
+
+    <p>
+      Let's add the last couple actions:
+    </p>
+  </div>
+
+  {{#code-block language='handlebars'}}
+  &lt;div class="audioplayer">&lt;/div>
+    &lt;div class="play-pause \{{if isPlaying 'playing'}}" \{{action (if isPlaying 'pause' 'play')}}>&lt;a>&lt;/a>&lt;/div>
+    &lt;div class="time current">\{{position.string}}&lt;/div>
+
+    &lt;div class="bar" onclick=\{{action 'seek'}}>
+      \{{!-- Action here ^ --}}
+      &lt;div style="width: 100%;">&lt;/div>
+      &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
+    &lt;/div>
+
+    &lt;div class="time duration">\{{duration.string}}&lt;/div>
+
+    &lt;div class="volume" onclick=\{{action 'changeVolume'}}>
+      \{{!-- Action here ^ --}}
+      &lt;div class="button">&lt;a>&lt;/a>&lt;/div>
+
+      &lt;div class="adjust">
+        &lt;div>
+          &lt;div style=\{{percentGain}}>>&lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  &lt;/div>
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      We're using the <code>onclick</code> action on a couple <code>div</code>s
+      to to trigger the actions. <code>onclick</code> actions provide us with a
+      javascript native <code>MouseEvent</code> object that we can use to
+      calculate these ratios.
+    </p>
+
+    <p>
+      A track's <code>seek</code> method allows us to provide a value, and the
+      <code>from</code> method allows us to tell <code>seek</code> what type
+      of value we are providing. In this instance, we are providing a ratio,
+      but <code>from</code> will also accept <code>'percent'</code> or
+      <code>'seconds'</code>.
+    </p>
+
+    <p>
+      <code>changeGain</code> works exactly the same way, but without the
+      <code>'seconds'</code> option.
+    </p>
+
+    <p class="note">
+      Please bear in mind that the math here will probably not apply to you, and
+      is only provided for illustrative purposes.
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  // "e" is a MouseEvent object
+  seek(e) {
+    const audio = this.get('audio');
+    const trackName = this.get('selectedTrack.name');
+
+    // get the width of the seek bar
+    const width = e.target.offsetParent.offsetWidth;
+
+    // divide the x coordinate of the click by the width of the seek bar
+    const newPosition = e.offsetX / width;
+
+    // get the track by it's name and seek it to the new position
+    audio.getTrack(trackName).seek(newPosition).from('ratio');
+  },
+
+  changeVolume(e) {
+    const audio = this.get('audio');
+    const trackName = this.get('selectedTrack.name');
+
+    // get the height of the volume bar
+    const height = e.target.offsetParent.offsetHeight;
+
+    // adjust it to compensate for the CSS telling the volume bar to take up 80% of it's container
+    const adjustedHeight = height * 0.8;
+
+    // get the y coordinate of the click
+    const offset = e.pageY - Ember.$(e.target).parent().offset().top;
+    const adjustedOffset = offset - ((height - adjustedHeight) / 2);
+
+    // divide the click position by the height of the volume bar
+    const newGain = adjustedOffset / adjustedHeight;
+
+    // get the track by it's name and change the gain to the new value
+    audio.getTrack(trackName).changeGain(newGain).from('ratio');
+  }
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      One teeeeeny tiny last touch: Right now, when a user starts playing a
+      track, then switches to another and plays it, both tracks play at the same
+      time. In this case, this behavior seems inappropriate.
+    </p>
+
+    <p>
+      Let's use the <code>audio</code> service's <code>pauseAll</code> method
+      to pause any other track that's playing when a new song is selected:
+    </p>
+  </div>
+
+  {{#code-block language='javascript'}}
+  selectTrack(track) {
+    this.set('isPlaying', false);
+
+    audio.pauseAll();
+
+    track.promise = this.get('audio').load(`${track.name}.mp3`).asTrack(track.name);
+
+    this.set('selectedTrack', track);
+  }
+  {{/code-block}}
+
+  <div class="content">
+    <p>
+      And there we have it! A fully functional MP3 player!
+    </p>
+  </div>
+
+  <div class="content">
+    <div class="track-list well clearfix">
+      <div class="col-sm-3">
+        <table class="table table-bordered">
+          {{#each tracks as |track|}}
+            <tbody>
+              <tr {{action 'selectTrack' track}} class="{{if (eq track selectedTrack) 'info'}} item">
+                <td>{{undasherize track.name}}</td>
+              </tr>
+            </tbody>
+          {{/each}}
+        </table>
+      </div>
+
+      <div class="description col-sm-9">
+        {{#if selectedTrack}}
+          <p>{{{selectedTrack.description}}}</p>
+        {{else}}
+          <p>Select a Track...</p>
+        {{/if}}
+      </div>
+    </div>
+
+    {{#if selectedTrack}}
+      <div class="audioplayer">
+        <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
+        <div class="time current">{{position.string}}</div>
+
+        <div class="bar" onclick={{action 'seek'}}>
+          <div style="width: 100%;"></div>
+          <div class="played" style={{percentPlayed}}></div>
+        </div>
+
+        <div class="time duration">{{duration.string}}</div>
+
+        <div class="volume" onclick={{action 'changeVolume'}}>
+          <div class="button"><a></a></div>
+
+          <div class="adjust">
+            <div>
+              <div style={{percentGain}}></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</div>

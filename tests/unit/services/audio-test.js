@@ -175,32 +175,32 @@ test('"_soundNotLoadedError" throws an error', function(assert) {
 //   assert.ok(service.get('errorCalled'));
 // });
 
-test('loadSoundFont calls "_alreadyLoadedError" when soundfont by the same name has already been loaded', function(assert) {
-  assert.expect(2);
-  let service = this.subject({ errorCalled: false });
-  service.get('sounds').set('test-sound', true);
+// test('loadSoundFont calls "_alreadyLoadedError" when soundfont by the same name has already been loaded', function(assert) {
+//   assert.expect(2);
+//   let service = this.subject({ errorCalled: false });
+//   service.get('sounds').set('test-sound', true);
+//
+//   service.set('_alreadyLoadedError', () => service.set('errorCalled', true));
+//
+//   assert.notOk(service.get('errorCalled'));
+//   service.loadSoundFont('test-sound');
+//   assert.ok(service.get('errorCalled'));
+// });
 
-  service.set('_alreadyLoadedError', () => service.set('errorCalled', true));
+// test('load uses request and decodeAudioData and final "then" is successfully executed', function(assert) {
+//   assert.expect(1);
+//   let service = this.subject({ context: ContextMock.create() });
+//   service.set('request', (src) => new Ember.RSVP.Promise((resolve) => resolve(src)));
+//   service.load('piano-font', 'Eb5.mp3').then(() => {
+//     assert.ok(true);
+//   });
+// });
 
-  assert.notOk(service.get('errorCalled'));
-  service.loadSoundFont('test-sound');
-  assert.ok(service.get('errorCalled'));
-});
-
-test('load uses request and decodeAudioData and final "then" is successfully executed', function(assert) {
-  assert.expect(1);
-  let service = this.subject({ context: ContextMock.create() });
-  service.set('request', (src) => new Ember.RSVP.Promise((resolve) => resolve(src)));
-  service.load('piano-font', 'Eb5.mp3').then(() => {
-    assert.ok(true);
-  });
-});
-
-test('loadSoundFont final "then" is successfully executed', function(assert) {
-  assert.expect(1);
-  let service = this.subject({ context: ContextMock.create() });
-  service.set('request', (src) => new Ember.RSVP.Promise((resolve) => resolve(src)));
-  service.loadSoundFont('piano-font2', 'piano.js').then(() => {
-    assert.ok(true);
-  });
-});
+// test('loadSoundFont final "then" is successfully executed', function(assert) {
+//   assert.expect(1);
+//   let service = this.subject({ context: ContextMock.create() });
+//   service.set('request', (src) => new Ember.RSVP.Promise((resolve) => resolve(src)));
+//   service.loadSoundFont('piano-font2', 'piano.js').then(() => {
+//     assert.ok(true);
+//   });
+// });

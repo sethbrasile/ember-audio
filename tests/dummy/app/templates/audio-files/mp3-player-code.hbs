@@ -44,7 +44,6 @@
     // getProp() is a computed property macro that lets you get a property
     // directly from a Track (more info in code walkthrough)
     duration: getProp('duration').fromTrack('selectedTrack.name'),
-    position: getProp('position').fromTrack('selectedTrack.name'),
 
     // the fromTrack() part accepts an optional callback
     percentPlayed: getProp('percentPlayed').fromTrack('selectedTrack.name', function(percentPlayed) {
