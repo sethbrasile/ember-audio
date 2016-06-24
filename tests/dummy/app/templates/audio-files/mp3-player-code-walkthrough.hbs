@@ -353,7 +353,7 @@
         <table class="table table-bordered">
           {{#each tracks as |track|}}
             <tbody>
-              <tr {{action 'selectTrack' track}} class="item {{if (eq track selectedTrack) 'info'}}">
+              <tr {{action 'fakeSelectTrack' track}} class="item {{if (eq track selectedTrack) 'info'}}">
                 <td>{{undasherize track.name}}</td>
               </tr>
             </tbody>
@@ -569,15 +569,17 @@
 
     <p>
       <code>changeGain</code> works exactly the same way, but without the
-      <code>seconds</code> option. We will be using <code>inverseRatio</code>
-      here as our <code>x</code> coordinate is measured from the top of the
-      volume-adjuster, which means the value will go up the closer the click
-      gets to the bottom.
+      <code>seconds</code> option. Our <code>y</code> coordinate is measured
+      from the top of the volume-adjuster, which means the closer the click gets
+      to the bottom, the higher the value will be. This is the opposite of how
+      we want the volume-adjuster to behave, so we will use
+      <code>inverseRatio</code> to compensate for this.
     </p>
 
     <p class="note">
-      Please bear in mind that the math here will probably not apply to you, and
-      is only provided for illustrative purposes.
+      Please bear in mind that how we're getting the values here will not apply
+      to you unless you're using the exact same markup and CSS, and is only
+      provided for illustrative purposes.
     </p>
   </div>
 

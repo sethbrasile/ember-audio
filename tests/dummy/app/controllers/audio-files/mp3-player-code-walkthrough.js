@@ -60,6 +60,15 @@ export default Ember.Controller.extend({
       this.set('isPlaying', false);
     },
 
+    fakeSelectTrack(track) {
+      const audio = this.get('audio');
+
+      this.set('isPlaying', false);
+
+      track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
+      this.set('selectedTrack', track);
+    },
+
     play() {
       this.get('selectedTrack.promise').then((track) => {
         this.set('isPlaying', true);
@@ -68,10 +77,9 @@ export default Ember.Controller.extend({
     },
 
     pause() {
-      this.get('selectedTrack.promise').then((track) => {
-        this.set('isPlaying', false);
-        track.pause();
-      });
+      const trackName = this.get('selectedTrack.name');
+      this.set('isPlaying', false);
+      this.get('audio').getTrack(trackName).pause();
     },
 
     seek(e) {
