@@ -47,6 +47,29 @@ export default Controller.extend({
   ],
 
   actions: {
+    selectTrack(track) {
+      const audio = this.get('audio');
+
+      this.set('isPlaying', false);
+      audio.pauseAll();
+
+      track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
+      this.set('selectedTrack', track);
+    },
+
+    play() {
+      this.get('selectedTrack.promise').then((track) => {
+        this.set('isPlaying', true);
+        track.play();
+      });
+    },
+
+    pause() {
+      const trackName = this.get('selectedTrack.name');
+      this.set('isPlaying', false);
+      this.get('audio').getTrack(trackName).pause();
+    },
+
     seek(e) {
       const audio = this.get('audio');
       const trackName = this.get('selectedTrack.name');
@@ -68,30 +91,6 @@ export default Controller.extend({
       const newGain = adjustedOffset / adjustedHeight;
 
       audio.getTrack(trackName).changeGain(newGain).from('inverseRatio');
-    },
-
-    selectTrack(track) {
-      const audio = this.get('audio');
-
-      this.set('isPlaying', false);
-      audio.pauseAll();
-
-      track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
-      this.set('selectedTrack', track);
-    },
-
-    play() {
-      this.get('selectedTrack.promise').then((track) => {
-        this.set('isPlaying', true);
-        track.play();
-      });
-    },
-
-    pause() {
-      this.get('selectedTrack.promise').then((track) => {
-        this.set('isPlaying', false);
-        track.pause();
-      });
     }
   }
 });

@@ -42,7 +42,7 @@
     ],
 
     // getProp() is a computed property macro that lets you get a property
-    // directly from a Track (more info in code walkthrough)
+    // directly from a Track (more info in the API docs and code walkthrough)
     duration: getProp('duration').fromTrack('selectedTrack.name'),
 
     // the fromTrack() part accepts an optional callback
@@ -58,9 +58,11 @@
       selectTrack(track) {
         const audio = this.get('audio');
 
+        this.set('isPlaying', false);
+        audio.pauseAll();
+
         // We will use the returned promise to ensure the sound is loaded before it is played
         track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
-
         this.set('selectedTrack', track);
       },
 
@@ -72,25 +74,27 @@
       },
 
       pause() {
-        this.get('selectedTrack.promise').then((track) => {
-          this.set('isPlaying', false);
-          track.pause();
-        });
+        const trackName = this.get('selectedTrack.name');
+        this.set('isPlaying', false);
+        this.get('audio').getTrack(trackName).pause();
       },
 
       seek(e) {
+        const audio = this.get('audio');
         const trackName = this.get('selectedTrack.name');
-        const newPosition = // a bunch of code to get the new seek position, see the code walkthrough
 
-        // seek() can handle a ratio, a percentage, or seconds.
-        this.get('audio').getTrack(trackName).seek(newPosition).from('ratio');
+        const newPosition = // get new seek position from UI, see the code walkthrough
+
+        audio.getTrack(trackName).seek(newPosition).from('ratio');
       },
 
       changeVolume(e) {
+        const audio = this.get('audio');
         const trackName = this.get('selectedTrack.name');
-        const newGain = // a bunch of code to get `gain` from the UI, see the code walkthrough
 
-        this.get('audio').getTrack(trackName).changeGain(newGain);
+        const newGain = // get `gain` from the UI, see the code walkthrough
+
+        audio.getTrack(trackName).changeGain(newGain).from('inverseRatio');
       }
     }
   });

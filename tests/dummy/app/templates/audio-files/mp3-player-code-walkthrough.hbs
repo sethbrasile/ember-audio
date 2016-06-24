@@ -562,17 +562,17 @@
     <p>
       A track's <code>seek</code> method allows us to provide a value, and the
       <code>from</code> method allows us to tell <code>seek</code> what type
-      of value we are providing. In this instance, we are providing a ratio,
-      but <code>from</code> will also accept <code>'percent'</code> or
-      <code>'seconds'</code>.
+      of value we are providing. In this instance, we are providing a
+      <code>ratio</code>, but <code>from</code> will also accept
+      <code>inverseRatio</code>, <code>percent</code> or <code>seconds</code>.
     </p>
 
     <p>
-      <code>changeGain</code> works exactly the same way, but with an
-      <code>inverseRatio</code> option instead of the <code>seconds</code>
-      option. We will be using <code>inverseRatio</code> here as our
-      <code>x</code> coordinate is measured from the top of the volume-adjuster,
-      which means the value will go up the closer the click gets to the bottom.
+      <code>changeGain</code> works exactly the same way, but without the
+      <code>seconds</code> option. We will be using <code>inverseRatio</code>
+      here as our <code>x</code> coordinate is measured from the top of the
+      volume-adjuster, which means the value will go up the closer the click
+      gets to the bottom.
     </p>
 
     <p class="note">
