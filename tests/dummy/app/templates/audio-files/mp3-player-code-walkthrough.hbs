@@ -560,8 +560,11 @@
     </p>
 
     <p>
-      <code>changeGain</code> works exactly the same way, but without the
-      <code>'seconds'</code> option.
+      <code>changeGain</code> works exactly the same way, but with a
+      <code>inverseRatio</code> option instead of the <code>seconds</code>
+      option. We will be using <code>inverseRatio</code> here as our
+      <code>x</code> coordinate is measured from the top of the volume-adjuster,
+      which means the value will go up the closer the click gets to the bottom.
     </p>
 
     <p class="note">
@@ -604,7 +607,7 @@
     const newGain = adjustedOffset / adjustedHeight;
 
     // get the track by it's name and change the gain to the new value
-    audio.getTrack(trackName).changeGain(newGain).from('ratio');
+    audio.getTrack(trackName).changeGain(newGain).from('inverseRatio');
   }
   {{/code-block}}
 

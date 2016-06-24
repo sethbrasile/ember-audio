@@ -94,7 +94,7 @@ export default Ember.Controller.extend({
       const adjustedOffset = offset - ((height - adjustedHeight) / 2);
       const newGain = adjustedOffset / adjustedHeight;
 
-      audio.getTrack(trackName).changeGain(newGain).from('ratio');
+      audio.getTrack(trackName).changeGain(newGain).from('inverseRatio');
     }
   }
 });

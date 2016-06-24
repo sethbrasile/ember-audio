@@ -67,7 +67,7 @@ export default Controller.extend({
       const adjustedOffset = offset - ((height - adjustedHeight) / 2);
       const newGain = adjustedOffset / adjustedHeight;
 
-      audio.getTrack(trackName).changeGain(newGain).from('reverseRatio');
+      audio.getTrack(trackName).changeGain(newGain).from('inverseRatio');
     },
 
     selectTrack(track) {
