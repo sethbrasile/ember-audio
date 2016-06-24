@@ -88,18 +88,30 @@ const Sound = Ember.Object.extend({
 
   changeGain(value) {
     const gainNode = this.get('gainNode');
+    const notify = () => this.notifyPropertyChange('percentGain');
 
-    if (value > 1) {
-      value = 1;
-    } else if (value < 0) {
-      value = 0;
+    function adjustGain(newValue) {
+      if (newValue > 1) {
+        newValue = 1;
+      } else if (newValue < 0) {
+        newValue = 0;
+      }
+
+      gainNode.gain.value = newValue;
+      notify();
     }
 
-    gainNode.gain.value = value;
-
-    this.notifyPropertyChange('percentGain');
-
-    // return .from('ratio') = (value * -1) + 1
+    return {
+      from(type='ratio') {
+        if (type === 'ratio') {
+          adjustGain(value);
+        } else if (type === 'reverseRatio') {
+          adjustGain((value * -1) + 1);
+        } else if (type === 'percent') {
+          adjustGain(value / 100);
+        }
+      }
+    };
   },
 
   seek(amount) {
