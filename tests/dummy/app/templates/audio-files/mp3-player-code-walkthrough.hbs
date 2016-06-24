@@ -276,7 +276,15 @@
           <code>track</code> is nothing special, it's just one of the objects
           from the <code>tracks</code> array on our controller.
         </li>
-        <li><code>audio.load()</code> accepts a path to an audio file.</li>
+        <li>
+          <code>audio.load()</code> accepts a path to an audio file.
+          <ul>
+            <li>
+              Note that <code>load</code>ing the same track repeatedly has no
+              performance repercussions as sounds/tracks are cached and reused.
+            </li>
+          </ul>
+        </li>
         <li>
           <code>.asTrack()</code> specifies that we want to create a
           <code>Track</code> object instance and it accepts a name that we can
@@ -560,7 +568,7 @@
     </p>
 
     <p>
-      <code>changeGain</code> works exactly the same way, but with a
+      <code>changeGain</code> works exactly the same way, but with an
       <code>inverseRatio</code> option instead of the <code>seconds</code>
       option. We will be using <code>inverseRatio</code> here as our
       <code>x</code> coordinate is measured from the top of the volume-adjuster,
