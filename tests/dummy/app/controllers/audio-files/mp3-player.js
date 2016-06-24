@@ -20,6 +20,14 @@ export default Controller.extend({
     }
   ),
 
+  // Doesn't work
+  percentPlayed2: getProp('percentPlayed')
+    .fromTrack('selectedTrack.name', function(percentPlayed) {
+      // percentPlayed is undefined
+      return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
+    }
+  ),
+
   percentGain: getProp('percentGain')
     .fromTrack('selectedTrack.name', function(percentGain) {
       return Ember.String.htmlSafe(`height: ${percentGain}%;`);

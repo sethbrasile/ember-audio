@@ -24,6 +24,7 @@
   </div>
 
   {{#if selectedTrack}}
+    {{percentPlayed2}}
     <div class="audioplayer">
       <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
       <div class="time current">{{position.string}}</div>
