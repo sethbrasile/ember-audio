@@ -106,7 +106,7 @@ const Sound = Ember.Object.extend({
         if (type === 'ratio') {
           adjustGain(value);
         } else if (type === 'reverseRatio') {
-          adjustGain((value * -1) + 1);
+          adjustGain(-value + 1);
         } else if (type === 'percent') {
           adjustGain(value / 100);
         }
