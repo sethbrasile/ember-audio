@@ -6,7 +6,7 @@
       <table class="table table-bordered">
         {{#each tracks as |track|}}
           <tbody>
-            <tr {{action 'selectTrack' track}} class="{{if (eq track selectedTrack) 'info'}} item">
+            <tr {{action 'selectTrack' track}} class="{{if (eq track selectedTrack.details) 'info'}} item">
               <td>{{undasherize track.name}}</td>
             </tr>
           </tbody>
@@ -16,7 +16,7 @@
 
     <div class="description col-sm-9">
       {{#if selectedTrack}}
-        <p>{{{selectedTrack.description}}}</p>
+        <p>{{{selectedTrack.details.description}}}</p>
       {{else}}
         <p>Select a Track...</p>
       {{/if}}
@@ -24,17 +24,16 @@
   </div>
 
   {{#if selectedTrack}}
-    {{percentPlayed2}}
     <div class="audioplayer">
       <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
-      <div class="time current">{{position.string}}</div>
+      <div class="time current">{{selectedTrack.position.string}}</div>
 
       <div class="bar" onclick={{action 'seek'}}>
         <div style="width: 100%;"></div>
         <div class="played" style={{percentPlayed}}></div>
       </div>
 
-      <div class="time duration">{{duration.string}}</div>
+      <div class="time duration">{{selectedTrack.duration.string}}</div>
 
       <div class="volume" onclick={{action 'changeVolume'}}>
         <div class="button"><a></a></div>
