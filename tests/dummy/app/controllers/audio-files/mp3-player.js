@@ -11,6 +11,7 @@ export default Controller.extend({
   audio: service(),
   selectedTrack: null,
   isPlaying: false,
+  trackLoading: false,
   tracks: [
     {
       name: 'barely-there',
@@ -45,14 +46,16 @@ export default Controller.extend({
     selectTrack(newTrack) {
       const audio = this.get('audio');
 
+      this.set('trackLoading', true);
+      this.set('isPlaying', false);
+      audio.pauseAll();
+
       audio.load(`${newTrack.name}.mp3`).asTrack(newTrack.name)
         .then((track) => {
           track.set('details', newTrack);
           this.set('selectedTrack', track);
+          this.set('trackLoading', false);
         });
-
-      this.set('isPlaying', false);
-      audio.pauseAll();
     },
 
     play() {

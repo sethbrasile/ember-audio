@@ -7,7 +7,7 @@ import { Note, sortNotes } from '../utils/note';
 import ObjectLikeMap from '../utils/object-like-map';
 
 const {
-  RSVP: { all },
+  RSVP: { all, resolve },
   Service
 } = Ember;
 
@@ -58,7 +58,7 @@ export default Service.extend({
     }
 
     if (register.has(name)) {
-      return Ember.RSVP.resolve(register.get(name));
+      return resolve(register.get(name));
     }
 
     return this.get('request')(src)
