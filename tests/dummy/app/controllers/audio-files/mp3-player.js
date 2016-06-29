@@ -8,12 +8,12 @@ const {
 export default Controller.extend({
   audio: service(),
   selectedTrack: null,
-  trackLoading: false,
+  trackIsLoading: false,
 
   tracks: [
     {
       name: 'barely-there',
-      audio: null,
+      trackInstance: null,
       description: `I used to play bass and sing ("clean" vocals) in a metalcore
         band called "Bringing Down Broadway" and this is one of our songs.<br>
         <br>This is from like 10 years ago (I'm sooooo oooooollldddd).<br><br>
@@ -22,7 +22,7 @@ export default Controller.extend({
     },
     {
       name: 'do-wah-diddy',
-      audio: null,
+      trackInstance: null,
       description: `My friend David Denison and I recorded this song in a living
         room with a laptop and a broken logitech PC mic, for fun.<br><br> This
         is from about 8 years ago (please see comment on "Barely There" about
@@ -33,17 +33,17 @@ export default Controller.extend({
   ],
 
   actions: {
-    selectTrack(newTrack) {
+    selectTrack(track) {
       const audio = this.get('audio');
 
-      this.set('selectedTrack', newTrack);
-      this.set('trackLoading', true);
+      this.set('selectedTrack', track);
+      this.set('trackIsLoading', true);
       audio.pauseAll();
 
-      audio.load(`${newTrack.name}.mp3`).asTrack(newTrack.name)
-        .then((track) => {
-          this.set('selectedTrack.audio', track);
-          this.set('trackLoading', false);
+      audio.load(`${track.name}.mp3`).asTrack(track.name)
+        .then((trackInstance) => {
+          this.set('selectedTrack.trackInstance', trackInstance);
+          this.set('trackIsLoading', false);
         });
     }
   }
