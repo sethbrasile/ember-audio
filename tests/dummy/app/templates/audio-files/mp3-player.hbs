@@ -6,7 +6,7 @@
       <table class="table table-bordered">
         {{#each tracks as |track|}}
           <tbody>
-            <tr {{action 'selectTrack' track}} class="{{if (eq track selectedTrack.details) 'info'}} item">
+            <tr {{action 'selectTrack' track}} class="{{if (eq track selectedTrack) 'info'}} item">
               <td>{{undasherize track.name}}</td>
             </tr>
           </tbody>
@@ -15,45 +15,13 @@
     </div>
 
     <div class="description col-sm-9">
-      {{#if trackLoading}}
-        <div class="spinner">
-          <div class="rect1"></div>
-          <div class="rect2"></div>
-          <div class="rect3"></div>
-          <div class="rect4"></div>
-          <div class="rect5"></div>
-        </div>
+      {{#if selectedTrack}}
+        <p>{{{selectedTrack.description}}}</p>
       {{else}}
-        {{#if selectedTrack}}
-          <p>{{{selectedTrack.details.description}}}</p>
-        {{else}}
-          <p>Select a Track...</p>
-        {{/if}}
+        <p>Select a Track...</p>
       {{/if}}
     </div>
   </div>
 
-  {{#if selectedTrack}}
-    <div class="audioplayer">
-      <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
-      <div class="time current">{{position}}</div>
-
-      <div class="bar" onclick={{action 'seek'}}>
-        <div style="width: 100%;"></div>
-        <div class="played" style={{percentPlayed}}></div>
-      </div>
-
-      <div class="time duration">{{duration}}</div>
-
-      <div class="volume" onclick={{action 'changeVolume'}}>
-        <div class="button"><a></a></div>
-
-        <div class="adjust">
-          <div>
-            <div style={{percentGain}}></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  {{/if}}
+  {{mp3-player track=selectedTrackAudio isPlaying=isPlaying loading=trackLoading}}
 </div>

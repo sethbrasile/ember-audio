@@ -10,8 +10,10 @@ const {
 export default Controller.extend({
   audio: service(),
   selectedTrack: null,
+  selectedTrackAudio: null,
   isPlaying: false,
   trackLoading: false,
+
   tracks: [
     {
       name: 'barely-there',
@@ -32,59 +34,20 @@ export default Controller.extend({
     }
   ],
 
-  duration: reads('selectedTrack.duration.string'),
-  position: reads('selectedTrack.position.string'),
-
-  percentPlayed: computed('selectedTrack.percentPlayed', function() {
-    const percentPlayed = this.get('selectedTrack.percentPlayed');
-    return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
-  }),
-
-  percentGain: computed('selectedTrack.percentGain', function() {
-    const percentGain = this.get('selectedTrack.percentGain');
-    return Ember.String.htmlSafe(`width: ${percentGain}%;`);
-  }),
-
   actions: {
     selectTrack(newTrack) {
       const audio = this.get('audio');
 
+      this.set('selectedTrack', newTrack);
       this.set('trackLoading', true);
       this.set('isPlaying', false);
       audio.pauseAll();
 
       audio.load(`${newTrack.name}.mp3`).asTrack(newTrack.name)
         .then((track) => {
-          track.set('details', newTrack);
-          this.set('selectedTrack', track);
+          this.set('selectedTrackAudio', track);
           this.set('trackLoading', false);
         });
-    },
-
-    play() {
-      this.get('selectedTrack').play();
-      this.set('isPlaying', true);
-    },
-
-    pause() {
-      this.get('selectedTrack').pause()
-      this.set('isPlaying', false);
-    },
-
-    seek(e) {
-      const width = e.target.offsetParent.offsetWidth;
-      const newPosition = e.offsetX / width;
-      this.get('selectedTrack').seek(newPosition).from('ratio');
-    },
-
-    changeVolume(e) {
-      const height = e.target.offsetParent.offsetHeight;
-      const offset = e.pageY - Ember.$(e.target).parent().offset().top;
-      const adjustedHeight = height * 0.8;
-      const adjustedOffset = offset - ((height - adjustedHeight) / 2);
-      const newGain = adjustedOffset / adjustedHeight;
-
-      this.get('selectedTrack').changeGain(newGain).from('inverseRatio');
     }
   }
 });

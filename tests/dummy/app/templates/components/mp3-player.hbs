@@ -1,0 +1,33 @@
+{{#if loading}}
+  <div class="spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+{{else}}
+  {{#if track}}
+    <div class="audioplayer">
+      <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
+      <div class="time current">{{track.position.string}}</div>
+
+      <div class="bar" onclick={{action 'seek'}}>
+        <div style="width: 100%;"></div>
+        <div class="played" style={{percentPlayed}}></div>
+      </div>
+
+      <div class="time duration">{{track.duration.string}}</div>
+
+      <div class="volume" onclick={{action 'changeVolume'}}>
+        <div class="button"><a></a></div>
+
+        <div class="adjust">
+          <div>
+            <div style={{percentGain}}></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+{{/if}}
