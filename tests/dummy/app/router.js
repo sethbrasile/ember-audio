@@ -15,7 +15,6 @@ Router.map(function() {
     this.route('simple', { path: '/' });
     this.route('mp3-player');
     this.route('mp3-player-code');
-    this.route('mp3-player-code-walkthrough');
   });
 });
 
