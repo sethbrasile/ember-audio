@@ -1,8 +1,6 @@
 import Ember from 'ember';
 
 const {
-  computed,
-  computed: { reads },
   inject: { service },
   Controller
 } = Ember;
@@ -10,13 +8,12 @@ const {
 export default Controller.extend({
   audio: service(),
   selectedTrack: null,
-  selectedTrackAudio: null,
-  isPlaying: false,
   trackLoading: false,
 
   tracks: [
     {
       name: 'barely-there',
+      audio: null,
       description: `I used to play bass and sing ("clean" vocals) in a metalcore
         band called "Bringing Down Broadway" and this is one of our songs.<br>
         <br>This is from like 10 years ago (I'm sooooo oooooollldddd).<br><br>
@@ -25,6 +22,7 @@ export default Controller.extend({
     },
     {
       name: 'do-wah-diddy',
+      audio: null,
       description: `My friend David Denison and I recorded this song in a living
         room with a laptop and a broken logitech PC mic, for fun.<br><br> This
         is from about 8 years ago (please see comment on "Barely There" about
@@ -40,12 +38,11 @@ export default Controller.extend({
 
       this.set('selectedTrack', newTrack);
       this.set('trackLoading', true);
-      this.set('isPlaying', false);
       audio.pauseAll();
 
       audio.load(`${newTrack.name}.mp3`).asTrack(newTrack.name)
         .then((track) => {
-          this.set('selectedTrackAudio', track);
+          this.set('selectedTrack.audio', track);
           this.set('trackLoading', false);
         });
     }

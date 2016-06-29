@@ -2,99 +2,150 @@
   <h2>MP3 Player Code</h2>
 
   {{#code-block language='handlebars'}}
-  \{{!-- purely aesthetic stuff has been removed, see dummy app in repo if you're interested --}}
+  \{{!-- template --}}
 
-  &lt;div class="play-pause \{{if isPlaying 'playing'}}" \{{action (if isPlaying 'pause' 'play')}}>&lt;/div>
-  &lt;div class="time current">\{{position.string}}&lt;/div>
+  &lt;div class="track-list">
+    &lt;div class="select">
+      &lt;table>
+        \{{#each tracks as |track|}}
+          &lt;tbody>
+            &lt;tr \{{action 'selectTrack' track}}>
+              &lt;td>\{{track.name}}&lt;/td>
+            &lt;/tr>
+          &lt;/tbody>
+        \{{/each}}
+      &lt;/table>
+    &lt;/div>
 
-  &lt;div class="bar" onclick=\{{action 'seek'}}>
-    &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
+    &lt;div class="description">
+      \{{#if selectedTrack}}
+        &lt;p>\{{{selectedTrack.description}}}&lt;/p>
+      \{{else}}
+        &lt;p>Select a Track...&lt;/p>
+      \{{/if}}
+    &lt;/div>
   &lt;/div>
 
-  &lt;div class="time duration">\{{duration.string}}&lt;/div>
-
-  &lt;div class="volume" onclick=\{{action 'changeVolume'}}>
-    &lt;div style=\{{percentGain}}>&lt;/div>
-  &lt;/div>
+  \{{mp3-player track=selectedTrack.audio loading=trackLoading}}
   {{/code-block}}
 
   {{#code-block language='javascript'}}
+  // controller
+
   import Ember from 'ember';
-  import getProp from 'ember-audio/utils/get-prop';
 
-  export default Ember.Whatever.extend({
+  export default Ember.Controller.extend({
     audio: Ember.inject.service(),
+    trackLoading: false,
     selectedTrack: null,
-    isPlaying: false,
 
-    // There are two mp3 files in my public folder: "barely-there.mp3" and "do-wah-diddy.mp3"
     tracks: [
       {
         name: 'barely-there',
-        promise: null,
-        description: 'a description here...'
+        audio: null, // We will place the loaded audio file here
+        description: `description here...`
       },
       {
         name: 'do-wah-diddy',
-        promise: null,
-        description: 'a description here...'
+        audio: null,
+        description: `description here...`
       }
     ],
-
-    // getProp() is a computed property macro that lets you get a property
-    // directly from a Track (more info in the API docs and code walkthrough)
-    duration: getProp('duration').fromTrack('selectedTrack.name'),
-
-    // the fromTrack() part accepts an optional callback
-    percentPlayed: getProp('percentPlayed').fromTrack('selectedTrack.name', function(percentPlayed) {
-      return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
-    }),
-
-    percentGain: getProp('percentGain').fromTrack('selectedTrack.name', function(percentGain) {
-      return Ember.String.htmlSafe(`height: ${percentGain}%;`);
-    }),
 
     actions: {
       selectTrack(track) {
         const audio = this.get('audio');
 
-        this.set('isPlaying', false);
+        this.set('selectedTrack', track);
+        this.set('trackLoading', true);
         audio.pauseAll();
 
-        // We will use the returned promise to ensure the sound is loaded before it is played
-        track.promise = audio.load(`${track.name}.mp3`).asTrack(track.name);
-        this.set('selectedTrack', track);
-      },
-
-      play() {
-        this.get('selectedTrack.promise').then((track) => {
-          this.set('isPlaying', true);
-          track.play();
+        audio.load(`${track.name}.mp3`).asTrack(track.name).then((loadedTrack) => {
+          this.set('selectedTrack.audio', loadedTrack);
+          this.set('trackLoading', false);
         });
-      },
+      }
+    }
+  });
+  {{/code-block}}
 
-      pause() {
-        const trackName = this.get('selectedTrack.name');
-        this.set('isPlaying', false);
-        this.get('audio').getTrack(trackName).pause();
+  {{#code-block language='handlebars'}}
+  \{{!-- mp3-player component template --}}
+
+  \{{#if loading}}
+    \{{!-- some loading state --}}
+  \{{else if track}}
+    &lt;div class="audioplayer">
+      &lt;div class="play-pause \{{if track.isPlaying 'playing'}}" \{{action 'togglePlay'}}>&lt;a>&lt;/a>&lt;/div>
+      &lt;div class="time current">\{{track.position.string}}&lt;/div>
+
+      &lt;div class="bar" onclick=\{{action 'seek'}}>
+        &lt;div style="width: 100%;">&lt;/div>
+        &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
+      &lt;/div>
+
+      &lt;div class="time duration">\{{track.duration.string}}&lt;/div>
+
+      &lt;div class="volume" onclick=\{{action 'changeVolume'}}>
+        &lt;div class="button">&lt;a>&lt;/a>&lt;/div>
+
+        &lt;div class="adjust">
+          &lt;div>
+            &lt;div style=\{{percentGain}}>&lt;/div>
+          &lt;/div>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  \{{/if}}
+  {{/code-block}}
+
+  {{#code-block language='javascript'}}
+  // mp3-player component javascript
+
+  import Ember from 'ember';
+
+  const {
+    computed,
+    String: { htmlSafe },
+    Component
+  } = Ember;
+
+  export default Component.extend({
+    percentPlayed: computed('track.percentPlayed', function() {
+      const percentPlayed = this.get('track.percentPlayed');
+      return htmlSafe(`width: ${percentPlayed}%;`);
+    }),
+
+    percentGain: computed('track.percentGain', function() {
+      const percentGain = this.get('track.percentGain');
+      return htmlSafe(`height: ${percentGain}%;`);
+    }),
+
+    actions: {
+      togglePlay() {
+        const track = this.get('track');
+
+        if (track.get('isPlaying')) {
+          track.pause();
+        } else {
+          track.play()
+        }
       },
 
       seek(e) {
-        const audio = this.get('audio');
-        const trackName = this.get('selectedTrack.name');
-
-        const newPosition = // get new seek position from UI, see the code walkthrough
-
-        audio.getTrack(trackName).seek(newPosition).from('ratio');
+        const width = e.target.offsetParent.offsetWidth;
+        const newPosition = e.offsetX / width;
+        this.get('track').seek(newPosition).from('ratio');
       },
 
       changeVolume(e) {
-        const audio = this.get('audio');
-        const trackName = this.get('selectedTrack.name');
+        const height = e.target.offsetParent.offsetHeight;
+        const offset = e.pageY - Ember.$(e.target).parent().offset().top;
+        const adjustedHeight = height * 0.8;
+        const adjustedOffset = offset - ((height - adjustedHeight) / 2);
+        const newGain = adjustedOffset / adjustedHeight;
 
-        const newGain = // get `gain` from the UI, see the code walkthrough
-
-        audio.getTrack(trackName).changeGain(newGain).from('inverseRatio');
+        this.get('track').changeGain(newGain).from('inverseRatio');
       }
     }
   });

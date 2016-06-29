@@ -6,7 +6,7 @@
       <table class="table table-bordered">
         {{#each tracks as |track|}}
           <tbody>
-            <tr {{action 'selectTrack' track}} class="{{if (eq track selectedTrack) 'info'}} item">
+            <tr class="{{if (eq track selectedTrack) 'info'}} item" {{action 'selectTrack' track}}>
               <td>{{undasherize track.name}}</td>
             </tr>
           </tbody>
@@ -23,5 +23,5 @@
     </div>
   </div>
 
-  {{mp3-player track=selectedTrackAudio isPlaying=isPlaying loading=trackLoading}}
+  {{mp3-player track=selectedTrack.audio loading=trackLoading}}
 </div>

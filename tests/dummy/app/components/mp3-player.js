@@ -3,6 +3,7 @@ import layout from '../templates/components/mp3-player';
 
 const {
   computed,
+  String: { htmlSafe },
   Component
 } = Ember;
 
@@ -11,23 +12,23 @@ export default Component.extend({
 
   percentPlayed: computed('track.percentPlayed', function() {
     const percentPlayed = this.get('track.percentPlayed');
-    return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
+    return htmlSafe(`width: ${percentPlayed}%;`);
   }),
 
   percentGain: computed('track.percentGain', function() {
     const percentGain = this.get('track.percentGain');
-    return Ember.String.htmlSafe(`height: ${percentGain}%;`);
+    return htmlSafe(`height: ${percentGain}%;`);
   }),
 
   actions: {
-    play() {
-      this.get('track').play();
-      this.set('isPlaying', true);
-    },
+    togglePlay() {
+      const track = this.get('track');
 
-    pause() {
-      this.get('track').pause()
-      this.set('isPlaying', false);
+      if (track.get('isPlaying')) {
+        track.pause();
+      } else {
+        track.play();
+      }
     },
 
     seek(e) {
