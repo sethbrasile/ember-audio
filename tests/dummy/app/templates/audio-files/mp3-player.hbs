@@ -36,14 +36,14 @@
   {{#if selectedTrack}}
     <div class="audioplayer">
       <div class="play-pause {{if isPlaying 'playing'}}" {{action (if isPlaying 'pause' 'play')}}><a></a></div>
-      <div class="time current">{{selectedTrack.position.string}}</div>
+      <div class="time current">{{position}}</div>
 
       <div class="bar" onclick={{action 'seek'}}>
         <div style="width: 100%;"></div>
         <div class="played" style={{percentPlayed}}></div>
       </div>
 
-      <div class="time duration">{{selectedTrack.duration.string}}</div>
+      <div class="time duration">{{duration}}</div>
 
       <div class="volume" onclick={{action 'changeVolume'}}>
         <div class="button"><a></a></div>

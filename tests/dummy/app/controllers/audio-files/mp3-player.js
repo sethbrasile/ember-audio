@@ -32,6 +32,9 @@ export default Controller.extend({
     }
   ],
 
+  duration: reads('selectedTrack.duration.string'),
+  position: reads('selectedTrack.position.string'),
+
   percentPlayed: computed('selectedTrack.percentPlayed', function() {
     const percentPlayed = this.get('selectedTrack.percentPlayed');
     return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
