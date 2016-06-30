@@ -4,7 +4,7 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'dummy',
     environment: environment,
-    baseURL: '/',
+    rootURL: '/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
@@ -29,7 +29,6 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
     ENV.locationType = 'none';
 
     // keep test console output quieter
@@ -42,6 +41,11 @@ module.exports = function(environment) {
   if (environment === 'production') {
     ENV.locationType = 'hash';
     ENV.baseURL = '/ember-audio/';
+
+    // Not sure about these at the moment. ember-cli-github-pages still wants
+    // them, not sure how this will work out yet
+    // ENV.locationType = 'hash';
+    // ENV.rootURL = '/ember-audio/';
   }
 
   return ENV;
