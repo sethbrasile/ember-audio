@@ -1,7 +1,9 @@
 export default function zeroify(input) {
-  if (input < 10) {
-    return `0${input}`;
+  const num = Math.floor(input);
+
+  if (num < 10) {
+    return `0${num}`;
   }
 
-  return `${input}`;
+  return `${num}`;
 }

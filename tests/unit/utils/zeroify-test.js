@@ -13,6 +13,11 @@ test('it works for 4', function(assert) {
   assert.equal(result, '04');
 });
 
+test('it works for 4.77865', function(assert) {
+  let result = zeroify(4.77865);
+  assert.equal(result, '04');
+});
+
 test('it works for 10', function(assert) {
   let result = zeroify(10);
   assert.equal(result, '10');

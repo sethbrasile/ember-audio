@@ -20,6 +20,9 @@ test('position.string works', function(assert) {
   result.set('startOffset', 40);
   assert.equal(result.get('position.string'), '00:40');
 
+  result.set('startOffset', 40.12765);
+  assert.equal(result.get('position.string'), '00:40');
+
   result.set('startOffset', 60);
   assert.equal(result.get('position.string'), '01:00');
 
