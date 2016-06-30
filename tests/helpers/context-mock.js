@@ -4,6 +4,8 @@ const ContextMock = Ember.Object.extend({
   createBufferSourceCalled: false,
   connectCalled: false,
   startCalled: false,
+  createGainCalled: false,
+  createAnalyserCalled: false,
   bufferSource: null,
   destination: Ember.computed.reads('elementId'),
 
@@ -22,6 +24,12 @@ const ContextMock = Ember.Object.extend({
   createStereoPanner() {
     this.set('panner', { pan: { value: 0 } });
     return this.get('panner');
+  },
+  createGain() {
+    this.set('createGainCalled', true);
+  },
+  createAnalyser() {
+    this.set('createAnalyserCalled', true);
   },
   decodeAudioData(data) {
     return new Ember.RSVP.Promise((resolve) => resolve(data));

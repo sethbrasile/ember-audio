@@ -1,10 +1,10 @@
-import objectLikeMap from 'dummy/utils/object-like-map';
+import ObjectLikeMap from 'dummy/utils/object-like-map';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | object like map');
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  let result = objectLikeMap();
+  let result = ObjectLikeMap.create();
   assert.ok(result);
 });

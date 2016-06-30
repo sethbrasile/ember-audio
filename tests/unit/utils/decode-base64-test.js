@@ -3,7 +3,6 @@ import { module, test } from 'qunit';
 
 module('Unit | Utility | decode base64');
 
-// Replace this with your real tests.
 test('base64ToUint8 works', function(assert) {
   let result = base64ToUint8('//uABCDEFGHIJKLMNOPQRSTUVWXYZ=');
   assert.ok(result);
