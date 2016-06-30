@@ -40,7 +40,7 @@ export default Controller.extend({
       this.set('trackIsLoading', true);
       audio.pauseAll();
 
-      audio.load(`${track.name}.mp3`).asTrack(track.name)
+      audio.load(`/ember-audio/${track.name}.mp3`).asTrack(track.name)
         .then((trackInstance) => {
           this.set('selectedTrack.trackInstance', trackInstance);
           this.set('trackIsLoading', false);
