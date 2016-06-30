@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import request from '../utils/request';
 import Sound from '../utils/sound';
 import Track from '../utils/track';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
@@ -12,12 +11,6 @@ const {
 } = Ember;
 
 export default Service.extend({
-  /**
-   * request - Only set on this service so that it's easier to stub without
-   * having to create another service.
-   */
-  request,
-
   /**
    * context - An AudioContext instance from the web audio api. **NOT**
    * available in all browsers. Not available in any version of IE (except EDGE)
