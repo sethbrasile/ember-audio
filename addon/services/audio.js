@@ -4,6 +4,7 @@ import Track from '../utils/track';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
 import ObjectLikeMap from '../utils/object-like-map';
+import fetch from 'ember-network/fetch';
 
 const {
   RSVP: { all, resolve },
@@ -54,7 +55,8 @@ export default Service.extend({
       return resolve(register.get(name));
     }
 
-    return this.get('request')(src)
+    return fetch(src)
+      .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
         let sound;
@@ -98,7 +100,7 @@ export default Service.extend({
 
     fonts.set(instrumentName, ObjectLikeMap.create());
 
-    return this.get('request')(src, 'text')
+    return fetch(src).then((response) => response.text())
 
       // Strip extraneous stuff from soundfont (which is currently a long string)
       // and split by line into an array
