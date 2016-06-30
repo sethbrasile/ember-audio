@@ -1,15 +1,17 @@
 import Ember from 'ember';
 import request from '../utils/request';
+import Sound from '../utils/sound';
+import Track from '../utils/track';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
+import ObjectLikeMap from '../utils/object-like-map';
 
 const {
-  RSVP: { all },
+  RSVP: { all, resolve },
   Service
 } = Ember;
 
 export default Service.extend({
-
   /**
    * request - Only set on this service so that it's easier to stub without
    * having to create another service.
@@ -25,27 +27,60 @@ export default Service.extend({
    */
   context: new AudioContext(),
 
-  /**
-  * load - Loads and decodes an audio file and sets it on this service by "name"
-  *
-  * @param {string}   name  The name that you will use to refer to the sound
-  * @param {string}   src   url (relative or fully qualified) to the audio file
-  * @return {promise}       a promise that resolves when the sound file has
-  * been successfully decoded. The resolved promise does not have a value.
-  **/
-  load(name, src) {
-    if (this.get(name)) {
-      return this._alreadyLoadedError(name);
+  sounds: ObjectLikeMap.create(),
+  fonts: ObjectLikeMap.create(),
+  tracks: ObjectLikeMap.create(),
+
+  load(src) {
+    const _this = this;
+
+    return {
+      asSound(name) {
+        return _this._load(name, src, 'sound');
+      },
+      asTrack(name) {
+        return _this._load(name, src, 'track');
+      },
+      asFont(name) {
+        return _this._loadFont(name, src, 'sound');
+      }
+    };
+  },
+
+  _load(name, src, type) {
+    const audioContext = this.get('context');
+    let register;
+
+    if (type === 'sound') {
+      register = this.get('sounds');
+    } else if (type === 'track') {
+      register = this.get('tracks');
+    }
+
+    if (register.has(name)) {
+      return resolve(register.get(name));
     }
 
     return this.get('request')(src)
-      .then((arrayBuffer) => this.get('context').decodeAudioData(arrayBuffer))
-      .then((decodedAudio) => this.set(name, decodedAudio))
+      .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
+      .then((audioBuffer) => {
+        let sound;
+
+        if (type === 'sound') {
+          sound = Sound.create({ audioBuffer, audioContext, name });
+        } else if (type === 'track') {
+          sound = Track.create({ audioBuffer, audioContext, name });
+        }
+
+        register.set(name, sound);
+
+        return sound;
+      })
       .catch((err) => console.error('ember-audio:', err));
   },
 
   /**
-   * loadSoundFont - creates an Ember.Object called ${instrumentName} then
+   * loadfont - creates an Ember.Object called ${instrumentName} then
    * loads a soundfont.js file and decodes all the notes, placing each note on
    * "this.get(instrumentName)" like this.set(`${instrumentName}.${noteName}`)
    * and returns a promise that resolves to an array of properly sorted note
@@ -57,12 +92,18 @@ export default Service.extend({
    * been successfully decoded. The promise resolves to an array of sorted note
    * names.
    */
-  loadSoundFont(instrumentName, src) {
-    if (this.get(instrumentName)) {
-      return this._alreadyLoadedError(instrumentName);
+  _loadFont(instrumentName, src) {
+    const fonts = this.get('fonts');
+
+    if (fonts.has(instrumentName)) {
+      const err = new Ember.Error(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to "null" with "this.get('audio.sounds').set('${instrumentName}', null);".`);
+
+      Ember.Logger.error(err);
+
+      return Ember.RSVP.resolve(fonts.get(instrumentName));
     }
 
-    this.set(instrumentName, Ember.Object.create());
+    fonts.set(instrumentName, ObjectLikeMap.create());
 
     return this.get('request')(src, 'text')
 
@@ -75,7 +116,8 @@ export default Service.extend({
       .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
 
       // Create a "note" Ember.Object for each note from the decoded audio data.
-      // Also does this.set(`${instrumentName}.${noteName}`, audioData);
+      // Also does this.set(`sounds.${instrumentName}.${noteName}`, note);
+      // for each note
       .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
 
       .then(sortNotes)
@@ -83,82 +125,38 @@ export default Service.extend({
       .catch((err) => console.error('ember-audio:', err));
   },
 
-  /**
-   * play - play an audio file or a note from a sound font.
-   *
-   * @param  {string}   name The name of the audio file or sound font you wish to play
-   * @param  {string}   note The name of the note you wish to play if "name"
-   * refers to a sound font. If "name" refers to a sound font, this parameter
-   * is **required**
-   */
-  play(name, note) {
-    const ctx = this.get('context');
-    const panner = this.get(`${name}Panner`);
-    const node = ctx.createBufferSource();
-    let noteName;
-
-    if (note) {
-      noteName = `${name}.${note}`;
-    } else {
-      noteName = name;
-    }
-
-    let decodedAudio = this.get(noteName);
-
-    if (!decodedAudio) {
-      this._soundNotLoadedError(noteName);
-    }
-
-    if (panner) {
-      node.connect(panner);
-      panner.connect(ctx.destination);
-    } else {
-      node.connect(ctx.destination);
-    }
-
-    node.buffer = decodedAudio;
-    node.start();
+  getSound(name) {
+    return this.get('sounds').get(name);
   },
 
-  /**
-   * pan - Pans a sound left or right - must be called after the sound has been
-   * loaded
-   *
-   * @param  {type} name  The name of the sound you would like to pan
-   * @param  {int} value  The direction and amount between -1 (hard left) and
-   * 1 (hard right)
-   */
-  pan(name, value) {
-    let panner = this.get(`${name}Panner`);
+  getTrack(name) {
+    return this.get('tracks').get(name);
+  },
 
-    if (!panner) {
-      panner = this.get('context').createStereoPanner();
+  getFont(name) {
+    const font = this.get('fonts').get(name);
+
+    return {
+      play(note) {
+        if (font.has(note)) {
+          font.get(note).play();
+        } else {
+          throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
+        }
+      }
+    };
+  },
+
+  stopAll(type='tracks') {
+    for (let sound of this.get(type).values()) {
+      sound.stop();
     }
-
-    panner.pan.value = value;
-    this.set(`${name}Panner`, panner);
   },
 
-  /**
-   * _alreadyLoadedError - Just throws an error. For when a sound's name is
-   * accidentally used a 2nd time without being unloaded first
-   *
-   * @param  {string} name  The name of the sound that has already been loaded
-   * @private
-   */
-  _alreadyLoadedError(name) {
-    throw new Ember.Error(`ember-audio: You tried to load a sound or soundfont called "${name}", but it already exists. You need to use a different name, or set the first instance to "null".`);
-  },
-
-  /**
-   * _soundNotLoadedError - Just throws an error. For when "play" tries to play
-   * a sound that has not previously been loaded.
-   *
-   * @param  {string} name  The name of the sound that has not yet been loaded.
-   * @private
-   */
-  _soundNotLoadedError(name) {
-    throw new Ember.Error(`ember-audio: You tried to play a sound called "${name}" but that sound has not been loaded.`);
+  pauseAll() {
+    for (let sound of this.get('tracks').values()) {
+      sound.pause();
+    }
   },
 
   /**
@@ -208,10 +206,11 @@ export default Service.extend({
    * @return {array}                  Array of Ember.Objects
    */
   _createNoteObjects(audioData, instrumentName) {
-    // Set audio data on previously created Ember.Object called ${name}
+    const audioContext = this.get('context');
+
     return audioData.map((note) => {
       const noteName = note[0];
-      const noteBuffer = note[1];
+      const audioBuffer = note[1];
       const letter = noteName[0];
 
       let octave = noteName[2];
@@ -223,9 +222,11 @@ export default Service.extend({
         octave = noteName[1];
       }
 
-      this.set(`${instrumentName}.${noteName}`, noteBuffer);
+      note = Note.create({ letter, octave, accidental, audioBuffer, audioContext });
 
-      return Note.create({ letter, octave, accidental });
+      this.get('fonts').get(instrumentName).set(noteName, note);
+
+      return note;
     });
   }
 });

@@ -1,0 +1,41 @@
+<div class="content">
+  <h2>Audio Files</h2>
+
+  <button class="btn btn-primary" {{action 'playNoteLeft'}}>Play Note Panned Left</button>
+  <button class="btn btn-primary" {{action 'playNoteRight'}}>Play Note Panned Right</button>
+  <button class="btn btn-success" {{action 'playBothNotes'}}>Play Both Notes</button>
+</div>
+
+{{#code-block language='javascript'}}
+  import Ember from 'ember';
+
+  const URL = 'https://raw.githubusercontent.com/mudcube/MIDI.js/master/examples/soundfont/acoustic_grand_piano-mp3/B5.mp3';
+
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+
+    initAudioFiles: Ember.on('init', function() {
+      const audio = this.get('audio');
+
+      // Db5.mp3 is an mp3 file located in this project's "public" folder
+      audio.load('Db5.mp3').asSound('note-left').then((note) => note.pan(-0.7));
+      audio.load(URL).asSound('note-right').then((note) => note.pan(0.7));
+    }),
+
+    actions: {
+      playNoteLeft() {
+        this.get('audio').getSound('note-left').play();
+      },
+
+      playNoteRight() {
+        this.get('audio').getSound('note-right').play();
+      },
+
+      playBothNotes() {
+        const audio = this.get('audio');
+        audio.getSound('note-left').play();
+        audio.getSound('note-right').play();
+      }
+    }
+  });
+{{/code-block}}

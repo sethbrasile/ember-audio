@@ -50,7 +50,7 @@ export function base64ToUint8(sBase64) {
  * encoded strings.
  *
  * @param  {string} text  A soundfont as a long base64 text string
- * @return {json}         A JSON representation of all the notes in the font
+ * @return {object}         A JSON representation of all the notes in the font
  */
  export function mungeSoundFont(text) {
    const begin = text.indexOf('=', text.indexOf('MIDI.Soundfont.')) + 2;

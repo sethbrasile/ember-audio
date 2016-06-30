@@ -11,7 +11,11 @@ Router.map(function() {
     this.route('code');
     this.route('notes');
   });
-  this.route('audio-files');
+  this.route('audio-files', function() {
+    this.route('simple', { path: '/' });
+    this.route('mp3-player');
+    this.route('mp3-player-code');
+  });
 });
 
 export default Router;

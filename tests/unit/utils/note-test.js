@@ -1,4 +1,5 @@
 import { module, test } from 'qunit';
+import ContextMock from '../../helpers/context-mock';
 import {
   Note,
   noteSort,
@@ -7,10 +8,13 @@ import {
   createOctavesWithNotes
 } from 'ember-audio/utils/note';
 
-module('Unit | Utility | note');
-
 const noteFactory = (letter, accidental, octave) => {
-  return Note.create({ letter, accidental, octave });
+  return Note.create({
+    letter,
+    accidental,
+    octave,
+    audioContext: ContextMock.create()
+  });
 };
 
 const A0  = noteFactory('A', null, 0);
@@ -25,6 +29,8 @@ const Db1 = noteFactory('D', 'b', 1);
 
 const correctOctaves      = [[A0, Bb0, B0], [C1, Db1, Ab1, A1, Bb1, B1]];
 const alphabeticalOctaves = [[A0, Bb0, B0], [Ab1, A1, Bb1, B1, C1, Db1]];
+
+module('Unit | Utility | note');
 
 test('identifier is formatted properly', function(assert) {
   assert.expect(1);

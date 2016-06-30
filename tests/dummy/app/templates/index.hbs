@@ -26,12 +26,12 @@
 
     initAudioFile: Ember.on('init', function() {
       // Eb5.mp3 is an mp3 file located in the "public" folder
-      this.get('audio').load('piano-note', 'Eb5.mp3');
+      this.get('audio').load('Eb5.mp3').asSound('piano-note');
     }),
 
     actions: {
       playSound() {
-        this.get('audio').play('piano-note');
+        this.get('audio').getSound('piano-note').play();
       }
     }
   });
@@ -50,8 +50,7 @@
     <li>Custom/pluggable audio routing and effects</li>
     <li>Synthesis</li>
     <li>Timing/scheduling helpers of some kind</li>
-    <li>Visualizations and "play time" helpers of some kind</li>
-    <li>Volume/gain control</li>
+    <li>Visualizations</li>
   </ul>
 
   <p>

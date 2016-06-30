@@ -20,23 +20,20 @@
     notes: null,
 
     initSoundFont: Ember.on('init', function() {
-      // 'piano-font' is the name I've decided to use to refer to the soundfont
       // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
-      // It is located in this app's "public" folder
-      this.get('audio').loadSoundFont('piano-font', 'piano.js')
-        // The promise from loadSountFont resolves to an array of sorted
+      this.get('audio').load('piano.js').asFont('piano')
+        // The promise from asFont() resolves to an array of sorted
         // note objects (sorted the way they would appear on a piano).
         .then((notes) => {
-          this.set('notes', notes);
+          // Slicing here, just so the whole keyboard doesn't show up on the screen
+          this.set('notes', notes.slice(39, 51));
           this.set('isLoading', false);
         });
     }),
 
     actions: {
-      playNoteFromSoundFont(note) {
-        // First arg is the name of the sound font, second arg is the note identifier
-        // The note identifier looks like 'Db1'
-        this.get('audio').play('piano-font', note);
+      playPianoNote(noteIdentifier) {
+        this.get('audio').getFont('piano').play(noteIdentifier);
       }
     }
   });
@@ -49,7 +46,7 @@
     &lt;div id="piano">
       &lt;ol>
         \{{#each notes as |note|}}
-          &lt;li \{{action 'playNoteFromSoundFont' note.identifier}} class=\{{if note.accidental 'black'}}>\{{note.name}}&lt;/li>
+          &lt;li \{{action 'playPianoNote' note.identifier}} class=\{{if note.accidental 'black'}}>\{{note.name}}&lt;/li>
         \{{/each}}
       &lt;/ol>
     &lt;/div>
