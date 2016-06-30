@@ -6,6 +6,8 @@ const ContextMock = Ember.Object.extend({
   startCalled: false,
   createGainCalled: false,
   createAnalyserCalled: false,
+  createStereoPannerCalled: false,
+  gainNode: { gain: { value: 0.4 } },
   bufferSource: null,
   destination: Ember.computed.reads('elementId'),
 
@@ -23,10 +25,12 @@ const ContextMock = Ember.Object.extend({
   },
   createStereoPanner() {
     this.set('panner', { pan: { value: 0 } });
+    this.set('createStereoPannerCalled', true);
     return this.get('panner');
   },
   createGain() {
     this.set('createGainCalled', true);
+    return this.get('gainNode');
   },
   createAnalyser() {
     this.set('createAnalyserCalled', true);

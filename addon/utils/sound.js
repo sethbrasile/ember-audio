@@ -1,4 +1,10 @@
 import Ember from 'ember';
+import zeroify from './zeroify';
+
+const {
+  computed,
+  on
+} = Ember;
 
 const Sound = Ember.Object.extend({
   name: null,
@@ -13,31 +19,31 @@ const Sound = Ember.Object.extend({
 
   pannerNode: null,
   gainNode: null,
-  analyzerNode: null,
+  analyserNode: null,
   analyzePreGain: false,
 
-  duration: Ember.computed('audioBuffer.duration', function() {
+  duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
-    const minutes = (duration / 60).toFixed();
-    const seconds = (duration % 60).toFixed();
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
 
     return {
       raw: duration,
-      string: `${minutes}:${seconds}`,
-      obj: { minutes, seconds }
+      string: `${zeroify(minutes)}:${zeroify(seconds)}`,
+      pojo: { minutes, seconds }
     };
   }),
 
-  percentGain: Ember.computed('gainNode.gain.value', function() {
+  percentGain: computed('gainNode.gain.value', function() {
     return this.get('gainNode.gain.value') * 100;
   }),
 
-  _initNodes: Ember.on('init', function() {
+  _initNodes: on('init', function() {
     const ctx = this.get('audioContext');
 
     this.set('pannerNode', ctx.createStereoPanner());
     this.set('gainNode', ctx.createGain());
-    this.set('analyzerNode', ctx.createAnalyser());
+    this.set('analyserNode', ctx.createAnalyser());
   }),
 
   play() {
@@ -45,7 +51,7 @@ const Sound = Ember.Object.extend({
 
     const panner = this.get('pannerNode');
     const gainNode = this.get('gainNode');
-    const analyzer = this.get('analyzerNode');
+    const analyser = this.get('analyserNode');
 
     const buffer = this.get('audioBuffer');
     const node = ctx.createBufferSource();
@@ -56,11 +62,11 @@ const Sound = Ember.Object.extend({
     panner.connect(gainNode);
 
     if (this.get('analyzePreGain')) {
-      analyzer.connect(gainNode);
+      analyser.connect(gainNode);
       gainNode.connect(ctx.destination);
     } else {
-      gainNode.connect(analyzer);
-      analyzer.connect(ctx.destination);
+      gainNode.connect(analyser);
+      analyser.connect(ctx.destination);
     }
 
     this.set('startTime', ctx.currentTime);

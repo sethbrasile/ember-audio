@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Sound from './sound';
+import zeroify from './zeroify';
 
 const Track = Sound.extend({
   simultaneousPlayAllowed: false,
@@ -7,19 +8,12 @@ const Track = Sound.extend({
   position: Ember.computed('startOffset', function() {
     const startOffset = this.get('startOffset');
     let minutes = Math.floor(startOffset / 60);
-    let seconds = (startOffset - (minutes * 60)).toFixed();
-
-    if (seconds === '60') {
-      seconds = '00';
-      minutes += 1;
-    } else if (seconds < 10) {
-      seconds = `0${seconds}`;
-    }
+    let seconds = startOffset - (minutes * 60);
 
     return {
       raw: startOffset,
-      string: `${minutes}:${seconds}`,
-      obj: { minutes, seconds }
+      string: `${zeroify(minutes)}:${zeroify(seconds)}`,
+      pojo: { minutes, seconds }
     };
   }),
 
