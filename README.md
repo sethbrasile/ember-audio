@@ -23,8 +23,7 @@ Still needs:
   - customizing audio routing
 - Timing helpers
     - http://www.html5rocks.com/en/tutorials/audio/scheduling/
-- Visualizations and "play time" helpers
-- Volume/gain control
+- Visualization helpers
 
 
 ## Installation
