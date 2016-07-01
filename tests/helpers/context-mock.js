@@ -1,40 +1,51 @@
 import Ember from 'ember';
 
-const ContextMock = Ember.Object.extend({
-  createBufferSourceCalled: false,
+const NodeObject = Ember.Object.extend({
   connectCalled: false,
   startCalled: false,
+
+  connect(obj) {
+    this.set('connectCalled', true);
+    this.set('connectedObject', obj);
+  },
+
+  start() {
+    this.set('startCalled', true);
+  }
+});
+
+const ContextMock = Ember.Object.extend({
+  createBufferSourceCalled: false,
   createGainCalled: false,
   createAnalyserCalled: false,
   createStereoPannerCalled: false,
-  gainNode: { gain: { value: 0.4 } },
-  bufferSource: null,
-  destination: Ember.computed.reads('elementId'),
+
+  initDestination: Ember.on('init', function() {
+    this.destination = {};
+  }),
 
   createBufferSource() {
     this.set('createBufferSourceCalled', true);
-    this.set('bufferSource', ContextMock.create());
-    return this.get('bufferSource');
+    return NodeObject.create();
   },
-  connect(object) {
-    this.set('connectCalled', true);
-    this.set('connectedObject', object);
-  },
-  start() {
-    this.set('startCalled', true);
-  },
+
   createStereoPanner() {
-    this.set('panner', { pan: { value: 0 } });
     this.set('createStereoPannerCalled', true);
-    return this.get('panner');
+    return NodeObject.create();
   },
+
   createGain() {
     this.set('createGainCalled', true);
-    return this.get('gainNode');
+    return NodeObject.create({
+      gain: { value: 0.4 }
+    });
   },
+
   createAnalyser() {
     this.set('createAnalyserCalled', true);
+    return NodeObject.create();
   },
+
   decodeAudioData(data) {
     return new Ember.RSVP.Promise((resolve) => resolve(data));
   }
