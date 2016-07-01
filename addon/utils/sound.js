@@ -14,7 +14,7 @@ const Sound = Ember.Object.extend({
   audioContext: null,
   audioBuffer: null,
   connections: null,
-  startTime: 0,
+  startedPlayingAt: 0,
   startOffset: 0,
   isPlaying: false,
   simultaneousPlayAllowed: true,
@@ -80,7 +80,7 @@ const Sound = Ember.Object.extend({
       }
     });
 
-    this.set('startTime', ctx.currentTime);
+    this.set('startedPlayingAt', ctx.currentTime);
 
     if (this.get('simultaneousPlayAllowed')) {
       node.start();

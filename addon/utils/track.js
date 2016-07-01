@@ -25,11 +25,11 @@ const Track = Sound.extend({
   watchPosition: Ember.observer('isPlaying', function() {
     const ctx = this.get('audioContext');
     const startOffset = this.get('startOffset');
-    const startTime = this.get('startTime');
+    const startedPlayingAt = this.get('startedPlayingAt');
 
     const animate = () => {
       if (this.get('isPlaying')) {
-        this.set('startOffset', startOffset + ctx.currentTime - startTime);
+        this.set('startOffset', startOffset + ctx.currentTime - startedPlayingAt);
         requestAnimationFrame(animate);
       }
     };
