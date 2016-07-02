@@ -3,6 +3,7 @@ import zeroify from './zeroify';
 
 const {
   computed,
+  copy,
   on
 } = Ember;
 
@@ -12,15 +13,11 @@ const Sound = Ember.Object.extend({
   panner: null,
   audioContext: null,
   audioBuffer: null,
-  startTime: 0,
+  connections: null,
+  startedPlayingAt: 0,
   startOffset: 0,
   isPlaying: false,
   simultaneousPlayAllowed: true,
-
-  pannerNode: null,
-  gainNode: null,
-  analyserNode: null,
-  analyzePreGain: false,
 
   duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
@@ -41,35 +38,49 @@ const Sound = Ember.Object.extend({
   _initNodes: on('init', function() {
     const ctx = this.get('audioContext');
 
-    this.set('pannerNode', ctx.createStereoPanner());
-    this.set('gainNode', ctx.createGain());
-    this.set('analyserNode', ctx.createAnalyser());
+    if (!this.get('connections')) {
+      this.set('connections', [
+        {
+          name: 'pannerNode',
+          node: ctx.createStereoPanner(),
+        },
+        {
+          name: 'gainNode',
+          node: ctx.createGain(),
+        }
+      ]);
+    }
+
+    this.get('connections').map((connection) => {
+      const { name, node } = connection;
+      this.set(name, node);
+    });
   }),
 
   play() {
     const ctx = this.get('audioContext');
-
-    const panner = this.get('pannerNode');
-    const gainNode = this.get('gainNode');
-    const analyser = this.get('analyserNode');
-
     const buffer = this.get('audioBuffer');
     const node = ctx.createBufferSource();
+    const connections = copy(this.get('connections'));
 
     node.buffer = buffer;
 
-    node.connect(panner);
-    panner.connect(gainNode);
+    // Push bufferSource to first connection
+    connections.unshift({ node });
 
-    if (this.get('analyzePreGain')) {
-      analyser.connect(gainNode);
-      gainNode.connect(ctx.destination);
-    } else {
-      gainNode.connect(analyser);
-      analyser.connect(ctx.destination);
-    }
+    // Push ctx.destination to last connection
+    connections.push({ node: ctx.destination });
 
-    this.set('startTime', ctx.currentTime);
+    // Each node is connected to the next node in the connections array
+    connections.map((connection, index) => {
+      const nextConnection = connections[index + 1];
+
+      if (nextConnection) {
+        connection.node.connect(nextConnection.node);
+      }
+    });
+
+    this.set('startedPlayingAt', ctx.currentTime);
 
     if (this.get('simultaneousPlayAllowed')) {
       node.start();
@@ -82,8 +93,10 @@ const Sound = Ember.Object.extend({
   },
 
   stop() {
-    if (this.get('node')) {
-      this.get('node').stop();
+    const node = this.get('node');
+
+    if (node) {
+      node.stop();
       this.set('isPlaying', false);
     }
   },

@@ -5,31 +5,32 @@ import { module, test } from 'qunit';
 
 module('Unit | Utility | sound');
 
-const audioContext = ContextMock.create();
-
 test('it exists', function(assert) {
+  let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
   assert.ok(result);
 });
 
-test('on init, a gainNode, analyserNode, and pannerNode are created', function(assert) {
+test('on init, a gainNode, and pannerNode are created', function(assert) {
+  let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
   let ctx = result.get('audioContext');
 
   assert.ok(ctx.get('createGainCalled'));
-  assert.ok(ctx.get('createAnalyserCalled'));
   assert.ok(ctx.get('createStereoPannerCalled'));
 });
 
 test('duration.raw works', function(assert) {
-  const audioBuffer = AudioBufferMock.create();
+  let audioContext = ContextMock.create();
+  let audioBuffer = AudioBufferMock.create();
 
   let result = Sound.create({ audioContext, audioBuffer });
   assert.equal(result.get('duration.raw'), 65);
 });
 
 test('duration.string works', function(assert) {
-  const audioBuffer = AudioBufferMock.create();
+  let audioContext = ContextMock.create();
+  let audioBuffer = AudioBufferMock.create();
 
   let result = Sound.create({ audioContext, audioBuffer });
   assert.equal(result.get('duration.string'), '01:05');
@@ -51,7 +52,8 @@ test('duration.string works', function(assert) {
 });
 
 test('duration.pojo works', function(assert) {
-  const audioBuffer = AudioBufferMock.create();
+  let audioContext = ContextMock.create();
+  let audioBuffer = AudioBufferMock.create();
 
   let result = Sound.create({ audioContext, audioBuffer });
   assert.deepEqual(result.get('duration.pojo'), {
@@ -73,6 +75,40 @@ test('duration.pojo works', function(assert) {
 });
 
 test('percentGain works', function(assert) {
+  let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
   assert.equal(result.get('percentGain'), 40);
+});
+
+test('play() calls node.connect(ctx.destination)', function(assert) {
+  let audioContext = ContextMock.create();
+  let result = Sound.create({ audioContext });
+
+  assert.notOk(result.get('node.connectCalled'));
+
+  result.play();
+
+  assert.ok(result.get('node.connectCalled'));
+});
+
+test('play() connects panner', function(assert) {
+  let audioContext = ContextMock.create();
+  let result = Sound.create({ audioContext });
+
+  assert.notOk(result.get('pannerNode.connectCalled'));
+
+  result.play();
+
+  assert.ok(result.get('pannerNode.connectCalled'));
+});
+
+test('play() connects gain', function(assert) {
+  let audioContext = ContextMock.create();
+  let result = Sound.create({ audioContext });
+
+  assert.notOk(result.get('gainNode.connectCalled'));
+
+  result.play();
+
+  assert.ok(result.get('gainNode.connectCalled'));
 });
