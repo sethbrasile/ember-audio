@@ -18,12 +18,10 @@ it out.
 
 Still needs:
 
-- A way to add effects. "pan" currently exists, but I would love to add more and add support for:
-  - "plugging in" custom effects
-  - customizing audio routing
+- Synthesis
+- Visualization helpers
 - Timing helpers
     - http://www.html5rocks.com/en/tutorials/audio/scheduling/
-- Visualization helpers
 
 
 ## Installation
