@@ -4,7 +4,8 @@
     "window",
     "-Promise",
     "AudioContext",
-    "Uint8Array"
+    "Uint8Array",
+    "Float32Array"
   ],
   "browser": true,
   "boss": true,

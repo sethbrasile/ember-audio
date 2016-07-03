@@ -23,7 +23,6 @@ export default Ember.Controller.extend({
 
       if (this.get('distortionEnabled')) {
         const node = this.get('distortionNode.firstObject');
-        node.node.disconnect();
         this.get('note.connections').removeObject(node);
         return;
       }
@@ -41,7 +40,7 @@ export default Ember.Controller.extend({
         }
 
         return curve;
-      };
+      }
 
       distortion.curve = makeDistortionCurve(400);
       distortion.oversample = '4x';

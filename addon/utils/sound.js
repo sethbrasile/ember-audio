@@ -8,6 +8,19 @@ const {
   on
 } = Ember;
 
+function getConnection(ctx, node) {
+  const cmd = node ? node.createCommand : false;
+
+  // if connection has "createCommand", the node needs to be created
+  if (cmd && typeof cmd === 'string') {
+    return { node: ctx[cmd]() };
+
+  // if connection already has "node" then the node has already been created
+} else if (node && node.node) {
+    return node;
+  }
+}
+
 const Sound = Ember.Object.extend({
   name: null,
   node: null,
@@ -37,17 +50,15 @@ const Sound = Ember.Object.extend({
   }),
 
   _initDefaultNodes: on('init', function() {
-    const ctx = this.get('audioContext');
-
     if (!this.get('connections')) {
       this.set('connections', A([
         {
           name: 'pannerNode',
-          node: ctx.createStereoPanner(),
+          createCommand: 'createStereoPanner',
         },
         {
           name: 'gainNode',
-          node: ctx.createGain(),
+          createCommand: 'createGain',
         }
       ]));
     }
@@ -73,11 +84,17 @@ const Sound = Ember.Object.extend({
     connections.pushObject({ name: 'destination', node: ctx.destination });
 
     // Each node is connected to the next node in the connections array
-    connections.map((connection, index) => {
-      const nextConnection = connections[index + 1];
+    connections.map((currentConnection, index) => {
+      const nextConnectionIndex = index + 1;
+      const nextConnection = getConnection(ctx, connections[nextConnectionIndex]);
+
+      // Assign getConnection'd connection back to connections array.
+      // Since we're referencing the next item in the array,
+      // that node would be created twice if we didn't
+      connections[nextConnectionIndex] = nextConnection;
 
       if (nextConnection) {
-        connection.node.connect(nextConnection.node);
+        currentConnection.node.connect(nextConnection.node);
       }
     });
 
