@@ -17,6 +17,7 @@ Router.map(function() {
     this.route('mp3-player');
     this.route('mp3-player-code');
   });
+  this.route('audio-routing');
 });
 
 export default Router;

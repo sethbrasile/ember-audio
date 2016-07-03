@@ -2,6 +2,7 @@ import Ember from 'ember';
 import zeroify from './zeroify';
 
 const {
+  A,
   computed,
   copy,
   on
@@ -35,11 +36,11 @@ const Sound = Ember.Object.extend({
     return this.get('gainNode.gain.value') * 100;
   }),
 
-  _initNodes: on('init', function() {
+  _initDefaultNodes: on('init', function() {
     const ctx = this.get('audioContext');
 
     if (!this.get('connections')) {
-      this.set('connections', [
+      this.set('connections', A([
         {
           name: 'pannerNode',
           node: ctx.createStereoPanner(),
@@ -48,7 +49,7 @@ const Sound = Ember.Object.extend({
           name: 'gainNode',
           node: ctx.createGain(),
         }
-      ]);
+      ]));
     }
 
     this.get('connections').map((connection) => {
@@ -61,15 +62,15 @@ const Sound = Ember.Object.extend({
     const ctx = this.get('audioContext');
     const buffer = this.get('audioBuffer');
     const node = ctx.createBufferSource();
-    const connections = copy(this.get('connections'));
+    const connections = A(copy(this.get('connections')));
 
     node.buffer = buffer;
 
     // Push bufferSource to first connection
-    connections.unshift({ node });
+    connections.unshiftObject({ name: 'bufferSource', node });
 
     // Push ctx.destination to last connection
-    connections.push({ node: ctx.destination });
+    connections.pushObject({ name: 'destination', node: ctx.destination });
 
     // Each node is connected to the next node in the connections array
     connections.map((connection, index) => {
