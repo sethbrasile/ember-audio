@@ -39,8 +39,8 @@ export default Ember.Controller.extend({
     distortion.curve = this._makeDistortionCurve(400);
     distortion.oversample = '4x';
 
-    // insert the distortion node right after the audio source
-    // (audio source is at index 0)
+    // Create the audio node and insert it directly into the connections array
+    // Check the API docs for other ways to add connections
     this.get('note.connections').insertAt(1, {
       name: 'distortionNode',
       node: distortion
@@ -52,7 +52,6 @@ export default Ember.Controller.extend({
 
   _removeDistortion() {
     this.get('note').removeNode('distortionNode');
-    return;
   },
 
   actions: {
