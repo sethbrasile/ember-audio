@@ -4,7 +4,6 @@ import zeroify from './zeroify';
 const {
   A,
   computed,
-  copy,
   on
 } = Ember;
 
@@ -35,6 +34,10 @@ const Sound = Ember.Object.extend({
     return this.getNode('gainNode').gain.value * 100;
   }),
 
+  // Keep in mind that this is recomputed when the connections array changes.
+  // Adjustments to node parameter values must take place AFTER connections are
+  // set up and again any time the connections array is changed, otherwise the
+  // adjusted values will be ignored, and default values will be used instead
   createdConnections: computed('connections.[]', function() {
     const connections = this.get('connections').map((connection) => {
       const { path, name, createCommand, source, createdOnPlay } = connection;
@@ -88,32 +91,9 @@ const Sound = Ember.Object.extend({
   }),
 
   play() {
-    const connections = copy(this.get('createdConnections'));
+    const connections = this.get('createdConnections');
 
-    // Each node is connected to the next node in the connections array
-    connections.map((currentConnection, index) => {
-      const nextConnectionIndex = index + 1;
-      const nextConnection = this._getConnection(connections[nextConnectionIndex]);
-      currentConnection = this._getConnection(currentConnection);
-
-      const { createdOnPlay, name, node } = currentConnection;
-
-      if (createdOnPlay) {
-        this.set(name, node);
-      }
-
-      if (nextConnection) {
-        // Assign nextConnection back to connections array.
-        // Since we're working one step ahead, we don't want
-        // each connection created twice
-        connections[nextConnectionIndex] = nextConnection;
-
-        // Make the connection from current to next
-        currentConnection.node.connect(nextConnection.node);
-      }
-
-      return currentConnection;
-    });
+    this._wireUpConnections(connections);
 
     let node = A(connections).get('firstObject.node');
 
@@ -208,21 +188,47 @@ const Sound = Ember.Object.extend({
     };
   },
 
-  _getConnection(node) {
-    if (node) {
-      const { createdOnPlay, source, createCommand, onPlaySetAttrOnNode } = node;
+  _wireUpConnections(connections) {
+    // Each node is connected to the next node in the connections array
+    connections.map((currentConnection, index) => {
+      const nextConnectionIndex = index + 1;
+      const currentNode = this._createNode(currentConnection);
+
+      const { createdOnPlay, name, node } = currentNode;
 
       if (createdOnPlay) {
-        node.node = this.get(source)[createCommand]();
+        this.set(name, node);
       }
 
-      if (onPlaySetAttrOnNode) {
-        let { attrNameOnNode, relativePath } = onPlaySetAttrOnNode;
-        node.node[attrNameOnNode] = this.get(relativePath);
+      if (nextConnectionIndex < connections.length) {
+        const nextNode = this._createNode(connections[nextConnectionIndex]);
+
+        // Assign nextConnection back to connections array.
+        // Since we're working one step ahead, we don't want
+        // each connection created twice
+        connections[nextConnectionIndex] = nextNode;
+
+        // Make the connection from current to next
+        currentNode.node.connect(nextNode.node);
       }
 
-      return node;
+      return currentNode;
+    });
+  },
+
+  _createNode(node) {
+    const { createdOnPlay, source, createCommand, onPlaySetAttrOnNode } = node;
+
+    if (createdOnPlay) {
+      node.node = this.get(source)[createCommand]();
     }
+
+    if (onPlaySetAttrOnNode) {
+      let { attrNameOnNode, relativePath } = onPlaySetAttrOnNode;
+      node.node[attrNameOnNode] = this.get(relativePath);
+    }
+
+    return node;
   }
 });
 
