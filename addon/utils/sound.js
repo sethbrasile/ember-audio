@@ -121,7 +121,17 @@ const Sound = Ember.Object.extend({
   },
 
   getNode(name) {
-    return this.get('createdConnections').findBy('name', name).node;
+    const connection = this.get('createdConnections').findBy('name', name);
+
+    if (connection) {
+      return connection.node;
+    }
+  },
+
+  removeNode(name) {
+    const connections = this.get('connections');
+    const node = connections.findBy('name', name);
+    connections.removeObject(node);
   },
 
   changeGainTo(value) {
