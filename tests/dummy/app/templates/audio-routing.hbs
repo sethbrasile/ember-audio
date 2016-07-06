@@ -1,9 +1,50 @@
 <div class="content">
   <h2>Audio Routing</h2>
+
   <button class="btn btn-primary" {{action 'playSound'}}>Play Sound</button>
   <button class="btn {{if distortionEnabled 'btn-warning' 'btn-success'}}" {{action 'toggleDistortion'}}>
     Turn {{if distortionEnabled 'Off' 'On'}} Distortion
   </button>
+</div>
+
+<div class="content">
+  <p>
+    By default, a <code>Sound</code> instance is routed through 4 Audio Nodes
+    like this:
+  </p>
+
+  <ol>
+    <li>
+      <code>Source</code> - A node that outputs some type of audio data. The
+      audio data could be a sound loaded from a file, a synthesizer oscillator,
+      or input from a user's microphone.
+    </li>
+    <li>
+      <code>Gain</code> - A node that allows you to control the gain of the
+      audio data that is streaming from the source node.
+    </li>
+    <li>
+      <code>Panner</code> - A node that allows you to control the stereo pan
+      position of the audio data that is streaming from the gain node.
+    </li>
+    <li>
+      <code>Destination</code> - A node that routes the audio data that is
+      streaming from the panner node to the output of a user's computer.
+    </li>
+  </ol>
+</div>
+
+<div class="content">
+  <p>
+    It is possible to customize routing by adding and removing Audio Nodes from
+    a <code>Sound</code> instance's <code>connections</code> array.
+  </p>
+
+  <p>
+    The <code>connections</code> array is an <code>Ember.MutableArray</code>
+    so it is easily manipulated using it's prototype methods such as
+    <code>insertAt</code> and <code>removeAt</code>.
+  </p>
 </div>
 
 <div class="content">
@@ -69,7 +110,7 @@
     },
 
     _removeDistortion() {
-      this.get('note').removeNode('distortionNode');
+      this.get('note.connections').removeAt(1);
     },
 
     actions: {
