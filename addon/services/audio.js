@@ -71,7 +71,10 @@ export default Service.extend({
 
         return sound;
       })
-      .catch((err) => console.error('ember-audio:', err));
+      .catch((err) => {
+        console.error('ember-audio:', err);
+        console.error('ember-audio:', 'This error was probably caused by a 404 or an incompatible audio file type');
+      });
   },
 
   /**

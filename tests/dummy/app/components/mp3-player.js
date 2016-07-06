@@ -44,7 +44,7 @@ export default Component.extend({
       const adjustedOffset = offset - ((height - adjustedHeight) / 2);
       const newGain = adjustedOffset / adjustedHeight;
 
-      this.get('track').changeGain(newGain).from('inverseRatio');
+      this.get('track').changeGainTo(newGain).from('inverseRatio');
     }
   }
 });

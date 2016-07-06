@@ -23,7 +23,8 @@
     "currentPath",
     "currentRouteName",
     "AudioContext",
-    "Uint8Array"
+    "Uint8Array",
+    "Float32Array"
   ],
   "node": false,
   "browser": false,

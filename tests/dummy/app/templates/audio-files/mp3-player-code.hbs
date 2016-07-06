@@ -173,7 +173,7 @@
 
       // Set new gain based on inverse ratio because Y coordinate is measured
       // from the top, but we want gain to be measured from the bottom
-      this.get('track').changeGain(newGain).from('inverseRatio');
+      this.get('track').changeGainTo(newGain).from('inverseRatio');
     }
   }
   {{/code-block}}
