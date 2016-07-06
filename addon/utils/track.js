@@ -39,13 +39,13 @@ const Track = Sound.extend({
 
   play() {
     this._super();
-    this.get('node').onended = () => this.stop();
+    this.get('bufferSourceNode').onended = () => this.stop();
   },
 
   pause() {
     if (this.get('isPlaying')) {
-      this.get('node').onended = function() {};
-      this.get('node').stop();
+      this.get('bufferSourceNode').onended = function() {};
+      this.get('bufferSourceNode').stop();
       this.set('isPlaying', false);
     }
   },
@@ -54,7 +54,7 @@ const Track = Sound.extend({
     this.set('startOffset', 0);
 
     if (this.get('isPlaying')) {
-      this.get('node').onended = function() {};
+      this.get('bufferSourceNode').onended = function() {};
       this._super();
     }
   },

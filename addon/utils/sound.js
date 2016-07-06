@@ -8,26 +8,12 @@ const {
   on
 } = Ember;
 
-function getConnection(ctx, node) {
-  const cmd = node ? node.createCommand : false;
-
-  // if connection has "createCommand", the node needs to be created
-  if (cmd && typeof cmd === 'string') {
-    return { node: ctx[cmd]() };
-
-  // if connection already has "node" then the node has already been created
-} else if (node && node.node) {
-    return node;
-  }
-}
-
 const Sound = Ember.Object.extend({
   name: null,
   node: null,
   panner: null,
   audioContext: null,
   audioBuffer: null,
-  connections: null,
   startedPlayingAt: 0,
   startOffset: 0,
   isPlaying: false,
@@ -45,73 +31,104 @@ const Sound = Ember.Object.extend({
     };
   }),
 
-  percentGain: computed('gainNode.gain.value', function() {
-    return this.get('gainNode.gain.value') * 100;
+  percentGain: computed(function() {
+    return this.getNode('gainNode').gain.value * 100;
   }),
 
-  _initDefaultNodes: on('init', function() {
-    if (!this.get('connections')) {
-      this.set('connections', A([
-        {
-          name: 'pannerNode',
-          createCommand: 'createStereoPanner',
-        },
-        {
-          name: 'gainNode',
-          createCommand: 'createGain',
-        }
-      ]));
-    }
+  createdConnections: computed('connections.[]', function() {
+    const connections = this.get('connections').map((connection) => {
+      const { path, name, createCommand, source, createdOnPlay } = connection;
 
-    this.get('connections').map((connection) => {
-      const { name, node } = connection;
-      this.set(name, node);
+      if (path) {
+        connection.node = this.get(path);
+      } else if (createCommand && source && !createdOnPlay) {
+        connection.node = this.get(source)[createCommand]();
+      } else if (!createdOnPlay && !connection.node) {
+        console.error('ember-audio:', `The ${name} connection is not configured correctly. Please fix this connection.`);
+        return;
+      }
+
+      return connection;
     });
+
+    return A(connections);
+  }),
+
+  initConnections: on('init', function() {
+    this.set('connections', A([
+      {
+        name: 'bufferSourceNode',
+        createdOnPlay: true,
+        source: 'audioContext',
+        createCommand: 'createBufferSource',
+        onPlaySetAttrOnNode: {
+          attrNameOnNode: 'buffer',
+          relativePath: 'audioBuffer'
+        }
+      },
+      {
+        name: 'gainNode',
+        source: 'audioContext',
+        createCommand: 'createGain',
+      },
+      {
+        name: 'pannerNode',
+        source: 'audioContext',
+        createCommand: 'createStereoPanner',
+      },
+      {
+        name: 'destination',
+        path: 'audioContext.destination'
+      }
+    ]));
+
+    // We're not consuming the CP anywhere until "play" is called, but we want
+    // the nodes available before that
+    this.get('createdConnections');
   }),
 
   play() {
-    const ctx = this.get('audioContext');
-    const buffer = this.get('audioBuffer');
-    const node = ctx.createBufferSource();
-    const connections = A(copy(this.get('connections')));
-
-    node.buffer = buffer;
-
-    // Push bufferSource to first connection
-    connections.unshiftObject({ name: 'bufferSource', node });
-
-    // Push ctx.destination to last connection
-    connections.pushObject({ name: 'destination', node: ctx.destination });
+    const connections = copy(this.get('createdConnections'));
 
     // Each node is connected to the next node in the connections array
     connections.map((currentConnection, index) => {
       const nextConnectionIndex = index + 1;
-      const nextConnection = getConnection(ctx, connections[nextConnectionIndex]);
+      const nextConnection = this._getConnection(connections[nextConnectionIndex]);
+      currentConnection = this._getConnection(currentConnection);
 
-      // Assign getConnection'd connection back to connections array.
-      // Since we're referencing the next item in the array,
-      // that node would be created twice if we didn't
-      connections[nextConnectionIndex] = nextConnection;
+      const { createdOnPlay, name, node } = currentConnection;
+
+      if (createdOnPlay) {
+        this.set(name, node);
+      }
 
       if (nextConnection) {
+        // Assign nextConnection back to connections array.
+        // Since we're working one step ahead, we don't want
+        // each connection created twice
+        connections[nextConnectionIndex] = nextConnection;
+
+        // Make the connection from current to next
         currentConnection.node.connect(nextConnection.node);
       }
+
+      return currentConnection;
     });
 
-    this.set('startedPlayingAt', ctx.currentTime);
+    let node = A(connections).get('firstObject.node');
 
     if (this.get('simultaneousPlayAllowed')) {
       node.start();
     } else {
-      node.start(0, this.get('startOffset') % buffer.duration);
+      node.start(0, this.get('startOffset') % node.buffer.duration);
     }
 
-    this.set('node', node);
+    this.set('startedPlayingAt', this.get('audioContext.currentTime'));
     this.set('isPlaying', true);
   },
 
   stop() {
-    const node = this.get('node');
+    const node = this.get('bufferSourceNode');
 
     if (node) {
       node.stop();
@@ -120,11 +137,15 @@ const Sound = Ember.Object.extend({
   },
 
   pan(value) {
-    this.get('pannerNode').pan.value = value;
+    this.getNode('pannerNode').pan.value = value;
   },
 
-  changeGain(value) {
-    const gainNode = this.get('gainNode');
+  getNode(name) {
+    return this.get('createdConnections').findBy('name', name).node;
+  },
+
+  changeGainTo(value) {
+    const gainNode = this.getNode('gainNode');
     const notify = () => this.notifyPropertyChange('percentGain');
 
     function adjustGain(newValue) {
@@ -185,6 +206,23 @@ const Sound = Ember.Object.extend({
         }
       }
     };
+  },
+
+  _getConnection(node) {
+    if (node) {
+      const { createdOnPlay, source, createCommand, onPlaySetAttrOnNode } = node;
+
+      if (createdOnPlay) {
+        node.node = this.get(source)[createCommand]();
+      }
+
+      if (onPlaySetAttrOnNode) {
+        let { attrNameOnNode, relativePath } = onPlaySetAttrOnNode;
+        node.node[attrNameOnNode] = this.get(relativePath);
+      }
+
+      return node;
+    }
   }
 });
 
