@@ -51,7 +51,7 @@ export default Ember.Controller.extend({
   },
 
   _removeDistortion() {
-    this.get('note').removeNode('distortionNode');
+    this.get('note.connections').removeAt(1);
   },
 
   actions: {

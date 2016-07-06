@@ -128,12 +128,6 @@ const Sound = Ember.Object.extend({
     }
   },
 
-  removeNode(name) {
-    const connections = this.get('connections');
-    const node = connections.findBy('name', name);
-    connections.removeObject(node);
-  },
-
   changeGainTo(value) {
     const gainNode = this.getNode('gainNode');
     const notify = () => this.notifyPropertyChange('percentGain');
