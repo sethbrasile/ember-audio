@@ -192,6 +192,12 @@ const Sound = Ember.Object.extend({
     };
   },
 
+  removeConnection(name) {
+    const connections = this.get('connections');
+    const node = connections.findBy('name', name);
+    connections.removeObject(node);
+  },
+
   _wireUpConnections(connections) {
     // Each node is connected to the next node in the connections array
     connections.map((currentConnection, index) => {
