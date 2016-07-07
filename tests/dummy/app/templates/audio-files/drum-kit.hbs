@@ -1,0 +1,56 @@
+<div class="content">
+  <h2>Drum Kit</h2>
+
+  {{#each beats as |beat|}}
+    <div class="beat-pad">
+      <span class="text">{{beat.name}}</span>
+      <span class="pad" {{action 'playBeat' beat.sound}}></span>
+    </div>
+  {{else}}
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  {{/each}}
+</div>
+
+<div class="content">
+  {{#code-block language='handlebars'}}
+  \{{#each beats as |beat|}}
+    &lt;div class="beat-pad">
+      &lt;span class="text">\{{beat.name}}&lt;/span>
+      &lt;span class="pad" \{{action 'playBeat' beat.sound}}>&lt;/span>
+    &lt;/div>
+  \{{else}}
+    \{{!-- some loading indicator... --}}
+  \{{/each}}
+  {{/code-block}}
+
+  {{#code-block language='javascript'}}
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+    beats: Ember.A(),
+
+    loadSound(name) {
+      this.get('audio').load(`${name}.wav`).asSound(name)
+        .then((sound) => this.get('beats').pushObject({ name, sound }));
+    },
+
+    initBeats: Ember.on('init', function() {
+      // kick.wav, snare.wav, and hihat.wav are WAV files in the public folder
+      this.loadSound('kick');
+      this.loadSound('snare');
+      this.loadSound('hihat');
+    }),
+
+    actions: {
+      playBeat(beat) {
+        beat.play();
+      }
+    }
+  });
+  {{/code-block}}
+</div>
