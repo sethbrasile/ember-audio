@@ -9,8 +9,14 @@
 
 <div class="content">
   <p>
-    By default, a <code>Sound</code> instance is routed through 4 Audio Nodes
-    like this:
+    The signal path in the Web Audio API works by allowing you to stitch
+    together various audio "nodes", similarly to real life audio equipment.
+  </p>
+</div>
+
+<div class="content">
+  <p>
+    By default, a <code>Sound</code> instance is routed through 4 Audio Nodes:
   </p>
 
   <ol>
@@ -36,7 +42,16 @@
 
 <div class="content">
   <p>
-    It is possible to customize routing by adding and removing Audio Nodes from
+    The nodes are connected automatically, in the same order that they exist
+    in the <code>connections</code> array. For the example above (the default
+    case) they are connected like: <code>Source</code> -> <code>Gain</code>
+    -> <code>Panner</code> -> <code>Destination</code>
+  </p>
+</div>
+
+<div class="content">
+  <p>
+    It is possible to customize routing by adding and removing audio nodes from
     a <code>Sound</code> instance's <code>connections</code> array.
   </p>
 
@@ -44,6 +59,12 @@
     The <code>connections</code> array is an <code>Ember.MutableArray</code>
     so it is easily manipulated using it's prototype methods such as
     <code>insertAt</code> and <code>removeAt</code>.
+  </p>
+
+  <p>
+    A <code>Sound</code> instance also has a convenience method called
+    <code>removeConnection</code> that allows you to remove a connection by it's
+    <code>name</code>.
   </p>
 </div>
 
@@ -54,9 +75,7 @@
     Turn \{{if distortionEnabled 'Off' 'On'}} Distortion
   &lt;/button>
   {{/code-block}}
-</div>
 
-<div class="content">
   {{#code-block language='javascript'}}
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
@@ -105,11 +124,13 @@
         node: distortion
       });
 
-      // Reduce gain since the distorted sound has much more apparent volume
+      // Reduce gain since the distorted sound has a much higher perceived volume
       this.get('note').changeGainTo(0.1).from('ratio');
     },
 
     _removeDistortion() {
+      // In this case, we know the index of distortionNode for sure, if we didn't,
+      // "this.get('note').removeConnection('distortionNode')" would also work
       this.get('note.connections').removeAt(1);
     },
 
