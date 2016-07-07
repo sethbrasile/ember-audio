@@ -1,12 +1,7 @@
 <div class="content">
   <h2>Drum Kit</h2>
 
-  {{#each beats as |beat|}}
-    <div class="beat-pad">
-      <span class="text">{{beat.name}}</span>
-      <span class="pad" {{action 'playBeat' beat.sound}}></span>
-    </div>
-  {{else}}
+  {{#if isLoading}}
     <div class="spinner">
       <div class="rect1"></div>
       <div class="rect2"></div>
@@ -14,36 +9,49 @@
       <div class="rect4"></div>
       <div class="rect5"></div>
     </div>
-  {{/each}}
+  {{else}}
+    {{#each beats as |beat|}}
+      <div class="beat-pad">
+        <span class="text">{{beat.name}}</span>
+        <span class="pad" {{action 'playBeat' beat.sound}}></span>
+      </div>
+    {{/each}}
+  {{/if}}
 </div>
 
 <div class="content">
   {{#code-block language='handlebars'}}
-  \{{#each beats as |beat|}}
-    &lt;div class="beat-pad">
-      &lt;span class="text">\{{beat.name}}&lt;/span>
-      &lt;span class="pad" \{{action 'playBeat' beat.sound}}>&lt;/span>
-    &lt;/div>
-  \{{else}}
+  \{{#if isLoading}}
     \{{!-- some loading indicator... --}}
-  \{{/each}}
+  \{{else}}
+    \{{#each beats as |beat|}}
+      &lt;div class="beat-pad">
+        &lt;span class="text">\{{beat.name}}&lt;/span>
+        &lt;span class="pad" \{{action 'playBeat' beat.sound}}>&lt;/span>
+      &lt;/div>
+    \{{/each}}
+  \{{/if}}
   {{/code-block}}
 
   {{#code-block language='javascript'}}
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
     beats: Ember.A(),
+    isLoading: true,
 
     loadSound(name) {
-      this.get('audio').load(`${name}.wav`).asSound(name)
+      return this.get('audio').load(`${name}.wav`).asSound(name)
         .then((sound) => this.get('beats').pushObject({ name, sound }));
     },
 
     initBeats: Ember.on('init', function() {
       // kick.wav, snare.wav, and hihat.wav are WAV files in the public folder
-      this.loadSound('kick');
-      this.loadSound('snare');
-      this.loadSound('hihat');
+      Ember.RSVP.all([
+        this.loadSound('kick'),
+        this.loadSound('snare'),
+        this.loadSound('hihat')
+      ])
+      .then(() => this.set('isLoading', false));
     }),
 
     actions: {
