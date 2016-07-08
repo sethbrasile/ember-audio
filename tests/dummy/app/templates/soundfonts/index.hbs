@@ -1,0 +1,75 @@
+<div class="content">
+  <h2>Play a Soundfont</h2>
+  {{#if isLoading}}
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  {{else}}
+    <div id="piano">
+      <ol>
+        {{#each notes as |note|}}
+          <li {{action 'playPianoNote' note.identifier}} class={{if note.accidental 'black'}}>{{note.name}}</li>
+        {{/each}}
+      </ol>
+    </div>
+  {{/if}}
+</div>
+
+<div class="content">
+  <p>
+    <strong>Important Note</strong>: Soundfonts are javascript files, so if you
+    keep your soundfonts inside your project, ember-cli is going to minify them.
+  </p>
+  <p>
+    This is not ok.
+    <a href="http://ember-cli.com/user-guide/#minifying">
+      Exclude your soundfonts from minification.
+    </a>
+  </p>
+</div>
+
+<div class="content">
+  {{#code-block language='handlebars'}}
+  \{{#if isLoading}}
+    \{{!-- Some loading indicator... --}}
+  \{{else}}
+    &lt;div id="piano">
+      &lt;ol>
+        \{{#each notes as |note|}}
+          &lt;li \{{action 'playPianoNote' note.identifier}} class=\{{if note.accidental 'black'}}>\{{note.name}}&lt;/li>
+        \{{/each}}
+      &lt;/ol>
+    &lt;/div>
+  \{{/if}}
+  {{/code-block}}
+
+  {{#code-block language='javascript'}}
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+    isLoading: false,
+    notes: null,
+
+    initSoundFont: Ember.on('init', function() {
+      // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
+      this.get('audio').load('piano.js').asFont('piano')
+        // The promise from asFont() resolves to an array of sorted
+        // note objects (sorted the way they would appear on a piano).
+        .then((notes) => {
+          // Slicing here, just so the whole keyboard doesn't show up on the screen
+          this.set('notes', notes.slice(39, 51));
+          this.set('isLoading', false);
+        });
+    }),
+
+    actions: {
+      playPianoNote(noteIdentifier) {
+        this.get('audio').getFont('piano').play(noteIdentifier);
+      }
+    }
+  });
+  {{/code-block}}
+</div>
