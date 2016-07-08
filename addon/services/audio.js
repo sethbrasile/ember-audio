@@ -24,6 +24,7 @@ export default Service.extend({
   sounds: ObjectLikeMap.create(),
   fonts: ObjectLikeMap.create(),
   tracks: ObjectLikeMap.create(),
+  beats: ObjectLikeMap.create(),
 
   load(src) {
     const _this = this;
@@ -37,6 +38,9 @@ export default Service.extend({
       },
       asFont(name) {
         return _this._loadFont(name, src, 'sound');
+      },
+      asBeat(name) {
+        return _this._load(name, src, 'beat');
       }
     };
   },
@@ -49,6 +53,8 @@ export default Service.extend({
       register = this.get('sounds');
     } else if (type === 'track') {
       register = this.get('tracks');
+    } else if (type === 'beat') {
+      register = this.get('beats');
     }
 
     if (register.has(name)) {
@@ -65,6 +71,8 @@ export default Service.extend({
           sound = Sound.create({ audioBuffer, audioContext, name });
         } else if (type === 'track') {
           sound = Track.create({ audioBuffer, audioContext, name });
+        } else if (type === 'beat') {
+          sound = Beat.create({ audioBuffer, audioContext, name });
         }
 
         register.set(name, sound);
