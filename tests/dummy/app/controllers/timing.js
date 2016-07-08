@@ -27,15 +27,16 @@ export default Ember.Controller.extend({
   actions: {
     play() {
       this.get('drums').map((drum) => {
-        // playBeats() optionally accepts noteLength and beatsInMeasure
-        // noteLength defaults to "1/4" and beatsInMeasure defaults to "4"
-        drum.playBeats(this.get('bpm'));
+        // playBeats() optionally accepts beatLength which defaults to "1/4"
+        // but we want to use eighth notes
+        drum.playBeats(this.get('bpm'), 1/8);
 
-        // /* playBeats() is a convenience method. For more control, you could do: */
-        // const bps = 60 / this.get('bpm');
+        // /* playBeats() is a convenience method. For more control, you could do:
+        // http://bradthemad.org/guitar/tempo_explanation.php */
+        // const beatDuration = (240 * 1/8) / this.get('bpm');
         // drum.get('beats').map((beat, beatIndex) => {
         //   /* whatever else you need to do */
-        //   beat.play(beatIndex * bps);
+        //   beat.play(beatIndex * beatDuration);
         // });
       });
     },

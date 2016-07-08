@@ -27,11 +27,12 @@ const Beat = Sound.extend({
     return beats;
   }),
 
-  playBeats(bpm, beatLength=1/4, beatsInMeasure=4) {
-    const bps = 60 / bpm;
+  playBeats(bpm, beatLength=1/4) {
+    // http://bradthemad.org/guitar/tempo_explanation.php
+    const beatDuration = (240 * beatLength) / bpm;
 
     this.get('beats').map((beat, beatIndex) => {
-      beat.play(beatIndex * bps * beatLength * beatsInMeasure);
+      beat.play(beatIndex * beatDuration);
     });
   }
 });
