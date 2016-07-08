@@ -26,6 +26,15 @@ const Beat = Sound.extend({
 
     return beats;
   }),
+
+  playBeats(bpm) {
+    const bps = 60 / bpm;
+
+    this.get('beats').map((beat, beatIndex) => {
+      // Get the offset for each beat by multiplying it's index by the beats per second
+      beat.play(beatIndex * bps);
+    });
+  }
 });
 
 export default Beat;

@@ -12,8 +12,8 @@ const BeatObject = Ember.Object.extend({
   duration: 100,
 
   // Lets the object have "isPlaying" and "currentTimeIsPlaying" true then back to
-  // false after "playingDuration" has elapsed, so that it's easy to make each
-  // beat flash as it plays
+  // false after "playingDuration" has elapsed, so that it's easy to give each
+  // beat some visual indicator as it plays
   markPlaying() {
     let playingDuration = this.get('playingDuration');
 

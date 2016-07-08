@@ -17,6 +17,7 @@ export default Ember.Controller.extend({
       this.loadSound('hihat')
     ])
     .then((drums) => {
+      // default is 4 beats, but we're going to use 8
       drums.map((drum) => drum.set('numBeats', 8));
       this.set('isLoading', false);
       this.set('drums', drums);
@@ -25,14 +26,15 @@ export default Ember.Controller.extend({
 
   actions: {
     play() {
-      // Beats per second is 60 (seconds) divided by beats per minute
-      const bps = 60 / this.get('bpm');
-
       this.get('drums').map((drum) => {
-        drum.get('beats').map((beat, beatIndex) => {
-          // Get the offset for each beat by multiplying it's index by the beats per second
-          beat.play(beatIndex * bps);
-        });
+        drum.playBeats(this.get('bpm'));
+
+        // /* playBeats() is a convenience method. For more control, you could do: */
+        // const bps = 60 / this.get('bpm');
+        // drum.get('beats').map((beat, beatIndex) => {
+        //   /* whatever else you need to do */
+        //   beat.play(beatIndex * bps);
+        // });
       });
     },
 
