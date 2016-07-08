@@ -6,15 +6,15 @@ export default Ember.Controller.extend({
   isLoading: true,
   bpm: 120,
 
-  loadSound(name) {
+  loadDrum(name) {
     return this.get('audio').load(`/ember-audio/${name}.wav`).asBeat(name);
   },
 
   initBeats: Ember.on('init', function() {
     Ember.RSVP.all([
-      this.loadSound('kick'),
-      this.loadSound('snare'),
-      this.loadSound('hihat')
+      this.loadDrum('kick'),
+      this.loadDrum('snare'),
+      this.loadDrum('hihat')
     ])
     .then((drums) => {
       // default is 4 beats, but we're going to use 8
