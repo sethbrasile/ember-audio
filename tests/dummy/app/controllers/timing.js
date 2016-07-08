@@ -18,7 +18,6 @@ export default Ember.Controller.extend({
     ])
     .then((drums) => {
       drums.map((drum) => drum.set('numBeats', 8));
-
       this.set('isLoading', false);
       this.set('drums', drums);
     });
@@ -26,29 +25,13 @@ export default Ember.Controller.extend({
 
   actions: {
     play() {
-      // Grab the current time
-      const currentTime = this.get('audio.context.currentTime');
+      // Beats per second is 60 (seconds) divided by beats per minute
+      const bps = 60 / this.get('bpm');
 
-      // Each drum has beats
       this.get('drums').map((drum) => {
-
-        // And each beat is either activated or not
         drum.get('beats').map((beat, beatIndex) => {
-          if (beat.get('active')) {
-
-            // If active, multiply it's index by the beats per second calculated
-            // from the current tempo
-            const beatOffset = beatIndex * (60 / this.get('bpm'));
-
-            // Call play on the beat's corresponding drum sound specifying the
-            // amount of time from now that it should play
-            // currentTime + beatOffset should do the trick
-            drum.play(currentTime + beatOffset);
-
-            // Tell the beat to mark itself as "playing" at the same offset time
-            // Ember.run.later wants milliseconds instead of seconds, so multiply by 1000
-            Ember.run.later(() => beat.markPlaying(), beatOffset * 1000);
-          }
+          // Get the offset for each beat by multiplying it's index by the beats per second
+          beat.play(beatIndex * bps);
         });
       });
     },
