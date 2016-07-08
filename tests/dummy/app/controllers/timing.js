@@ -27,6 +27,8 @@ export default Ember.Controller.extend({
   actions: {
     play() {
       this.get('drums').map((drum) => {
+        // playBeats() optionally accepts noteLength and beatsInMeasure
+        // noteLength defaults to "1/4" and beatsInMeasure defaults to "4"
         drum.playBeats(this.get('bpm'));
 
         // /* playBeats() is a convenience method. For more control, you could do: */
@@ -38,12 +40,12 @@ export default Ember.Controller.extend({
       });
     },
 
-    toggleActive(beat, drum) {
-      if (beat.get('active')) {
-        beat.set('active', false);
+    toggleActive(beat) {
+      if (beat.get('isActive')) {
+        beat.set('isActive', false);
       } else {
-        beat.set('active', true);
-        drum.play();
+        beat.set('isActive', true);
+        beat.play();
       }
     }
   }

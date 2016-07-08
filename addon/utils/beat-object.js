@@ -5,7 +5,7 @@ const {
 } = Ember;
 
 const BeatObject = Ember.Object.extend({
-  active: false,
+  isActive: false,
   currentTimeIsPlaying: false,
   isPlaying: false,
   playingDuration: 100,
@@ -28,14 +28,14 @@ const BeatObject = Ember.Object.extend({
     later(() => this.set('currentTimeIsPlaying', false), playingDuration);
 
     // "isPlaying" is only switched on if the beat is active (playing audio)
-    if (this.get('active')) {
+    if (this.get('isActive')) {
       this.set('isPlaying', true);
       later(() => this.set('isPlaying', false), playingDuration);
     }
   },
 
-  play(offset) {
-    if (this.get('active')) {
+  play(offset=0) {
+    if (this.get('isActive')) {
       const currentTime = this.get('audioContext.currentTime');
       this.get('parentPlay')(currentTime + offset);
     }
