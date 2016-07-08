@@ -1,0 +1,119 @@
+<div class="content">
+  <h2>Drum Machine</h2>
+
+    {{#if isLoading}}
+      <div class="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+      </div>
+    {{else}}
+      <div class="controls">
+        <button class="btn btn-primary" {{action 'play'}}>PLAY</button>
+
+        <div>
+          <label>Tempo {{input value=bpm}}</label>
+        </div>
+      </div>
+
+      <div class="beat-machine">
+        {{#each drums as |drum|}}
+          <div class="beat-lane">
+            <p class="text">{{drum.name}}</p>
+
+            {{#each drum.beats as |beat|}}
+              <div class="beat-pad" {{action 'toggleActive' beat}}>
+                <span class="pad {{if beat.isActive 'active'}} {{if beat.isPlaying 'playing'}} {{if beat.currentTimeIsPlaying 'highlighted'}}"></span>
+              </div>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    {{/if}}
+  </div>
+
+  <div class="content">
+    {{#code-block language='handlebars'}}
+    \{{#if isLoading}}
+      \{{!-- Some loading indicator... --}}
+    \{{else}}
+      &lt;div class="controls">
+        &lt;button class="btn btn-primary" \{{action 'play'}}>PLAY&lt;/button>
+
+        &lt;div>
+          &lt;label>Tempo \{{input value=bpm}}&lt;/label>
+        &lt;/div>
+      &lt;/div>
+
+      &lt;div class="beat-machine">
+        \{{#each drums as |drum|}}
+          &lt;div class="beat-lane">
+            &lt;p class="text">\{{drum.name}}&lt;/p>
+
+            \{{#each drum.beats as |beat|}}
+              &lt;div class="beat-pad" \{{action 'toggleActive' beat}}>
+                &lt;span class="pad \{{if beat.isActive 'active'}} \{{if beat.isPlaying 'playing'}} \{{if beat.currentTimeIsPlaying 'highlighted'}}">&lt;/span>
+              &lt;/div>
+            \{{/each}}
+          &lt;/div>
+        \{{/each}}
+      &lt;/div>
+    \{{/if}}
+    {{/code-block}}
+
+    {{#code-block language='javascript'}}
+    export default Ember.Whatever.extend({
+      audio: Ember.inject.service(),
+      drums: null,
+      isLoading: true,
+      bpm: 120,
+
+      loadDrum(name) {
+        return this.get('audio').load(`${name}.wav`).asBeat(name);
+      },
+
+      initBeats: Ember.on('init', function() {
+        Ember.RSVP.all([
+          this.loadDrum('kick'),
+          this.loadDrum('snare'),
+          this.loadDrum('hihat')
+        ])
+        .then((drums) => {
+          // default is 4 beats, but we're going to use 8
+          drums.map((drum) => drum.set('numBeats', 8));
+          this.set('isLoading', false);
+          this.set('drums', drums);
+        });
+      }),
+
+      actions: {
+        play() {
+          this.get('drums').map((drum) => {
+            // playBeats() optionally accepts beatLength which defaults to "1/4"
+            // but we want to use eighth notes
+            drum.playBeats(this.get('bpm'), 1/8);
+
+            // /* playBeats() is a convenience method. For more control, you could do:
+            // http://bradthemad.org/guitar/tempo_explanation.php */
+            // const beatDuration = (240 * 1/8) / this.get('bpm');
+            // drum.get('beats').map((beat, beatIndex) => {
+            //   /* whatever else you need to do */
+            //   beat.play(beatIndex * beatDuration);
+            // });
+          });
+        },
+
+        toggleActive(beat) {
+          if (beat.get('isActive')) {
+            beat.set('isActive', false);
+          } else {
+            beat.set('isActive', true);
+            beat.play();
+          }
+        }
+      }
+    });
+    {{/code-block}}
+</div>

@@ -19,7 +19,9 @@ Router.map(function() {
     this.route('drum-kit');
   });
   this.route('audio-routing');
-  this.route('timing');
+  this.route('timing', function() {
+    this.route('drum-machine');
+  });
 });
 
 export default Router;
