@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Sound from '../utils/sound';
 import Track from '../utils/track';
+import Beat from '../utils/beat';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
 import ObjectLikeMap from '../utils/object-like-map';

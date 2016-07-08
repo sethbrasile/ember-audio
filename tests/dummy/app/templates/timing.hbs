@@ -1,17 +1,21 @@
 <div class="content">
   <h2>Timing</h2>
 
-  <button class="btn btn-primary" {{action 'play'}}>PLAY</button>
+  {{#if isLoading}}
+    loading
+  {{else}}
+    <button class="btn btn-primary" {{action 'play'}}>PLAY</button>
 
-  {{#each drums as |drum|}}
-    <div class="beat-lane">
-      <span class="text">{{drum.sound.name}}</span>
+    {{#each drums as |drum|}}
+      <div class="beat-lane">
+        <span class="text">{{drum.name}}</span>
 
-      {{#each drum.beats as |beat|}}
-        <div class="beat-pad" {{action 'toggleActive' beat drum.sound}}>
-          <span class="pad {{if beat.active 'active'}} {{if beat.isPlaying 'playing'}}"></span>
-        </div>
-      {{/each}}
-    </div>
-  {{/each}}
+        {{#each drum.beats as |beat|}}
+          <div class="beat-pad" {{action 'toggleActive' beat drum}}>
+            <span class="pad {{if beat.active 'active'}} {{if beat.isPlaying 'playing'}}"></span>
+          </div>
+        {{/each}}
+      </div>
+    {{/each}}
+  {{/if}}
 </div>
