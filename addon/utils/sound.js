@@ -90,7 +90,7 @@ const Sound = Ember.Object.extend({
     this.get('createdConnections');
   }),
 
-  play() {
+  play(time) {
     const connections = this.get('createdConnections');
 
     this._wireUpConnections(connections);
@@ -98,7 +98,7 @@ const Sound = Ember.Object.extend({
     let node = A(connections).get('firstObject.node');
 
     if (this.get('simultaneousPlayAllowed')) {
-      node.start();
+      node.start(time);
     } else {
       node.start(0, this.get('startOffset') % node.buffer.duration);
     }
