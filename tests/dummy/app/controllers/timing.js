@@ -1,34 +1,31 @@
 import Ember from 'ember';
 
+const Beat = Ember.Object.extend({
+  active: false,
+  isPlaying: false,
+
+  // Lets the object have "isPlaying" true for 100ms then back to false,
+  // so that it's easy to make each beat flash as it plays
+  markPlaying() {
+    this.set('isPlaying', true);
+    Ember.run.later(() => this.set('isPlaying', false), 100);
+  }
+});
+
 function getBeats() {
-  const arr = [];
+  const beats = [];
 
-  // Push 8 Ember.Objects onto an array. This is just to simplify handling "beats" later
   for (let i = 0; i < 8; i++) {
-    arr.push(
-      Ember.Object.create({
-        active: false,
-        isPlaying: false,
-
-        // Lets the object have "isPlaying" true for 100ms
-        // so that it's easy to make each beat flash as it plays
-        markPlaying() {
-          this.set('isPlaying', true);
-
-          Ember.run.later(() => this.set('isPlaying', false), 100);
-        }
-      })
-    );
+    beats.push(Beat.create());
   }
 
-  return arr;
+  return beats;
 }
 
 export default Ember.Controller.extend({
   audio: Ember.inject.service(),
   drums: null,
   isLoading: true,
-  shouldLoop: true,
   bpm: 200,
 
   loadSound(name) {
@@ -55,26 +52,26 @@ export default Ember.Controller.extend({
   actions: {
     play() {
       // Grab the current time
-      const time = this.get('audio.context.currentTime');
+      const currentTime = this.get('audio.context.currentTime');
 
       // Each drum has beats
       this.get('drums').map((drum) => {
 
-        // And each beat is either active or not
+        // And each beat is either activated or not
         drum.get('beats').map((beat, beatIndex) => {
-
-          // If a beat is active:
           if (beat.get('active')) {
 
-            // Multiply it's index by the beats per second for the current tempo
+            // If active, multiply it's index by the beats per second calculated
+            // from the current tempo
             const beatOffset = beatIndex * (60 / this.get('bpm'));
 
-            // Call play on the drum's sound specifying the amount of time from now
-            // that it should play; currentTime + beatOffset should do the trick
-            drum.get('sound').play(time + beatOffset);
+            // Call play on the beat's corresponding drum sound specifying the
+            // amount of time from now that it should play
+            // currentTime + beatOffset should do the trick
+            drum.get('sound').play(currentTime + beatOffset);
 
-            // Tell the beat to mark itself as "playing" at the same time
-            // Ember.run.later accepts milliseconds instead of seconds, so multiply by 1000
+            // Tell the beat to mark itself as "playing" at the same offset time
+            // Ember.run.later wants milliseconds instead of seconds, so multiply by 1000
             Ember.run.later(() => beat.markPlaying(), beatOffset * 1000);
           }
         });
