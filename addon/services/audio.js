@@ -49,12 +49,15 @@ export default Service.extend({
     const audioContext = this.get('context');
     let register;
 
-    if (type === 'sound') {
-      register = this.get('sounds');
-    } else if (type === 'track') {
-      register = this.get('tracks');
-    } else if (type === 'beat') {
-      register = this.get('beats');
+    switch(type) {
+      case 'track':
+        register = this.get('tracks');
+        break;
+      case 'beat':
+        register = this.get('beats');
+        break;
+      default:
+        register = this.get('sounds');
     }
 
     if (register.has(name)) {
@@ -67,12 +70,15 @@ export default Service.extend({
       .then((audioBuffer) => {
         let sound;
 
-        if (type === 'sound') {
-          sound = Sound.create({ audioBuffer, audioContext, name });
-        } else if (type === 'track') {
-          sound = Track.create({ audioBuffer, audioContext, name });
-        } else if (type === 'beat') {
-          sound = Beat.create({ audioBuffer, audioContext, name });
+        switch(type) {
+          case 'track':
+            sound = Track.create({ audioBuffer, audioContext, name });
+            break;
+          case 'beat':
+            sound = Beat.create({ audioBuffer, audioContext, name });
+            break;
+          default:
+            sound = Sound.create({ audioBuffer, audioContext, name });
         }
 
         register.set(name, sound);
