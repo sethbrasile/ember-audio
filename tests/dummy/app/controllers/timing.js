@@ -4,7 +4,7 @@ export default Ember.Controller.extend({
   audio: Ember.inject.service(),
   drums: null,
   isLoading: true,
-  bpm: 200,
+  bpm: 120,
 
   loadSound(name) {
     return this.get('audio').load(`/ember-audio/${name}.wav`).asBeat(name);
