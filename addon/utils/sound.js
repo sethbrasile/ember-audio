@@ -5,6 +5,7 @@ const {
   A,
   computed,
   on,
+  set,
   run: { later }
 } = Ember;
 
@@ -17,6 +18,7 @@ const Sound = Ember.Object.extend({
   startedPlayingAt: 0,
   startOffset: 0,
   isPlaying: false,
+  // gainValue: 0.1,
 
   duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
@@ -64,20 +66,28 @@ const Sound = Ember.Object.extend({
         createdOnPlay: true,
         source: 'audioContext',
         createCommand: 'createBufferSource',
-        onPlaySetAttrOnNode: {
-          attrNameOnNode: 'buffer',
-          relativePath: 'audioBuffer'
-        }
+        onPlaySetAttrsOnNode: [
+          {
+            attrNameOnNode: 'buffer',
+            relativePath: 'audioBuffer'
+          }
+        ]
       },
       {
         name: 'gainNode',
         source: 'audioContext',
-        createCommand: 'createGain',
+        createCommand: 'createGain'
+        // onPlaySetAttrsOnNode: [
+        //   {
+        //     attrNameOnNode: 'gain.value',
+        //     relativePath: 'gainValue'
+        //   }
+        // ]
       },
       {
         name: 'pannerNode',
         source: 'audioContext',
-        createCommand: 'createStereoPanner',
+        createCommand: 'createStereoPanner'
       },
       {
         name: 'destination',
@@ -227,16 +237,18 @@ const Sound = Ember.Object.extend({
   },
 
   _createNode(node) {
-    const { name, createdOnPlay, source, createCommand, onPlaySetAttrOnNode } = node;
+    const { name, createdOnPlay, source, createCommand, onPlaySetAttrsOnNode } = node;
 
     if (createdOnPlay) {
       node.node = this.get(source)[createCommand]();
       this.set(name, node.node);
     }
 
-    if (onPlaySetAttrOnNode) {
-      let { attrNameOnNode, relativePath } = onPlaySetAttrOnNode;
-      node.node[attrNameOnNode] = this.get(relativePath);
+    if (onPlaySetAttrsOnNode) {
+      onPlaySetAttrsOnNode.map((attr) => {
+        let { attrNameOnNode, relativePath } = attr;
+        set(node.node, attrNameOnNode, this.get(relativePath))
+      });
     }
 
     return node;
