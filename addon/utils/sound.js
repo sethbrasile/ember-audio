@@ -194,12 +194,9 @@ const Sound = Ember.Object.extend({
   },
 
   _play(playAt) {
-    const connections = this.get('createdConnections');
     const currentTime = this.get('audioContext.currentTime');
-
-    this._wireUpConnections(connections);
-
-    let node = A(connections).get('firstObject.node');
+    const connections = this._wireUpConnections();
+    const node = connections[0].node;
 
     node.start(playAt, this.get('startOffset'));
 
@@ -207,9 +204,11 @@ const Sound = Ember.Object.extend({
     later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);
   },
 
-  _wireUpConnections(connections) {
+  _wireUpConnections() {
+    const connections = this.get('createdConnections');
+
     // Each node is connected to the next node in the connections array
-    connections.map((currentConnection, index) => {
+    return connections.map((currentConnection, index) => {
       const nextConnectionIndex = index + 1;
       const currentNode = this._createNode(currentConnection);
 
