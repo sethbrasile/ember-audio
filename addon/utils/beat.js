@@ -19,6 +19,7 @@ const Beat = Sound.extend({
         playingTime: this.get('playingTime'),
         duration: this.get('audioBuffer.duration'),
         parentPlayIn: this.playIn.bind(this),
+        parentPlay: this.play.bind(this),
         audioContext: this.get('audioContext')
       }));
     }
