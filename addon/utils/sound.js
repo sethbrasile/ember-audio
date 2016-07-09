@@ -18,7 +18,6 @@ const Sound = Ember.Object.extend({
   startedPlayingAt: 0,
   startOffset: 0,
   isPlaying: false,
-  // gainValue: 0.1,
 
   duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
@@ -77,12 +76,6 @@ const Sound = Ember.Object.extend({
         name: 'gainNode',
         source: 'audioContext',
         createCommand: 'createGain'
-        // onPlaySetAttrsOnNode: [
-        //   {
-        //     attrNameOnNode: 'gain.value',
-        //     relativePath: 'gainValue'
-        //   }
-        // ]
       },
       {
         name: 'pannerNode',
