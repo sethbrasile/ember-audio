@@ -34,10 +34,9 @@ const BeatObject = Ember.Object.extend({
     }
   },
 
-  play(offset=0) {
+  playIn(offset=0) {
     if (this.get('isActive')) {
-      const currentTime = this.get('audioContext.currentTime');
-      this.get('parentPlay')(currentTime + offset);
+      this.get('parentPlayIn')(offset);
     }
 
     later(() => this.markPlaying(), offset * 1000);

@@ -36,7 +36,7 @@ export default Ember.Controller.extend({
         // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
         // drum.get('beats').map((beat, beatIndex) => {
         //   /* whatever else you need to do */
-        //   beat.play(beatIndex * eighthNoteDuration);
+        //   beat.playIn(beatIndex * eighthNoteDuration);
         // });
       });
     },

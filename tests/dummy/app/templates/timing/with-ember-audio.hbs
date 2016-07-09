@@ -2,12 +2,15 @@
   <h2>Timing with Ember Audio</h2>
 
   <p>
-    There are two ways to schedule sounds with Ember Audio:
+    There are three ways to schedule sounds with Ember Audio:
   </p>
 </div>
 
 <div class="content">
   <h3>1: Manually passing a time to a <code>Sound</code> or a <code>Track</code></h3>
+  <p>
+    With the <code>playIn</code> and <code>playAt</code> methods.
+  </p>
 </div>
 
 {{#code-block language='javascript'}}
@@ -19,7 +22,18 @@
   const now = audio.get('context.currentTime');
   const sound = audio.getSound('some-sound');
 
-  sound.play(now + 1); // plays in 1 second
+  sound.playAt(now + 1); // plays in 1 second
+{{/code-block}}
+
+{{#code-block language='javascript'}}
+  this.get('audio').load('some.mp3').asSound('some-sound');
+
+  // some time later...
+
+  const audio = this.get('audio');
+  const sound = audio.getSound('some-sound');
+
+  sound.playIn(1); // plays in 1 second
 {{/code-block}}
 
 <div class="content">
@@ -32,29 +46,24 @@
 
   // some time later...
 
-  const Beat = this.get('audio').getBeat('some-sound');
+  const beatTrack = this.get('audio').getBeat('some-sound');
   const BPM = 120;
 
   // A "Beat" has "beats" that need to be "active" before they will play
   // This is to facilitate the way that most "drum machines" work
-  Beat.get('beats').map((beat) => beat.set('isActive', true));
+  beatTrack.get('beats').map((beat) => beat.set('isActive', true));
 
   // playBeats() accepts BPM and will play all active beats at that BPM,
-  // leaving rests (periods with no audio) during any beat that isn't active
+  // leaving rests (periods with no audio) during any beat that isn't "active"
   // In this instance, all 8 beats would play sequentially at 120 beats per minute
-  Beat.playBeats(BPM);
+  beatTrack.playBeats(BPM);
 {{/code-block}}
 
 <div class="content">
   <p>
     Instead of using <code>playBeats</code>, you can also call a beat's
-    <code>play</code> method directly, passing an amount of time
+    <code>playIn</code> method directly, passing an amount of time
     from now (in seconds) that the beat should play.
-  </p>
-
-  <p>
-    Note that I said "time from now" and you don't have to worry about
-    <code>currentTime</code>.
   </p>
 </div>
 
@@ -62,7 +71,7 @@
   // http://bradthemad.org/guitar/tempo_explanation.php
   const eighthNoteDuration = (240 * 1/8) / BPM;
 
-  Beat.get('beats').map((beat, beatIndex) => {
-    beat.play(beatIndex * eighthNoteDuration);
+  beatTrack.get('beats').map((beat, beatIndex) => {
+    beat.playIn(beatIndex * eighthNoteDuration);
   });
 {{/code-block}}

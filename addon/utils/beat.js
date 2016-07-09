@@ -6,7 +6,6 @@ const {
   computed
 } = Ember;
 
-
 const Beat = Sound.extend({
   numBeats: 4,
   playingTime: 100,
@@ -19,7 +18,7 @@ const Beat = Sound.extend({
       beats.push(BeatObject.create({
         playingTime: this.get('playingTime'),
         duration: this.get('audioBuffer.duration'),
-        parentPlay: this.play.bind(this),
+        parentPlayIn: this.playIn.bind(this),
         audioContext: this.get('audioContext')
       }));
     }
@@ -32,7 +31,7 @@ const Beat = Sound.extend({
     const beatDuration = (240 * beatLength) / bpm;
 
     this.get('beats').map((beat, beatIndex) => {
-      beat.play(beatIndex * beatDuration);
+      beat.playIn(beatIndex * beatDuration);
     });
   }
 });
