@@ -138,6 +138,10 @@ export default Service.extend({
       .catch((err) => console.error('ember-audio:', err));
   },
 
+  getBeat(name) {
+    return this.get('beats').get(name);
+  },
+
   getSound(name) {
     return this.get('sounds').get(name);
   },
