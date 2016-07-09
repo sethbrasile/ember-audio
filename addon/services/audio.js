@@ -46,20 +46,69 @@ export default Service.extend({
     };
   },
 
-  _load(name, src, type) {
-    const audioContext = this.get('context');
-    let register;
+  getBeat(name) {
+    return this.get('beats').get(name);
+  },
 
+  getSound(name) {
+    return this.get('sounds').get(name);
+  },
+
+  getTrack(name) {
+    return this.get('tracks').get(name);
+  },
+
+  getFont(name) {
+    const font = this.get('fonts').get(name);
+
+    return {
+      play(note) {
+        if (font.has(note)) {
+          font.get(note).play();
+        } else {
+          throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
+        }
+      }
+    };
+  },
+
+  stopAll(type='tracks') {
+    for (let sound of this.get(type).values()) {
+      sound.stop();
+    }
+  },
+
+  pauseAll() {
+    for (let sound of this.get('tracks').values()) {
+      sound.pause();
+    }
+  },
+
+  _getRegisterFor(type) {
     switch(type) {
       case 'track':
-        register = this.get('tracks');
-        break;
+        return this.get('tracks');
       case 'beat':
-        register = this.get('beats');
-        break;
+        return this.get('beats');
       default:
-        register = this.get('sounds');
+        return this.get('sounds');
     }
+  },
+
+  _createSoundFor(type, props) {
+    switch(type) {
+      case 'track':
+        return Track.create(props);
+      case 'beat':
+        return Beat.create(props);
+      default:
+        return Sound.create(props);
+    }
+  },
+
+  _load(name, src, type) {
+    const audioContext = this.get('context');
+    const register = this._getRegisterFor(type);
 
     if (register.has(name)) {
       return resolve(register.get(name));
@@ -69,21 +118,8 @@ export default Service.extend({
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        let sound;
-
-        switch(type) {
-          case 'track':
-            sound = Track.create({ audioBuffer, audioContext, name });
-            break;
-          case 'beat':
-            sound = Beat.create({ audioBuffer, audioContext, name });
-            break;
-          default:
-            sound = Sound.create({ audioBuffer, audioContext, name });
-        }
-
+        const sound = this._createSoundFor(type, { audioBuffer, audioContext, name });
         register.set(name, sound);
-
         return sound;
       })
       .catch((err) => {
@@ -131,49 +167,11 @@ export default Service.extend({
       // Create a "note" Ember.Object for each note from the decoded audio data.
       // Also does this.set(`sounds.${instrumentName}.${noteName}`, note);
       // for each note
-      .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
+      .then((keyValuePairs) => this._createNoteObjects(keyValuePairs, instrumentName))
 
       .then(sortNotes)
 
       .catch((err) => console.error('ember-audio:', err));
-  },
-
-  getBeat(name) {
-    return this.get('beats').get(name);
-  },
-
-  getSound(name) {
-    return this.get('sounds').get(name);
-  },
-
-  getTrack(name) {
-    return this.get('tracks').get(name);
-  },
-
-  getFont(name) {
-    const font = this.get('fonts').get(name);
-
-    return {
-      play(note) {
-        if (font.has(note)) {
-          font.get(note).play();
-        } else {
-          throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
-        }
-      }
-    };
-  },
-
-  stopAll(type='tracks') {
-    for (let sound of this.get(type).values()) {
-      sound.stop();
-    }
-  },
-
-  pauseAll() {
-    for (let sound of this.get('tracks').values()) {
-      sound.pause();
-    }
   },
 
   /**
