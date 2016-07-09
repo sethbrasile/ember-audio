@@ -9,8 +9,10 @@
 
 <div class="content">
   <p>
-    The signal path in the Web Audio API works by allowing you to stitch
-    together various audio "nodes", similarly to real life audio equipment.
+    The signal path in the Web Audio API works by allowing one to stitch
+    together various audio "nodes." An audio node works just like a guitar pedal;
+    It has an input, it does some stuff to whatever goes into that input, and
+    it has an output.
   </p>
 </div>
 
@@ -21,21 +23,25 @@
 
   <ol>
     <li>
-      <code>Source</code> - A node that outputs some type of audio data. The
-      audio data could be a sound loaded from a file, a synthesizer oscillator,
-      or input from a user's microphone.
+      <code>Source</code> - It's input is some sort of audio source; Sound
+      loaded from a file, a synthesizer oscillator, or input from a user's
+      microphone. It's output is digital audio data that the other audio
+      nodes understand.
     </li>
     <li>
-      <code>Gain</code> - A node that allows you to control the gain of the
-      audio data that is streaming from the source node.
+      <code>Gain</code> - This node allows one to adjust the
+      <a href="http://www.offbeatband.com/2009/08/the-difference-between-gain-volume-level-and-loudness/">
+        gain
+      </a>
+      of the audio data that is routed through it.
     </li>
     <li>
-      <code>Panner</code> - A node that allows you to control the stereo pan
-      position of the audio data that is streaming from the gain node.
+      <code>Panner</code> - This node allows one to control the stereo pan
+      position (left or right) of the audio data that is routed through it.
     </li>
     <li>
-      <code>Destination</code> - A node that routes the audio data that is
-      streaming from the panner node to the output of a user's computer.
+      <code>Destination</code> - This node routes any audio data that is routed
+      through it, to the end user's audio output.
     </li>
   </ol>
 </div>
@@ -46,6 +52,17 @@
     in the <code>connections</code> array. For the example above (the default
     case) they are connected like: <code>Source</code> -> <code>Gain</code>
     -> <code>Panner</code> -> <code>Destination</code>
+  </p>
+</div>
+
+<div class="content">
+  <p class="well">
+    There are many more <code>AudioNode</code> types provided by the Web Audio
+    API than the ones that are represented here. Take a look at the
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">
+      Web Audio API Documentation
+    </a>
+    to learn about all of the available <code>AudioNode</code> types.
   </p>
 </div>
 
@@ -63,7 +80,7 @@
 
   <p>
     A <code>Sound</code> instance also has a convenience method called
-    <code>removeConnection</code> that allows you to remove a connection by it's
+    <code>removeConnection</code> that allows one to remove a connection by it's
     <code>name</code>.
   </p>
 </div>
