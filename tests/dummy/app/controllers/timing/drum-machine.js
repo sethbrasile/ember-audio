@@ -33,10 +33,10 @@ export default Ember.Controller.extend({
 
         // /* playBeats() is a convenience method. For more control, you could do:
         // http://bradthemad.org/guitar/tempo_explanation.php */
-        // const beatDuration = (240 * 1/8) / this.get('bpm');
+        // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
         // drum.get('beats').map((beat, beatIndex) => {
         //   /* whatever else you need to do */
-        //   beat.play(beatIndex * beatDuration);
+        //   beat.play(beatIndex * eighthNoteDuration);
         // });
       });
     },

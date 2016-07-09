@@ -19,6 +19,7 @@ Router.map(function() {
   this.route('audio-routing');
   this.route('timing', function() {
     this.route('drum-machine');
+    this.route('with-ember-audio');
   });
 });
 
