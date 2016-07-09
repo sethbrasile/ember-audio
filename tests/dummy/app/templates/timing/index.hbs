@@ -76,8 +76,58 @@
 
   <p>
     With Ember Audio, this is an important concept to understand, but in some
-    more complex cases (such as building a rhythmically-based instrument) this
-    is already handled for you. Check out Beats in
-    {{link-to 'Timing with Ember Audio' 'timing.with-ember-audio'}}.
+    many cases (even more complex cases, such as building a rhythmically-based
+    instrument) this is already handled for you. Check out
+    {{link-to 'Beats' 'timing.with-ember-audio'}}.
   </p>
 </div>
+
+<div class="content">
+  <h2>The first example again, but with real code</h2>
+
+  <p>
+    Just in case you're not completely grasping how this relates directly to
+    Ember Audio. Here is the first example from above, but written so that it
+    works in Ember and Ember Audio.
+  </p>
+</div>
+
+<button class="btn" {{action 'playInOneSecond1'}}>Play in One Second</button>
+
+{{#code-block language='handlebars'}}
+  &lt;button \{{action 'playInOneSecond'}}>Play in One Second&lt;/button>
+{{/code-block}}
+
+{{#code-block language='javascript'}}
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+
+    initSound: Ember.on('init', function() {
+      this.get('audio').load('Db5.mp3').asSound('delayed-note');
+    }),
+
+    actions: {
+      playInOneSecond() {
+        const audio = this.get('audio');
+        const currentTime = audio.get('context.currentTime');
+        audio.getSound('delayed-note').playAt(currentTime + 1);
+      }
+    }
+  });
+{{/code-block}}
+
+<div class="content">
+  <p>
+    By using a <code>Sound</code>'s <code>playIn</code> method,
+    <code>currentTime</code> is handled for you, so this can be made even simpler.
+  </p>
+</div>
+
+<button class="btn" {{action 'playInOneSecond2'}}>Play in One Second</button>
+
+
+{{#code-block language='javascript'}}
+  playInOneSecond() {
+    this.get('audio').getSound('delayed-note').playIn(1);
+  }
+{{/code-block}}
