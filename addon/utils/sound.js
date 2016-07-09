@@ -205,26 +205,18 @@ const Sound = Ember.Object.extend({
   },
 
   _wireUpConnections() {
-    const connections = this.get('createdConnections');
-
     // Each node is connected to the next node in the connections array
-    return connections.map((currentConnection, index) => {
-      const nextConnectionIndex = index + 1;
-      const currentNode = this._createNode(currentConnection);
+    return this.get('createdConnections').map((connection, idx, connections) => {
+      const nextIdx = idx + 1;
+      const currentNode = this._createNode(connection);
 
-      const { createdOnPlay, name, node } = currentNode;
-
-      if (createdOnPlay) {
-        this.set(name, node);
-      }
-
-      if (nextConnectionIndex < connections.length) {
-        const nextNode = this._createNode(connections[nextConnectionIndex]);
+      if (nextIdx < connections.length) {
+        const nextNode = this._createNode(connections[nextIdx]);
 
         // Assign nextConnection back to connections array.
         // Since we're working one step ahead, we don't want
         // each connection created twice
-        connections[nextConnectionIndex] = nextNode;
+        connections[nextIdx] = nextNode;
 
         // Make the connection from current to next
         currentNode.node.connect(nextNode.node);
@@ -235,10 +227,11 @@ const Sound = Ember.Object.extend({
   },
 
   _createNode(node) {
-    const { createdOnPlay, source, createCommand, onPlaySetAttrOnNode } = node;
+    const { name, createdOnPlay, source, createCommand, onPlaySetAttrOnNode } = node;
 
     if (createdOnPlay) {
       node.node = this.get(source)[createCommand]();
+      this.set(name, node.node);
     }
 
     if (onPlaySetAttrOnNode) {
