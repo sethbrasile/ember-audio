@@ -53,7 +53,7 @@
   // timing at the moment.
   var context = new AudioContext();
 
-  var sound = createSound();
+  var sound = // Create or load a sound and hook up audio inputs and outputs.
 
   function handleClick() {
     var now = context.currentTime;
@@ -63,3 +63,21 @@
     }
   }
 {{/code-block}}
+
+<div class="content">
+  <p>
+    As you can see, as far as an <code>AudioContext</code> is concerned, the
+    moment that it is created is "the beginning of time" and scheduling events
+    is achieved by specifying an exact moment in time.
+    <code>sound.start(100)</code> would play the sound exactly 100 seconds after
+    the <code>AudioContext</code> was created, regardless of what time
+    <code>sound.start(100)</code> was called.
+  </p>
+
+  <p>
+    With Ember Audio, this is an important concept to understand, but in some
+    more complex cases (such as building a rhythmically-based instrument) this
+    is already handled for you. Check out Beats in
+    {{link-to 'Timing with Ember Audio' 'timing.with-ember-audio'}}.
+  </p>
+</div>
