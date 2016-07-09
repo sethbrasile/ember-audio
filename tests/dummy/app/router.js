@@ -8,8 +8,6 @@ const Router = Ember.Router.extend({
 
 Router.map(function() {
   this.route('soundfonts', function() {
-    this.route('play', { path: '/' });
-    this.route('code');
     this.route('notes');
   });
   this.route('audio-files', function() {
@@ -19,6 +17,10 @@ Router.map(function() {
     this.route('drum-kit');
   });
   this.route('audio-routing');
+  this.route('timing', function() {
+    this.route('drum-machine');
+    this.route('with-ember-audio');
+  });
 });
 
 export default Router;

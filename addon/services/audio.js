@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Sound from '../utils/sound';
 import Track from '../utils/track';
+import Beat from '../utils/beat';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
 import ObjectLikeMap from '../utils/object-like-map';
@@ -24,6 +25,7 @@ export default Service.extend({
   sounds: ObjectLikeMap.create(),
   fonts: ObjectLikeMap.create(),
   tracks: ObjectLikeMap.create(),
+  beats: ObjectLikeMap.create(),
 
   load(src) {
     const _this = this;
@@ -37,6 +39,9 @@ export default Service.extend({
       },
       asFont(name) {
         return _this._loadFont(name, src, 'sound');
+      },
+      asBeat(name) {
+        return _this._load(name, src, 'beat');
       }
     };
   },
@@ -45,10 +50,15 @@ export default Service.extend({
     const audioContext = this.get('context');
     let register;
 
-    if (type === 'sound') {
-      register = this.get('sounds');
-    } else if (type === 'track') {
-      register = this.get('tracks');
+    switch(type) {
+      case 'track':
+        register = this.get('tracks');
+        break;
+      case 'beat':
+        register = this.get('beats');
+        break;
+      default:
+        register = this.get('sounds');
     }
 
     if (register.has(name)) {
@@ -61,10 +71,15 @@ export default Service.extend({
       .then((audioBuffer) => {
         let sound;
 
-        if (type === 'sound') {
-          sound = Sound.create({ audioBuffer, audioContext, name });
-        } else if (type === 'track') {
-          sound = Track.create({ audioBuffer, audioContext, name });
+        switch(type) {
+          case 'track':
+            sound = Track.create({ audioBuffer, audioContext, name });
+            break;
+          case 'beat':
+            sound = Beat.create({ audioBuffer, audioContext, name });
+            break;
+          default:
+            sound = Sound.create({ audioBuffer, audioContext, name });
         }
 
         register.set(name, sound);
@@ -121,6 +136,10 @@ export default Service.extend({
       .then(sortNotes)
 
       .catch((err) => console.error('ember-audio:', err));
+  },
+
+  getBeat(name) {
+    return this.get('beats').get(name);
   },
 
   getSound(name) {

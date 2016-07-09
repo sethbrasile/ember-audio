@@ -1,3 +1,16 @@
+.controls
+  text-align: center
+
+.beat-machine
+  display: table
+  margin: 0 auto
+
+.beat-lane
+  margin: 1em 0
+
+  .text
+    display: block
+
 .beat-pad
   display: inline-block
   height: 100px
@@ -8,3 +21,12 @@
     background-color: darken($code-bg, 6)
     display: block
     height: 100%
+
+    &.highlighted
+      background-color: $code-bg
+
+    &.active
+      background-color: red
+
+    &.playing
+      background-color: black

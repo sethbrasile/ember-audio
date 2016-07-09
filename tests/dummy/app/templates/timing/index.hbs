@@ -1,0 +1,133 @@
+<div class="content">
+  <h2>Timing</h2>
+
+  <p>
+    Timing with the Web Audio API can seem tricky at first. It's unlike any other
+    timing system native to the browser. It's not very complex, and easy to
+    wrap your brain around once you "get" it.
+  </p>
+
+  <p>
+    It's based on the concept of a <code>currentTime</code> that starts at
+    0 and counts it's way up in (high-precision, floating-point)
+    seconds. This <code>currentTime</code> starts the moment that an
+    <code>AudioContext</code> has been created.
+  </p>
+
+  <p>
+    If, for instance, you wanted a sound to play exactly 1 second
+    after a user clicks a button, it could look like this:
+  </p>
+</div>
+
+{{#code-block language='javascript'}}
+  // This is pseudo-code. The goal at this point is to get the concept across,
+  // not to potentially confuse you with framework-specific stuff.
+
+  // The moment context is created, context.currentTime starts counting seconds
+  var context = new AudioContext();
+
+  var sound = // Create or load a sound and hook up audio inputs and outputs.
+  // Not important right now...
+  // We'll say that the result is an audio "node" that is ready to play
+
+  function handleClick() {
+    // Get the current time from context.
+    var now = context.currentTime;
+
+    // Start the sound we created up there^, adding 1 second to "now"
+    // The Web Audio API deals in seconds, not milliseconds
+    sound.start(now + 1);
+  }
+{{/code-block}}
+
+<div class="content">
+  <p>
+    Now what if we wanted to schedule the sound 5 times, each exactly 1 second apart?
+  </p>
+</div>
+
+{{#code-block language='javascript'}}
+  // Again, I want to mention that this code will not work as-is. It's ignoring
+  // some other quirks of the Web Audio API. We're only focused on understanding
+  // timing at the moment.
+  var context = new AudioContext();
+
+  var sound = // Create or load a sound and hook up audio inputs and outputs.
+
+  function handleClick() {
+    var now = context.currentTime;
+
+    for (var i = 0; i &lt; 5; i++) {
+      sound.start(now + i);
+    }
+  }
+{{/code-block}}
+
+<div class="content">
+  <p>
+    As you can see, as far as an <code>AudioContext</code> is concerned, the
+    moment that it is created is "the beginning of time" and scheduling events
+    is achieved by specifying an exact moment in time.
+    <code>sound.start(100)</code> would play the sound exactly 100 seconds after
+    the <code>AudioContext</code> was created, regardless of what time
+    <code>sound.start(100)</code> was called.
+  </p>
+
+  <p>
+    With Ember Audio, this is an important concept to understand, but in some
+    many cases (even more complex cases, such as building a rhythmically-based
+    instrument) this is already handled for you. Check out
+    {{link-to 'Beats' 'timing.with-ember-audio'}}.
+  </p>
+</div>
+
+<div class="content">
+  <h2>The first example again, but with real code</h2>
+
+  <p>
+    Just in case you're not completely grasping how this relates directly to
+    Ember Audio. Here is the first example from above, but written so that it
+    works in Ember and Ember Audio.
+  </p>
+</div>
+
+<button class="btn" {{action 'playInOneSecond1'}}>Play in One Second</button>
+
+{{#code-block language='handlebars'}}
+  &lt;button \{{action 'playInOneSecond'}}>Play in One Second&lt;/button>
+{{/code-block}}
+
+{{#code-block language='javascript'}}
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+
+    initSound: Ember.on('init', function() {
+      this.get('audio').load('Db5.mp3').asSound('delayed-note');
+    }),
+
+    actions: {
+      playInOneSecond() {
+        const audio = this.get('audio');
+        const currentTime = audio.get('context.currentTime');
+        audio.getSound('delayed-note').playAt(currentTime + 1);
+      }
+    }
+  });
+{{/code-block}}
+
+<div class="content">
+  <p>
+    By using a <code>Sound</code>'s <code>playIn</code> method,
+    <code>currentTime</code> is handled for you, so this can be made even simpler.
+  </p>
+</div>
+
+<button class="btn" {{action 'playInOneSecond2'}}>Play in One Second</button>
+
+
+{{#code-block language='javascript'}}
+  playInOneSecond() {
+    this.get('audio').getSound('delayed-note').playIn(1);
+  }
+{{/code-block}}
