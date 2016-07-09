@@ -4,7 +4,8 @@ import zeroify from './zeroify';
 const {
   A,
   computed,
-  on
+  on,
+  run: { later }
 } = Ember;
 
 const Sound = Ember.Object.extend({
@@ -16,7 +17,6 @@ const Sound = Ember.Object.extend({
   startedPlayingAt: 0,
   startOffset: 0,
   isPlaying: false,
-  simultaneousPlayAllowed: true,
 
   duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
@@ -91,59 +91,15 @@ const Sound = Ember.Object.extend({
   }),
 
   play() {
-    const connections = this.get('createdConnections');
-
-    this._wireUpConnections(connections);
-
-    let node = A(connections).get('firstObject.node');
-
-    if (this.get('simultaneousPlayAllowed')) {
-      node.start();
-    } else {
-      node.start(0, this.get('startOffset') % node.buffer.duration);
-    }
-
-    this.set('startedPlayingAt', this.get('audioContext.currentTime'));
-    this.set('isPlaying', true);
+    this._play(this.get('audioContext.currentTime'));
   },
 
   playAt(time) {
-    const connections = this.get('createdConnections');
-    const currentTime = this.get('audioContext.currentTime');
-
-    this._wireUpConnections(connections);
-
-    let node = A(connections).get('firstObject.node');
-
-    if (this.get('simultaneousPlayAllowed')) {
-      node.start(time);
-    } else {
-      node.start(time, this.get('startOffset') % node.buffer.duration);
-    }
-
-    this.set('startedPlayingAt', time);
-
-    Ember.run.later(() => this.set('isPlaying', true), (time - currentTime) * 1000);
+    this._play(time);
   },
 
   playIn(amount) {
-    const connections = this.get('createdConnections');
-    const currentTime = this.get('audioContext.currentTime');
-    const playAt = currentTime + amount;
-
-    this._wireUpConnections(connections);
-
-    let node = A(connections).get('firstObject.node');
-
-    if (this.get('simultaneousPlayAllowed')) {
-      node.start(playAt);
-    } else {
-      node.start(playAt, this.get('startOffset') % node.buffer.duration);
-    }
-
-    this.set('startedPlayingAt', playAt);
-
-    Ember.run.later(() => this.set('isPlaying', true), amount * 1000);
+    this._play(this.get('audioContext.currentTime') + amount);
   },
 
   stop() {
@@ -235,6 +191,20 @@ const Sound = Ember.Object.extend({
     const connections = this.get('connections');
     const node = connections.findBy('name', name);
     connections.removeObject(node);
+  },
+
+  _play(playAt) {
+    const connections = this.get('createdConnections');
+    const currentTime = this.get('audioContext.currentTime');
+
+    this._wireUpConnections(connections);
+
+    let node = A(connections).get('firstObject.node');
+
+    node.start(playAt, this.get('startOffset'));
+
+    this.set('startedPlayingAt', playAt);
+    later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);
   },
 
   _wireUpConnections(connections) {
