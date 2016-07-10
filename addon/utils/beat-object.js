@@ -11,44 +11,61 @@ const BeatObject = Ember.Object.extend({
   playingDuration: 100,
   duration: 100,
 
-  // Lets the object have "isPlaying" and "currentTimeIsPlaying" true then back to
-  // false after "playingDuration" has elapsed, so that it's easy to give each
-  // beat some visual indicator as it plays
-  markPlaying() {
-    let playingDuration = this.get('playingDuration');
+  playIn(offset=0) {
+    const msOffset = offset * 1000;
 
-    // if "playingDuration" is "duration" then we use the duration of the
-    // AudioBuffer instead of a ms value
-    if (playingDuration === 'duration') {
-      playingDuration = this.get('duration') * 1000;
-    }
+    this.get('parentPlayIn')(offset);
 
-    // "currentTimeIsPlaying" is switched on whether it is active or not
-    this.set('currentTimeIsPlaying', true);
-    later(() => this.set('currentTimeIsPlaying', false), playingDuration);
-
-    // "isPlaying" is only switched on if the beat is active (playing audio)
-    if (this.get('isActive')) {
-      this.set('isPlaying', true);
-      later(() => this.set('isPlaying', false), playingDuration);
-    }
+    later(() => this._markPlaying(), msOffset);
+    later(() => this._markCurrentTimePlaying(), msOffset);
   },
 
-  playIn(offset=0) {
+  ifActivePlayIn(offset=0) {
+    const msOffset = offset * 1000;
+
     if (this.get('isActive')) {
       this.get('parentPlayIn')(offset);
+      later(() => this._markPlaying(), msOffset);
     }
 
-    later(() => this.markPlaying(), offset * 1000);
+    later(() => this._markCurrentTimePlaying(), msOffset);
   },
 
   play() {
+    this.get('parentPlay')();
+    this._markPlaying();
+    this._markCurrentTimePlaying();
+  },
+
+  playIfActive() {
     if (this.get('isActive')) {
       this.get('parentPlay')();
+      this._markPlaying();
     }
 
-    this.markPlaying();
-  }
+    this._markCurrentTimePlaying();
+  },
+
+  _getPlayingDuration() {
+    let duration = this.get('playingDuration');
+
+    // if playingDuration === "duration" then we use the duration of the AudioBuffer
+    // instead of a ms value (AudioBuffer duration is passed-in at object creation)
+    return duration === 'duration' ? this.get('duration') * 1000 : duration;
+  },
+
+  // Lets the object have "isPlaying" and "currentTimeIsPlaying" true then back to
+  // false after "playingDuration" has elapsed, so that it's easy to give each
+  // beat some visual indicator as it plays
+  _markPlaying() {
+    this.set('isPlaying', true);
+    later(() => this.set('isPlaying', false), this._getPlayingDuration());
+  },
+
+  _markCurrentTimePlaying() {
+    this.set('currentTimeIsPlaying', true);
+    later(() => this.set('currentTimeIsPlaying', false), this._getPlayingDuration());
+  },
 });
 
 export default BeatObject;

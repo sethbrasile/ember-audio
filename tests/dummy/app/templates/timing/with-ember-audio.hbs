@@ -49,15 +49,8 @@
   const beatTrack = this.get('audio').getBeat('some-sound');
   const BPM = 120;
 
-  // A "Beat" has "beats" that need to be "active" before they will play
-  // This is to facilitate the way that most "drum machines" work
-  beatTrack.get('beats').map((beat) => beat.set('isActive', true));
-
-  // playBeats() accepts BPM and will play all active beats at that BPM,
-  // leaving rests (periods with no audio) during any beat that isn't "active"
-  // In this instance, all 8 beats would play sequentially at 120 beats per minute
+  // playBeats() accepts BPM and will play all the beatTrack's beats at that BPM,
   beatTrack.playBeats(BPM);
-  \{{!-- TODO: add playActiveBeats() --}}
 {{/code-block}}
 
 <div class="content">
@@ -76,3 +69,18 @@
     beat.playIn(beatIndex * eighthNoteDuration);
   });
 {{/code-block}}
+
+<div class="content">
+  <p>
+    <code>playActiveBeats</code> and <code>ifActivePlayIn</code> are also
+    available which will allow you to mark a beat's <code>isActive</code>
+    property and the method will play rests (periods with no audio) during any
+    beat that isn't <code>isActive</code> to facilitate the way that most "drum
+    machines" work.
+  </p>
+
+  <p>
+    Take a look at the {{link-to 'Drum Machine' 'timing.drum-machine'}} for
+    examples.
+  </p>
+</div>

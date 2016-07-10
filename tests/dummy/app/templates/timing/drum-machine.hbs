@@ -91,16 +91,16 @@
       actions: {
         play() {
           this.get('drums').map((drum) => {
-            // playBeats() optionally accepts beatLength which defaults to "1/4"
+            // playActiveBeats() optionally accepts beatLength which defaults to "1/4"
             // but we want to use eighth notes
-            drum.playBeats(this.get('bpm'), 1/8);
+            drum.playActiveBeats(this.get('bpm'), 1/8);
 
-            // /* playBeats() is a convenience method. For more control, you could do:
+            // /* playActiveBeats() is a convenience method. For more control, you could do:
             // http://bradthemad.org/guitar/tempo_explanation.php */
             // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
             // drum.get('beats').map((beat, beatIndex) => {
             //   /* whatever else you need to do */
-            //   beat.playIn(beatIndex * eighthNoteDuration);
+            //   beat.ifActivePlayIn(beatIndex * eighthNoteDuration);
             // });
           });
         },
@@ -109,8 +109,8 @@
           if (beat.get('isActive')) {
             beat.set('isActive', false);
           } else {
-            beat.set('isActive', true);
             beat.play();
+            beat.set('isActive', true);
           }
         }
       }

@@ -27,13 +27,18 @@ const Beat = Sound.extend({
     return beats;
   }),
 
-  playBeats(bpm, beatLength=1/4) {
-    // http://bradthemad.org/guitar/tempo_explanation.php
-    const beatDuration = (240 * beatLength) / bpm;
+  playBeats(bpm, noteType) {
+    this._callPlayMethodOnBeats('playIn', bpm, noteType);
+  },
 
-    this.get('beats').map((beat, beatIndex) => {
-      beat.playIn(beatIndex * beatDuration);
-    });
+  playActiveBeats(bpm, noteType) {
+    this._callPlayMethodOnBeats('ifActivePlayIn', bpm, noteType);
+  },
+
+  _callPlayMethodOnBeats(method, bpm, noteType=1/4) {
+    // http://bradthemad.org/guitar/tempo_explanation.php
+    const duration = (240 * noteType) / bpm;
+    this.get('beats').map((beat, idx) => beat[method](idx * duration));
   }
 });
 
