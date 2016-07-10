@@ -42,11 +42,11 @@ export default Ember.Controller.extend({
     },
 
     toggleActive(beat) {
-      if (beat.get('isActive')) {
-        beat.set('isActive', false);
+      if (beat.get('active')) {
+        beat.set('active', false);
       } else {
         beat.play();
-        beat.set('isActive', true);
+        beat.set('active', true);
       }
     }
   }

@@ -5,7 +5,7 @@ const {
 } = Ember;
 
 const BeatObject = Ember.Object.extend({
-  isActive: false,
+  active: false,
   currentTimeIsPlaying: false,
   isPlaying: false,
   playingDuration: 100,
@@ -23,7 +23,7 @@ const BeatObject = Ember.Object.extend({
   ifActivePlayIn(offset=0) {
     const msOffset = offset * 1000;
 
-    if (this.get('isActive')) {
+    if (this.get('active')) {
       this.get('parentPlayIn')(offset);
       later(() => this._markPlaying(), msOffset);
     }
@@ -38,7 +38,7 @@ const BeatObject = Ember.Object.extend({
   },
 
   playIfActive() {
-    if (this.get('isActive')) {
+    if (this.get('active')) {
       this.get('parentPlay')();
       this._markPlaying();
     }
