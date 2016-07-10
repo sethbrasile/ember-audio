@@ -1,6 +1,13 @@
 <div class="content">
   <h2>Timing</h2>
 
+  <p class="note well">
+    It is not necessary to understand this concept, as Ember Audio has methods
+    that allow you to ignore it. I encourage you to understand it anyway. It's
+    easy to grasp, and if you're building a rhythm/timing heavy app as this
+    knowledge will be very useful to you.
+  </p>
+
   <p>
     Timing with the Web Audio API can seem tricky at first. It's unlike any other
     timing system native to the browser. It's not very complex, and easy to
@@ -24,7 +31,7 @@
   // This is pseudo-code. The goal at this point is to get the concept across,
   // not to potentially confuse you with framework-specific stuff.
 
-  // The moment context is created, context.currentTime starts counting seconds
+  // The moment that context is created, context.currentTime starts counting seconds
   var context = new AudioContext();
 
   var sound = // Create or load a sound and hook up audio inputs and outputs.
@@ -71,14 +78,20 @@
     is achieved by specifying an exact moment in time.
     <code>sound.start(100)</code> would play the sound exactly 100 seconds after
     the <code>AudioContext</code> was created, regardless of what time
-    <code>sound.start(100)</code> was called.
+    <code>sound.start(100)</code> was called. If <code>sound.start(100)</code>
+    is called after 100 seconds has already passed since "the beginning of time,"
+    the sound will play immediately.
   </p>
+</div>
 
-  <p>
-    With Ember Audio, this is an important concept to understand, but in some
-    many cases (even more complex cases, such as building a rhythmically-based
-    instrument) this is already handled for you. Check out
-    {{link-to 'Beats' 'timing.with-ember-audio'}}.
+<div class="content">
+  <p class="note well">
+    Again, this is an important concept to understand, but in many cases (even
+    more complex cases, such as
+    {{link-to 'building a rhythmically-based instrument' timing.drum-machine}})
+    this is
+    already handled for you. Check out {{link-to 'Beats' 'timing.with-ember-audio'}},
+    or the very last example on this page.
   </p>
 </div>
 
