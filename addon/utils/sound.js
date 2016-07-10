@@ -240,7 +240,7 @@ const Sound = Ember.Object.extend({
     if (onPlaySetAttrsOnNode) {
       onPlaySetAttrsOnNode.map((attr) => {
         let { attrNameOnNode, relativePath } = attr;
-        set(node.node, attrNameOnNode, this.get(relativePath))
+        set(node.node, attrNameOnNode, this.get(relativePath));
       });
     }
 
