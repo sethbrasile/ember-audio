@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Sound from './sound';
-import BeatObject from './beat-object';
+import Beat from './beat';
 
 const {
   computed
@@ -15,7 +15,7 @@ const BeatTrack = Sound.extend({
     const numBeats = this.get('numBeats');
 
     for (let i = 0; i < numBeats; i++) {
-      beats.push(BeatObject.create({
+      beats.push(Beat.create({
         playingTime: this.get('playingTime'),
         duration: this.get('audioBuffer.duration'),
         parentPlayIn: this.playIn.bind(this),

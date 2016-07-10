@@ -1,10 +1,10 @@
-import beatObject from 'ember-audio/utils/beat-object';
+import Beat from 'dummy/utils/beat';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | beat object');
+module('Unit | Utility | beat');
 
 // Replace this with your real tests.
 test('it works', function(assert) {
-  let result = beatObject.create();
+  let result = Beat.create();
   assert.ok(result);
 });

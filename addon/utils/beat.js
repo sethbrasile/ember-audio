@@ -4,7 +4,7 @@ const {
   run: { later }
 } = Ember;
 
-const BeatObject = Ember.Object.extend({
+const Beat = Ember.Object.extend({
   active: false,
   currentTimeIsPlaying: false,
   isPlaying: false,
@@ -68,4 +68,4 @@ const BeatObject = Ember.Object.extend({
   },
 });
 
-export default BeatObject;
+export default Beat;
