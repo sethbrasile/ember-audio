@@ -40,6 +40,14 @@ const BeatObject = Ember.Object.extend({
     }
 
     later(() => this.markPlaying(), offset * 1000);
+  },
+
+  play() {
+    if (this.get('isActive')) {
+      this.get('parentPlay')();
+    }
+
+    this.markPlaying();
   }
 });
 

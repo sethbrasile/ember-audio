@@ -14,52 +14,247 @@ const {
 
 export default Service.extend({
   /**
-   * context - An AudioContext instance from the web audio api. **NOT**
-   * available in all browsers. Not available in any version of IE (except EDGE)
+   * An AudioContext instance from the Web Audio API. **NOT** available in all
+   * browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
    *
    * http://caniuse.com/#feat=audio-api
+   *
+   * @property context
+   * @type {AudioContext}
    */
   context: new AudioContext(),
 
+  /**
+   * This acts as a register for Sound instances. Sound instances are placed in
+   * the register by name, and can be called via sounds.get('name')
+   *
+   * @property sounds
+   * @type {ObjectLikeMap}
+   */
   sounds: ObjectLikeMap.create(),
+
+  /**
+   * This acts as a register for soundfonts. Soundfonts are plain Ember.Objects
+   * which are placed in the register by name, and can be called via
+   * fonts.get('name')
+   *
+   * @property fonts
+   * @type {ObjectLikeMap}
+   */
   fonts: ObjectLikeMap.create(),
+
+  /**
+   * This acts as a register for Track instances. Track instances are placed in
+   * the register by name, and can be called via tracks.get('name')
+   *
+   * @property tracks
+   * @type {ObjectLikeMap}
+   */
   tracks: ObjectLikeMap.create(),
+
+  /**
+   * This acts as a register for Beat instances. Beat instances are placed in
+   * the register by name, and can be called via beats.get('name')
+   *
+   * @property beats
+   * @type {ObjectLikeMap}
+   */
   beats: ObjectLikeMap.create(),
 
+  /**
+   * Acts as a proxy method, returns a POJO with methods that return the _load and
+   * _loadFont methods so that in the end, the method signature looks something
+   * like: audio.load('some-uri').asSound('some-name')
+   *
+   * @method load
+   * @param {String} src The URI location of an audio file. Will be used by "fetch" to get the audio file. Can be a local or a relative URL
+   * @return {Object} returns a POJO that contains a few methods that curry "src" "type" and "name" over to _load() and _loadFont()
+   */
   load(src) {
-    const _this = this;
+    const _load = this._load.bind(this);
+    const _loadFont = this._loadFont.bind(this);
 
     return {
+      /**
+       * Calls _load() with name, partially applied src param from load(), and type="sound"
+       *
+       * @method asSound
+       * @param {String} name The name that this Sound instance will be registered as in the "sounds" register
+       * @return {Promise->Sound} Returns a promise that resolves to a Sound instance. The promise resolves when the Sound instance's AudioBuffer (audio data) is finished loading
+       */
       asSound(name) {
-        return _this._load(name, src, 'sound');
+        return _load(name, src, 'sound');
       },
+
+      /**
+       * Calls _load() with name, partially applied src param from load(), and type="track"
+       *
+       * @method asSound
+       * @param {String} name The name that this Track instance will be registered as in the "tracks" register
+       * @return {Promise->Track} Returns a promise that resolves to a Track instance. The promise resolves when the Track instance's AudioBuffer (audio data) is finished loading
+       */
       asTrack(name) {
-        return _this._load(name, src, 'track');
+        return _load(name, src, 'track');
       },
-      asFont(name) {
-        return _this._loadFont(name, src, 'sound');
-      },
+
+      /**
+       * Calls _load() with name, partially applied src param from load(), and type="beat"
+       *
+       * @method asBeat
+       * @param {String} name The name that this Beat instance will be registered as in the "beats" register
+       * @return {Promise->Track} Returns a promise that resolves to a Beat instance. The promise resolves when the Beat instance's AudioBuffer (audio data) is finished loading
+       */
       asBeat(name) {
-        return _this._load(name, src, 'beat');
+        return _load(name, src, 'beat');
+      },
+
+      /**
+       * Calls _loadFont() with name, and partially applied src param from load()
+       *
+       * @method asFont
+       * @param {String} name The name that this font will be registered as in the "fonts" register
+       * @return {Promise->Array} Returns a promise that resolves to an Array of sorted note names. The promise resolves when the soundfont file is finished loading and it's audio data has been successfully decoded
+       */
+      asFont(name) {
+        return _loadFont(name, src);
       }
     };
   },
 
-  _load(name, src, type) {
-    const audioContext = this.get('context');
-    let register;
+  /**
+   * Gets a Beat instance by name from the beats register
+   *
+   * @method getBeat
+   * @param {String} name The name of the Beat instance that you would like to retrieve from the beats register
+   * @return {Beat} Returns the Beat instance that matches the provided name
+   */
+  getBeat(name) {
+    return this.get('beats').get(name);
+  },
 
+  /**
+   * Gets a Sound instance by name from the sounds register
+   *
+   * @method getSound
+   * @param {String} name The name of the sound that you would like to retrieve from the sounds register
+   * @return {Sound} returns the Sound instance that matches the provided name
+   */
+  getSound(name) {
+    return this.get('sounds').get(name);
+  },
+
+  /**
+   * Gets a Track instance by name from the tracks register
+   *
+   * @method getTrack
+   * @param {String} name The name of the Track instance that you would like to retrieve from the tracks register
+   * @return {Track} Returns the Track instance that matches the provided name
+   */
+  getTrack(name) {
+    return this.get('tracks').get(name);
+  },
+
+  /**
+   * Gets a soundfont by name from the fonts register
+   *
+   * @method getFont
+   * @param {String} name The name of the soundfont that you would like to retrieve from the fonts register
+   * @return {Ember.Array} Returns the soundfont (an array of Note objects) that matches the provided name
+   */
+  getFont(name) {
+    const font = this.get('fonts').get(name);
+
+    return {
+      play(note) {
+        if (font.has(note)) {
+          font.get(note).play();
+        } else {
+          throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
+        }
+      }
+    };
+  },
+
+  /**
+   * Gets all instances from requested register and calls stop() on each instance
+   *
+   * @method stopAll
+   * @param {String} [register='tracks'] The name of the register that you wish to stop all instances of
+   */
+  stopAll(register='tracks') {
+    for (let sound of this.get(register).values()) {
+      sound.stop();
+    }
+  },
+
+  /**
+   * Gets all instances from the tracks register and calls pause() on each. Only
+   * works for the tracks register because only Track instances are pause-able
+   *
+   * @method pauseAll
+   */
+  pauseAll() {
+    for (let sound of this.get('tracks').values()) {
+      sound.pause();
+    }
+  },
+
+  /**
+   * Gets a register by it's name
+   *
+   * @private
+   * @method _getRegisterFor
+   * @param {String} type The type of register to return
+   * @return {ObjectLikeMap}
+   */
+  _getRegisterFor(type) {
     switch(type) {
       case 'track':
-        register = this.get('tracks');
-        break;
+        return this.get('tracks');
       case 'beat':
-        register = this.get('beats');
-        break;
+        return this.get('beats');
       default:
-        register = this.get('sounds');
+        return this.get('sounds');
     }
+  },
+
+  /**
+   * Creates a Sound, Track, or Beat instance, based on "type" and passes "props"
+   * to the new instance
+   *
+   * @private
+   * @method _createSoundFor
+   * @param {String} type The type of Sound to be created
+   * @param {Object} props POJO to pass to the new instance
+   * @return {Sound|Track|Beat}
+   */
+  _createSoundFor(type, props) {
+    switch(type) {
+      case 'track':
+        return Track.create(props);
+      case 'beat':
+        return Beat.create(props);
+      default:
+        return Sound.create(props);
+    }
+  },
+
+  /**
+   * Loads and decodes an audio file, creating a Sound, Track, or Beat instance
+   * (as determined by the "type" parameter) and places the instance into it's
+   * corresponding register
+   *
+   * @private
+   * @method _load
+   * @param {String} name The name that the created instance should be registered as
+   * @param {String} src The URI location of an audio file. Will be used by "fetch" to get the audio file. Can be a local or a relative URL
+   * @param {String} type Determines the type of object that should be created, as well as which register the instance should be placed in
+   * @return {Promise->Sound|Track|Beat} Returns a Promise which resolves to an instance of a Sound, Track, or Beat
+   */
+  _load(name, src, type) {
+    const audioContext = this.get('context');
+    const register = this._getRegisterFor(type);
 
     if (register.has(name)) {
       return resolve(register.get(name));
@@ -69,21 +264,8 @@ export default Service.extend({
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        let sound;
-
-        switch(type) {
-          case 'track':
-            sound = Track.create({ audioBuffer, audioContext, name });
-            break;
-          case 'beat':
-            sound = Beat.create({ audioBuffer, audioContext, name });
-            break;
-          default:
-            sound = Sound.create({ audioBuffer, audioContext, name });
-        }
-
+        const sound = this._createSoundFor(type, { audioBuffer, audioContext, name });
         register.set(name, sound);
-
         return sound;
       })
       .catch((err) => {
@@ -93,17 +275,20 @@ export default Service.extend({
   },
 
   /**
-   * loadfont - creates an Ember.Object called ${instrumentName} then
-   * loads a soundfont.js file and decodes all the notes, placing each note on
-   * "this.get(instrumentName)" like this.set(`${instrumentName}.${noteName}`)
-   * and returns a promise that resolves to an array of properly sorted note
-   * names. The notes are sorted the way that they would appear on a piano.
+   * 1. Creates an ObjectLikeMap instance (a "font") and places it in the fonts register
+   * 2. Loads a soundfont file and decodes all the notes
+   * 3. Creates a Note object instance for each note
+   * 4. Places each note on the font by name
+   * 5. Returns a promise that resolves to an array of properly sorted Note object instances
    *
-   * @param  {string}     instrumentName  the name that you will refer to this sound font by.
-   * @param  {string}     src             URL (relative or fully qualified) to the sound font.
-   * @return {promise}                    a promise that resolves when the sound font has
-   * been successfully decoded. The promise resolves to an array of sorted note
-   * names.
+   * The notes are sorted the way that they would appear on a piano. A given
+   * note can be played like: audio.getFont(fontName).play(noteName)
+   *
+   * @private
+   * @method _loadFont
+   * @param {String} instrumentName The name that you will refer to this sound font by.
+   * @param {String} src The URI location of a soundfont file. Will be used by "fetch" to get the soundfont file. Can be a local or a relative URL
+   * @return {Promise->Array} Returns a promise that resolves when the sound font has been successfully decoded. The promise resolves to an array of sorted note names.
    */
   _loadFont(instrumentName, src) {
     const fonts = this.get('fonts');
@@ -113,7 +298,7 @@ export default Service.extend({
 
       Ember.Logger.error(err);
 
-      return Ember.RSVP.resolve(fonts.get(instrumentName));
+      return resolve(fonts.get(instrumentName));
     }
 
     fonts.set(instrumentName, ObjectLikeMap.create());
@@ -129,60 +314,23 @@ export default Service.extend({
       .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
 
       // Create a "note" Ember.Object for each note from the decoded audio data.
-      // Also does this.set(`sounds.${instrumentName}.${noteName}`, note);
+      // Also does "this.get('fonts').get(instrumentName).set(noteName, note)"
       // for each note
-      .then((keyValue) => this._createNoteObjects(keyValue, instrumentName))
+      .then((keyValuePairs) => this._createNoteObjects(keyValuePairs, instrumentName))
 
       .then(sortNotes)
 
       .catch((err) => console.error('ember-audio:', err));
   },
 
-  getBeat(name) {
-    return this.get('beats').get(name);
-  },
-
-  getSound(name) {
-    return this.get('sounds').get(name);
-  },
-
-  getTrack(name) {
-    return this.get('tracks').get(name);
-  },
-
-  getFont(name) {
-    const font = this.get('fonts').get(name);
-
-    return {
-      play(note) {
-        if (font.has(note)) {
-          font.get(note).play();
-        } else {
-          throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
-        }
-      }
-    };
-  },
-
-  stopAll(type='tracks') {
-    for (let sound of this.get(type).values()) {
-      sound.stop();
-    }
-  },
-
-  pauseAll() {
-    for (let sound of this.get('tracks').values()) {
-      sound.pause();
-    }
-  },
-
   /**
-   * _extractDecodedKeyValuePairs - Takes an array of base64 encoded strings
-   * (notes) and returns an array of arrays like [[name, audio], [name, audio]]
+   * Takes an array of base64 encoded strings (notes) and returns an array of
+   * arrays like [[name, audio], [name, audio]]
    *
-   * @param  {array} data Array of base64 encoded strings.
-   * @return {array}      Array of arrays. Each inner array has two values,
-   * [noteName, decodedAudio]
+   * @private
+   * @method _extractDecodedKeyValuePairs
+   * @param {Array} notes Array of base64 encoded strings.
+   * @return {Array} Returns an Array of arrays. Each inner array has two values, [noteName, decodedAudio]
    */
   _extractDecodedKeyValuePairs(notes) {
     const ctx = this.get('context');
@@ -211,16 +359,18 @@ export default Service.extend({
   },
 
   /**
-   * _createNoteObjects - Takes an array of arrays, each inner array acting as
+   * Takes an array of arrays, each inner array acting as
    * a key-value pair in the form [noteName, audioData]. Each inner array is
    * transformed into an Ember.Object and the outer array is returned. This
    * method also sets each note on it's corresponding instrument's Ember.Object
    * instance by name. Each note is gettable by
    * this.get(`${instrumentName}.${noteName}`)
    *
-   * @param  {array}  audioData       Array of arrays, each inner array like [noteName, audioData]
-   * @param  {string} instrumentName  Name of the instrument each note belongs to
-   * @return {array}                  Array of Ember.Objects
+   * @private
+   * @method _createNoteObjects
+   * @param {Array} audioData Array of arrays, each inner array like [noteName, audioData]
+   * @param {String} instrumentName Name of the instrument each note belongs to
+   * @return {Array} Returns an Array of Ember.Objects
    */
   _createNoteObjects(audioData, instrumentName) {
     const audioContext = this.get('context');

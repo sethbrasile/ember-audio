@@ -3,8 +3,6 @@ import Sound from './sound';
 import zeroify from './zeroify';
 
 const Track = Sound.extend({
-  simultaneousPlayAllowed: false,
-
   position: Ember.computed('startOffset', function() {
     const startOffset = this.get('startOffset');
     let minutes = Math.floor(startOffset / 60);
