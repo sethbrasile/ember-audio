@@ -7,7 +7,7 @@ export default Ember.Controller.extend({
   bpm: 120,
 
   loadDrum(name) {
-    return this.get('audio').load(`/ember-audio/${name}.wav`).asBeat(name);
+    return this.get('audio').load(`/ember-audio/${name}.wav`).asBeatTrack(name);
   },
 
   initBeats: Ember.on('init', function() {

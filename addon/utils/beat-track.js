@@ -6,7 +6,7 @@ const {
   computed
 } = Ember;
 
-const Beat = Sound.extend({
+const BeatTrack = Sound.extend({
   numBeats: 4,
   playingTime: 100,
 
@@ -42,4 +42,4 @@ const Beat = Sound.extend({
   }
 });
 
-export default Beat;
+export default BeatTrack;
