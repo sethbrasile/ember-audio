@@ -34,16 +34,16 @@
 {{/code-block}}
 
 <div class="content">
-  <h3>2: By using a <code>Beat</code></h3>
+  <h3>2: By using a <code>BeatTrack</code></h3>
 </div>
 
 
 {{#code-block language='javascript'}}
-  this.get('audio').load('some.mp3').asBeat('some-sound');
+  this.get('audio').load('some.mp3').asBeatTrack('some-sound');
 
   // some time later...
 
-  const beatTrack = this.get('audio').getBeat('some-sound');
+  const beatTrack = this.get('audio').getBeatTrack('some-sound');
   const BPM = 120;
 
   // playBeats() accepts BPM and will play all the beatTrack's beats at that BPM,
@@ -52,8 +52,8 @@
 
 <div class="content">
   <p>
-    Instead of using <code>playBeats</code>, you can also call a beat's
-    <code>playIn</code> method directly, passing an amount of time
+    Instead of using <code>beatTrack.playBeats</code>, you can also call a Beat
+    instance's <code>playIn</code> method directly, passing an amount of time
     from now (in seconds) that the beat should play.
   </p>
 </div>
@@ -63,6 +63,7 @@
   const eighthNoteDuration = (240 * 1/8) / BPM;
 
   beatTrack.get('beats').map((beat, beatIndex) => {
+    // Each "beat" is a "Beat" instance
     beat.playIn(beatIndex * eighthNoteDuration);
   });
 {{/code-block}}
