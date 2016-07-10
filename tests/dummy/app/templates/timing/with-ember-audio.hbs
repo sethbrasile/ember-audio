@@ -2,14 +2,15 @@
   <h2>Timing with Ember Audio</h2>
 
   <p>
-    There are three ways to schedule sounds with Ember Audio:
+    There are two ways to schedule sounds with Ember Audio:
   </p>
 </div>
 
 <div class="content">
   <h3>1: Manually passing a time to a <code>Sound</code> or a <code>Track</code></h3>
   <p>
-    With the <code>playIn</code> and <code>playAt</code> methods.
+    Using a fixed moment in time with the <code>playAt</code> method, or by
+    using an amount of time from now with the <code>playIn</code> method.
   </p>
 </div>
 
@@ -20,9 +21,8 @@
 
   const audio = this.get('audio');
   const now = audio.get('context.currentTime');
-  const sound = audio.getSound('some-sound');
 
-  sound.playAt(now + 1); // plays in 1 second
+  audio.getSound('some-sound').playAt(now + 1); // plays in 1 second
 {{/code-block}}
 
 {{#code-block language='javascript'}}
@@ -30,40 +30,30 @@
 
   // some time later...
 
-  const audio = this.get('audio');
-  const sound = audio.getSound('some-sound');
-
-  sound.playIn(1); // plays in 1 second
+  this.get('audio').getSound('some-sound').playIn(1); // plays in 1 second
 {{/code-block}}
 
 <div class="content">
-  <h3>2: By using a <code>Beat</code></h3>
+  <h3>2: By using a <code>BeatTrack</code></h3>
 </div>
 
 
 {{#code-block language='javascript'}}
-  this.get('audio').load('some.mp3').asBeat('some-sound');
+  this.get('audio').load('some.mp3').asBeatTrack('some-sound');
 
   // some time later...
 
-  const beatTrack = this.get('audio').getBeat('some-sound');
+  const beatTrack = this.get('audio').getBeatTrack('some-sound');
   const BPM = 120;
 
-  // A "Beat" has "beats" that need to be "active" before they will play
-  // This is to facilitate the way that most "drum machines" work
-  beatTrack.get('beats').map((beat) => beat.set('isActive', true));
-
-  // playBeats() accepts BPM and will play all active beats at that BPM,
-  // leaving rests (periods with no audio) during any beat that isn't "active"
-  // In this instance, all 8 beats would play sequentially at 120 beats per minute
+  // playBeats() accepts BPM and will play all the beatTrack's beats at that BPM,
   beatTrack.playBeats(BPM);
-  \{{!-- TODO: add playActiveBeats() --}}
 {{/code-block}}
 
 <div class="content">
   <p>
-    Instead of using <code>playBeats</code>, you can also call a beat's
-    <code>playIn</code> method directly, passing an amount of time
+    Instead of using <code>beatTrack.playBeats</code>, you can also call a Beat
+    instance's <code>playIn</code> method directly, passing an amount of time
     from now (in seconds) that the beat should play.
   </p>
 </div>
@@ -73,6 +63,22 @@
   const eighthNoteDuration = (240 * 1/8) / BPM;
 
   beatTrack.get('beats').map((beat, beatIndex) => {
+    // Each "beat" is a "Beat" instance
     beat.playIn(beatIndex * eighthNoteDuration);
   });
 {{/code-block}}
+
+<div class="content">
+  <p>
+    <code>beatTrack.playActiveBeats</code> and <code>beat.ifActivePlayIn</code>
+    are also available which will allow you to mark a beat's <code>active</code>
+    property and the method will play rests (periods with no audio) during any
+    beat that isn't <code>active</code>. This is to facilitate the way that most
+    "drum machines" work.
+  </p>
+
+  <p>
+    Take a look at the {{link-to 'Drum Machine' 'timing.drum-machine'}} for
+    examples.
+  </p>
+</div>

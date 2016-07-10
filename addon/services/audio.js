@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Sound from '../utils/sound';
 import Track from '../utils/track';
-import Beat from '../utils/beat';
+import BeatTrack from '../utils/beat-track';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
 import { Note, sortNotes } from '../utils/note';
 import ObjectLikeMap from '../utils/object-like-map';
@@ -54,13 +54,13 @@ export default Service.extend({
   tracks: ObjectLikeMap.create(),
 
   /**
-   * This acts as a register for Beat instances. Beat instances are placed in
-   * the register by name, and can be called via beats.get('name')
+   * This acts as a register for BeatTrack instances. BeatTrack instances are
+   * placed in the register by name, and can be called via beatTracks.get('name')
    *
-   * @property beats
+   * @property beatTracks
    * @type {ObjectLikeMap}
    */
-  beats: ObjectLikeMap.create(),
+  beatTracks: ObjectLikeMap.create(),
 
   /**
    * Acts as a proxy method, returns a POJO with methods that return the _load and
@@ -99,14 +99,14 @@ export default Service.extend({
       },
 
       /**
-       * Calls _load() with name, partially applied src param from load(), and type="beat"
+       * Calls _load() with name, partially applied src param from load(), and type="beatTrack"
        *
-       * @method asBeat
-       * @param {String} name The name that this Beat instance will be registered as in the "beats" register
-       * @return {Promise->Track} Returns a promise that resolves to a Beat instance. The promise resolves when the Beat instance's AudioBuffer (audio data) is finished loading
+       * @method asBeatTrack
+       * @param {String} name The name that this BeatTrack instance will be registered as in the "beatTracks" register
+       * @return {Promise->Track} Returns a promise that resolves to a BeatTrack instance. The promise resolves when the BeatTrack instance's AudioBuffer (audio data) is finished loading
        */
-      asBeat(name) {
-        return _load(name, src, 'beat');
+      asBeatTrack(name) {
+        return _load(name, src, 'beatTrack');
       },
 
       /**
@@ -123,14 +123,14 @@ export default Service.extend({
   },
 
   /**
-   * Gets a Beat instance by name from the beats register
+   * Gets a BeatTrack instance by name from the beatTracks register
    *
-   * @method getBeat
-   * @param {String} name The name of the Beat instance that you would like to retrieve from the beats register
-   * @return {Beat} Returns the Beat instance that matches the provided name
+   * @method getBeatTrack
+   * @param {String} name The name of the BeatTrack instance that you would like to retrieve from the beatTracks register
+   * @return {BeatTrack} Returns the BeatTrack instance that matches the provided name
    */
-  getBeat(name) {
-    return this.get('beats').get(name);
+  getBeatTrack(name) {
+    return this.get('beatTracks').get(name);
   },
 
   /**
@@ -212,45 +212,45 @@ export default Service.extend({
     switch(type) {
       case 'track':
         return this.get('tracks');
-      case 'beat':
-        return this.get('beats');
+      case 'beatTrack':
+        return this.get('beatTracks');
       default:
         return this.get('sounds');
     }
   },
 
   /**
-   * Creates a Sound, Track, or Beat instance, based on "type" and passes "props"
+   * Creates a Sound, Track, or BeatTrack instance, based on "type" and passes "props"
    * to the new instance
    *
    * @private
    * @method _createSoundFor
    * @param {String} type The type of Sound to be created
    * @param {Object} props POJO to pass to the new instance
-   * @return {Sound|Track|Beat}
+   * @return {Sound|Track|BeatTrack}
    */
   _createSoundFor(type, props) {
     switch(type) {
       case 'track':
         return Track.create(props);
-      case 'beat':
-        return Beat.create(props);
+      case 'beatTrack':
+        return BeatTrack.create(props);
       default:
         return Sound.create(props);
     }
   },
 
   /**
-   * Loads and decodes an audio file, creating a Sound, Track, or Beat instance
-   * (as determined by the "type" parameter) and places the instance into it's
-   * corresponding register
+   * Loads and decodes an audio file, creating a Sound, Track, or BeatTrack
+   * instance (as determined by the "type" parameter) and places the instance
+   * into it's corresponding register
    *
    * @private
    * @method _load
    * @param {String} name The name that the created instance should be registered as
    * @param {String} src The URI location of an audio file. Will be used by "fetch" to get the audio file. Can be a local or a relative URL
    * @param {String} type Determines the type of object that should be created, as well as which register the instance should be placed in
-   * @return {Promise->Sound|Track|Beat} Returns a Promise which resolves to an instance of a Sound, Track, or Beat
+   * @return {Promise->Sound|Track|BeatTrack} Returns a Promise which resolves to an instance of a Sound, Track, or BeatTrack
    */
   _load(name, src, type) {
     const audioContext = this.get('context');
