@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import Sound from '../classes/sound';
 import Track from '../classes/track';
-import ObjectLikeMap from '../classes/object-like-map';
 import BeatTrack from '../classes/beat-track';
 import { Note } from '../classes/note';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
@@ -16,12 +15,20 @@ const {
 /**
  * Audio Service
  *
- *     Ember.Something.extend({
- *       audio: Ember.inject.service()
- *     });
+ * @example
+ * // injecting into an object
+ * Ember.Something.extend({
+ *   audio: Ember.inject.service()
+ * });
  *
- * @module Audio-Service
- * @extends Ember.Service
+ * @example
+ * // use
+ * loadSound() {
+ *   return this.get('audio').load('some.mp3').asSound('some-sound');
+ * }
+ *
+ * @module
+ * @extends ember/Service
  */
 export default Service.extend({
   /**
@@ -39,9 +46,9 @@ export default Service.extend({
    * This acts as a register for Sound instances. Sound instances are placed in
    * the register by name, and can be called via sounds.get('name')
    *
-   * @type {ObjectLikeMap.<string, Sound>}
+   * @type {Map.<string, Sound>}
    */
-  sounds: ObjectLikeMap.create(),
+  sounds: new Map(),
 
   /**
    * This acts as a register for soundfonts. Soundfonts are plain Ember.Objects
@@ -49,27 +56,27 @@ export default Service.extend({
    * fonts.get('name')
    *
    * @property fonts
-   * @type {ObjectLikeMap}
+   * @type {Map}
    */
-  fonts: ObjectLikeMap.create(),
+  fonts: new Map(),
 
   /**
    * This acts as a register for Track instances. Track instances are placed in
    * the register by name, and can be called via tracks.get('name')
    *
    * @property tracks
-   * @type {ObjectLikeMap}
+   * @type {Map}
    */
-  tracks: ObjectLikeMap.create(),
+  tracks: new Map(),
 
   /**
    * This acts as a register for BeatTrack instances. BeatTrack instances are
    * placed in the register by name, and can be called via beatTracks.get('name')
    *
    * @property beatTracks
-   * @type {ObjectLikeMap}
+   * @type {Map}
    */
-  beatTracks: ObjectLikeMap.create(),
+  beatTracks: new Map(),
 
   /**
    * Acts as a proxy method, returns a POJO with methods that return the _load and
@@ -215,7 +222,7 @@ export default Service.extend({
    * @private
    * @method _getRegisterFor
    * @param {String} type The type of register to return
-   * @return {ObjectLikeMap}
+   * @return {Map}
    */
   _getRegisterFor(type) {
     switch(type) {
@@ -284,7 +291,7 @@ export default Service.extend({
   },
 
   /**
-   * 1. Creates an ObjectLikeMap instance (a "font") and places it in the fonts register
+   * 1. Creates a Map instance (a "font") and places it in the fonts register
    * 2. Loads a soundfont file and decodes all the notes
    * 3. Creates a Note object instance for each note
    * 4. Places each note on the font by name
@@ -310,7 +317,7 @@ export default Service.extend({
       return resolve(fonts.get(instrumentName));
     }
 
-    fonts.set(instrumentName, ObjectLikeMap.create());
+    fonts.set(instrumentName, new Map());
 
     return fetch(src).then((response) => response.text())
 
