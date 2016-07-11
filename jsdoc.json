@@ -31,7 +31,7 @@
   "opts": {
     "encoding": "utf8",
     "template": "node_modules/ember-cli-jsdoc/jsdocTemplates/default",
-    "destination": "docs",
+    "destination": "tests/dummy/public/docs",
     "recurse": true,
     "access": "all",
     "readme": "README.md"
