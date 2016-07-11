@@ -21,8 +21,37 @@ const {
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer}
  * @class Track
  * @extends Sound
+ *
+ * @property {object} position Computed property. See
+ * {@link Track#position position}.
+ *
+ * @property {object} percentPlayed Computed property. See
+ * {@link Track#percentPlayed percentPlayed}.
  */
 const Track = Sound.extend({
+
+  /**
+   * Computed property. Value is an object containing the current play position
+   * of the {@link Sound#audioBuffer audioBuffer} in three formats. The three
+   * formats are `raw`, `string`, and `pojo`.
+   *
+   * Play position of 6 minutes would be output as:
+   *
+   *     {
+   *       raw: 360, // seconds
+   *       string: '06:00',
+   *       pojo: {
+   *         minutes: 6,
+   *         seconds: 0
+   *       }
+   *     }
+   *
+   * @memberof Track
+   * @type {object}
+   * @observes 'startOffset'
+   * @instance
+   * @readonly
+   */
   position: computed('startOffset', function() {
     const startOffset = this.get('startOffset');
     const minutes = Math.floor(startOffset / 60);
@@ -35,17 +64,43 @@ const Track = Sound.extend({
     };
   }),
 
+  /**
+   * Computed property. Value is the current play position of the
+   * {@link Sound#audioBuffer audioBuffer}, formatted as a percentage.
+   *
+   * @memberof Sound
+   * @type {number}
+   * @instance
+   * @readonly
+   */
   percentPlayed: computed('duration', 'startOffset', function() {
     const ratio = this.get('startOffset') / this.get('duration.raw');
     return ratio * 100;
   }),
 
+  /**
+   * Plays the {@link Sound#bufferSourceNode audio source} immediately.
+   *
+   * @method play
+   * @memberof Track
+   * @instance
+   * @override
+   */
   play() {
     this._super();
     this.get('bufferSourceNode').onended = () => this.stop();
     this._trackPlayPosition();
   },
 
+  /**
+   * Pauses the {@link Sound#bufferSourceNode audio source} by stopping without
+   * setting {@link Sound#startOffset startOffset} back to 0.
+   *
+   * @method pause
+   * @memberof Track
+   * @instance
+   * @override
+   */
   pause() {
     if (this.get('isPlaying')) {
       this.get('bufferSourceNode').onended = function() {};
@@ -54,6 +109,15 @@ const Track = Sound.extend({
     }
   },
 
+  /**
+   * Stops the {@link Sound#bufferSourceNode audio source} and sets
+   * {@link Sound#startOffset startOffset} to 0.
+   *
+   * @method stop
+   * @memberof Track
+   * @instance
+   * @override
+   */
   stop() {
     this.set('startOffset', 0);
 
@@ -63,6 +127,16 @@ const Track = Sound.extend({
     }
   },
 
+  /**
+   * Sets up a `requestAnimationFrame` based loop that updates the
+   * {@link Sound#startOffset startOffset} as `audioContext.currentTime` grows.
+   * Loop ends when {@link Sound#isPlaying isPlaying} is false.
+   *
+   * @method _trackPlayPosition
+   * @memberof Track
+   * @private
+   * @instance
+   */
   _trackPlayPosition() {
     const ctx = this.get('audioContext');
     const startOffset = this.get('startOffset');

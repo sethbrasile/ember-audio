@@ -102,6 +102,12 @@ const Sound = Ember.Object.extend({
    *
    * @memberof Sound
    * @type {AudioContext}
+   *
+   * @property currentTime {double} The current time.
+   * @property sampleRate {float} The sample rate of all AudioNodes contained
+   * in this context.
+   * @property state {string} Can be `running`, `suspended`, or `closed`.
+   *
    * @instance
    * @readonly
    */
@@ -162,20 +168,25 @@ const Sound = Ember.Object.extend({
    * {@link Sound#audioBuffer audioBuffer} in three formats. The three formats
    * are `raw`, `string`, and `pojo`.
    *
-   * 6 minutes would be output as:
+   * Duration of 6 minutes would be output as:
    *
    *     {
    *       raw: 360, // seconds
    *       string: '06:00',
    *       pojo: {
-   *         minutes: '06',
-   *         seconds: '00'
+   *         minutes: 6,
+   *         seconds: 0
    *       }
    *     }
    *
    * @memberof Sound
    * @type {object}
    * @observes 'audioBuffer.duration'
+   *
+   * @property raw {number} Duration in total seconds.
+   * @property string {string} Duration in a "pretty print" string.
+   * @property pojo {object} Duration with minutes and seconds as an object.
+   *
    * @instance
    * @readonly
    */
@@ -301,15 +312,13 @@ const Sound = Ember.Object.extend({
    * is measured in seconds from the moment that the
    * {@link Sound#audioContext audioContext} was instantiated.
    *
-   * Functionally equivilent to {@link Sound#_play _play()}.
+   * Functionally equivalent to {@link Sound#_play _play()}.
    *
    * @param {number} time The moment in time (in seconds, relative to the
    * {@link Sound#audioContext audioContext's} "beginning of time") when the
    * audio source should be played.
    *
    * @method playAt
-   *
-   * @param {number} time Moment in time when the audio source should be played.
    *
    * @memberof Sound
    * @instance
@@ -376,6 +385,7 @@ const Sound = Ember.Object.extend({
    *
    * @method pan
    * @memberof Sound
+   * @todo Make "API" match {@link Sound#changeGainTo}
    * @instance
    */
   pan(value) {
@@ -516,7 +526,7 @@ const Sound = Ember.Object.extend({
    * is measured in seconds from the moment that the
    * {@link Sound#audioContext audioContext} was instantiated.
    *
-   * Functionally equivilent to {@link Sound#playAt playAt()}.
+   * Functionally equivalent to {@link Sound#playAt playAt()}.
    *
    * @param {number} time The moment in time (in seconds, relative to the
    * {@link Sound#audioContext audioContext's} "beginning of time") when the
