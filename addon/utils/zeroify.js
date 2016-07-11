@@ -1,5 +1,5 @@
 /**
- * @module zeroify
+ * @module
  * @private
  * @ignore
  */
@@ -7,6 +7,7 @@
  /**
   * Formats a number and converts to string: 6 becomes '06'
   *
+  * @function zeroify
   * @param {number} input A number that should be formatted
   * @returns {string} The number formatted and converted to string
   */

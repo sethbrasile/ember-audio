@@ -28,7 +28,7 @@ const {
  * }
  *
  * @module
- * @extends ember/Service
+ * @extends Ember.Service
  */
 export default Service.extend({
   /**
