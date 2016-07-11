@@ -20,9 +20,6 @@ Still needs:
 
 - Synthesis
 - Visualization helpers
-- Timing helpers
-    - http://www.html5rocks.com/en/tutorials/audio/scheduling/
-
 
 ## Installation
 
