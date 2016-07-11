@@ -2,6 +2,10 @@ import Ember from 'ember';
 import Sound from './sound';
 import zeroify from '../utils/zeroify';
 
+const {
+  computed,
+} = Ember;
+
 /**
  * A class that represents a "track" of music, similar in concept to a track on
  * a CD or an MP3 player. Provides methods for tracking the play position of the
@@ -19,7 +23,7 @@ import zeroify from '../utils/zeroify';
  * @extends Sound
  */
 const Track = Sound.extend({
-  position: Ember.computed('startOffset', function() {
+  position: computed('startOffset', function() {
     const startOffset = this.get('startOffset');
     const minutes = Math.floor(startOffset / 60);
     const seconds = startOffset - (minutes * 60);
@@ -31,29 +35,15 @@ const Track = Sound.extend({
     };
   }),
 
-  percentPlayed: Ember.computed('duration', 'startOffset', function() {
+  percentPlayed: computed('duration', 'startOffset', function() {
     const ratio = this.get('startOffset') / this.get('duration.raw');
     return ratio * 100;
-  }),
-
-  watchPosition: Ember.observer('isPlaying', function() {
-    const ctx = this.get('audioContext');
-    const startOffset = this.get('startOffset');
-    const startedPlayingAt = this.get('startedPlayingAt');
-
-    const animate = () => {
-      if (this.get('isPlaying')) {
-        this.set('startOffset', startOffset + ctx.currentTime - startedPlayingAt);
-        requestAnimationFrame(animate);
-      }
-    };
-
-    requestAnimationFrame(animate);
   }),
 
   play() {
     this._super();
     this.get('bufferSourceNode').onended = () => this.stop();
+    this._trackPlayPosition();
   },
 
   pause() {
@@ -72,6 +62,21 @@ const Track = Sound.extend({
       this._super();
     }
   },
+
+  _trackPlayPosition() {
+    const ctx = this.get('audioContext');
+    const startOffset = this.get('startOffset');
+    const startedPlayingAt = this.get('startedPlayingAt');
+
+    const animate = () => {
+      if (this.get('isPlaying')) {
+        this.set('startOffset', startOffset + ctx.currentTime - startedPlayingAt);
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
 });
 
 export default Track;

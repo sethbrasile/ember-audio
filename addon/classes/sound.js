@@ -225,7 +225,12 @@ const Sound = Ember.Object.extend({
     node.start(playAt, this.get('startOffset'));
 
     this.set('startedPlayingAt', playAt);
-    later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);
+
+    if (playAt === currentTime) {
+      this.set('isPlaying', true);
+    } else {
+      later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);      
+    }
   },
 
   _wireUpConnections() {
