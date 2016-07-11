@@ -1,11 +1,11 @@
 import Ember from 'ember';
-import Sound from '../utils/sound';
-import Track from '../utils/track';
-import BeatTrack from '../utils/beat-track';
+import Sound from '../classes/sound';
+import Track from '../classes/track';
+import ObjectLikeMap from '../classes/object-like-map';
+import BeatTrack from '../classes/beat-track';
+import { Note } from '../classes/note';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
-import { Note } from '../utils/note';
 import { sortNotes } from '../utils/note-methods';
-import ObjectLikeMap from '../utils/object-like-map';
 import fetch from 'ember-network/fetch';
 
 const {

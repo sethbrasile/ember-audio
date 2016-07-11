@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import Sound from './sound';
-import zeroify from './zeroify';
-
+import zeroify from '../utils/zeroify';
 
 /**
  * A class that represents a "track" of music, similar in concept to a track on
@@ -22,8 +21,8 @@ import zeroify from './zeroify';
 const Track = Sound.extend({
   position: Ember.computed('startOffset', function() {
     const startOffset = this.get('startOffset');
-    let minutes = Math.floor(startOffset / 60);
-    let seconds = startOffset - (minutes * 60);
+    const minutes = Math.floor(startOffset / 60);
+    const seconds = startOffset - (minutes * 60);
 
     return {
       raw: startOffset,

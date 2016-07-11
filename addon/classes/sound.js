@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import zeroify from './zeroify';
+import zeroify from '../utils/zeroify';
 
 const {
   A,
