@@ -9,6 +9,27 @@ const {
   run: { later }
 } = Ember;
 
+/**
+ * This is the base class for all Sound types. It represents a sound. It
+ * prepares an audio source, provides various methods for interacting with
+ * the sound source, creates
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioNode AudioNodes}
+ * from the connections array and sets up the necessary connections/routing
+ * between them.
+ *
+ * <style>
+ *   .ignore-this--this-is-here-to-hide-constructor,
+ *   #Sound { display: none; }
+ * </style>
+ *
+ * @see Track
+ * @see Note
+ * @see BeatTrack
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioNode}
+ *
+ * @class Sound
+ * @extends Ember.Object
+ */
 const Sound = Ember.Object.extend({
   name: null,
   node: null,

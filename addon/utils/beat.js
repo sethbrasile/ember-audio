@@ -4,6 +4,22 @@ const {
   run: { later }
 } = Ember;
 
+/**
+ * This class represents a single "beat" for a BeatTrack. An instance of this
+ * class can be set to `active` or not to facilitate the way that most drum
+ * machines work (when a beat is not `active`, the time that it occupies still
+ * exists, but it does not cause audio to play, effectively resulting in a
+ * "rest"). It provides methods that track when it is playing, and when a "rest"
+ * is playing in it's place.
+ *
+ * <style>
+ *   .ignore-this--this-is-here-to-hide-constructor,
+ *   #Beat { display: none; }
+ * </style>
+ *
+ * @class Beat
+ * @extends Ember.Object
+ */
 const Beat = Ember.Object.extend({
   active: false,
   currentTimeIsPlaying: false,

@@ -1,3 +1,15 @@
+/**
+ * @module zeroify
+ * @private
+ * @ignore
+ */
+
+ /**
+  * Formats a number and converts to string: 6 becomes '06'
+  *
+  * @param {number} input A number that should be formatted
+  * @returns {string} The number formatted and converted to string
+  */
 export default function zeroify(input) {
   const num = Math.floor(input);
 

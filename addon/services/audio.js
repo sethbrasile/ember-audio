@@ -3,7 +3,8 @@ import Sound from '../utils/sound';
 import Track from '../utils/track';
 import BeatTrack from '../utils/beat-track';
 import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
-import { Note, sortNotes } from '../utils/note';
+import { Note } from '../utils/note';
+import { sortNotes } from '../utils/note-methods';
 import ObjectLikeMap from '../utils/object-like-map';
 import fetch from 'ember-network/fetch';
 
@@ -12,15 +13,24 @@ const {
   Service
 } = Ember;
 
+/**
+ * Audio Service
+ *
+ *     Ember.Something.extend({
+ *       audio: Ember.inject.service()
+ *     });
+ *
+ * @module Audio-Service
+ * @extends Ember.Service
+ */
 export default Service.extend({
   /**
    * An AudioContext instance from the Web Audio API. **NOT** available in all
    * browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
    *
-   * http://caniuse.com/#feat=audio-api
-   *
-   * @property context
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext}
+   * @see {@link http://caniuse.com/#feat=audio-api}
    * @type {AudioContext}
    */
   context: new AudioContext(),
@@ -29,8 +39,7 @@ export default Service.extend({
    * This acts as a register for Sound instances. Sound instances are placed in
    * the register by name, and can be called via sounds.get('name')
    *
-   * @property sounds
-   * @type {ObjectLikeMap}
+   * @type {ObjectLikeMap.<string, Sound>}
    */
   sounds: ObjectLikeMap.create(),
 
@@ -81,7 +90,7 @@ export default Service.extend({
        *
        * @method asSound
        * @param {String} name The name that this Sound instance will be registered as in the "sounds" register
-       * @return {Promise->Sound} Returns a promise that resolves to a Sound instance. The promise resolves when the Sound instance's AudioBuffer (audio data) is finished loading
+       * @return {Promise<Sound>} Returns a promise that resolves to a Sound instance. The promise resolves when the Sound instance's AudioBuffer (audio data) is finished loading
        */
       asSound(name) {
         return _load(name, src, 'sound');
@@ -92,7 +101,7 @@ export default Service.extend({
        *
        * @method asSound
        * @param {String} name The name that this Track instance will be registered as in the "tracks" register
-       * @return {Promise->Track} Returns a promise that resolves to a Track instance. The promise resolves when the Track instance's AudioBuffer (audio data) is finished loading
+       * @return {Promise<Track>} Returns a promise that resolves to a Track instance. The promise resolves when the Track instance's AudioBuffer (audio data) is finished loading
        */
       asTrack(name) {
         return _load(name, src, 'track');
@@ -103,7 +112,7 @@ export default Service.extend({
        *
        * @method asBeatTrack
        * @param {String} name The name that this BeatTrack instance will be registered as in the "beatTracks" register
-       * @return {Promise->Track} Returns a promise that resolves to a BeatTrack instance. The promise resolves when the BeatTrack instance's AudioBuffer (audio data) is finished loading
+       * @return {Promise<Track>} Returns a promise that resolves to a BeatTrack instance. The promise resolves when the BeatTrack instance's AudioBuffer (audio data) is finished loading
        */
       asBeatTrack(name) {
         return _load(name, src, 'beatTrack');
@@ -114,7 +123,7 @@ export default Service.extend({
        *
        * @method asFont
        * @param {String} name The name that this font will be registered as in the "fonts" register
-       * @return {Promise->Array} Returns a promise that resolves to an Array of sorted note names. The promise resolves when the soundfont file is finished loading and it's audio data has been successfully decoded
+       * @return {Promise<Array>} Returns a promise that resolves to an Array of sorted note names. The promise resolves when the soundfont file is finished loading and it's audio data has been successfully decoded
        */
       asFont(name) {
         return _loadFont(name, src);
@@ -250,7 +259,7 @@ export default Service.extend({
    * @param {String} name The name that the created instance should be registered as
    * @param {String} src The URI location of an audio file. Will be used by "fetch" to get the audio file. Can be a local or a relative URL
    * @param {String} type Determines the type of object that should be created, as well as which register the instance should be placed in
-   * @return {Promise->Sound|Track|BeatTrack} Returns a Promise which resolves to an instance of a Sound, Track, or BeatTrack
+   * @return {Promise<Sound|Track|BeatTrack>} Returns a Promise which resolves to an instance of a Sound, Track, or BeatTrack
    */
   _load(name, src, type) {
     const audioContext = this.get('context');
@@ -288,7 +297,7 @@ export default Service.extend({
    * @method _loadFont
    * @param {String} instrumentName The name that you will refer to this sound font by.
    * @param {String} src The URI location of a soundfont file. Will be used by "fetch" to get the soundfont file. Can be a local or a relative URL
-   * @return {Promise->Array} Returns a promise that resolves when the sound font has been successfully decoded. The promise resolves to an array of sorted note names.
+   * @return {Promise<Array>} Returns a promise that resolves when the sound font has been successfully decoded. The promise resolves to an array of sorted note names.
    */
   _loadFont(instrumentName, src) {
     const fonts = this.get('fonts');

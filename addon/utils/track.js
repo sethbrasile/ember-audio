@@ -2,6 +2,23 @@ import Ember from 'ember';
 import Sound from './sound';
 import zeroify from './zeroify';
 
+
+/**
+ * A class that represents a "track" of music, similar in concept to a track on
+ * a CD or an MP3 player. Provides methods for tracking the play position of the
+ * underlying
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer AudioBuffer},
+ * and pausing/resuming.
+ *
+ * <style>
+ *   .ignore-this--this-is-here-to-hide-constructor,
+ *   #Track { display: none; }
+ * </style>
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer}
+ * @class Track
+ * @extends Sound
+ */
 const Track = Sound.extend({
   position: Ember.computed('startOffset', function() {
     const startOffset = this.get('startOffset');
