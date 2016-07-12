@@ -9,119 +9,119 @@
     and it's happening because there is only a single sample for each drum.
   </p>
 
-    {{#if isLoading}}
-      <div class="spinner">
-        <div class="rect1"></div>
-        <div class="rect2"></div>
-        <div class="rect3"></div>
-        <div class="rect4"></div>
-        <div class="rect5"></div>
-      </div>
-    {{else}}
-      <div class="controls">
-        <button class="btn btn-primary" {{action 'play'}}>PLAY</button>
+  {{#if isLoading}}
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  {{else}}
+    <div class="controls">
+      <button class="btn btn-primary" {{action 'play'}}>PLAY</button>
 
-        <div>
-          <label>Tempo {{input value=bpm}}</label>
+      <div>
+        <label>Tempo {{input value=bpm}}</label>
+      </div>
+    </div>
+
+    <div class="beat-machine">
+      {{#each beatTracks as |beatTrack|}}
+        <div class="beat-lane">
+          <p class="text">{{beatTrack.name}}</p>
+
+          {{#each beatTrack.beats as |beat|}}
+            <div class="beat-pad" {{action 'toggleActive' beat}}>
+              <span class="pad {{if beat.active 'active'}} {{if beat.isPlaying 'playing'}} {{if beat.currentTimeIsPlaying 'highlighted'}}"></span>
+            </div>
+          {{/each}}
         </div>
-      </div>
+      {{/each}}
+    </div>
+  {{/if}}
+</div>
 
-      <div class="beat-machine">
-        {{#each beatTracks as |beatTrack|}}
-          <div class="beat-lane">
-            <p class="text">{{beatTrack.name}}</p>
+<div class="content">
+  {{#code-block language='handlebars'}}
+  \{{#if isLoading}}
+    \{{!-- Some loading indicator... --}}
+  \{{else}}
+    &lt;div class="controls">
+      &lt;button class="btn btn-primary" \{{action 'play'}}>PLAY&lt;/button>
 
-            {{#each beatTrack.beats as |beat|}}
-              <div class="beat-pad" {{action 'toggleActive' beat}}>
-                <span class="pad {{if beat.active 'active'}} {{if beat.isPlaying 'playing'}} {{if beat.currentTimeIsPlaying 'highlighted'}}"></span>
-              </div>
-            {{/each}}
-          </div>
-        {{/each}}
-      </div>
-    {{/if}}
-  </div>
+      &lt;div>
+        &lt;label>Tempo \{{input value=bpm}}&lt;/label>
+      &lt;/div>
+    &lt;/div>
 
-  <div class="content">
-    {{#code-block language='handlebars'}}
-    \{{#if isLoading}}
-      \{{!-- Some loading indicator... --}}
-    \{{else}}
-      &lt;div class="controls">
-        &lt;button class="btn btn-primary" \{{action 'play'}}>PLAY&lt;/button>
+    &lt;div class="beat-machine">
+      \{{#each beatTracks as |beatTrack|}}
+        &lt;div class="beat-lane">
+          &lt;p class="text">\{{beatTrack.name}}&lt;/p>
 
-        &lt;div>
-          &lt;label>Tempo \{{input value=bpm}}&lt;/label>
+          \{{#each beatTrack.beats as |beat|}}
+            &lt;div class="beat-pad" \{{action 'toggleActive' beat}}>
+              &lt;span class="pad \{{if beat.active 'active'}} \{{if beat.isPlaying 'playing'}} \{{if beat.currentTimeIsPlaying 'highlighted'}}">&lt;/span>
+            &lt;/div>
+          \{{/each}}
         &lt;/div>
-      &lt;/div>
+      \{{/each}}
+    &lt;/div>
+  \{{/if}}
+  {{/code-block}}
 
-      &lt;div class="beat-machine">
-        \{{#each beatTracks as |beatTrack|}}
-          &lt;div class="beat-lane">
-            &lt;p class="text">\{{beatTrack.name}}&lt;/p>
+  {{#code-block language='javascript'}}
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+    beatTracks: null,
+    isLoading: true,
+    bpm: 120,
 
-            \{{#each beatTrack.beats as |beat|}}
-              &lt;div class="beat-pad" \{{action 'toggleActive' beat}}>
-                &lt;span class="pad \{{if beat.active 'active'}} \{{if beat.isPlaying 'playing'}} \{{if beat.currentTimeIsPlaying 'highlighted'}}">&lt;/span>
-              &lt;/div>
-            \{{/each}}
-          &lt;/div>
-        \{{/each}}
-      &lt;/div>
-    \{{/if}}
-    {{/code-block}}
+    initBeats: Ember.on('init', function() {
+      Ember.RSVP.all([
+        this._loadBeatTrackFor('kick'),
+        this._loadBeatTrackFor('snare'),
+        this._loadBeatTrackFor('hihat')
+      ])
+      .then((beatTracks) => {
+        // default is 4 beats, but we're going to use 8
+        beatTracks.map((beatTrack) => beatTrack.set('numBeats', 8));
+        this.set('isLoading', false);
+        this.set('beatTracks', beatTracks);
+      });
+    }),
 
-    {{#code-block language='javascript'}}
-    export default Ember.Whatever.extend({
-      audio: Ember.inject.service(),
-      beatTracks: null,
-      isLoading: true,
-      bpm: 120,
+    _loadBeatTrackFor(name) {
+      return this.get('audio').load(`${name}.wav`).asBeatTrack(name);
+    },
 
-      initBeats: Ember.on('init', function() {
-        Ember.RSVP.all([
-          this._loadBeatTrackFor('kick'),
-          this._loadBeatTrackFor('snare'),
-          this._loadBeatTrackFor('hihat')
-        ])
-        .then((beatTracks) => {
-          // default is 4 beats, but we're going to use 8
-          beatTracks.map((beatTrack) => beatTrack.set('numBeats', 8));
-          this.set('isLoading', false);
-          this.set('beatTracks', beatTracks);
+    actions: {
+      play() {
+        this.get('beatTracks').map((beatTrack) => {
+          // playActiveBeats() optionally accepts "noteType" which defaults to "1/4"
+          // notes, but we want to use eighth notes
+          beatTrack.playActiveBeats(this.get('bpm'), 1/8);
+
+          // /* playActiveBeats() is a convenience method. For more control, you could do:
+          // http://bradthemad.org/guitar/tempo_explanation.php */
+          // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
+          // beatTrack.get('beats').map((beat, beatIndex) => {
+          //   /* whatever else you need to do */
+          //   beat.ifActivePlayIn(beatIndex * eighthNoteDuration);
+          // });
         });
-      }),
-
-      _loadBeatTrackFor(name) {
-        return this.get('audio').load(`${name}.wav`).asBeatTrack(name);
       },
 
-      actions: {
-        play() {
-          this.get('beatTracks').map((beatTrack) => {
-            // playActiveBeats() optionally accepts "noteType" which defaults to "1/4"
-            // notes, but we want to use eighth notes
-            beatTrack.playActiveBeats(this.get('bpm'), 1/8);
-
-            // /* playActiveBeats() is a convenience method. For more control, you could do:
-            // http://bradthemad.org/guitar/tempo_explanation.php */
-            // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
-            // beatTrack.get('beats').map((beat, beatIndex) => {
-            //   /* whatever else you need to do */
-            //   beat.ifActivePlayIn(beatIndex * eighthNoteDuration);
-            // });
-          });
-        },
-
-        toggleActive(beat) {
-          if (beat.get('active')) {
-            beat.set('active', false);
-          } else {
-            beat.play();
-            beat.set('active', true);
-          }
+      toggleActive(beat) {
+        if (beat.get('active')) {
+          beat.set('active', false);
+        } else {
+          beat.play();
+          beat.set('active', true);
         }
       }
-    });
-    {{/code-block}}
+    }
+  });
+  {{/code-block}}
 </div>
