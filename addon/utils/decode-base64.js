@@ -1,6 +1,6 @@
 /**
- * @module utils
- * @submodule decode-base64
+ * @private
+ * @class utils
  */
 
 /**

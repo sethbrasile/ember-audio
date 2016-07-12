@@ -21,21 +21,20 @@ const {
 /**
  * The Sound class provides the core functionality for
  * interacting with the Web Audio API's AudioContext, and is the base class for
- * all other Sound types. It prepares an audio source, provides various methods
- * for interacting with the audio source, creates
- * [AudioNodes](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode)
- * from the connections array, sets up the necessary connections/routing
- * between them, and provides some methods to
- * {{#crossLink "Sound/play:method"}}play(){{/crossLink}} and
- * {{#crossLink "Sound/stop:method"}}stop(){{/crossLink}} the audio source.
+ * all other {{#crossLinkModule "Audio"}}{{/crossLinkModule}} types. It prepares
+ * an audio source, provides various methods for interacting with the audio source,
+ * creates {{#crossLink "AudioNode"}}AudioNodes{{/crossLink}} from the
+ * connections array, sets up the necessary connections/routing between them,
+ * and provides some methods to {{#crossLink "Sound/play:method"}}{{/crossLink}}
+ * and {{#crossLink "Sound/stop:method"}}{{/crossLink}} the audio source.
  *
- * @constructor
  * @class Sound
  */
 const Sound = Ember.Object.extend({
 
   /**
-   * Name that this Sound instance is registered as on it's parent register.
+   * When using the {{#crossLink "Audio-Service"}}{{/crossLink}}, The name that
+   * this Sound instance is registered as on it's parent register.
    *
    * @property name
    * @type {string}
@@ -79,7 +78,7 @@ const Sound = Ember.Object.extend({
   /**
    * When a Sound instance plays, this is set to the `audioContext.currentTime`.
    * It will always reflect the start time of the most recent
-   * {@link Sound#_play _play}.
+   * {{#crossLink "Sound/_play:method"}}{{/crossLink}}.
    *
    * @property startedPlayingAt
    * @type {number}
@@ -89,15 +88,12 @@ const Sound = Ember.Object.extend({
 
   /**
    * When a Sound instance is played, this value is passed to the
-   * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start AudioBufferSourceNode.start()}
-   * `offset` param. Determines `where` (in seconds)
-   * the play will start, along the duration of the audio source.
+   * {{#crossLink "AudioBufferSourceNode/start:method"}}AudioBufferSourceNode.start(){{/crossLink}}
+   * `offset` param. Determines `where` (in seconds) the play will start, along
+   * the duration of the audio source.
    *
-   * @see [AudioBufferSourceNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode)
-   *
-   * @memberof Sound
+   * @property startOffset
    * @type {number}
-   * @instance
    */
   startOffset: 0,
 
@@ -125,7 +121,7 @@ const Sound = Ember.Object.extend({
 
   /**
    * Computed property. Value is an object containing the duration of the
-   * {@link Sound#audioBuffer audioBuffer} in three formats. The three formats
+   * audioBuffer in three formats. The three formats
    * are `raw`, `string`, and `pojo`.
    *
    * Duration of 6 minutes would be output as:
@@ -140,7 +136,7 @@ const Sound = Ember.Object.extend({
    *     }
    *
    * @property duration
-   * @type {Object}
+   * @type {object}
    */
   duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
@@ -158,9 +154,8 @@ const Sound = Ember.Object.extend({
    * Computed property. Value is the amount of gain currently applied to the
    * `gainNode` of the `connections` array, formatted as a percentage.
    *
-   * @memberof Sound
+   * @property percentGain
    * @type {number}
-   * @instance
    */
   percentGain: computed(function() {
     return this.getNode('gainNode').gain.value * 100;
@@ -176,12 +171,12 @@ const Sound = Ember.Object.extend({
    *
    * @todo Get rid of need to re-set AudioNode param values after changing.
    * Probably just get rid of this.
-   * {@link https://github.com/sethbrasile/ember-audio/blob/master/tests/dummy/app/controllers/audio-routing.js#L50 This}
+   * [This](https://github.com/sethbrasile/ember-audio/blob/master/tests/dummy/app/controllers/audio-routing.js#L50)
    * should be OK at the top of the method, but right now it's not.
    *
-   * @memberof Sound
+   * @private
+   * @property createdConnections
    * @type {number}
-   * @instance
    */
   createdConnections: computed('connections.[]', function() {
     const connections = this.get('connections').map((connection) => {
@@ -249,8 +244,6 @@ const Sound = Ember.Object.extend({
    * Plays the audio source immediately.
    *
    * @method play
-   * @memberof Sound
-   * @instance
    */
   play() {
     this._play(this.get('audioContext.currentTime'));
@@ -259,18 +252,15 @@ const Sound = Ember.Object.extend({
   /**
    * Plays the audio source at the specified moment in time. A "moment in time"
    * is measured in seconds from the moment that the
-   * {@link Sound#audioContext audioContext} was instantiated.
+   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
    *
-   * Functionally equivalent to {@link Sound#_play _play()}.
+   * Functionally equivalent to {{#crossLink "Sound/_play:method"}}{{/crossLink}}.
    *
    * @param {number} time The moment in time (in seconds, relative to the
-   * {@link Sound#audioContext audioContext's} "beginning of time") when the
-   * audio source should be played.
+   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
+   * time") when the audio source should be played.
    *
    * @method playAt
-   *
-   * @memberof Sound
-   * @instance
    */
   playAt(time) {
     this._play(time);
@@ -283,9 +273,6 @@ const Sound = Ember.Object.extend({
    *
    * @param {number} amount Number of seconds from "now" that the audio source
    * should be played.
-   *
-   * @memberof Sound
-   * @instance
    */
   playIn(amount) {
     this._play(this.get('audioContext.currentTime') + amount);
@@ -294,9 +281,8 @@ const Sound = Ember.Object.extend({
   /**
    * Stops the audio source immediately.
    *
+   * @todo add timed stop methods
    * @method stop
-   * @memberof Sound
-   * @instance
    */
   stop() {
     const node = this.get('bufferSourceNode');
@@ -308,15 +294,13 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * returns a connection's AudioNode from the {@link Sound#createdConnections}
-   * array by it's `name`.
+   * returns a connection's AudioNode from the createdConnections array by it's
+   * `name`.
    *
    * @param {string} name The name of the AudioNode that should be returned.
    *
    * @method getNode
-   * @memberof Sound
-   * @returns {AudioNode} The requested AudioNode.
-   * @instance
+   * @return {AudioNode} The requested AudioNode.
    */
   getNode(name) {
     const connection = this.get('createdConnections').findBy('name', name);
@@ -333,9 +317,7 @@ const Sound = Ember.Object.extend({
    * `pan.value` should be set to.
    *
    * @method pan
-   * @memberof Sound
-   * @todo Make "API" match {@link Sound#changeGainTo}
-   * @instance
+   * @todo Make "API" match "changeGainTo"
    */
   pan(value) {
     this.getNode('pannerNode').pan.value = value;
@@ -347,19 +329,17 @@ const Sound = Ember.Object.extend({
    * one to specify which type of value is being provided.
    *
    * @example
-   * // these all result in gainNode.gain.value === 0.9
-   * soundInstance.changeGainTo(0.9).from('ratio');
-   * soundInstance.changeGainTo(0.1).from('inverseRatio')
-   * soundInstance.changeGainTo(90).from('percent');
+   *     // these all result in gainNode.gain.value === 0.9
+   *     soundInstance.changeGainTo(0.9).from('ratio');
+   *     soundInstance.changeGainTo(0.1).from('inverseRatio')
+   *     soundInstance.changeGainTo(90).from('percent');
    *
    * @param {number} value The value that the `gainNode`'s `gain.value` should
    * be set to. Can be a ratio, an inverseRatio or a percentage.
    *
    * @method changeGainTo
-   * @memberof Sound
-   * @instance
    *
-   * @returns {object} Intermediary POJO containing the `from` method which will
+   * @return {object} Intermediary POJO containing the `from` method which will
    * determine the type of value that `gain.value` is being set to and make the
    * change accordingly.
    */
@@ -392,27 +372,25 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the {@link Sound#bufferSourceNode Source Node} stops the audio,
+   * Gets the bufferSourceNode and stops the audio,
    * changes it's play position, and restarts the audio.
    *
    * returns a pojo with the `from` method that `value` is curried to, allowing
    * one to specify which type of value is being provided.
    *
    * @example
-   * // for a Sound instance with a duration of 100 seconds, these will all
-   * // move the play position to 90 seconds.
-   * soundInstance.seek(0.9).from('ratio');
-   * soundInstance.seek(0.1).from('inverseRatio')
-   * soundInstance.seek(90).from('percent');
-   * soundInstance.seek(90).from('seconds');
+   *     // for a Sound instance with a duration of 100 seconds, these will all
+   *     // move the play position to 90 seconds.
+   *     soundInstance.seek(0.9).from('ratio');
+   *     soundInstance.seek(0.1).from('inverseRatio')
+   *     soundInstance.seek(90).from('percent');
+   *     soundInstance.seek(90).from('seconds');
    *
    * @param {number} amount The new play position value.
    *
    * @method seek
-   * @memberof Sound
-   * @instance
    *
-   * @returns {object} Intermediary POJO containing the `from` method which will
+   * @return {object} Intermediary POJO containing the `from` method which will
    * determine the type of value that play position is being set to and make the
    * change accordingly.
    */
@@ -458,8 +436,6 @@ const Sound = Ember.Object.extend({
    * @param {string} name The name of the connection that should be removed.
    *
    * @method removeConnection
-   * @memberof Sound
-   * @instance
    */
   removeConnection(name) {
     const connections = this.get('connections');
@@ -468,23 +444,23 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * The underlying method that backs the {@link Sound#play play()},
-   * {@link Sound#playAt playAt()}, and {@link Sound#playIn playIn()} methods.
+   * The underlying method that backs the
+   * {{#crossLink "Sound/play:method"}}{{/crossLink}},
+   * {{#crossLink "Sound/playAt:method"}}{{/crossLink}}, and
+   * {{#crossLink "Sound/playIn:method"}}{{/crossLink}} methods.
    *
    * Plays the audio source at the specified moment in time. A "moment in time"
    * is measured in seconds from the moment that the
-   * {@link Sound#audioContext audioContext} was instantiated.
+   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
    *
-   * Functionally equivalent to {@link Sound#playAt playAt()}.
+   * Functionally equivalent to {{#crossLink "Sound/playAt:method"}}{{/crossLink}}.
    *
    * @param {number} time The moment in time (in seconds, relative to the
-   * {@link Sound#audioContext audioContext's} "beginning of time") when the
-   * audio source should be played.
+   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
+   * time") when the audio source should be played.
    *
    * @method _play
-   * @memberof Sound
    * @private
-   * @instance
    */
   _play(playAt) {
     const currentTime = this.get('audioContext.currentTime');
@@ -504,14 +480,12 @@ const Sound = Ember.Object.extend({
 
   /**
    * Gets the array of connections from the
-   * {@link Sound#createdConnections createdConnections} computed property and
+   * createdConnections computed property and
    * returns the same array with any AudioNodes that need to be created at
-   * {@link Sound#_play _play()} time having been created.
+   * {{#crossLink "Sound/_play:method"}}{{/crossLink}} time having been created.
    *
    * @method _wireUpConnections
-   * @memberof Sound
    * @private
-   * @instance
    */
   _wireUpConnections() {
     // Each node is connected to the next node in the connections array
@@ -537,15 +511,13 @@ const Sound = Ember.Object.extend({
 
   /**
    * Performs the actual AudioNode creation for the
-   * {@link Sound#_wireUpConnections _wireUpConnections} method.
+   * {{#crossLink 'Sound/_wireUpConnections:method'}}{{/crossLink}} method.
    *
    * Also sets any properties from a connection's `onPlaySetAttrsOnNode` array
    * on the node.
    *
    * @method _createNode
-   * @memberof Sound
    * @private
-   * @instance
    */
   _createNode(connection) {
     const { name, createdOnPlay, source, createCommand, onPlaySetAttrsOnNode } = connection;

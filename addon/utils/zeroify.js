@@ -1,14 +1,14 @@
 /**
- * @module utils
- * @submodule zeroify
+ * @private
+ * @class utils
  */
 
  /**
   * Formats a number and converts to string: 6 becomes '06'
   *
-  * @function zeroify
+  * @method zeroify
   * @param {number} input A number that should be formatted
-  * @returns {string} The number formatted and converted to string
+  * @return {string} The number formatted and converted to string
   */
 export default function zeroify(input) {
   const num = Math.floor(input);

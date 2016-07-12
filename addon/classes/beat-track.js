@@ -16,12 +16,10 @@ const {
 
 /**
  * An instance of this class has a single
- * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer AudioBuffer}
- * (a single "sound") but provides methods to play that sound repeatedly and in
- * a rhythmic way. An instance of this class behaves very similarly to a "lane"
- * on a drum machine or a step sequencer.
+ * {{#crossLink "AudioBuffer"}}{{/crossLink}} (a single "sound") but provides
+ * methods to play that sound repeatedly and in a rhythmic way. An instance of
+ * this class behaves very similarly to a "lane" on a drum machine.
  *
- * @constructor
  * @class BeatTrack
  * @extends Sound
  */

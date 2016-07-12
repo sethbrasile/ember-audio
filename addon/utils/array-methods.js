@@ -5,8 +5,8 @@ const {
 } = Ember;
 
 /**
- * @module utils
- * @submodule array-methods
+ * @private
+ * @class utils
  */
 
 /**
@@ -17,7 +17,7 @@ const {
  * @method arraySwap
  * @param {array} arr An array to split, shift and rejoin.
  * @param {number} index The index where the split should occur.
- * @returns {array} The swapped/shifted array.
+ * @return {array} The swapped/shifted array.
  */
 export function arraySwap(arr, index) {
   const endOfArr = arr.slice(0, index);
@@ -31,7 +31,7 @@ export function arraySwap(arr, index) {
  * @private
  * @method flatten
  * @param {arrayOfArrays} arr An array to flatten.
- * @returns {array} The flattened array.
+ * @return {array} The flattened array.
  */
 export function flatten(arrayOfArrays) {
   return A(arrayOfArrays).reduce((a, b) => A(a).concat(b));

@@ -6,10 +6,20 @@ const {
 } = Ember;
 
 /**
- * @module utils
- * @submodule note-methods
+ * @private
+ * @class utils
  */
 
+/**
+ * Sorts an array of {{#crossLink "Note"}}Notes{{/crossLink}} so that they are in the same order that they would
+ * appear on a piano.
+ *
+ * @param {array} notes An array of notes that should be musically-sorted.
+ *
+ * @method sortNotes
+ *
+ * @return {array} Array of musically-sorted notes.
+ */
 export function sortNotes(notes) {
   // get octaves so that we can sort based on them
   let sortedNotes = extractOctaves(notes);
@@ -38,14 +48,19 @@ export function sortNotes(notes) {
  * so that each array starts at the next note after the last note of the first
  * array, instead of at "A" (alphabetically).
  *
+ * @example
  *     This is hard to explain. Here's an example.
  *     (Simplified, as the real notes are objects)
  *
  *     Example input: [['A0', 'B0'], ['A1', 'B1', 'C1', 'D1']]
  *     Example output: [['A0', 'B0'], ['C1', 'D1', 'A1', 'B1']]
  *
- * @param {array} octaves An array of octaves, each octave is an array of notes, each note is an Ember.Object.
- * @returns {array} Input array after having been shifted.
+ * @private
+ * @method octaveShift
+ *
+ * @param {array} octaves An array of octaves, each octave is an array of Notes.
+ *
+ * @return {array} Input array after having been shifted.
  */
 export function octaveShift(octaves) {
   // Pull first octave from beginning of array
@@ -67,8 +82,12 @@ export function octaveShift(octaves) {
  * Maps through an array of arrays and sorts each array with
  * "noteSort"
  *
+ * @private
+ * @method octaveSort
+ *
  * @param  {array} octaves array of arrays to be sorted
- * @return {array}         array of sorted arrays
+ *
+ * @return {array} array of sorted arrays
  */
 export function octaveSort(octaves) {
   return octaves.map((octave) => octave.sort(noteSort));
@@ -78,9 +97,13 @@ export function octaveSort(octaves) {
  * Accepts an array of Note objects and passes back an array
  * like this: [original array, array of each octave in the orginal array]
  *
- * @param  {array} notes array of note objects
- * @return {array}       array containing two inner arrays, [0] is the untouched
- * input array, [1] is an array of all the octaves in the original array
+ * @private
+ * @method extractOctaves
+ *
+ * @param  {array} notes array of note objects.
+ *
+ * @return {array} array containing two inner arrays, [0] is the untouched input
+ * array, [1] is an array of all the octaves in the original array.
  */
 export function extractOctaves(notes) {
   return [ notes, A(A(notes).getEach('octave')) ];
@@ -88,10 +111,14 @@ export function extractOctaves(notes) {
 
 /**
  * Accepts an array of two arrays and returns the same
- * array, but with array at index [1] uniq'd and sorted alphabetically
+ * array, but with array at index [1] uniq'd and sorted alphabetically.
  *
- * @param  {array} [ notes, octaves ] the output from extractOctaves (above)
- * @return {array}
+ * @private
+ * @method stripDuplicateOctaves
+ *
+ * @param  {array} [ notes, octaves ] the output from extractOctaves.
+ *
+ * @return {array} The mutated array.
  */
 export function stripDuplicateOctaves([ notes, octaves ]) {
   return [ notes, A(octaves).uniq().sort() ];
@@ -103,8 +130,12 @@ export function stripDuplicateOctaves([ notes, octaves ]) {
  * made up of arrays of Note objects, organized by octave. Each inner array
  * represents all of the notes in an octave.
  *
- * @param  {array} data The output of stripDuplicateOctaves (above)
- * @return {array}
+ * @private
+ * @method createOctavesWithNotes
+ *
+ * @param  {array} data The output of stripDuplicateOctaves.
+ *
+ * @return {Ember.MutableArray}
  */
 export function createOctavesWithNotes([ notes, octaves ]) {
   return A(octaves).map((octave) => A(notes).filterBy('octave', octave));
@@ -112,13 +143,17 @@ export function createOctavesWithNotes([ notes, octaves ]) {
 
 /**
  * Acts as a comparator function for javascript's array sort() method.
- * Sorts two {@link Note} instances alphabetically, flats before naturals.
+ * Sorts two {{#crossLink "Note"}}{{/crossLink}} instances alphabetically, flats
+ * before naturals.
  *
  * @private
  * @method noteSort
+ *
  * @param {Note} a The first Note instance to compare.
  * @param {Note} b The second Note instance to compare.
- * @returns {number} -1 or 1, depending on whether the current {@link Note} instance should be sorted left, or right.
+ *
+ * @return {number} -1 or 1, depending on whether the current
+ * {{#crossLink "Note"}}{{/crossLink}} instance should be sorted left, or right.
  */
 export function noteSort(a, b) {
   const aLet = a.get('letter');

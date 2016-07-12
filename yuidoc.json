@@ -13,7 +13,7 @@
     "parseOnly": false,
     "lint": false,
     "external": {
-      "data": "http://builds.emberjs.com/canary/ember-docs.json"
+      "data": "http://builds.emberjs.com/release/ember-docs.json"
     }
   }
 }

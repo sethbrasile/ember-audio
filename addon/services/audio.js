@@ -3,28 +3,33 @@ import fetch from 'ember-network/fetch';
 import { Sound, Note, Track, BeatTrack } from 'ember-audio/classes';
 import { sortNotes, base64ToUint8, mungeSoundFont } from '../utils';
 
+/**
+ * Provides the Audio Service
+ * @module Audio-Service
+ */
+
 const {
   RSVP: { all, resolve },
   Service
 } = Ember;
 
 /**
- * Audio Service
+ * A {{#crossLink "Ember.Service"}}Service{{/crossLink}} that provides methods
+ * for interacting with the various
+ * {{#crossLinkModule "Audio"}}{{/crossLinkModule}} classes and the Web Audio
+ * API's {{#crossLink "AudioContext"}}{{/crossLink}}.
  *
- * @example
- * // injecting into an object
- * Ember.Something.extend({
- *   audio: Ember.inject.service()
- * });
+ *     // inject into an object
+ *     Ember.Something.extend({
+ *       audio: Ember.inject.service()
+ *     });
  *
- * @example
- * // use
- * loadSound() {
- *   return this.get('audio').load('some.mp3').asSound('some-sound');
- * }
+ *     // use
+ *     loadSound() {
+ *       return this.get('audio').load('some.mp3').asSound('some-sound');
+ *     }
  *
- * @module
- * @extends Ember.Service
+ * @class Audio
  */
 export default Service.extend({
   /**
@@ -32,56 +37,69 @@ export default Service.extend({
    * browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
    *
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext}
-   * @see {@link http://caniuse.com/#feat=audio-api}
+   * @property context
    * @type {AudioContext}
    */
   context: new AudioContext(),
 
   /**
    * This acts as a register for Sound instances. Sound instances are placed in
-   * the register by name, and can be called via sounds.get('name')
+   * the register by name, and can be called via audioService.getSound('name')
    *
-   * @type {Map.<string, Sound>}
+   * @private
+   * @property sounds
+   * @type {map}
    */
   sounds: new Map(),
 
   /**
-   * This acts as a register for soundfonts. Soundfonts are plain Ember.Objects
-   * which are placed in the register by name, and can be called via
-   * fonts.get('name')
+   * This acts as a register for soundfonts. A soundfont is a Map
+   * which is placed in the register by name, and can be called via
+   * audioService.getFont('name')
    *
+   * @private
    * @property fonts
-   * @type {Map}
+   * @type {map}
    */
   fonts: new Map(),
 
   /**
    * This acts as a register for Track instances. Track instances are placed in
-   * the register by name, and can be called via tracks.get('name')
+   * the register by name, and can be called via audioService.getTrack('name')
    *
+   * @private
    * @property tracks
-   * @type {Map}
+   * @type {map}
    */
   tracks: new Map(),
 
   /**
    * This acts as a register for BeatTrack instances. BeatTrack instances are
-   * placed in the register by name, and can be called via beatTracks.get('name')
+   * placed in the register by name, and can be called via
+   * audioService.getBeatTrack('name')
    *
+   * @private
    * @property beatTracks
-   * @type {Map}
+   * @type {map}
    */
   beatTracks: new Map(),
 
   /**
    * Acts as a proxy method, returns a POJO with methods that return the _load and
    * _loadFont methods so that in the end, the method signature looks something
-   * like: audio.load('some-uri').asSound('some-name')
+   * like:
+   *
+   * @example
+   *     audio.load('some-uri').asSound('some-name')
    *
    * @method load
-   * @param {String} src The URI location of an audio file. Will be used by "fetch" to get the audio file. Can be a local or a relative URL
-   * @return {Object} returns a POJO that contains a few methods that curry "src" "type" and "name" over to _load() and _loadFont()
+   * @param {string} src The URI location of an audio file. Will be used by
+   * "fetch" to get the audio file. Can be a local or a relative URL
+   *
+   * @return {object} returns a POJO that contains a few methods that curry
+   * "src" "type" and "name" over to
+   * {{#crossLink "Audio/_load:method"}}{{/crossLink}} and
+   * {{#crossLink "Audio/_loadFont:method"}}{{/crossLink}}
    */
   load(src) {
     const _load = this._load.bind(this);
@@ -89,44 +107,68 @@ export default Service.extend({
 
     return {
       /**
-       * Calls _load() with name, partially applied src param from load(), and type="sound"
+       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
+       * partially applied src param from
+       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="sound"
        *
        * @method asSound
-       * @param {String} name The name that this Sound instance will be registered as in the "sounds" register
-       * @return {Promise<Sound>} Returns a promise that resolves to a Sound instance. The promise resolves when the Sound instance's AudioBuffer (audio data) is finished loading
+       * @param {string} name The name that this Sound instance will be
+       * registered as in the "sounds" register
+       * @return {promise|Sound} Returns a promise that resolves to a Sound
+       * instance. The promise resolves when the Sound instance's AudioBuffer
+       * (audio data) is finished loading
        */
       asSound(name) {
         return _load(name, src, 'sound');
       },
 
       /**
-       * Calls _load() with name, partially applied src param from load(), and type="track"
+       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
+       * partially applied src param from
+       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="track"
        *
        * @method asSound
-       * @param {String} name The name that this Track instance will be registered as in the "tracks" register
-       * @return {Promise<Track>} Returns a promise that resolves to a Track instance. The promise resolves when the Track instance's AudioBuffer (audio data) is finished loading
+       * @param {string} name The name that this Track instance will be
+       * registered as in the "tracks" register.
+       *
+       * @return {promise|Track} Returns a promise that resolves to a Track
+       * instance. The promise resolves when the Track instance's AudioBuffer
+       * (audio data) is finished loading.
        */
       asTrack(name) {
         return _load(name, src, 'track');
       },
 
       /**
-       * Calls _load() with name, partially applied src param from load(), and type="beatTrack"
+       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
+       * partially applied src param from
+       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="beatTrack"
        *
        * @method asBeatTrack
-       * @param {String} name The name that this BeatTrack instance will be registered as in the "beatTracks" register
-       * @return {Promise<Track>} Returns a promise that resolves to a BeatTrack instance. The promise resolves when the BeatTrack instance's AudioBuffer (audio data) is finished loading
+       * @param {string} name The name that this BeatTrack instance will be
+       * registered as in the "beatTracks" register
+       *
+       * @return {promise|Track} Returns a promise that resolves to a BeatTrack
+       * instance. The promise resolves when the BeatTrack instance's AudioBuffer
+       * (audio data) is finished loading.
        */
       asBeatTrack(name) {
         return _load(name, src, 'beatTrack');
       },
 
       /**
-       * Calls _loadFont() with name, and partially applied src param from load()
+       * Calls {{#crossLink "Audio/_loadFont:method"}}{{/crossLink}} with name,
+       * and partially applied src param from
+       * {{#crossLink "Audio/load:method"}}{{/crossLink}}.
        *
        * @method asFont
-       * @param {String} name The name that this font will be registered as in the "fonts" register
-       * @return {Promise<Array>} Returns a promise that resolves to an Array of sorted note names. The promise resolves when the soundfont file is finished loading and it's audio data has been successfully decoded
+       *
+       * @param {string} name The name that this font will be registered as in
+       * the "fonts" register.
+       *
+       * @return {promise|array} Returns a promise that resolves to an Array of
+       * sorted note names. The promise resolves when the soundfont file is
+       * finished loading and it's audio data has been successfully decoded.
        */
       asFont(name) {
         return _loadFont(name, src);
@@ -135,11 +177,14 @@ export default Service.extend({
   },
 
   /**
-   * Gets a BeatTrack instance by name from the beatTracks register
+   * Gets a BeatTrack instance by name from the beatTracks register.
    *
    * @method getBeatTrack
-   * @param {String} name The name of the BeatTrack instance that you would like to retrieve from the beatTracks register
-   * @return {BeatTrack} Returns the BeatTrack instance that matches the provided name
+   * @param {string} name The name of the BeatTrack instance that you would like
+   * to retrieve from the beatTracks register.
+   *
+   * @return {BeatTrack} Returns the BeatTrack instance that matches the
+   * provided name.
    */
   getBeatTrack(name) {
     return this.get('beatTracks').get(name);
@@ -149,8 +194,10 @@ export default Service.extend({
    * Gets a Sound instance by name from the sounds register
    *
    * @method getSound
-   * @param {String} name The name of the sound that you would like to retrieve from the sounds register
-   * @return {Sound} returns the Sound instance that matches the provided name
+   * @param {string} name The name of the sound that you would like to retrieve
+   * from the sounds register.
+   *
+   * @return {Sound} returns the Sound instance that matches the provided name.
    */
   getSound(name) {
     return this.get('sounds').get(name);
@@ -160,8 +207,10 @@ export default Service.extend({
    * Gets a Track instance by name from the tracks register
    *
    * @method getTrack
-   * @param {String} name The name of the Track instance that you would like to retrieve from the tracks register
-   * @return {Track} Returns the Track instance that matches the provided name
+   * @param {string} name The name of the Track instance that you would like to
+   * retrieve from the tracks register.
+   *
+   * @return {Track} Returns the Track instance that matches the provided name.
    */
   getTrack(name) {
     return this.get('tracks').get(name);
@@ -171,8 +220,10 @@ export default Service.extend({
    * Gets a soundfont by name from the fonts register
    *
    * @method getFont
-   * @param {String} name The name of the soundfont that you would like to retrieve from the fonts register
-   * @return {Ember.Array} Returns the soundfont (an array of Note objects) that matches the provided name
+   * @param {string} name The name of the soundfont that you would like to
+   * retrieve from the fonts register.
+   * @return {Ember.Array} Returns the soundfont (an array of Note objects)
+   * that matches the provided name.
    */
   getFont(name) {
     const font = this.get('fonts').get(name);
@@ -189,10 +240,14 @@ export default Service.extend({
   },
 
   /**
-   * Gets all instances from requested register and calls stop() on each instance
+   * Gets all instances from requested register and calls
+   * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each
+   * instance. Default register is `tracks`.
    *
    * @method stopAll
-   * @param {String} [register='tracks'] The name of the register that you wish to stop all instances of
+   *
+   * @param {string} register='tracks' The name of the register that you wish
+   * to stop all instances of
    */
   stopAll(register='tracks') {
     for (let sound of this.get(register).values()) {
@@ -217,8 +272,8 @@ export default Service.extend({
    *
    * @private
    * @method _getRegisterFor
-   * @param {String} type The type of register to return
-   * @return {Map}
+   * @param {string} type Which register to return.
+   * @return {map}
    */
   _getRegisterFor(type) {
     switch(type) {
@@ -232,13 +287,18 @@ export default Service.extend({
   },
 
   /**
-   * Creates a Sound, Track, or BeatTrack instance, based on "type" and passes "props"
-   * to the new instance
+   * Creates an {{#crossLinkModule "Audio"}}Audio Class{{/crossLinkModule}}
+   * instance (which is based on which "type" is specified), and passes "props"
+   * to the new instance.
    *
    * @private
    * @method _createSoundFor
-   * @param {String} type The type of Sound to be created
-   * @param {Object} props POJO to pass to the new instance
+   *
+   * @param {string} type The type of
+   * {{#crossLinkModule "Audio"}}Audio Class{{/crossLinkModule}} to be created.
+   *
+   * @param {object} props POJO to pass to the new instance
+   *
    * @return {Sound|Track|BeatTrack}
    */
   _createSoundFor(type, props) {
@@ -255,14 +315,22 @@ export default Service.extend({
   /**
    * Loads and decodes an audio file, creating a Sound, Track, or BeatTrack
    * instance (as determined by the "type" parameter) and places the instance
-   * into it's corresponding register
+   * into it's corresponding register.
    *
    * @private
    * @method _load
-   * @param {String} name The name that the created instance should be registered as
-   * @param {String} src The URI location of an audio file. Will be used by "fetch" to get the audio file. Can be a local or a relative URL
-   * @param {String} type Determines the type of object that should be created, as well as which register the instance should be placed in
-   * @return {Promise<Sound|Track|BeatTrack>} Returns a Promise which resolves to an instance of a Sound, Track, or BeatTrack
+   *
+   * @param {string} name The name that the created instance should be
+   * registered as.
+   *
+   * @param {string} src The URI location of an audio file. Will be used by
+   * "fetch" to get the audio file. Can be a local or a relative URL
+   *
+   * @param {string} type Determines the type of object that should be created,
+   * as well as which register the instance should be placed in
+   *
+   * @return {promise|Sound|Track|BeatTrack} Returns a promise which resolves
+   * to an instance of a Sound, Track, or BeatTrack
    */
   _load(name, src, type) {
     const audioContext = this.get('context');
@@ -287,20 +355,30 @@ export default Service.extend({
   },
 
   /**
-   * 1. Creates a Map instance (a "font") and places it in the fonts register
-   * 2. Loads a soundfont file and decodes all the notes
-   * 3. Creates a Note object instance for each note
-   * 4. Places each note on the font by name
-   * 5. Returns a promise that resolves to an array of properly sorted Note object instances
+   * 1. Creates a Map instance (a "font") and places it in the fonts register.
+   * 2. Loads a soundfont file and decodes all the notes.
+   * 3. Creates a Note object instance for each note.
+   * 4. Places each note on the font by name.
+   * 5. Returns a promise that resolves to an array of properly sorted Note
+   * object instances.
    *
    * The notes are sorted the way that they would appear on a piano. A given
-   * note can be played like: audio.getFont(fontName).play(noteName)
+   * note can be played as seen in the example:
+   *
+   * @example
+   *     audio.getFont(fontName).play(noteName)
    *
    * @private
    * @method _loadFont
-   * @param {String} instrumentName The name that you will refer to this sound font by.
-   * @param {String} src The URI location of a soundfont file. Will be used by "fetch" to get the soundfont file. Can be a local or a relative URL
-   * @return {Promise<Array>} Returns a promise that resolves when the sound font has been successfully decoded. The promise resolves to an array of sorted note names.
+   *
+   * @param {string} instrumentName The name that you will refer to this sound
+   * font by.
+   *
+   * @param {string} src The URI location of a soundfont file. Will be used by
+   * "fetch" to get the soundfont file. Can be a local or a relative URL.
+   *
+   * @return {promise|array} Returns a promise that resolves when the sound font
+   * has been successfully decoded. The promise resolves to an array of sorted note names.
    */
   _loadFont(instrumentName, src) {
     const fonts = this.get('fonts');
@@ -341,8 +419,9 @@ export default Service.extend({
    *
    * @private
    * @method _extractDecodedKeyValuePairs
-   * @param {Array} notes Array of base64 encoded strings.
-   * @return {Array} Returns an Array of arrays. Each inner array has two values, [noteName, decodedAudio]
+   * @param {array} notes Array of base64 encoded strings.
+   * @return {array} Returns an Array of arrays. Each inner array has two
+   * values, `[noteName, decodedAudio]`.
    */
   _extractDecodedKeyValuePairs(notes) {
     const ctx = this.get('context');
@@ -372,17 +451,26 @@ export default Service.extend({
 
   /**
    * Takes an array of arrays, each inner array acting as
-   * a key-value pair in the form [noteName, audioData]. Each inner array is
-   * transformed into an Ember.Object and the outer array is returned. This
-   * method also sets each note on it's corresponding instrument's Ember.Object
-   * instance by name. Each note is gettable by
-   * this.get(`${instrumentName}.${noteName}`)
+   * a key-value pair in the form `[noteName, audioData]`. Each inner array is
+   * transformed into a {{#crossLink "Note"}}{{/crossLink}} and the outer array
+   * is returned. This method also sets each note on it's corresponding
+   * instrument {{#crossLink "Map"}}{{/crossLink}} instance by name. Each note
+   * is playable as seen in the example.
+   *
+   * @example
+   *     audioService.get('fonts').get('instrument-name').play('Ab5');
    *
    * @private
    * @method _createNoteObjects
-   * @param {Array} audioData Array of arrays, each inner array like [noteName, audioData]
-   * @param {String} instrumentName Name of the instrument each note belongs to
-   * @return {Array} Returns an Array of Ember.Objects
+   *
+   * @param {array} audioData Array of arrays, each inner array like
+   * `[noteName, audioData]`.
+   *
+   * @param {string} instrumentName Name of the instrument each note belongs to.
+   * This is the name that will be used to identify the instrument on the fonts
+   * register.
+   *
+   * @return {array} Returns an Array of {{#crossLink "Note"}}Notes{{/crossLink}}
    */
   _createNoteObjects(audioData, instrumentName) {
     const audioContext = this.get('context');
