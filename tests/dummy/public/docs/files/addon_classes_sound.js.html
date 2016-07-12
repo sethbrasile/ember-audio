@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/classes/sound.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                                <ul>
+                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
+                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            </li>
+                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
+                                <ul>
+                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
+                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.1d61e3e0
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/classes/sound.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+import zeroify from &#x27;../utils&#x27;;
+
+/**
+ * The Sound class provides the core functionality for interacting with the Web
+ * Audio API&#x27;s AudioContext, and is the base class for all of the other classes
+ * in the Audio module.
+ *
+ * @module Audio
+ * @submodule Sound
+ */
+
+const {
+  A,
+  computed,
+  on,
+  set,
+  run: { later }
+} = Ember;
+
+/**
+ * The Sound class provides the core functionality for
+ * interacting with the Web Audio API&#x27;s AudioContext, and is the base class for
+ * all other {{#crossLinkModule &quot;Audio&quot;}}{{/crossLinkModule}} types. It prepares
+ * an audio source, provides various methods for interacting with the audio source,
+ * creates {{#crossLink &quot;AudioNode&quot;}}AudioNodes{{/crossLink}} from the
+ * connections array, sets up the necessary connections/routing between them,
+ * and provides some methods to {{#crossLink &quot;Sound/play:method&quot;}}{{/crossLink}}
+ * and {{#crossLink &quot;Sound/stop:method&quot;}}{{/crossLink}} the audio source.
+ *
+ * @class Sound
+ */
+const Sound = Ember.Object.extend({
+
+  /**
+   * When using the {{#crossLink &quot;Audio-Service&quot;}}{{/crossLink}}, The name that
+   * this Sound instance is registered as on it&#x27;s parent register.
+   *
+   * @property name
+   * @type {string}
+   */
+  name: null,
+
+  /**
+   * The Sound instance&#x27;s [audio source node](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode).
+   *
+   * @property bufferSourceNode
+   * @type {AudioBufferSourceNode}
+   * @private
+   */
+  bufferSourceNode: null,
+
+  /**
+   * The AudioBuffer instance that provides audio data to the
+   * {{#crossLink &quot;Sound/bufferSourceNode:property&quot;}}bufferSourceNode{{/crossLink}}.
+   *
+   * @property audioBuffer
+   * @type {AudioBuffer}
+   * @private
+   */
+  audioBuffer: null,
+
+  /**
+   * The parent
+   * [AudioContext](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
+   * instance that all audio events are occurring within. It is useful for
+   * getting currentTime, as well as creating new
+   * [AudioNodes](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode).
+   *
+   * This is the object that facilitates and ties together all aspects of the
+   * Web Audio API.
+   *
+   * @property audioContext
+   * @type {AudioContext}
+   */
+  audioContext: null,
+
+  /**
+   * When a Sound instance plays, this is set to the &#x60;audioContext.currentTime&#x60;.
+   * It will always reflect the start time of the most recent
+   * {{#crossLink &quot;Sound/_play:method&quot;}}{{/crossLink}}.
+   *
+   * @property startedPlayingAt
+   * @type {number}
+   * @private
+   */
+  startedPlayingAt: 0,
+
+  /**
+   * When a Sound instance is played, this value is passed to the
+   * {{#crossLink &quot;AudioBufferSourceNode/start:method&quot;}}AudioBufferSourceNode.start(){{/crossLink}}
+   * &#x60;offset&#x60; param. Determines &#x60;where&#x60; (in seconds) the play will start, along
+   * the duration of the audio source.
+   *
+   * @property startOffset
+   * @type {number}
+   */
+  startOffset: 0,
+
+  /**
+   * Whether a sound is playing or not. Becomes true when a Sound instance
+   * starts playing audio. Becomes false when the Sound instance is stopped or
+   * ends by reaching the end of it&#x27;s duration.
+   *
+   * @property isPlaying
+   * @type {boolean}
+   * @default false
+   */
+  isPlaying: false,
+
+  /**
+   * Determines what AudioNodes are connected to one-another and the order in
+   * which they are connected. Starts as &#x60;null&#x60; but set to an array on &#x60;init&#x60;
+   * via the {{#crossLink &quot;Sound/initConnections:method&quot;}}
+   * initConnections{{/crossLink}} method.
+   *
+   * @property connections
+   * @type {Ember.MutableArray}
+   */
+  connections: null,
+
+  /**
+   * Computed property. Value is an object containing the duration of the
+   * audioBuffer in three formats. The three formats
+   * are &#x60;raw&#x60;, &#x60;string&#x60;, and &#x60;pojo&#x60;.
+   *
+   * Duration of 6 minutes would be output as:
+   *
+   *     {
+   *       raw: 360, // seconds
+   *       string: &#x27;06:00&#x27;,
+   *       pojo: {
+   *         minutes: 6,
+   *         seconds: 0
+   *       }
+   *     }
+   *
+   * @property duration
+   * @type {object}
+   */
+  duration: computed(&#x27;audioBuffer.duration&#x27;, function() {
+    const duration = this.get(&#x27;audioBuffer.duration&#x27;);
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+
+    return {
+      raw: duration,
+      string: &#x60;${zeroify(minutes)}:${zeroify(seconds)}&#x60;,
+      pojo: { minutes, seconds }
+    };
+  }),
+
+  /**
+   * Computed property. Value is the amount of gain currently applied to the
+   * &#x60;gainNode&#x60; of the &#x60;connections&#x60; array, formatted as a percentage.
+   *
+   * @property percentGain
+   * @type {number}
+   */
+  percentGain: computed(function() {
+    return this.getNode(&#x27;gainNode&#x27;).gain.value * 100;
+  }),
+
+  /**
+   * Computed property. Recreates all the connection&#x27;s AudioNodes whenever the
+   * connections array changes. Any values that have been set on a node before
+   * the connections array changes will need to be re-set after the connections
+   * array changes.
+   *
+   * Doesn&#x27;t create an AudioNode for any connection that has &#x60;createdOnPlay === true&#x60;
+   *
+   * @todo Get rid of need to re-set AudioNode param values after changing.
+   * Probably just get rid of this.
+   * [This](https://github.com/sethbrasile/ember-audio/blob/master/tests/dummy/app/controllers/audio-routing.js#L50)
+   * should be OK at the top of the method, but right now it&#x27;s not.
+   *
+   * @private
+   * @property createdConnections
+   * @type {number}
+   */
+  createdConnections: computed(&#x27;connections.[]&#x27;, function() {
+    const connections = this.get(&#x27;connections&#x27;).map((connection) =&gt; {
+      const { path, name, createCommand, source, createdOnPlay } = connection;
+
+      if (path) {
+        connection.node = this.get(path);
+      } else if (createCommand &amp;&amp; source &amp;&amp; !createdOnPlay) {
+        connection.node = this.get(source)[createCommand]();
+      } else if (!createdOnPlay &amp;&amp; !connection.node) {
+        console.error(&#x27;ember-audio:&#x27;, &#x60;The ${name} connection is not configured correctly. Please fix this connection.&#x60;);
+        return;
+      }
+
+      return connection;
+    });
+
+    return A(connections);
+  }),
+
+  /**
+   * Initializes default connections on Sound instantiation. Runs &#x60;on(&#x27;init&#x27;)&#x60;.
+   *
+   * @method initConnections
+   *
+   * @todo Create an actual Connection class to clarify the API for creating
+   * custom AudioNodes
+   */
+  initConnections: on(&#x27;init&#x27;, function() {
+    this.set(&#x27;connections&#x27;, A([
+      {
+        name: &#x27;bufferSourceNode&#x27;,
+        createdOnPlay: true,
+        source: &#x27;audioContext&#x27;,
+        createCommand: &#x27;createBufferSource&#x27;,
+        onPlaySetAttrsOnNode: [
+          {
+            attrNameOnNode: &#x27;buffer&#x27;,
+            relativePath: &#x27;audioBuffer&#x27;
+          }
+        ]
+      },
+      {
+        name: &#x27;gainNode&#x27;,
+        source: &#x27;audioContext&#x27;,
+        createCommand: &#x27;createGain&#x27;
+      },
+      {
+        name: &#x27;pannerNode&#x27;,
+        source: &#x27;audioContext&#x27;,
+        createCommand: &#x27;createStereoPanner&#x27;
+      },
+      {
+        name: &#x27;destination&#x27;,
+        path: &#x27;audioContext.destination&#x27;
+      }
+    ]));
+
+    // We&#x27;re not consuming the CP anywhere until &quot;play&quot; is called, but we want
+    // the nodes available before that
+    this.get(&#x27;createdConnections&#x27;);
+  }),
+
+  /**
+   * Plays the audio source immediately.
+   *
+   * @method play
+   */
+  play() {
+    this._play(this.get(&#x27;audioContext.currentTime&#x27;));
+  },
+
+  /**
+   * Plays the audio source at the specified moment in time. A &quot;moment in time&quot;
+   * is measured in seconds from the moment that the
+   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
+   *
+   * Functionally equivalent to {{#crossLink &quot;Sound/_play:method&quot;}}{{/crossLink}}.
+   *
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
+   * time&quot;) when the audio source should be played.
+   *
+   * @method playAt
+   */
+  playAt(time) {
+    this._play(time);
+  },
+
+  /**
+   * Plays the audio source in &#x60;${amount}&#x60; seconds.
+   *
+   * @method playIn
+   *
+   * @param {number} amount Number of seconds from &quot;now&quot; that the audio source
+   * should be played.
+   */
+  playIn(amount) {
+    this._play(this.get(&#x27;audioContext.currentTime&#x27;) + amount);
+  },
+
+  /**
+   * Stops the audio source immediately.
+   *
+   * @todo add timed stop methods
+   * @method stop
+   */
+  stop() {
+    const node = this.get(&#x27;bufferSourceNode&#x27;);
+
+    if (node) {
+      node.stop();
+      this.set(&#x27;isPlaying&#x27;, false);
+    }
+  },
+
+  /**
+   * returns a connection&#x27;s AudioNode from the createdConnections array by it&#x27;s
+   * &#x60;name&#x60;.
+   *
+   * @param {string} name The name of the AudioNode that should be returned.
+   *
+   * @method getNode
+   * @return {AudioNode} The requested AudioNode.
+   */
+  getNode(name) {
+    const connection = this.get(&#x27;createdConnections&#x27;).findBy(&#x27;name&#x27;, name);
+
+    if (connection) {
+      return connection.node;
+    }
+  },
+
+  /**
+   * Gets the &#x60;pannerNode&#x60; and changes it&#x27;s pan value to the value passed in.
+   *
+   * @param {number} value The value, between -1 and 1 that the &#x60;pannerNode&#x60;&#x27;s
+   * &#x60;pan.value&#x60; should be set to.
+   *
+   * @method pan
+   * @todo Make &quot;API&quot; match &quot;changeGainTo&quot;
+   */
+  pan(value) {
+    this.getNode(&#x27;pannerNode&#x27;).pan.value = value;
+  },
+
+  /**
+   * Gets the &#x60;gainNode&#x60; and changes it&#x27;s gain value to the value passed in.
+   * returns a pojo with the &#x60;from&#x60; method that &#x60;value&#x60; is curried to, allowing
+   * one to specify which type of value is being provided.
+   *
+   * @example
+   *     // these all result in gainNode.gain.value === 0.9
+   *     soundInstance.changeGainTo(0.9).from(&#x27;ratio&#x27;);
+   *     soundInstance.changeGainTo(0.1).from(&#x27;inverseRatio&#x27;)
+   *     soundInstance.changeGainTo(90).from(&#x27;percent&#x27;);
+   *
+   * @param {number} value The value that the &#x60;gainNode&#x60;&#x27;s &#x60;gain.value&#x60; should
+   * be set to. Can be a ratio, an inverseRatio or a percentage.
+   *
+   * @method changeGainTo
+   *
+   * @return {object} Intermediary POJO containing the &#x60;from&#x60; method which will
+   * determine the type of value that &#x60;gain.value&#x60; is being set to and make the
+   * change accordingly.
+   */
+  changeGainTo(value) {
+    const gainNode = this.getNode(&#x27;gainNode&#x27;);
+    const notify = () =&gt; this.notifyPropertyChange(&#x27;percentGain&#x27;);
+
+    function adjustGain(newValue) {
+      if (newValue &gt; 1) {
+        newValue = 1;
+      } else if (newValue &lt; 0) {
+        newValue = 0;
+      }
+
+      gainNode.gain.value = newValue;
+      notify();
+    }
+
+    return {
+      from(type) {
+        if (type === &#x27;ratio&#x27;) {
+          adjustGain(value);
+        } else if (type === &#x27;inverseRatio&#x27;) {
+          adjustGain(-value + 1);
+        } else if (type === &#x27;percent&#x27;) {
+          adjustGain(value / 100);
+        }
+      }
+    };
+  },
+
+  /**
+   * Gets the bufferSourceNode and stops the audio,
+   * changes it&#x27;s play position, and restarts the audio.
+   *
+   * returns a pojo with the &#x60;from&#x60; method that &#x60;value&#x60; is curried to, allowing
+   * one to specify which type of value is being provided.
+   *
+   * @example
+   *     // for a Sound instance with a duration of 100 seconds, these will all
+   *     // move the play position to 90 seconds.
+   *     soundInstance.seek(0.9).from(&#x27;ratio&#x27;);
+   *     soundInstance.seek(0.1).from(&#x27;inverseRatio&#x27;)
+   *     soundInstance.seek(90).from(&#x27;percent&#x27;);
+   *     soundInstance.seek(90).from(&#x27;seconds&#x27;);
+   *
+   * @param {number} amount The new play position value.
+   *
+   * @method seek
+   *
+   * @return {object} Intermediary POJO containing the &#x60;from&#x60; method which will
+   * determine the type of value that play position is being set to and make the
+   * change accordingly.
+   */
+  seek(amount) {
+    const duration = this.get(&#x27;duration.raw&#x27;);
+
+    const moveToOffset = (offset) =&gt; {
+      const isPlaying = this.get(&#x27;isPlaying&#x27;);
+
+      if (offset &gt; duration) {
+        offset = duration;
+      } else if (offset &lt; 0) {
+        offset = 0;
+      }
+
+      if (isPlaying) {
+        this.stop();
+        this.set(&#x27;startOffset&#x27;, offset);
+        this.play();
+      } else {
+        this.set(&#x27;startOffset&#x27;, offset);
+      }
+    };
+
+    return {
+      from(type) {
+        if (type === &#x27;ratio&#x27;) {
+          moveToOffset(amount * duration);
+        } else if (type === &#x27;percent&#x27;) {
+          moveToOffset(amount * duration * 0.01);
+        } else if (type === &#x27;inverseRatio&#x27;) {
+          moveToOffset(duration - (amount * duration));
+        } else if (type === &#x27;seconds&#x27;) {
+          moveToOffset(amount);
+        }
+      }
+    };
+  },
+
+  /**
+   * Find&#x27;s a connection in the connections array by it&#x27;s &#x60;name&#x60; and removes it.
+   *
+   * @param {string} name The name of the connection that should be removed.
+   *
+   * @method removeConnection
+   */
+  removeConnection(name) {
+    const connections = this.get(&#x27;connections&#x27;);
+    const node = connections.findBy(&#x27;name&#x27;, name);
+    connections.removeObject(node);
+  },
+
+  /**
+   * The underlying method that backs the
+   * {{#crossLink &quot;Sound/play:method&quot;}}{{/crossLink}},
+   * {{#crossLink &quot;Sound/playAt:method&quot;}}{{/crossLink}}, and
+   * {{#crossLink &quot;Sound/playIn:method&quot;}}{{/crossLink}} methods.
+   *
+   * Plays the audio source at the specified moment in time. A &quot;moment in time&quot;
+   * is measured in seconds from the moment that the
+   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
+   *
+   * Functionally equivalent to {{#crossLink &quot;Sound/playAt:method&quot;}}{{/crossLink}}.
+   *
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
+   * time&quot;) when the audio source should be played.
+   *
+   * @method _play
+   * @private
+   */
+  _play(playAt) {
+    const currentTime = this.get(&#x27;audioContext.currentTime&#x27;);
+    const connections = this._wireUpConnections();
+    const node = connections[0].node;
+
+    node.start(playAt, this.get(&#x27;startOffset&#x27;));
+
+    this.set(&#x27;startedPlayingAt&#x27;, playAt);
+
+    if (playAt === currentTime) {
+      this.set(&#x27;isPlaying&#x27;, true);
+    } else {
+      later(() =&gt; this.set(&#x27;isPlaying&#x27;, true), (playAt - currentTime) * 1000);
+    }
+  },
+
+  /**
+   * Gets the array of connections from the
+   * createdConnections computed property and
+   * returns the same array with any AudioNodes that need to be created at
+   * {{#crossLink &quot;Sound/_play:method&quot;}}{{/crossLink}} time having been created.
+   *
+   * @method _wireUpConnections
+   * @private
+   */
+  _wireUpConnections() {
+    // Each node is connected to the next node in the connections array
+    return this.get(&#x27;createdConnections&#x27;).map((connection, idx, connections) =&gt; {
+      const nextIdx = idx + 1;
+      const currentNode = this._createNode(connection);
+
+      if (nextIdx &lt; connections.length) {
+        const nextNode = this._createNode(connections[nextIdx]);
+
+        // Assign nextConnection back to connections array.
+        // Since we&#x27;re working one step ahead, we don&#x27;t want
+        // each connection created twice
+        connections[nextIdx] = nextNode;
+
+        // Make the connection from current to next
+        currentNode.node.connect(nextNode.node);
+      }
+
+      return currentNode;
+    });
+  },
+
+  /**
+   * Performs the actual AudioNode creation for the
+   * {{#crossLink &#x27;Sound/_wireUpConnections:method&#x27;}}{{/crossLink}} method.
+   *
+   * Also sets any properties from a connection&#x27;s &#x60;onPlaySetAttrsOnNode&#x60; array
+   * on the node.
+   *
+   * @method _createNode
+   * @private
+   */
+  _createNode(connection) {
+    const { name, createdOnPlay, source, createCommand, onPlaySetAttrsOnNode } = connection;
+
+    if (createdOnPlay) {
+      connection.node = this.get(source)[createCommand]();
+      this.set(name, connection.node);
+    }
+
+    if (onPlaySetAttrsOnNode) {
+      onPlaySetAttrsOnNode.map((attr) =&gt; {
+        let { attrNameOnNode, relativePath } = attr;
+        set(connection.node, attrNameOnNode, this.get(relativePath));
+      });
+    }
+
+    return connection;
+  }
+});
+
+export default Sound;
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+</body>
+</html>

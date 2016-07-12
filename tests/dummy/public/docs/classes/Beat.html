@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Beat - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                                <ul>
+                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
+                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            </li>
+                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
+                                <ul>
+                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
+                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            <div id="sections" class="sidebox">
+              <div class="hd">
+                <h2 class="no-toc">Beat</h2>
+              </div>
+              <div class="bd">
+            
+            
+            
+                  <div><a href="#property-summary">Property Summary</a></div>
+            
+                  <div><a href="#method-summary">Method Summary</a></div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                  <div><a href="#public-properties">Public Properties</a></div>
+                  <ul>
+                      <li><a href="#props_active">active</a></li>
+                      <li><a href="#props_currentTimeIsPlaying">currentTimeIsPlaying</a></li>
+                      <li><a href="#props_durationFromAudioBuffer">durationFromAudioBuffer</a></li>
+                      <li><a href="#props_durationValue">durationValue</a></li>
+                      <li><a href="#props_isPlaying">isPlaying</a></li>
+                  </ul>
+            
+            
+                  <div><a href="#private-properties">Private Properties</a></div>
+                  <ul>
+                      <li><a href="#props_audioBufferDuration">audioBufferDuration</a></li>
+                      <li><a href="#props_duration">duration</a></li>
+                  </ul>
+            
+                  <div><a href="#public-methods">Public Methods</a></div>
+                  <ul>
+                      <li><a href="#method_ifActivePlayIn">ifActivePlayIn</a></li>
+                      <li><a href="#method_play">play</a></li>
+                      <li><a href="#method_playIfActive">playIfActive</a></li>
+                      <li><a href="#method_playIn">playIn</a></li>
+                  </ul>
+            
+            
+                  <div><a href="#private-methods">Private Methods</a></div>
+                  <ul>
+                      <li><a href="#method__markCurrentTimePlaying">_markCurrentTimePlaying</a></li>
+                      <li><a href="#method__markPlaying">_markPlaying</a></li>
+                  </ul>
+              </div>
+            </div>
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.1d61e3e0
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l16"><code>addon&#x2F;classes&#x2F;beat.js:16</code></a></span>
+    <h1 class="class-name">Beat</h1>
+</div>
+
+
+
+
+<div class="class-description"><p>This class represents a single "beat" for a rhythmic instrument. An instance of this
+class can be set to <code>active</code> or not to facilitate the way that most drum
+machines work (when a beat is not <code>active</code>, the time that it occupies still
+exists, but it does not cause audio to play, effectively resulting in a
+"rest"). It provides properties that track when it is played, and when a "rest"
+is played in it's place.</p>
+<p>This class does not have the ability to create audio on it's own and is<br>
+expected be a "child" of one of the Sound classes. See it's implementation in
+<a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a> for an example.</p>
+<pre class="code prettyprint"><code>// Cannot play audio on it's own.
+// Must pass in parentPlay and/or parentPlayIn from a parent class.
+Beat.create({
+  parentPlayIn: this.playIn.bind(this),
+  parentPlay: this.play.bind(this),
+});</code></pre>
+</div>
+
+
+
+
+
+
+
+  <h2 id="property-summary">Property Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Properties</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_active">active</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+            </div>
+            <div class="short-description">
+              <p>If <code>active</code> is <code>true</code>, all methods of play will cause this instance to play. If <code>active</code> is <code>false</code>, the <code>playIfActive()</code> and <code>ifActivePlayIn()</code> methods will treat this instance as a rest (a timed period of silence).</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_currentTimeIsPlaying">currentTimeIsPlaying</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+            </div>
+            <div class="short-description">
+              <p>Whether a Beat instance is currently playing, considering both active and inactive beats (rests). When switched to <code>true</code>, is automatically returned to false after the time specified by the duration property.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_durationFromAudioBuffer">durationFromAudioBuffer</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+            </div>
+            <div class="short-description">
+              <p>If true, audioBuffer.duration is used instead of durationValue to determine length of time that isPlaying and currentTimeIsPlaying stay true after beat is played.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_durationValue">durationValue</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+            </div>
+            <div class="short-description">
+              <p>Determines length of time, in milliseconds, before isPlaying and currentTimeIsPlaying are automatically switched back to false after having been switched to true.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_isPlaying">isPlaying</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+            </div>
+            <div class="short-description">
+              <p>Whether a Beat instance is currently playing, considering only active beats. When switched to <code>true</code>, is automatically returned to false after the time specified by the duration property.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Private Properties</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_audioBufferDuration">audioBufferDuration</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a> | Null
+            </div>
+            <div class="short-description">
+              <p>On Beat instance instantiation, this property should be set to the parent's audioBuffer.duration.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_duration">duration</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+            </div>
+            <div class="short-description">
+              <p>Computed property. Susses out which duration should be used to determine how long isPlaying and currentTimeIsPlaying stay <code>true</code> after play.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  <h2 id="method-summary">Method Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_ifActivePlayIn">ifActivePlayIn</a>(offset)
+            </div>
+            <div class="short-description">
+              <p>If the beat is marked <code>active</code>, calls it's parent's <code>playIn()</code> method directly to play the beat in <code>${offset}</code> seconds.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_play">play</a>( )
+            </div>
+            <div class="short-description">
+              <p>Calls it's parent's <code>play()</code> method directly to play the beat immediately.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playIfActive">playIfActive</a>( )
+            </div>
+            <div class="short-description">
+              <p>If <code>active</code>, calls it's parent's <code>play()</code> method directly to play the beat immediately.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playIn">playIn</a>(offset)
+            </div>
+            <div class="short-description">
+              <p>Calls it's parent's <code>playIn()</code> method directly to play the beat in <code>${offset}</code> seconds.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Private Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__markCurrentTimePlaying">_markCurrentTimePlaying</a>( )
+            </div>
+            <div class="short-description">
+              <p>Sets <code>currentTimeIsPlaying</code> to <code>true</code> and sets up a timer that sets <code>currentTimeIsPlaying</code> back to false after <code>duration</code> has elapsed.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__markPlaying">_markPlaying</a>( )
+            </div>
+            <div class="short-description">
+              <p>Sets <code>isPlaying</code> to <code>true</code> and sets up a timer that sets <code>isPlaying</code> back to false after <code>duration</code> has elapsed.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+    <div id="properties public">
+        <h2 id="public-properties">Public Properties</h2>
+<div class="property item">
+  <div id="props_active" class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l39"><code>addon&#x2F;classes&#x2F;beat.js:39</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      active: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>If <code>active</code> is <code>true</code>, all methods of play will cause this instance to play.
+If <code>active</code> is <code>false</code>, the <code>playIfActive()</code> and <code>ifActivePlayIn()</code>
+methods will treat this instance as a rest (a timed period of silence).</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_currentTimeIsPlaying" class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l49"><code>addon&#x2F;classes&#x2F;beat.js:49</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      currentTimeIsPlaying: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Whether a Beat instance is currently playing, considering both active and
+inactive beats (rests). When switched to <code>true</code>, is automatically returned
+to false after the time specified by the duration property.</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_durationFromAudioBuffer" class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l81"><code>addon&#x2F;classes&#x2F;beat.js:81</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      durationFromAudioBuffer: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>If true, audioBuffer.duration is used instead of durationValue to determine
+length of time that isPlaying and currentTimeIsPlaying stay true after beat
+is played.</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_durationValue" class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l92"><code>addon&#x2F;classes&#x2F;beat.js:92</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      durationValue: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Determines length of time, in milliseconds, before isPlaying and
+currentTimeIsPlaying are automatically switched back to false after having
+been switched to true.</p>
+<p>If durationFromAudioBuffer is true, this property is not utilized.</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_isPlaying" class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l60"><code>addon&#x2F;classes&#x2F;beat.js:60</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      isPlaying: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Whether a Beat instance is currently playing, considering only active beats.
+When switched to <code>true</code>, is automatically returned to false after the time
+specified by the duration property.</p>
+</div>
+
+</div>
+    </div>
+
+
+    <div id="properties private">
+        <h2 id="private-properties">Private Properties</h2>
+<div class="property item private">
+  <div id="props_audioBufferDuration" class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l71"><code>addon&#x2F;classes&#x2F;beat.js:71</code></a></span>
+    <h3 class="">
+      private
+      
+      
+      audioBufferDuration: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a> | Null
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>On Beat instance instantiation, this property should be set to the parent's
+audioBuffer.duration.</p>
+</div>
+
+</div>
+<div class="property item private">
+  <div id="props_duration" class="title">
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l105"><code>addon&#x2F;classes&#x2F;beat.js:105</code></a></span>
+    <h3 class="">
+      private
+      
+      
+      duration: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Computed property. Susses out which duration should be used to determine
+how long isPlaying and currentTimeIsPlaying stay <code>true</code> after play.</p>
+<p>By default, this value is set to durationValue, if durationFromAudioBuffer
+is true, then this value is the duration of the parent AudioBuffer.</p>
+</div>
+
+</div>
+    </div>
+
+  <div id="methods public">
+    <h2 id="public-methods">Public Methods</h2>
+<div class="method item">
+    <div id="method_ifActivePlayIn" class="title">
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l151"><code>addon&#x2F;classes&#x2F;beat.js:151</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            ifActivePlayIn(offset)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>If the beat is marked <code>active</code>, calls it's parent's <code>playIn()</code> method
+directly to play the beat in <code>${offset}</code> seconds.</p>
+<p>If active, isPlaying is marked true after the provided offset has elapsed.</p>
+<p>currentTimeIsPlaying is marked true after the provided offset has elapsed,
+even if beat is not active.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>offset</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Number of seconds from "now" that the audio should
+play.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item">
+    <div id="method_play" class="title">
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l176"><code>addon&#x2F;classes&#x2F;beat.js:176</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            play( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Calls it's parent's <code>play()</code> method directly to play the beat immediately.</p>
+<p>isPlaying and currentTimeIsPlaying are both immediately marked true.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item">
+    <div id="method_playIfActive" class="title">
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l189"><code>addon&#x2F;classes&#x2F;beat.js:189</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playIfActive( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>If <code>active</code>, calls it's parent's <code>play()</code> method directly to play the beat
+immediately.</p>
+<p>If <code>active</code>, isPlaying is immediately marked true.</p>
+<p>currentTimeIsPlaying is immediately marked true, even if beat is not active.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item">
+    <div id="method_playIn" class="title">
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l130"><code>addon&#x2F;classes&#x2F;beat.js:130</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playIn(offset)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Calls it's parent's <code>playIn()</code> method directly to play the beat in
+<code>${offset}</code> seconds.</p>
+<p>isPlaying and currentTimeIsPlaying are both marked true after the provided
+offset has elapsed.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>offset</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Number of seconds from "now" that the audio should
+play.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+  </div>
+
+
+    <div id="methods private">
+        <h2 id="private-methods">Private Methods</h2>
+<div class="method item private">
+    <div id="method__markCurrentTimePlaying" class="title">
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l220"><code>addon&#x2F;classes&#x2F;beat.js:220</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _markCurrentTimePlaying( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Sets <code>currentTimeIsPlaying</code> to <code>true</code> and sets up a timer that sets
+<code>currentTimeIsPlaying</code> back to false after <code>duration</code> has elapsed.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item private">
+    <div id="method__markPlaying" class="title">
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l208"><code>addon&#x2F;classes&#x2F;beat.js:208</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _markPlaying( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Sets <code>isPlaying</code> to <code>true</code> and sets up a timer that sets <code>isPlaying</code> back
+to false after <code>duration</code> has elapsed.</p>
+</div>
+
+
+
+
+</div>
+    </div>
+
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+</body>
+</html>

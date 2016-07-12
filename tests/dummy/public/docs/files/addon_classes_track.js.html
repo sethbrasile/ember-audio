@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/classes/track.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                                <ul>
+                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
+                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            </li>
+                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
+                                <ul>
+                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
+                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.1d61e3e0
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/classes/track.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+import Sound from &#x27;./sound&#x27;;
+import { zeroify } from &#x27;../utils&#x27;;
+
+/**
+ * An instance of the Track class represents a &quot;track&quot; of music, similar in
+ * concept to a track on a CD or an MP3 player.
+ *
+ * @module Audio
+ * @submodule Track
+ */
+
+const {
+  computed,
+} = Ember;
+
+/**
+ * A class that represents a &quot;track&quot; of music, similar in concept to a track on
+ * a CD or an MP3 player. Provides methods for tracking the play position of the
+ * underlying {{#crossLink &quot;AudioBuffer&quot;}}{{/crossLink}}, and pausing/resuming.
+ *
+ * @class Track
+ * @extends Sound
+ */
+const Track = Sound.extend({
+
+  /**
+   * Computed property. Value is an object containing the current play position
+   * of the audioBuffer in three formats. The three
+   * formats are &#x60;raw&#x60;, &#x60;string&#x60;, and &#x60;pojo&#x60;.
+   *
+   * Play position of 6 minutes would be output as:
+   *
+   *     {
+   *       raw: 360, // seconds
+   *       string: &#x27;06:00&#x27;,
+   *       pojo: {
+   *         minutes: 6,
+   *         seconds: 0
+   *       }
+   *     }
+   *
+   * @property position
+   * @type {object}
+   */
+  position: computed(&#x27;startOffset&#x27;, function() {
+    const startOffset = this.get(&#x27;startOffset&#x27;);
+    const minutes = Math.floor(startOffset / 60);
+    const seconds = startOffset - (minutes * 60);
+
+    return {
+      raw: startOffset,
+      string: &#x60;${zeroify(minutes)}:${zeroify(seconds)}&#x60;,
+      pojo: { minutes, seconds }
+    };
+  }),
+
+  /**
+   * Computed property. Value is the current play position of the
+   * audioBuffer, formatted as a percentage.
+   *
+   * @property percentPlayed
+   * @type {number}
+   */
+  percentPlayed: computed(&#x27;duration&#x27;, &#x27;startOffset&#x27;, function() {
+    const ratio = this.get(&#x27;startOffset&#x27;) / this.get(&#x27;duration.raw&#x27;);
+    return ratio * 100;
+  }),
+
+  /**
+   * Plays the audio source immediately.
+   *
+   * @method play
+   */
+  play() {
+    this._super();
+    this.get(&#x27;bufferSourceNode&#x27;).onended = () =&gt; this.stop();
+    this._trackPlayPosition();
+  },
+
+  /**
+   * Pauses the audio source by stopping without
+   * setting startOffset back to 0.
+   *
+   * @method pause
+   */
+  pause() {
+    if (this.get(&#x27;isPlaying&#x27;)) {
+      this.get(&#x27;bufferSourceNode&#x27;).onended = function() {};
+      this.get(&#x27;bufferSourceNode&#x27;).stop();
+      this.set(&#x27;isPlaying&#x27;, false);
+    }
+  },
+
+  /**
+   * Stops the audio source and sets
+   * startOffset to 0.
+   *
+   * @method stop
+   */
+  stop() {
+    this.set(&#x27;startOffset&#x27;, 0);
+
+    if (this.get(&#x27;isPlaying&#x27;)) {
+      this.get(&#x27;bufferSourceNode&#x27;).onended = function() {};
+      this._super();
+    }
+  },
+
+  /**
+   * Sets up a &#x60;requestAnimationFrame&#x60; based loop that updates the
+   * startOffset as &#x60;audioContext.currentTime&#x60; grows.
+   * Loop ends when &#x60;isPlaying&#x60; is false.
+   *
+   * @method _trackPlayPosition
+   * @private
+   */
+  _trackPlayPosition() {
+    const ctx = this.get(&#x27;audioContext&#x27;);
+    const startOffset = this.get(&#x27;startOffset&#x27;);
+    const startedPlayingAt = this.get(&#x27;startedPlayingAt&#x27;);
+
+    const animate = () =&gt; {
+      if (this.get(&#x27;isPlaying&#x27;)) {
+        this.set(&#x27;startOffset&#x27;, startOffset + ctx.currentTime - startedPlayingAt);
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }
+});
+
+export default Track;
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+</body>
+</html>

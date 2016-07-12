@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/utils/note-methods.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
+    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                                <ul>
+                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
+                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            </li>
+                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
+                                <ul>
+                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
+                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.1d61e3e0
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/utils/note-methods.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+import { arraySwap, flatten } from &#x27;./array-methods&#x27;;
+
+const {
+  A
+} = Ember;
+
+/**
+ * @private
+ * @class utils
+ */
+
+/**
+ * Sorts an array of {{#crossLink &quot;Note&quot;}}Notes{{/crossLink}} so that they are in the same order that they would
+ * appear on a piano.
+ *
+ * @param {array} notes An array of notes that should be musically-sorted.
+ *
+ * @method sortNotes
+ *
+ * @return {array} Array of musically-sorted notes.
+ */
+export function sortNotes(notes) {
+  // get octaves so that we can sort based on them
+  let sortedNotes = extractOctaves(notes);
+
+  // Each octave has tons of duplicates
+  sortedNotes = stripDuplicateOctaves(sortedNotes);
+
+  // Create array of arrays. Each inner array contains all the notes in an octave
+  sortedNotes = createOctavesWithNotes(sortedNotes);
+
+  // Sort the notes in each octave, alphabetically, flats before naturals
+  sortedNotes = octaveSort(sortedNotes);
+
+  // Determine last note of first octave, then for each octave, split at
+  // that note, then shift the beginning notes to the end
+  sortedNotes = octaveShift(sortedNotes);
+
+  // Flatten array of arrays into a flat array
+  return flatten(sortedNotes);
+}
+
+/**
+ * Takes an array of arrays of notes, determines the last note of
+ * the first array, then splits the rest of the arrays in the array at the last
+ * note of the first array, and moves the beginning of the array to the end
+ * so that each array starts at the next note after the last note of the first
+ * array, instead of at &quot;A&quot; (alphabetically).
+ *
+ * @example
+ *     This is hard to explain. Here&#x27;s an example.
+ *     (Simplified, as the real notes are objects)
+ *
+ *     Example input: [[&#x27;A0&#x27;, &#x27;B0&#x27;], [&#x27;A1&#x27;, &#x27;B1&#x27;, &#x27;C1&#x27;, &#x27;D1&#x27;]]
+ *     Example output: [[&#x27;A0&#x27;, &#x27;B0&#x27;], [&#x27;C1&#x27;, &#x27;D1&#x27;, &#x27;A1&#x27;, &#x27;B1&#x27;]]
+ *
+ * @private
+ * @method octaveShift
+ *
+ * @param {array} octaves An array of octaves, each octave is an array of Notes.
+ *
+ * @return {array} Input array after having been shifted.
+ */
+export function octaveShift(octaves) {
+  // Pull first octave from beginning of array
+  const firstOctave = A(A(octaves).shiftObject());
+  // Get all the note names from the second octave for comparison
+  const secondOctaveNames = A(octaves.get(&#x27;firstObject&#x27;)).getEach(&#x27;name&#x27;);
+  // Get the note name of the last note in the first octave
+  const lastNote = firstOctave.get(&#x27;lastObject.name&#x27;);
+  // Get the index of the occurrence of the last note from the first
+  // octave, in the second octave
+  const indexToShiftAt = secondOctaveNames.lastIndexOf(lastNote) + 1;
+  // Split the octave array at that point, and move the first chunk to the end
+  return A(octaves.map((octave) =&gt; arraySwap(octave, indexToShiftAt)))
+  // Put first octave back at the beginning of the array
+  .unshiftObjects([firstOctave]);
+}
+
+/**
+ * Maps through an array of arrays and sorts each array with
+ * &quot;noteSort&quot;
+ *
+ * @private
+ * @method octaveSort
+ *
+ * @param  {array} octaves array of arrays to be sorted
+ *
+ * @return {array} array of sorted arrays
+ */
+export function octaveSort(octaves) {
+  return octaves.map((octave) =&gt; octave.sort(noteSort));
+}
+
+/**
+ * Accepts an array of Note objects and passes back an array
+ * like this: [original array, array of each octave in the orginal array]
+ *
+ * @private
+ * @method extractOctaves
+ *
+ * @param  {array} notes array of note objects.
+ *
+ * @return {array} array containing two inner arrays, [0] is the untouched input
+ * array, [1] is an array of all the octaves in the original array.
+ */
+export function extractOctaves(notes) {
+  return [ notes, A(A(notes).getEach(&#x27;octave&#x27;)) ];
+}
+
+/**
+ * Accepts an array of two arrays and returns the same
+ * array, but with array at index [1] uniq&#x27;d and sorted alphabetically.
+ *
+ * @private
+ * @method stripDuplicateOctaves
+ *
+ * @param  {array} [ notes, octaves ] the output from extractOctaves.
+ *
+ * @return {array} The mutated array.
+ */
+export function stripDuplicateOctaves([ notes, octaves ]) {
+  return [ notes, A(octaves).uniq().sort() ];
+}
+
+/**
+ * Accepts an array of two arrays, [0] being an array
+ * of Note objects, [1] being all the available octaves. Returns a single array
+ * made up of arrays of Note objects, organized by octave. Each inner array
+ * represents all of the notes in an octave.
+ *
+ * @private
+ * @method createOctavesWithNotes
+ *
+ * @param  {array} data The output of stripDuplicateOctaves.
+ *
+ * @return {Ember.MutableArray}
+ */
+export function createOctavesWithNotes([ notes, octaves ]) {
+  return A(octaves).map((octave) =&gt; A(notes).filterBy(&#x27;octave&#x27;, octave));
+}
+
+/**
+ * Acts as a comparator function for javascript&#x27;s array sort() method.
+ * Sorts two {{#crossLink &quot;Note&quot;}}{{/crossLink}} instances alphabetically, flats
+ * before naturals.
+ *
+ * @private
+ * @method noteSort
+ *
+ * @param {Note} a The first Note instance to compare.
+ * @param {Note} b The second Note instance to compare.
+ *
+ * @return {number} -1 or 1, depending on whether the current
+ * {{#crossLink &quot;Note&quot;}}{{/crossLink}} instance should be sorted left, or right.
+ */
+export function noteSort(a, b) {
+  const aLet = a.get(&#x27;letter&#x27;);
+  const bLet = b.get(&#x27;letter&#x27;);
+
+  if (aLet &lt; bLet) {
+    return -1;
+  }
+
+  if (aLet === bLet) {
+    if (a.get(&#x27;accidental&#x27;) === &#x27;b&#x27;) {
+      return -1;
+    }
+  }
+
+  return 1;
+}
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+</body>
+</html>

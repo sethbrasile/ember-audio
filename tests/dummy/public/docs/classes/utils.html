@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>utils - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                                <ul>
+                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
+                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            </li>
+                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
+                                <ul>
+                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
+                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            <div id="sections" class="sidebox">
+              <div class="hd">
+                <h2 class="no-toc">utils</h2>
+              </div>
+              <div class="bd">
+            
+            
+            
+            
+                  <div><a href="#method-summary">Method Summary</a></div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                  <div><a href="#public-methods">Public Methods</a></div>
+                  <ul>
+                      <li><a href="#method_sortNotes">sortNotes</a></li>
+                      <li><a href="#method_zeroify">zeroify</a></li>
+                  </ul>
+            
+            
+                  <div><a href="#private-methods">Private Methods</a></div>
+                  <ul>
+                      <li><a href="#method_arraySwap">arraySwap</a></li>
+                      <li><a href="#method_base64ToUint8">base64ToUint8</a></li>
+                      <li><a href="#method_createOctavesWithNotes">createOctavesWithNotes</a></li>
+                      <li><a href="#method_extractOctaves">extractOctaves</a></li>
+                      <li><a href="#method_flatten">flatten</a></li>
+                      <li><a href="#method_mungeSoundFont">mungeSoundFont</a></li>
+                      <li><a href="#method_noteSort">noteSort</a></li>
+                      <li><a href="#method_octaveShift">octaveShift</a></li>
+                      <li><a href="#method_octaveSort">octaveSort</a></li>
+                      <li><a href="#method_stripDuplicateOctaves">stripDuplicateOctaves</a></li>
+                  </ul>
+              </div>
+            </div>
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.1d61e3e0
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+    <span class="source-link"><a href="../files/addon_utils_zeroify.js.html#l1"><code>addon&#x2F;utils&#x2F;zeroify.js:1</code></a></span>
+    <h1 class="class-name">utils</h1>
+</div>
+
+
+
+
+<div class="class-description"></div>
+
+
+
+
+
+
+
+
+  <h2 id="method-summary">Method Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_sortNotes">sortNotes</a>(notes): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Sorts an array of <a href="../classes/Note.html" class="crosslink">Notes</a> so that they are in the same order that they would appear on a piano.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_zeroify">zeroify</a>(input): <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              <p>Formats a number and converts to string: 6 becomes '06'</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Private Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_arraySwap">arraySwap</a>(arr, index): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Given an array and an index, splits the array at index and pushes the first chunk to the end of the second chunk.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_base64ToUint8">base64ToUint8</a>(base64String): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array" class="crosslink external" target="_blank">Uint8Array</a>
+            </div>
+            <div class="short-description">
+              <p>Converts a base64 string into a Uint8Array of "binary" data.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_createOctavesWithNotes">createOctavesWithNotes</a>(data): <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+            </div>
+            <div class="short-description">
+              <p>Accepts an array of two arrays, [0] being an array of Note objects, [1] being all the available octaves. Returns a single array made up of arrays of Note objects, organized by octave. Each inner array represents all of the notes in an octave.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_extractOctaves">extractOctaves</a>(notes): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Accepts an array of Note objects and passes back an array like this: [original array, array of each octave in the orginal array]</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_flatten">flatten</a>(arr): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Flattens an array of arrays into a shallow array.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_mungeSoundFont">mungeSoundFont</a>(soundfont): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
+            </div>
+            <div class="short-description">
+              <p>Strips extraneous stuff from a soundfont and splits the soundfont into a JSON object. Keys are note names and values are base64 encoded strings.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_noteSort">noteSort</a>(a, b): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+            </div>
+            <div class="short-description">
+              <p>Acts as a comparator function for javascript's array sort() method. Sorts two <a href="../classes/Note.html" class="crosslink">Note</a> instances alphabetically, flats before naturals.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_octaveShift">octaveShift</a>(octaves): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Takes an array of arrays of notes, determines the last note of the first array, then splits the rest of the arrays in the array at the last note of the first array, and moves the beginning of the array to the end so that each array starts at the next note after the last note of the first array, instead of at "A" (alphabetically).</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_octaveSort">octaveSort</a>(octaves): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Maps through an array of arrays and sorts each array with "noteSort"</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_stripDuplicateOctaves">stripDuplicateOctaves</a>([notes, octaves]): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Accepts an array of two arrays and returns the same array, but with array at index [1] uniq'd and sorted alphabetically.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div id="methods public">
+    <h2 id="public-methods">Public Methods</h2>
+<div class="method item">
+    <div id="method_sortNotes" class="title">
+        <span class="source-link"><a href="../files/addon_utils_note-methods.js.html#l13"><code>addon&#x2F;utils&#x2F;note-methods.js:13</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            sortNotes(notes): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Sorts an array of <a href="../classes/Note.html" class="crosslink">Notes</a> so that they are in the same order that they would
+appear on a piano.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>notes</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An array of notes that should be musically-sorted.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>Array of musically-sorted notes.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item">
+    <div id="method_zeroify" class="title">
+        <span class="source-link"><a href="../files/addon_utils_zeroify.js.html#l6"><code>addon&#x2F;utils&#x2F;zeroify.js:6</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            zeroify(input): <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Formats a number and converts to string: 6 becomes '06'</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>input</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>A number that should be formatted</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></span>
+          <span class="return-description"><p>The number formatted and converted to string</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+  </div>
+
+
+    <div id="methods private">
+        <h2 id="private-methods">Private Methods</h2>
+<div class="method item private">
+    <div id="method_arraySwap" class="title">
+        <span class="source-link"><a href="../files/addon_utils_array-methods.js.html#l12"><code>addon&#x2F;utils&#x2F;array-methods.js:12</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            arraySwap(arr, index): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Given an array and an index, splits the array at index and pushes the first
+chunk to the end of the second chunk.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>arr</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An array to split, shift and rejoin.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>index</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The index where the split should occur.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>The swapped/shifted array.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_base64ToUint8" class="title">
+        <span class="source-link"><a href="../files/addon_utils_decode-base64.js.html#l6"><code>addon&#x2F;utils&#x2F;decode-base64.js:6</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            base64ToUint8(base64String): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array" class="crosslink external" target="_blank">Uint8Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Converts a base64 string into a Uint8Array of "binary" data.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>base64String</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The base64 string that you'd like to be converted.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array" class="crosslink external" target="_blank">Uint8Array</a></span>
+          <span class="return-description"><p>A Uint8Array of converted "binary" audio data.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_createOctavesWithNotes" class="title">
+        <span class="source-link"><a href="../files/addon_utils_note-methods.js.html#l127"><code>addon&#x2F;utils&#x2F;note-methods.js:127</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            createOctavesWithNotes(data): <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Accepts an array of two arrays, [0] being an array
+of Note objects, [1] being all the available octaves. Returns a single array
+made up of arrays of Note objects, organized by octave. Each inner array
+represents all of the notes in an octave.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>data</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The output of stripDuplicateOctaves.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a></span>
+          <span class="return-description"></span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_extractOctaves" class="title">
+        <span class="source-link"><a href="../files/addon_utils_note-methods.js.html#l96"><code>addon&#x2F;utils&#x2F;note-methods.js:96</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            extractOctaves(notes): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Accepts an array of Note objects and passes back an array
+like this: [original array, array of each octave in the orginal array]</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>notes</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>array of note objects.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>array containing two inner arrays, [0] is the untouched input
+array, [1] is an array of all the octaves in the original array.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_flatten" class="title">
+        <span class="source-link"><a href="../files/addon_utils_array-methods.js.html#l28"><code>addon&#x2F;utils&#x2F;array-methods.js:28</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            flatten(arr): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Flattens an array of arrays into a shallow array.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>arr</td>
+              <td>ArrayOfArrays</td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An array to flatten.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>The flattened array.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_mungeSoundFont" class="title">
+        <span class="source-link"><a href="../files/addon_utils_decode-base64.js.html#l38"><code>addon&#x2F;utils&#x2F;decode-base64.js:38</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            mungeSoundFont(soundfont): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Strips extraneous stuff from a soundfont and splits the soundfont into a JSON
+object. Keys are note names and values are base64 encoded strings.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>soundfont</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>A soundfont as a long base64 string</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+          <span class="return-description"><p>A JSON representation of all the notes in the font</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_noteSort" class="title">
+        <span class="source-link"><a href="../files/addon_utils_note-methods.js.html#l144"><code>addon&#x2F;utils&#x2F;note-methods.js:144</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            noteSort(a, b): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Acts as a comparator function for javascript's array sort() method.
+Sorts two <a href="../classes/Note.html" class="crosslink">Note</a> instances alphabetically, flats
+before naturals.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>a</td>
+              <td><a href="../classes/Note.html" class="crosslink">Note</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The first Note instance to compare.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>b</td>
+              <td><a href="../classes/Note.html" class="crosslink">Note</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The second Note instance to compare.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+          <span class="return-description"><p>-1 or 1, depending on whether the current
+<a href="../classes/Note.html" class="crosslink">Note</a> instance should be sorted left, or right.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_octaveShift" class="title">
+        <span class="source-link"><a href="../files/addon_utils_note-methods.js.html#l44"><code>addon&#x2F;utils&#x2F;note-methods.js:44</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            octaveShift(octaves): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Takes an array of arrays of notes, determines the last note of
+the first array, then splits the rest of the arrays in the array at the last
+note of the first array, and moves the beginning of the array to the end
+so that each array starts at the next note after the last note of the first
+array, instead of at "A" (alphabetically).</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>octaves</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An array of octaves, each octave is an array of Notes.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>Input array after having been shifted.</p>
+</span>
+        </div>
+      </div>
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>This is hard to explain. Here's an example.
+(Simplified, as the real notes are objects)
+
+Example input: [['A0', 'B0'], ['A1', 'B1', 'C1', 'D1']]
+Example output: [['A0', 'B0'], ['C1', 'D1', 'A1', 'B1']]</code></pre>
+
+</div>
+<div class="method item private">
+    <div id="method_octaveSort" class="title">
+        <span class="source-link"><a href="../files/addon_utils_note-methods.js.html#l81"><code>addon&#x2F;utils&#x2F;note-methods.js:81</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            octaveSort(octaves): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Maps through an array of arrays and sorts each array with
+"noteSort"</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>octaves</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>array of arrays to be sorted</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>array of sorted arrays</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method_stripDuplicateOctaves" class="title">
+        <span class="source-link"><a href="../files/addon_utils_note-methods.js.html#l112"><code>addon&#x2F;utils&#x2F;note-methods.js:112</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            stripDuplicateOctaves([notes, octaves]): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Accepts an array of two arrays and returns the same
+array, but with array at index [1] uniq'd and sorted alphabetically.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>notes, octaves</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  <li>optional</li>
+                  
+                  
+                </ul>
+              </td>
+              <td><p>the output from extractOctaves.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>The mutated array.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+    </div>
+
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+</body>
+</html>
