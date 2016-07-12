@@ -1,4 +1,4 @@
-import Beat from 'dummy/utils/beat';
+import { Beat } from 'ember-audio/classes';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | beat');

@@ -1,21 +1,16 @@
 import { module, test } from 'qunit';
-import ContextMock from '../../helpers/context-mock';
+import noteFactory from '../../helpers/note-factory';
 import {
-  Note,
+  sortNotes,
   noteSort,
   octaveShift,
   octaveSort,
+  extractOctaves,
+  stripDuplicateOctaves,
   createOctavesWithNotes
-} from 'ember-audio/utils/note';
+} from 'ember-audio/utils';
 
-const noteFactory = (letter, accidental, octave) => {
-  return Note.create({
-    letter,
-    accidental,
-    octave,
-    audioContext: ContextMock.create()
-  });
-};
+module('Unit | Utility | note methods');
 
 const A0  = noteFactory('A', null, 0);
 const Bb0 = noteFactory('B', 'b', 0);
@@ -28,23 +23,33 @@ const C1  = noteFactory('C', null, 1);
 const Db1 = noteFactory('D', 'b', 1);
 
 const correctOctaves      = [[A0, Bb0, B0], [C1, Db1, Ab1, A1, Bb1, B1]];
-const alphabeticalOctaves = [[A0, Bb0, B0], [Ab1, A1, Bb1, B1, C1, Db1]];
 
-module('Unit | Utility | note');
-
-test('identifier is formatted properly', function(assert) {
-  assert.expect(1);
-  assert.equal(Ab1.get('identifier'), 'Ab1');
+test('sortNotes exists', function(assert) {
+  assert.ok(sortNotes);
 });
 
-test('identifier is formatted properly when note has no accidental', function(assert) {
-  assert.expect(1);
-  assert.equal(A1.get('identifier'), 'A1');
+test('noteSort exists', function(assert) {
+  assert.ok(noteSort);
 });
 
-test('name is formatted properly', function(assert) {
-  assert.expect(1);
-  assert.equal(Ab1.get('name'), 'Ab');
+test('octaveShift exists', function(assert) {
+  assert.ok(octaveShift);
+});
+
+test('octaveSort exists', function(assert) {
+  assert.ok(octaveSort);
+});
+
+test('extractOctaves exists', function(assert) {
+  assert.ok(extractOctaves);
+});
+
+test('stripDuplicateOctaves exists', function(assert) {
+  assert.ok(stripDuplicateOctaves);
+});
+
+test('createOctavesWithNotes exists', function(assert) {
+  assert.ok(createOctavesWithNotes);
 });
 
 test('octaveShift works', function(assert) {
@@ -59,7 +64,10 @@ test('octaveShift works', function(assert) {
 });
 
 test('octaveSort works', function(assert) {
+  const alphabeticalOctaves = [[A0, Bb0, B0], [Ab1, A1, Bb1, B1, C1, Db1]];
+
   assert.expect(1);
+
   let result = octaveSort(correctOctaves);
   assert.deepEqual(result, alphabeticalOctaves);
 });

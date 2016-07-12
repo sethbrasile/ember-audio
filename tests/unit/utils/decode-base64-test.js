@@ -1,4 +1,4 @@
-import { base64ToUint8, mungeSoundFont } from 'ember-audio/utils/decode-base64';
+import { base64ToUint8, mungeSoundFont } from 'ember-audio/utils';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | decode base64');

@@ -1,0 +1,19 @@
+{
+  "name": "ember-audio",
+  "description": "An Ember addon that makes working with the Web Audio API super EZ",
+  "version": "0.0.0",
+  "options": {
+    "themedir": "node_modules/yuidoc-ember-cli-theme",
+    "helpers": ["node_modules/yuidoc-ember-cli-theme/helpers.js"],
+    "paths": [ "addon" ],
+    "exclude": "vendor",
+    "outdir": "tests/dummy/public/docs",
+    "linkNatives": true,
+    "quiet": true,
+    "parseOnly": false,
+    "lint": false,
+    "external": {
+      "data": "http://builds.emberjs.com/release/ember-docs.json"
+    }
+  }
+}

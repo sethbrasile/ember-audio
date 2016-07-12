@@ -1,11 +1,28 @@
 import Ember from 'ember';
-import Sound from './sound';
 import Beat from './beat';
+import Sound from './sound';
+
+/**
+ * An instance of the BeatTrack class behaves very similarly to a "lane" on a
+ * drum machine or a step sequencer.
+ *
+ * @module Audio
+ * @submodule BeatTrack
+ */
 
 const {
   computed
 } = Ember;
 
+/**
+ * An instance of this class has a single
+ * {{#crossLink "AudioBuffer"}}{{/crossLink}} (a single "sound") but provides
+ * methods to play that sound repeatedly and in a rhythmic way. An instance of
+ * this class behaves very similarly to a "lane" on a drum machine.
+ *
+ * @class BeatTrack
+ * @extends Sound
+ */
 const BeatTrack = Sound.extend({
   numBeats: 4,
   playingTime: 100,
@@ -16,11 +33,9 @@ const BeatTrack = Sound.extend({
 
     for (let i = 0; i < numBeats; i++) {
       beats.push(Beat.create({
-        playingTime: this.get('playingTime'),
-        duration: this.get('audioBuffer.duration'),
+        audioBufferDuration: this.get('audioBuffer.duration'),
         parentPlayIn: this.playIn.bind(this),
         parentPlay: this.play.bind(this),
-        audioContext: this.get('audioContext')
       }));
     }
 

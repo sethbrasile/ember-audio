@@ -1,27 +1,18 @@
-function b64ToUint6(nChr) {
-  return nChr > 64 && nChr < 91 ?
-      nChr - 65
-    : nChr > 96 && nChr < 123 ?
-      nChr - 71
-    : nChr > 47 && nChr < 58 ?
-      nChr + 4
-    : nChr === 43 ?
-      62
-    : nChr === 47 ?
-      63
-    :
-      0;
-}
-
+/**
+ * @private
+ * @class utils
+ */
 
 /**
- * base64ToUint8 - Converts a base64 string into a Uint8Array of "binary" data
+ * Converts a base64 string into a Uint8Array of "binary" data.
  *
- * @param  {string} sBase64   The base64 string that you'd like to be converted
- * @return {Uint8Array}       A Uint8Array of converted "binary" audio data
+ * @private
+ * @method base64ToUint8
+ * @param  {string} base64String The base64 string that you'd like to be converted.
+ * @return {Uint8Array} A Uint8Array of converted "binary" audio data.
  */
-export function base64ToUint8(sBase64) {
-  const sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, "");
+export function base64ToUint8(base64String) {
+  const sB64Enc = base64String.replace(/[^A-Za-z0-9\+\/]/g, "");
   const nInLen = sB64Enc.length;
   const nOutLen = nInLen * 3 + 1 >> 2;
   const taBytes = new Uint8Array(nOutLen);
@@ -45,20 +36,36 @@ export function base64ToUint8(sBase64) {
 }
 
 /**
- * mungeSoundFont - Strips extraneous stuff from a soundfont and splits the
- * soundfont into a JSON object. Keys are note names and values are base64
- * encoded strings.
+ * Strips extraneous stuff from a soundfont and splits the soundfont into a JSON
+ * object. Keys are note names and values are base64 encoded strings.
  *
- * @param  {string} text  A soundfont as a long base64 text string
- * @return {object}         A JSON representation of all the notes in the font
+ * @private
+ * @method mungeSoundFont
+ * @param {string} soundfont A soundfont as a long base64 string
+ * @return {object} A JSON representation of all the notes in the font
  */
- export function mungeSoundFont(text) {
-   const begin = text.indexOf('=', text.indexOf('MIDI.Soundfont.')) + 2;
-   const end = text.lastIndexOf('"') + 1;
-   const string = (text.slice(begin, end) + '}')
+ export function mungeSoundFont(soundfont) {
+   const begin = soundfont.indexOf('=', soundfont.indexOf('MIDI.Soundfont.')) + 2;
+   const end = soundfont.lastIndexOf('"') + 1;
+   const string = (soundfont.slice(begin, end) + '}')
      .replace(new RegExp('data:audio/mp3;base64,', 'g'), '')
      .replace(new RegExp('data:audio/mpeg;base64,', 'g'), '')
      .replace(new RegExp('data:audio/ogg;base64,', 'g'), '');
 
    return JSON.parse(string);
+ }
+
+ function b64ToUint6(nChr) {
+   return nChr > 64 && nChr < 91 ?
+       nChr - 65
+     : nChr > 96 && nChr < 123 ?
+       nChr - 71
+     : nChr > 47 && nChr < 58 ?
+       nChr + 4
+     : nChr === 43 ?
+       62
+     : nChr === 47 ?
+       63
+     :
+       0;
  }

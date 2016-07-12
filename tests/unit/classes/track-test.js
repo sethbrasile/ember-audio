@@ -1,4 +1,4 @@
-import Track from 'dummy/utils/track';
+import { Track } from 'ember-audio/classes';
 import ContextMock from '../../helpers/context-mock';
 import AudioBufferMock from '../../helpers/audio-buffer-mock';
 import { module, test } from 'qunit';
