@@ -1,4 +1,4 @@
-import zeroify from 'dummy/utils/zeroify';
+import { zeroify } from 'ember-audio/utils';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | zeroify');

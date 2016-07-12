@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
 import ContextMock from '../../helpers/context-mock';
+import { Note } from 'ember-audio/classes';
 import {
-  Note,
   noteSort,
   octaveShift,
   octaveSort,
   createOctavesWithNotes
-} from 'ember-audio/utils/note';
+} from 'ember-audio/utils';
 
 const noteFactory = (letter, accidental, octave) => {
   return Note.create({

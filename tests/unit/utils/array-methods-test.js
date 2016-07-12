@@ -1,4 +1,4 @@
-import { arraySwap, flatten } from 'ember-audio/utils/array-methods';
+import { arraySwap, flatten } from 'ember-audio/utils';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | array methods');

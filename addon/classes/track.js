@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Sound from './sound';
-import { zeroify } from '../utils';
+import { zeroify } from 'ember-audio/utils';
 
 /**
  * An instance of the Track class represents a "track" of music, similar in

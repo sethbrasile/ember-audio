@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import zeroify from '../utils';
+import { zeroify } from 'ember-audio/utils';
 
 /**
  * The Sound class provides the core functionality for interacting with the Web

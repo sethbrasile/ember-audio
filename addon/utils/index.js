@@ -1,10 +1,10 @@
 import zeroify from './zeroify';
-import { sortNotes } from './note-methods';
 import { base64ToUint8, mungeSoundFont } from './decode-base64';
+import { arraySwap, flatten } from './array-methods';
 
 import {
-  arraySwap,
-  flatten,
+  sortNotes,
+  noteSort,
   octaveShift,
   octaveSort,
   extractOctaves,
@@ -19,6 +19,7 @@ import {
 export {
   zeroify,
   sortNotes,
+  noteSort,
   base64ToUint8,
   mungeSoundFont,
   arraySwap,

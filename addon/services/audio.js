@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import fetch from 'ember-network/fetch';
 import { Sound, Note, Track, BeatTrack } from 'ember-audio/classes';
-import { sortNotes, base64ToUint8, mungeSoundFont } from '../utils';
+import { sortNotes, base64ToUint8, mungeSoundFont } from 'ember-audio/utils';
 
 /**
  * Provides the Audio Service
