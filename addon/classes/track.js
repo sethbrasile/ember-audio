@@ -47,7 +47,7 @@ const Track = Sound.extend({
    * @type {object}
    * @observes 'startOffset'
    * @instance
-   * @readonly
+   * @readOnly
    */
   position: computed('startOffset', function() {
     const startOffset = this.get('startOffset');
@@ -68,7 +68,7 @@ const Track = Sound.extend({
    * @memberof Sound
    * @type {number}
    * @instance
-   * @readonly
+   * @readOnly
    */
   percentPlayed: computed('duration', 'startOffset', function() {
     const ratio = this.get('startOffset') / this.get('duration.raw');

@@ -21,42 +21,44 @@ const {
  * needs an awareness of what "musical note" it is (i.e. octave, accidental, etc..).
  *
  * This class only makes sense when used in the context of a collection, as the
- * only functionality it provides, serves to facilitate identification.
+ * only functionality it provides over a
+ * {{#crossLink "Sound"}}Sound{{/crossLink}}, serves to facilitate identification.
  *
- * @constructor
  * @class Note
  * @extends Sound
  */
 const Note = Sound.extend({
 
   /**
-   * For note `Ab5`, this would be `A`.
+   * For note `Ab5`, this would be `A`. Value should be set on instantiation.
+   *
+   * @property letter
    * @type {string}
-   * @readonly
    */
   letter: null,
 
   /**
-   * For note `Ab5`, this would be `b`.
+   * For note `Ab5`, this would be `b`. Value should be set on instantiation.
+   *
+   * @property accidental
    * @type {string}
-   * @readonly
    */
   accidental: null,
 
   /**
-   * For note `Ab5`, this would be `5`.
+   * For note `Ab5`, this would be `5`. Value should be set on instantiation.
+   *
+   * @property octave
    * @type {string}
-   * @readonly
    */
   octave: null,
 
   /**
    * Computed property. Value is `${letter}${octave}` or
-   * `${letter}${accidental}${octave}`if accidental exists.
+   * `${letter}${accidental}${octave}` if accidental exists.
    *
-   * @observes {@link Note#letter}, {@link Note#accidental}, {@link Note#octave}
+   * @property identifier
    * @type {string}
-   * @readonly
    */
   identifier: computed('letter', 'accidental', 'octave', {
     get() {
@@ -79,11 +81,9 @@ const Note = Sound.extend({
    * Computed property. Value is `${letter}` or `${letter}${accidental}` if
    * accidental exists.
    *
-   * @observes {@link Note#letter}, {@link Note#accidental}
-   *
    * @override
+   * @property name
    * @type {string}
-   * @readonly
    */
   name: computed('letter', 'accidental', {
     get() {

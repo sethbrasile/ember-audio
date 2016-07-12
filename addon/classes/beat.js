@@ -18,11 +18,19 @@ const {
  * class can be set to `active` or not to facilitate the way that most drum
  * machines work (when a beat is not `active`, the time that it occupies still
  * exists, but it does not cause audio to play, effectively resulting in a
- * "rest"). It provides properties that track when it is playing, and when a "rest"
- * is playing in it's place.
+ * "rest"). It provides properties that track when it is played, and when a "rest"
+ * is played in it's place.
  *
- *     // constructor
- *     Beat.create();
+ * This class does not have the ability to create audio on it's own and is\
+ * expected be a "child" of one of the Sound classes. See it's implementation in
+ * {{#crossLink "BeatTrack"}}BeatTrack{{/crossLink}} for an example.
+ *
+ *     // Cannot play audio on it's own.
+ *     // Must pass in parentPlay and/or parentPlayIn from a parent class.
+ *     Beat.create({
+ *       parentPlayIn: this.playIn.bind(this),
+ *       parentPlay: this.play.bind(this),
+ *     });
  *
  * @class Beat
  */
@@ -45,7 +53,7 @@ const Beat = Ember.Object.extend({
    *
    * @property currentTimeIsPlaying
    * @type {boolean}
-   * @readonly
+   * @default false
    */
   currentTimeIsPlaying: false,
 
@@ -56,18 +64,16 @@ const Beat = Ember.Object.extend({
    *
    * @property isPlaying
    * @type {boolean}
-   * @readonly
+   * @default false
    */
   isPlaying: false,
 
   /**
-   * On Beat instance instantiation, this property should be set to the parent
+   * On Beat instance instantiation, this property should be set to the parent's
    * audioBuffer.duration.
    *
    * @property audioBufferDuration
    * @type {number|null}
-   * @default null
-   * @readonly
    * @private
    */
   audioBufferDuration: null,
@@ -105,9 +111,7 @@ const Beat = Ember.Object.extend({
    *
    * @property duration
    * @type {number}
-   * @readonly
    * @private
-   * @default 100
    */
   duration: computed('durationFromAudioBuffer', 'durationValue', 'audioBufferDuration', {
     get() {

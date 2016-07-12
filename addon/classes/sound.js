@@ -31,7 +31,6 @@ const {
  *
  * @constructor
  * @class Sound
- * @extends Ember.Object
  */
 const Sound = Ember.Object.extend({
 
@@ -40,7 +39,6 @@ const Sound = Ember.Object.extend({
    *
    * @property name
    * @type {string}
-   * @readonly
    */
   name: null,
 
@@ -49,7 +47,6 @@ const Sound = Ember.Object.extend({
    *
    * @property bufferSourceNode
    * @type {AudioBufferSourceNode}
-   * @readonly
    * @private
    */
   bufferSourceNode: null,
@@ -60,7 +57,6 @@ const Sound = Ember.Object.extend({
    *
    * @property audioBuffer
    * @type {AudioBuffer}
-   * @readonly
    * @private
    */
   audioBuffer: null,
@@ -77,7 +73,6 @@ const Sound = Ember.Object.extend({
    *
    * @property audioContext
    * @type {AudioContext}
-   * @readonly
    */
   audioContext: null,
 
@@ -88,7 +83,6 @@ const Sound = Ember.Object.extend({
    *
    * @property startedPlayingAt
    * @type {number}
-   * @readonly
    * @private
    */
   startedPlayingAt: 0,
@@ -113,8 +107,8 @@ const Sound = Ember.Object.extend({
    * ends by reaching the end of it's duration.
    *
    * @property isPlaying
-   * @type {number}
-   * @readonly
+   * @type {boolean}
+   * @default false
    */
   isPlaying: false,
 
@@ -147,7 +141,6 @@ const Sound = Ember.Object.extend({
    *
    * @property duration
    * @type {Object}
-   * @readonly
    */
   duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
@@ -168,7 +161,6 @@ const Sound = Ember.Object.extend({
    * @memberof Sound
    * @type {number}
    * @instance
-   * @readonly
    */
   percentGain: computed(function() {
     return this.getNode('gainNode').gain.value * 100;
@@ -190,7 +182,6 @@ const Sound = Ember.Object.extend({
    * @memberof Sound
    * @type {number}
    * @instance
-   * @readonly
    */
   createdConnections: computed('connections.[]', function() {
     const connections = this.get('connections').map((connection) => {
@@ -215,10 +206,9 @@ const Sound = Ember.Object.extend({
    * Initializes default connections on Sound instantiation. Runs `on('init')`.
    *
    * @method initConnections
-   * @memberof Sound
+   *
    * @todo Create an actual Connection class to clarify the API for creating
    * custom AudioNodes
-   * @instance
    */
   initConnections: on('init', function() {
     this.set('connections', A([

@@ -35,11 +35,9 @@ const BeatTrack = Sound.extend({
 
     for (let i = 0; i < numBeats; i++) {
       beats.push(Beat.create({
-        playingTime: this.get('playingTime'),
         audioBufferDuration: this.get('audioBuffer.duration'),
         parentPlayIn: this.playIn.bind(this),
         parentPlay: this.play.bind(this),
-        audioContext: this.get('audioContext')
       }));
     }
 
