@@ -29,6 +29,7 @@ const {
  * and {{#crossLink "Sound/stop:method"}}{{/crossLink}} the audio source.
  *
  * @class Sound
+ * @todo need a way to load multiple samples for alternating samples
  */
 const Sound = Ember.Object.extend({
 
