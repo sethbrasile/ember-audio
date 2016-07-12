@@ -42,4 +42,8 @@ Still needs:
 
 * `ember build`
 
+## Building yuidoc Documentation
+
+* `ember ember-cli-yuidoc`
+
 For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
