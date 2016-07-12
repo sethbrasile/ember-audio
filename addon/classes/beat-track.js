@@ -22,6 +22,8 @@ const {
  *
  * @class BeatTrack
  * @extends Sound
+ *
+ * @todo need a way to stop a BeatTrack once it's started
  */
 const BeatTrack = Sound.extend({
   numBeats: 4,

@@ -72,11 +72,11 @@ const Beat = Ember.Object.extend({
    * On Beat instance instantiation, this property should be set to the parent's
    * audioBuffer.duration.
    *
-   * @property audioBufferDuration
+   * @property _audioBufferDuration
    * @type {number|null}
    * @private
    */
-  audioBufferDuration: null,
+  _audioBufferDuration: null,
 
   /**
    * If true, audioBuffer.duration is used instead of durationValue to determine
@@ -113,14 +113,14 @@ const Beat = Ember.Object.extend({
    * @type {number}
    * @private
    */
-  duration: computed('durationFromAudioBuffer', 'durationValue', 'audioBufferDuration', {
+  _duration: computed('durationFromAudioBuffer', 'durationValue', '_audioBufferDuration', {
     get() {
       const durationFromAudioBuffer = this.get('durationFromAudioBuffer');
-      const audioBufferDuration = this.get('audioBufferDuration');
+      const _audioBufferDuration = this.get('_audioBufferDuration');
 
-      if (durationFromAudioBuffer && audioBufferDuration) {
+      if (durationFromAudioBuffer && _audioBufferDuration) {
         // audioBuffer.duration is seconds but we need milliseconds
-        return this.get('audioBufferDuration') * 1000;
+        return this.get('_audioBufferDuration') * 1000;
       } else {
         return this.get('durationValue') || 100;
       }
@@ -214,7 +214,7 @@ const Beat = Ember.Object.extend({
    */
   _markPlaying() {
     this.set('isPlaying', true);
-    later(() => this.set('isPlaying', false), this.get('duration'));
+    later(() => this.set('isPlaying', false), this.get('_duration'));
   },
 
   /**
@@ -226,7 +226,7 @@ const Beat = Ember.Object.extend({
    */
   _markCurrentTimePlaying() {
     this.set('currentTimeIsPlaying', true);
-    later(() => this.set('currentTimeIsPlaying', false), this.get('duration'));
+    later(() => this.set('currentTimeIsPlaying', false), this.get('_duration'));
   },
 });
 

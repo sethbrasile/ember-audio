@@ -42,21 +42,20 @@ const Sound = Ember.Object.extend({
   name: null,
 
   /**
-   * The Sound instance's [audio source node](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode).
+   * The Sound instance's
+   * [audio source node](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode).
    *
-   * @property bufferSourceNode
+   * @property _bufferSourceNode
    * @type {AudioBufferSourceNode}
    * @private
    */
-  bufferSourceNode: null,
+  _bufferSourceNode: null,
 
   /**
-   * The AudioBuffer instance that provides audio data to the
-   * {{#crossLink "Sound/bufferSourceNode:property"}}bufferSourceNode{{/crossLink}}.
+   * The AudioBuffer instance that provides audio data to the _bufferSourceNode.
    *
    * @property audioBuffer
    * @type {AudioBuffer}
-   * @private
    */
   audioBuffer: null,
 
@@ -80,11 +79,11 @@ const Sound = Ember.Object.extend({
    * It will always reflect the start time of the most recent
    * {{#crossLink "Sound/_play:method"}}{{/crossLink}}.
    *
-   * @property startedPlayingAt
+   * @property _startedPlayingAt
    * @type {number}
    * @private
    */
-  startedPlayingAt: 0,
+  _startedPlayingAt: 0,
 
   /**
    * When a Sound instance is played, this value is passed to the
@@ -175,10 +174,10 @@ const Sound = Ember.Object.extend({
    * should be OK at the top of the method, but right now it's not.
    *
    * @private
-   * @property createdConnections
+   * @property _createdConnections
    * @type {number}
    */
-  createdConnections: computed('connections.[]', function() {
+  _createdConnections: computed('connections.[]', function() {
     const connections = this.get('connections').map((connection) => {
       const { path, name, createCommand, source, createdOnPlay } = connection;
 
@@ -208,7 +207,7 @@ const Sound = Ember.Object.extend({
   initConnections: on('init', function() {
     this.set('connections', A([
       {
-        name: 'bufferSourceNode',
+        name: '_bufferSourceNode',
         createdOnPlay: true,
         source: 'audioContext',
         createCommand: 'createBufferSource',
@@ -237,7 +236,7 @@ const Sound = Ember.Object.extend({
 
     // We're not consuming the CP anywhere until "play" is called, but we want
     // the nodes available before that
-    this.get('createdConnections');
+    this.get('_createdConnections');
   }),
 
   /**
@@ -285,7 +284,7 @@ const Sound = Ember.Object.extend({
    * @method stop
    */
   stop() {
-    const node = this.get('bufferSourceNode');
+    const node = this.get('_bufferSourceNode');
 
     if (node) {
       node.stop();
@@ -294,7 +293,7 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * returns a connection's AudioNode from the createdConnections array by it's
+   * returns a connection's AudioNode from the _createdConnections array by it's
    * `name`.
    *
    * @param {string} name The name of the AudioNode that should be returned.
@@ -303,7 +302,7 @@ const Sound = Ember.Object.extend({
    * @return {AudioNode} The requested AudioNode.
    */
   getNode(name) {
-    const connection = this.get('createdConnections').findBy('name', name);
+    const connection = this.get('_createdConnections').findBy('name', name);
 
     if (connection) {
       return connection.node;
@@ -372,7 +371,7 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the bufferSourceNode and stops the audio,
+   * Gets the _bufferSourceNode and stops the audio,
    * changes it's play position, and restarts the audio.
    *
    * returns a pojo with the `from` method that `value` is curried to, allowing
@@ -469,7 +468,7 @@ const Sound = Ember.Object.extend({
 
     node.start(playAt, this.get('startOffset'));
 
-    this.set('startedPlayingAt', playAt);
+    this.set('_startedPlayingAt', playAt);
 
     if (playAt === currentTime) {
       this.set('isPlaying', true);
@@ -480,7 +479,7 @@ const Sound = Ember.Object.extend({
 
   /**
    * Gets the array of connections from the
-   * createdConnections computed property and
+   * _createdConnections computed property and
    * returns the same array with any AudioNodes that need to be created at
    * {{#crossLink "Sound/_play:method"}}{{/crossLink}} time having been created.
    *
@@ -489,7 +488,7 @@ const Sound = Ember.Object.extend({
    */
   _wireUpConnections() {
     // Each node is connected to the next node in the connections array
-    return this.get('createdConnections').map((connection, idx, connections) => {
+    return this.get('_createdConnections').map((connection, idx, connections) => {
       const nextIdx = idx + 1;
       const currentNode = this._createNode(connection);
 

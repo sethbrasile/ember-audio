@@ -47,10 +47,10 @@ export default Service.extend({
    * the register by name, and can be called via audioService.getSound('name')
    *
    * @private
-   * @property sounds
+   * @property _sounds
    * @type {map}
    */
-  sounds: new Map(),
+  _sounds: new Map(),
 
   /**
    * This acts as a register for soundfonts. A soundfont is a Map
@@ -58,20 +58,20 @@ export default Service.extend({
    * audioService.getFont('name')
    *
    * @private
-   * @property fonts
+   * @property _fonts
    * @type {map}
    */
-  fonts: new Map(),
+  _fonts: new Map(),
 
   /**
    * This acts as a register for Track instances. Track instances are placed in
    * the register by name, and can be called via audioService.getTrack('name')
    *
    * @private
-   * @property tracks
+   * @property _tracks
    * @type {map}
    */
-  tracks: new Map(),
+  _tracks: new Map(),
 
   /**
    * This acts as a register for BeatTrack instances. BeatTrack instances are
@@ -79,10 +79,10 @@ export default Service.extend({
    * audioService.getBeatTrack('name')
    *
    * @private
-   * @property beatTracks
+   * @property _beatTracks
    * @type {map}
    */
-  beatTracks: new Map(),
+  _beatTracks: new Map(),
 
   /**
    * Acts as a proxy method, returns a POJO with methods that return the _load and
@@ -177,56 +177,60 @@ export default Service.extend({
   },
 
   /**
-   * Gets a BeatTrack instance by name from the beatTracks register.
+   * Gets a BeatTrack instance by name from the _beatTracks register.
    *
    * @method getBeatTrack
    * @param {string} name The name of the BeatTrack instance that you would like
-   * to retrieve from the beatTracks register.
+   * to retrieve from the _beatTracks register.
    *
    * @return {BeatTrack} Returns the BeatTrack instance that matches the
    * provided name.
    */
   getBeatTrack(name) {
-    return this.get('beatTracks').get(name);
+    return this.get('_beatTracks').get(name);
   },
 
   /**
-   * Gets a Sound instance by name from the sounds register
+   * Gets a Sound instance by name from the _sounds register
    *
    * @method getSound
+   *
    * @param {string} name The name of the sound that you would like to retrieve
-   * from the sounds register.
+   * from the _sounds register.
    *
    * @return {Sound} returns the Sound instance that matches the provided name.
    */
   getSound(name) {
-    return this.get('sounds').get(name);
+    return this.get('_sounds').get(name);
   },
 
   /**
-   * Gets a Track instance by name from the tracks register
+   * Gets a Track instance by name from the _tracks register
    *
    * @method getTrack
+   *
    * @param {string} name The name of the Track instance that you would like to
-   * retrieve from the tracks register.
+   * retrieve from the _tracks register.
    *
    * @return {Track} Returns the Track instance that matches the provided name.
    */
   getTrack(name) {
-    return this.get('tracks').get(name);
+    return this.get('_tracks').get(name);
   },
 
   /**
-   * Gets a soundfont by name from the fonts register
+   * Gets a soundfont by name from the _fonts register
    *
    * @method getFont
+   *
    * @param {string} name The name of the soundfont that you would like to
-   * retrieve from the fonts register.
+   * retrieve from the _fonts register.
+   *
    * @return {Ember.Array} Returns the soundfont (an array of Note objects)
    * that matches the provided name.
    */
   getFont(name) {
-    const font = this.get('fonts').get(name);
+    const font = this.get('_fonts').get(name);
 
     return {
       play(note) {
@@ -240,35 +244,35 @@ export default Service.extend({
   },
 
   /**
-   * Gets all instances from requested register and calls
-   * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each
-   * instance. Default register is `tracks`.
+  * Gets all instances of requested type and calls
+  * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each.
    *
    * @method stopAll
    *
-   * @param {string} register='tracks' The name of the register that you wish
-   * to stop all instances of
+   * @param {string} type='tracks' The type of the register that you wish
+   * to stop all instances of. Can be `'tracks'`, or `'sounds'`.
    */
-  stopAll(register='tracks') {
-    for (let sound of this.get(register).values()) {
+  stopAll(type='tracks') {
+    for (let sound of this.get(`_${type}`).values()) {
       sound.stop();
     }
   },
 
   /**
-   * Gets all instances from the tracks register and calls pause() on each. Only
-   * works for the tracks register because only Track instances are pause-able
+   * Gets all Track instances and calls
+   * {{#crossLink "Sound/pause:method"}}{{/crossLink}} on each. Only works for
+   * tracks because only Track instances are pause-able.
    *
    * @method pauseAll
    */
   pauseAll() {
-    for (let sound of this.get('tracks').values()) {
+    for (let sound of this.get('_tracks').values()) {
       sound.pause();
     }
   },
 
   /**
-   * Gets a register by it's name
+   * Gets a register by it's type.
    *
    * @private
    * @method _getRegisterFor
@@ -278,11 +282,11 @@ export default Service.extend({
   _getRegisterFor(type) {
     switch(type) {
       case 'track':
-        return this.get('tracks');
+        return this.get('_tracks');
       case 'beatTrack':
-        return this.get('beatTracks');
+        return this.get('_beatTracks');
       default:
-        return this.get('sounds');
+        return this.get('_sounds');
     }
   },
 

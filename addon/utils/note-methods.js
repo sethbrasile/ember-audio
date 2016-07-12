@@ -6,7 +6,6 @@ const {
 } = Ember;
 
 /**
- * @private
  * @class utils
  */
 
