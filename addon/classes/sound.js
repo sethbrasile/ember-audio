@@ -572,7 +572,7 @@ const Sound = Ember.Object.extend({
       });
     }
 
-    return node;
+    return connection;
   }
 });
 
