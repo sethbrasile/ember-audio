@@ -226,7 +226,7 @@ export default Service.extend({
    * @param {string} name The name of the soundfont that you would like to
    * retrieve from the _fonts register.
    *
-   * @return {Ember.Array} Returns the soundfont (an array of Note objects)
+   * @return {Ember.MutableArray} Returns the soundfont (an array of Note objects)
    * that matches the provided name.
    */
   getFont(name) {
@@ -385,7 +385,7 @@ export default Service.extend({
    * has been successfully decoded. The promise resolves to an array of sorted note names.
    */
   _loadFont(instrumentName, src) {
-    const fonts = this.get('fonts');
+    const fonts = this.get('_fonts');
 
     if (fonts.has(instrumentName)) {
       const err = new Ember.Error(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to "null" with "this.get('audio.sounds').set('${instrumentName}', null);".`);
@@ -495,7 +495,7 @@ export default Service.extend({
 
       note = Note.create({ letter, octave, accidental, audioBuffer, audioContext });
 
-      this.get('fonts').get(instrumentName).set(noteName, note);
+      this.get('_fonts').get(instrumentName).set(noteName, note);
 
       return note;
     });
