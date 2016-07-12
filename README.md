@@ -20,6 +20,8 @@ Still needs:
 
 - Synthesis
 - Visualization helpers
+- A way to add multiple buffers to a sound for alternating samples (to avoid
+  "the machine gun effect")
 
 ## Installation
 
