@@ -1,11 +1,7 @@
 import Ember from 'ember';
-import Sound from '../classes/sound';
-import Track from '../classes/track';
-import BeatTrack from '../classes/beat-track';
-import { Note } from '../classes/note';
-import { base64ToUint8, mungeSoundFont } from '../utils/decode-base64';
-import { sortNotes } from '../utils/note-methods';
 import fetch from 'ember-network/fetch';
+import { Sound, Note, Track, BeatTrack } from 'ember-audio/classes';
+import { sortNotes, base64ToUint8, mungeSoundFont } from '../utils';
 
 const {
   RSVP: { all, resolve },

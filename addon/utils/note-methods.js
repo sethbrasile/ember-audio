@@ -6,9 +6,8 @@ const {
 } = Ember;
 
 /**
- * @module note-methods
- * @private
- * @ignore
+ * @module utils
+ * @submodule note-methods
  */
 
 export function sortNotes(notes) {

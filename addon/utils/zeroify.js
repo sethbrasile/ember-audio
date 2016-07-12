@@ -1,7 +1,6 @@
 /**
- * @module
- * @private
- * @ignore
+ * @module utils
+ * @submodule zeroify
  */
 
  /**

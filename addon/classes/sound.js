@@ -1,5 +1,14 @@
 import Ember from 'ember';
-import zeroify from '../utils/zeroify';
+import zeroify from '../utils';
+
+/**
+ * The Sound class provides the core functionality for interacting with the Web
+ * Audio API's AudioContext, and is the base class for all of the other classes
+ * in the Audio module.
+ *
+ * @module Audio
+ * @submodule Sound
+ */
 
 const {
   A,
@@ -10,79 +19,47 @@ const {
 } = Ember;
 
 /**
- * This is the base class for all Sound types. It represents a sound. It
- * prepares an audio source, provides various methods for interacting with
- * the audio source, creates
- * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioNode AudioNodes}
+ * The Sound class provides the core functionality for
+ * interacting with the Web Audio API's AudioContext, and is the base class for
+ * all other Sound types. It prepares an audio source, provides various methods
+ * for interacting with the audio source, creates
+ * [AudioNodes](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode)
  * from the connections array, sets up the necessary connections/routing
- * between them, and provides a few methods to {@link Sound#play play} and
- * {@link Sound#stop stop} the audio source.
+ * between them, and provides some methods to
+ * {{#crossLink "Sound/play:method"}}play(){{/crossLink}} and
+ * {{#crossLink "Sound/stop:method"}}stop(){{/crossLink}} the audio source.
  *
- * <style>
- *   .ignore-this--this-is-here-to-hide-constructor,
- *   #Sound { display: none; }
- * </style>
- *
- * @see Track
- * @see Note
- * @see BeatTrack
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioNode AudioNode}
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext AudioContext}
- *
+ * @constructor
  * @class Sound
  * @extends Ember.Object
- *
- * @property {string} name Name that this Sound instance is registered as on
- * it's parent register.
- *
- * @property {AudioContext} audioContext The parent
- * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext AudioContext}
- * instance.
- *
- * @property {number} startOffset See {@link Sound#startOffset startOffset}.
- *
- * @property {boolean} isPlaying Whether the instance currently playing audio.
- *
- * @property {object} duration Computed property. See
- * {@link Sound#duration duration}.
- *
- * @property {number} percentGain Computed property. See
- * {@link Sound#percentGain percentGain}
  */
 const Sound = Ember.Object.extend({
 
   /**
    * Name that this Sound instance is registered as on it's parent register.
    *
-   * @memberof Sound
+   * @property name
    * @type {string}
-   * @instance
    * @readonly
    */
   name: null,
 
   /**
-   * The Sound instance's audio source node.
+   * The Sound instance's [audio source node](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode).
    *
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode AudioBufferSourceNode}
-   *
-   * @memberof Sound
+   * @property bufferSourceNode
    * @type {AudioBufferSourceNode}
-   * @instance
    * @readonly
    * @private
    */
   bufferSourceNode: null,
 
   /**
-   * The
-   * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer AudioBuffer}
-   * instance that provides audio data to the
-   * {@link Sound#bufferSourceNode bufferSourceNode}.
+   * The AudioBuffer instance that provides audio data to the
+   * {{#crossLink "Sound/bufferSourceNode:property"}}bufferSourceNode{{/crossLink}}.
    *
-   * @memberof Sound
+   * @property audioBuffer
    * @type {AudioBuffer}
-   * @instance
    * @readonly
    * @private
    */
@@ -90,25 +67,16 @@ const Sound = Ember.Object.extend({
 
   /**
    * The parent
-   * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext AudioContext}
+   * [AudioContext](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
    * instance that all audio events are occurring within. It is useful for
    * getting currentTime, as well as creating new
-   * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioNode AudioNodes}.
+   * [AudioNodes](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode).
    *
    * This is the object that facilitates and ties together all aspects of the
    * Web Audio API.
    *
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioContext AudioContext}
-   *
-   * @memberof Sound
+   * @property audioContext
    * @type {AudioContext}
-   *
-   * @property currentTime {double} The current time.
-   * @property sampleRate {float} The sample rate of all AudioNodes contained
-   * in this context.
-   * @property state {string} Can be `running`, `suspended`, or `closed`.
-   *
-   * @instance
    * @readonly
    */
   audioContext: null,
@@ -118,9 +86,8 @@ const Sound = Ember.Object.extend({
    * It will always reflect the start time of the most recent
    * {@link Sound#_play _play}.
    *
-   * @memberof Sound
+   * @property startedPlayingAt
    * @type {number}
-   * @instance
    * @readonly
    * @private
    */
@@ -132,7 +99,7 @@ const Sound = Ember.Object.extend({
    * `offset` param. Determines `where` (in seconds)
    * the play will start, along the duration of the audio source.
    *
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode AudioBufferSourceNode}
+   * @see [AudioBufferSourceNode](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode)
    *
    * @memberof Sound
    * @type {number}
@@ -145,9 +112,8 @@ const Sound = Ember.Object.extend({
    * starts playing audio. Becomes false when the Sound instance is stopped or
    * ends by reaching the end of it's duration.
    *
-   * @memberof Sound
+   * @property isPlaying
    * @type {number}
-   * @instance
    * @readonly
    */
   isPlaying: false,
@@ -155,11 +121,11 @@ const Sound = Ember.Object.extend({
   /**
    * Determines what AudioNodes are connected to one-another and the order in
    * which they are connected. Starts as `null` but set to an array on `init`
-   * via the {@link Sound#initConnections initConnections} method.
+   * via the {{#crossLink "Sound/initConnections:method"}}
+   * initConnections{{/crossLink}} method.
    *
-   * @memberof Sound
+   * @property connections
    * @type {Ember.MutableArray}
-   * @instance
    */
   connections: null,
 
@@ -179,15 +145,8 @@ const Sound = Ember.Object.extend({
    *       }
    *     }
    *
-   * @memberof Sound
-   * @type {object}
-   * @observes 'audioBuffer.duration'
-   *
-   * @property raw {number} Duration in total seconds.
-   * @property string {string} Duration in a "pretty print" string.
-   * @property pojo {object} Duration with minutes and seconds as an object.
-   *
-   * @instance
+   * @property duration
+   * @type {Object}
    * @readonly
    */
   duration: computed('audioBuffer.duration', function() {

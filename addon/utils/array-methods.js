@@ -5,9 +5,8 @@ const {
 } = Ember;
 
 /**
- * @module array-methods
- * @private
- * @ignore
+ * @module utils
+ * @submodule array-methods
  */
 
 /**

@@ -5,14 +5,15 @@
   "options": {
     "themedir": "node_modules/yuidoc-ember-cli-theme",
     "helpers": ["node_modules/yuidoc-ember-cli-theme/helpers.js"],
-    "paths": [
-      "addon"
-    ],
+    "paths": [ "addon" ],
     "exclude": "vendor",
     "outdir": "tests/dummy/public/docs",
     "linkNatives": true,
     "quiet": true,
     "parseOnly": false,
-    "lint": false
+    "lint": false,
+    "external": {
+      "data": "http://builds.emberjs.com/canary/ember-docs.json"
+    }
   }
 }

@@ -1,6 +1,14 @@
 import Ember from 'ember';
 import Sound from './sound';
 
+/**
+ * The Note class provides identification-focused functionality for collections
+ * of musical notes.
+ *
+ * @module Musical-Concepts
+ * @submodule Note
+ */
+
 const {
   computed
 } = Ember;
@@ -15,46 +23,30 @@ const {
  * This class only makes sense when used in the context of a collection, as the
  * only functionality it provides, serves to facilitate identification.
  *
- * <style>
- *   .ignore-this--this-is-here-to-hide-constructor,
- *   #Note { display: none; }
- * </style>
- *
+ * @constructor
  * @class Note
  * @extends Sound
- *
- * @property letter {string} For note `Ab5`, this would be `A`.
- * @property accidental {string} For note `Ab5`, this would be `b`.
- * @property octave {string} For note `Ab5`, this would be `5`.
- * @property identifier {string} See {@link Note#identifier}.
- * @property name {string} See {@link Note#name}.
  */
-export const Note = Sound.extend({
+const Note = Sound.extend({
 
   /**
    * For note `Ab5`, this would be `A`.
-   *
-   * @memberof Note
-   * @instance
    * @type {string}
+   * @readonly
    */
   letter: null,
 
   /**
    * For note `Ab5`, this would be `b`.
-   *
-   * @memberof Note
-   * @instance
    * @type {string}
+   * @readonly
    */
   accidental: null,
 
   /**
    * For note `Ab5`, this would be `5`.
-   *
-   * @memberof Note
-   * @instance
    * @type {string}
+   * @readonly
    */
   octave: null,
 
@@ -63,10 +55,8 @@ export const Note = Sound.extend({
    * `${letter}${accidental}${octave}`if accidental exists.
    *
    * @observes {@link Note#letter}, {@link Note#accidental}, {@link Note#octave}
-   *
-   * @memberof Note
    * @type {string}
-   * @instance
+   * @readonly
    */
   identifier: computed('letter', 'accidental', 'octave', {
     get() {
@@ -92,9 +82,8 @@ export const Note = Sound.extend({
    * @observes {@link Note#letter}, {@link Note#accidental}
    *
    * @override
-   * @memberof Note
    * @type {string}
-   * @instance
+   * @readonly
    */
   name: computed('letter', 'accidental', {
     get() {
@@ -112,3 +101,5 @@ export const Note = Sound.extend({
     }
   })
 });
+
+export default Note;

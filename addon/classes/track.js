@@ -1,6 +1,14 @@
 import Ember from 'ember';
 import Sound from './sound';
-import zeroify from '../utils/zeroify';
+import { zeroify } from '../utils';
+
+/**
+ * An instance of the Track class represents a "track" of music, similar in
+ * concept to a track on a CD or an MP3 player.
+ *
+ * @module Audio
+ * @submodule Track
+ */
 
 const {
   computed,
@@ -13,20 +21,9 @@ const {
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer AudioBuffer},
  * and pausing/resuming.
  *
- * <style>
- *   .ignore-this--this-is-here-to-hide-constructor,
- *   #Track { display: none; }
- * </style>
- *
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer}
+ * @constructor
  * @class Track
  * @extends Sound
- *
- * @property {object} position Computed property. See
- * {@link Track#position position}.
- *
- * @property {object} percentPlayed Computed property. See
- * {@link Track#percentPlayed percentPlayed}.
  */
 const Track = Sound.extend({
 
