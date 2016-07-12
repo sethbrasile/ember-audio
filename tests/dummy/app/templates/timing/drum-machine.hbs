@@ -1,6 +1,14 @@
 <div class="content">
   <h2>Drum Machine</h2>
 
+  <p class="well">
+    This is a really great example of how performant the Web Audio API is. Try
+    turning the tempo up to something ridiculous like 1200. The audio artifacts
+    ("glitches") that you're likely hearing are not caused by your pc/browser
+    "not keeping up," but by an acoustic property called "phase cancellation"
+    and it's happening because there is only a single sample for each drum.
+  </p>
+
     {{#if isLoading}}
       <div class="spinner">
         <div class="rect1"></div>
@@ -85,7 +93,7 @@
       }),
 
       _loadBeatTrackFor(name) {
-        return this.get('audio').load(`/ember-audio/${name}.wav`).asBeatTrack(name);
+        return this.get('audio').load(`${name}.wav`).asBeatTrack(name);
       },
 
       actions: {
