@@ -109,7 +109,7 @@ const Beat = Ember.Object.extend({
    * By default, this value is set to durationValue, if durationFromAudioBuffer
    * is true, then this value is the duration of the parent AudioBuffer.
    *
-   * @property duration
+   * @property _duration
    * @type {number}
    * @private
    */
