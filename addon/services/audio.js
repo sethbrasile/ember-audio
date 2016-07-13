@@ -53,9 +53,8 @@ export default Service.extend({
   _sounds: new Map(),
 
   /**
-   * This acts as a register for soundfonts. A soundfont is a Map
-   * which is placed in the register by name, and can be called via
-   * audioService.getFont('name')
+   * This acts as a register for soundfonts. A font is just a `Map` of Note
+   * objects which is placed in this register by name.
    *
    * @private
    * @property _fonts
@@ -65,7 +64,7 @@ export default Service.extend({
 
   /**
    * This acts as a register for Track instances. Track instances are placed in
-   * the register by name, and can be called via audioService.getTrack('name')
+   * this register by name, and can be called via audioService.getTrack('name')
    *
    * @private
    * @property _tracks
@@ -85,21 +84,26 @@ export default Service.extend({
   _beatTracks: new Map(),
 
   /**
-   * Acts as a proxy method, returns a POJO with methods that return the _load and
-   * _loadFont methods so that in the end, the method signature looks something
-   * like:
+   * Acts as a proxy method, returns a POJO with methods that return the _load
+   * and _loadFont methods so that in the end. See example.
    *
    * @example
-   *     audio.load('some-uri').asSound('some-name')
+   *     audio.load('some-url.wav').asSound('some-sound')
+   *     audio.load(['some-url.mp3']).asBeatTrack('some-beat-track')
+   *     audio.load('some-url.js').asFont('some-font')
+   *     audio.load('some-url.mp3').asTrack('some-track')
    *
    * @method load
-   * @param {string} src The URI location of an audio file. Will be used by
-   * "fetch" to get the audio file. Can be a local or a relative URL
+   *
+   * @param {string|array} src The URL location of an audio file. Will be used by
+   * "fetch" to get the audio file. Can be a local or a relative URL. An array
+   * of URLs is required if a beatTrack is being loaded via `.asBeatTrack`
    *
    * @return {object} returns a POJO that contains a few methods that curry
    * "src" "type" and "name" over to
    * {{#crossLink "Audio/_load:method"}}{{/crossLink}} and
-   * {{#crossLink "Audio/_loadFont:method"}}{{/crossLink}}
+   * {{#crossLink "Audio/_loadFont:method"}}{{/crossLink}} and allow you to
+   * specify what type of Sound you'd like created.
    */
   load(src) {
     const _load = this._load.bind(this);
@@ -112,7 +116,6 @@ export default Service.extend({
        * partially applied src param from
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="sound"
        *
-       * @method asSound
        * @param {string} name The name that this Sound instance will be
        * registered as in the "sounds" register
        * @return {promise|Sound} Returns a promise that resolves to a Sound
@@ -128,7 +131,6 @@ export default Service.extend({
        * partially applied src param from
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="track"
        *
-       * @method asSound
        * @param {string} name The name that this Track instance will be
        * registered as in the "tracks" register.
        *
@@ -145,7 +147,6 @@ export default Service.extend({
        * partially applied src param from
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="beatTrack"
        *
-       * @method asBeatTrack
        * @param {string} name The name that this BeatTrack instance will be
        * registered as in the "beatTracks" register
        *
@@ -161,8 +162,6 @@ export default Service.extend({
        * Calls {{#crossLink "Audio/_loadFont:method"}}{{/crossLink}} with name,
        * and partially applied src param from
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}.
-       *
-       * @method asFont
        *
        * @param {string} name The name that this font will be registered as in
        * the "fonts" register.
@@ -220,15 +219,19 @@ export default Service.extend({
   },
 
   /**
-   * Gets a soundfont by name from the _fonts register
+   * Gets a soundfont Map by name from the _fonts register and allows it to be
+   * played via the returned POJO containing a method called `play`.
+   *
+   * @example
+   *     audio.getFont('some-font').play('Ab1');
    *
    * @method getFont
    *
-   * @param {string} name The name of the soundfont that you would like to
-   * retrieve from the _fonts register.
+   * @param {string} name The name of the Map that you would like to retrieve
+   * from the _fonts register.
    *
-   * @return {Ember.MutableArray} Returns the soundfont (an array of Note objects)
-   * that matches the provided name.
+   * @return {object} Returns a POJO that has a `play` method which allows a
+   * note from the requested font to be played.
    */
   getFont(name) {
     const font = this.get('_fonts').get(name);
@@ -360,12 +363,25 @@ export default Service.extend({
       });
   },
 
+  /**
+   * Creates a BeatTrack instance from an array of URLs.
+   *
+   * @private
+   * @method _loadBeatTrack
+   *
+   * @param {string} name The name that this BeatTrack instance will be
+   * registered as on the _beatTracks register.
+   *
+   * @param {array} srcArray An array of strings that specify URLs to load as
+   * Sounds.
+   *
+   * @return {Promise|BeatTrack} A promise that resolves to a BeatTrack instance.
+   */
   _loadBeatTrack(name, srcArray) {
     const audioContext = this.get('context');
+    const beats = srcArray.map((src, idx) => this.load(src).asSound(`${name}${idx}`));
 
-    return all(
-      srcArray.map((src, idx) => this._load(`${name}${idx}`, src, 'sound'))
-    ).then((sounds) => {
+    return all(beats).then((sounds) => {
       const _sounds = new Set(sounds);
       return BeatTrack.create({ _sounds, audioContext, name });
     });
@@ -379,11 +395,12 @@ export default Service.extend({
    * 5. Returns a promise that resolves to an array of properly sorted Note
    * object instances.
    *
-   * The notes are sorted the way that they would appear on a piano. A given
-   * note can be played as seen in the example:
+   * The notes are sorted the way that they would appear on a piano. In the
+   * example, you can see how the note `Ab1` from the `font-name` soundfont
+   * would be played:
    *
    * @example
-   *     audio.getFont(fontName).play(noteName)
+   *     audio.getFont('font-name').play('Ab1');
    *
    * @private
    * @method _loadFont

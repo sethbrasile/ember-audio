@@ -1,6 +1,4 @@
 import Ember from 'ember';
-import Beat from './beat';
-import Sound from './sound';
 
 /**
  * Provides the Sampler class.
@@ -8,10 +6,6 @@ import Sound from './sound';
  * @module Audio
  * @submodule Sampler
  */
-
-const {
-  computed
-} = Ember;
 
 /**
  * An instance of the Sampler class behaves just like a Sound, but allows
@@ -70,7 +64,7 @@ const Sampler = Ember.Object.extend({
   /**
    * Gets _soundIterator and returns it's next value. If _soundIterator has
    * reached it's end, replaces _soundIterator with a fresh copy from _sounds
-   * and returns the first value from that instead.
+   * and returns the first value from that.
    *
    * @private
    * @method _getNextSound
