@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import fetch from 'ember-network/fetch';
-import { Sound, Note, Track, BeatTrack } from 'ember-audio/classes';
+import { Sound, Note, Track, BeatTrack, Sampler } from 'ember-audio';
 import { sortNotes, base64ToUint8, mungeSoundFont } from 'ember-audio/utils';
 
 /**
@@ -51,6 +51,16 @@ export default Service.extend({
    * @type {map}
    */
   _sounds: new Map(),
+
+  /**
+   * This acts as a register for Sampler instances. Sampler instances are placed
+   * in the register by name, and can be called via audioService.getSampler('name')
+   *
+   * @private
+   * @property _samplers
+   * @type {map}
+   */
+  _samplers: new Map(),
 
   /**
    * This acts as a register for soundfonts. A font is just a `Map` of Note
@@ -106,9 +116,11 @@ export default Service.extend({
    * specify what type of Sound you'd like created.
    */
   load(src) {
+    const audioContext = this.get('context');
     const _load = this._load.bind(this);
     const _loadFont = this._loadFont.bind(this);
     const _loadBeatTrack = this._loadBeatTrack.bind(this);
+    const _createSoundsArray = this._createSoundsArray.bind(this);
 
     return {
       /**
@@ -117,7 +129,7 @@ export default Service.extend({
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="sound"
        *
        * @param {string} name The name that this Sound instance will be
-       * registered as in the "sounds" register
+       * registered as in the "_sounds" register
        * @return {promise|Sound} Returns a promise that resolves to a Sound
        * instance. The promise resolves when the Sound instance's AudioBuffer
        * (audio data) is finished loading
@@ -132,7 +144,7 @@ export default Service.extend({
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="track"
        *
        * @param {string} name The name that this Track instance will be
-       * registered as in the "tracks" register.
+       * registered as in the "_tracks" register.
        *
        * @return {promise|Track} Returns a promise that resolves to a Track
        * instance. The promise resolves when the Track instance's AudioBuffer
@@ -148,7 +160,7 @@ export default Service.extend({
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="beatTrack"
        *
        * @param {string} name The name that this BeatTrack instance will be
-       * registered as in the "beatTracks" register
+       * registered as in the "_beatTracks" register
        *
        * @return {promise|Track} Returns a promise that resolves to a BeatTrack
        * instance. The promise resolves when the BeatTrack instance's AudioBuffer
@@ -164,7 +176,7 @@ export default Service.extend({
        * {{#crossLink "Audio/load:method"}}{{/crossLink}}.
        *
        * @param {string} name The name that this font will be registered as in
-       * the "fonts" register.
+       * the "_fonts" register.
        *
        * @return {promise|array} Returns a promise that resolves to an Array of
        * sorted note names. The promise resolves when the soundfont file is
@@ -172,6 +184,25 @@ export default Service.extend({
        */
       asFont(name) {
         return _loadFont(name, src);
+      },
+
+      /**
+       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
+       * partially applied src param from
+       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="sampler"
+       *
+       * @param {string} name The name that this Sampler instance will be
+       * registered as in the _samplers register
+       *
+       * @return {promise|Sampler} Returns a promise that resolves to a Sampler
+       * instance. The promise resolves when the Sampler instance's AudioBuffer
+       * (audio data) is finished loading
+       */
+      asSampler(name) {
+        return _createSoundsArray(name, src).then((sounds) => {
+          const _sounds = new Set(sounds);
+          return Sampler.create({ _sounds, audioContext, name });
+        });
       }
     };
   },
@@ -180,8 +211,8 @@ export default Service.extend({
    * Gets a BeatTrack instance by name from the _beatTracks register.
    *
    * @method getBeatTrack
-   * @param {string} name The name of the BeatTrack instance that you would like
-   * to retrieve from the _beatTracks register.
+   * @param {string} name The name of the BeatTrack instance that should be
+   * retrieved from the _beatTracks register.
    *
    * @return {BeatTrack} Returns the BeatTrack instance that matches the
    * provided name.
@@ -195,7 +226,7 @@ export default Service.extend({
    *
    * @method getSound
    *
-   * @param {string} name The name of the sound that you would like to retrieve
+   * @param {string} name The name of the sound that should be retrieved
    * from the _sounds register.
    *
    * @return {Sound} returns the Sound instance that matches the provided name.
@@ -209,8 +240,8 @@ export default Service.extend({
    *
    * @method getTrack
    *
-   * @param {string} name The name of the Track instance that you would like to
-   * retrieve from the _tracks register.
+   * @param {string} name The name of the Track instance that should be
+   * retrieved from the _tracks register.
    *
    * @return {Track} Returns the Track instance that matches the provided name.
    */
@@ -227,7 +258,7 @@ export default Service.extend({
    *
    * @method getFont
    *
-   * @param {string} name The name of the Map that you would like to retrieve
+   * @param {string} name The name of the Map that should be retrieved
    * from the _fonts register.
    *
    * @return {object} Returns a POJO that has a `play` method which allows a
@@ -245,6 +276,20 @@ export default Service.extend({
         }
       }
     };
+  },
+
+  /**
+   * Gets a Sampler instance by name from the _samplers register
+   *
+   * @method getSampler
+   *
+   * @param {string} name The name of the sampler that should be retrieved
+   * from the _samplers register.
+   *
+   * @return {Sampler} returns the Sampler instance that matches the provided name.
+   */
+  getSampler(name) {
+    return this.get('_samplers').get(name);
   },
 
   /**
@@ -289,6 +334,8 @@ export default Service.extend({
         return this.get('_tracks');
       case 'beatTrack':
         return this.get('_beatTracks');
+      case 'sampler':
+        return this.get('_samplers');
       default:
         return this.get('_sounds');
     }
@@ -315,6 +362,8 @@ export default Service.extend({
         return Track.create(props);
       case 'beatTrack':
         return BeatTrack.create(props);
+      case 'sampler':
+        return Sampler.create(props);
       default:
         return Sound.create(props);
     }
@@ -379,9 +428,8 @@ export default Service.extend({
    */
   _loadBeatTrack(name, srcArray) {
     const audioContext = this.get('context');
-    const beats = srcArray.map((src, idx) => this.load(src).asSound(`${name}${idx}`));
 
-    return all(beats).then((sounds) => {
+    return this._createSoundsArray(name, srcArray).then((sounds) => {
       const _sounds = new Set(sounds);
       return BeatTrack.create({ _sounds, audioContext, name });
     });
@@ -445,6 +493,14 @@ export default Service.extend({
       .then(sortNotes)
 
       .catch((err) => console.error('ember-audio:', err));
+  },
+
+  _createSoundsArray(name, srcArray) {
+    const sounds = srcArray.map((src, idx) => {
+      return this._load(`${name}${idx}`, src, 'sound');
+    });
+
+    return all(sounds);
   },
 
   /**

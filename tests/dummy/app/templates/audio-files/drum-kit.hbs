@@ -1,6 +1,15 @@
 <div class="content">
-  <h2>Drum Kit</h2>
+  <h2>Multisampled Drum Kit</h2>
+</div>
 
+<div class="content">
+  <p>
+    Go ahead and hit the hihat a few times... Notice how each sample sounds
+    slightly different? That's multisampling, baby.
+  </p>
+</div>
+
+<div class="content">
   {{#if isLoading}}
     <div class="spinner">
       <div class="rect1"></div>
@@ -39,19 +48,25 @@
     drums: Ember.A(),
     isLoading: true,
 
-    loadSound(name) {
-      return this.get('audio').load(`/ember-audio/${name}.wav`).asSound(name)
-        .then((drum) => this.get('drums').pushObject(drum));
-    },
-
     initBeats: Ember.on('init', function() {
       Ember.RSVP.all([
-        this.loadSound('kick'),
-        this.loadSound('snare'),
-        this.loadSound('hihat')
+        this._loadSamplerFor('kick'),
+        this._loadSamplerFor('snare'),
+        this._loadSamplerFor('hihat')
       ])
       .then(() => this.set('isLoading', false));
     }),
+
+    _loadSamplerFor(name) {
+      // 'snare1.wav', 'kick2.wav', etc..., from this project's public folder
+      const drums = [`${name}1.wav`, ${name}2.wav`, ${name}3.wav`];
+
+      // If name === 'kick', this creates a Sampler instance called
+      // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
+      return this.get('audio').load(drums).asSampler(name).then((drum) => {
+        this.get('drums').pushObject(drum);
+      });
+    },
 
     actions: {
       playDrum(drum) {
