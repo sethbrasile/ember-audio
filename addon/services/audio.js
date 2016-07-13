@@ -123,6 +123,7 @@ export default Service.extend({
     const _loadFont = this._loadFont.bind(this);
     const _loadBeatTrack = this._loadBeatTrack.bind(this);
     const _createSoundsArray = this._createSoundsArray.bind(this);
+    const samplersRegister = this.get('_samplers');
 
     return {
       /*
@@ -196,7 +197,7 @@ export default Service.extend({
           const _sounds = new Set(sounds);
           const sampler = Sampler.create({ _sounds, audioContext, name });
 
-          this.get('_samplers').set(name, sampler);
+          samplersRegister.set(name, sampler);
 
           return sampler;
         });
