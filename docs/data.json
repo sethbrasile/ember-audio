@@ -2,7 +2,7 @@
     "project": {
         "name": "ember-audio",
         "description": "An Ember addon that makes working with the Web Audio API super EZ",
-        "version": "0.0.0.1be77f13"
+        "version": "0.0.0.f4e41b1b"
     },
     "files": {
         "addon/classes/beat-track.js": {
