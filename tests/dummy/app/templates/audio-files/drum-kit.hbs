@@ -10,10 +10,10 @@
       <div class="rect5"></div>
     </div>
   {{else}}
-    {{#each beats as |beat|}}
+    {{#each drums as |drum|}}
       <div class="beat-pad">
-        <span class="text">{{beat.name}}</span>
-        <span class="pad" {{action 'playBeat' beat.sound}}></span>
+        <span class="text">{{drum.name}}</span>
+        <span class="pad" {{action 'playDrum' drum}}></span>
       </div>
     {{/each}}
   {{/if}}
@@ -24,10 +24,10 @@
   \{{#if isLoading}}
     \{{!-- some loading indicator... --}}
   \{{else}}
-    \{{#each beats as |beat|}}
+    \{{#each drums as |drum|}}
       &lt;div class="beat-pad">
-        &lt;span class="text">\{{beat.name}}&lt;/span>
-        &lt;span class="pad" \{{action 'playBeat' beat.sound}}>&lt;/span>
+        &lt;span class="text">\{{drum.name}}&lt;/span>
+        &lt;span class="pad" \{{action 'playDrum' drum}}>&lt;/span>
       &lt;/div>
     \{{/each}}
   \{{/if}}
@@ -36,16 +36,15 @@
   {{#code-block language='javascript'}}
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
-    beats: Ember.A(),
+    drums: Ember.A(),
     isLoading: true,
 
     loadSound(name) {
-      return this.get('audio').load(`${name}.wav`).asSound(name)
-        .then((sound) => this.get('beats').pushObject({ name, sound }));
+      return this.get('audio').load(`/ember-audio/${name}.wav`).asSound(name)
+        .then((drum) => this.get('drums').pushObject(drum));
     },
 
     initBeats: Ember.on('init', function() {
-      // kick.wav, snare.wav, and hihat.wav are WAV files in the public folder
       Ember.RSVP.all([
         this.loadSound('kick'),
         this.loadSound('snare'),
@@ -55,8 +54,8 @@
     }),
 
     actions: {
-      playBeat(beat) {
-        beat.play();
+      playDrum(drum) {
+        drum.play();
       }
     }
   });

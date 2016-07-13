@@ -2,12 +2,12 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
   audio: Ember.inject.service(),
-  beats: Ember.A(),
+  drums: Ember.A(),
   isLoading: true,
 
   loadSound(name) {
     return this.get('audio').load(`/ember-audio/${name}.wav`).asSound(name)
-      .then((sound) => this.get('beats').pushObject({ name, sound }));
+      .then((drum) => this.get('drums').pushObject(drum));
   },
 
   initBeats: Ember.on('init', function() {
@@ -20,8 +20,8 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
-    playBeat(beat) {
-      beat.play();
+    playDrum(drum) {
+      drum.play();
     }
   }
 });
