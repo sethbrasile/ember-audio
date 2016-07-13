@@ -39,6 +39,16 @@ const Sampler = Ember.Object.extend({
   _sounds: null,
 
   /**
+   * Gets the next Sound and plays it immediately.
+   *
+   * @method playIn
+   */
+   play() {
+     const nextSound = this._getNextSound();
+     nextSound.play();
+   },
+
+  /**
    * Gets the next Sound and plays it after the specified offset has elapsed.
    *
    * @method playIn
@@ -51,14 +61,20 @@ const Sampler = Ember.Object.extend({
    nextSound.playIn(seconds);
   },
 
- /**
-  * Gets the next Sound and plays it immediately.
-  *
-  * @method playIn
-  */
-  play() {
+  /**
+   * Gets the next Sound and plays it at the specified moment in time. A
+   * "moment in time" is measured in seconds from the moment that the
+   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
+   *
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
+   * time") when the next Sound should be played.
+   *
+   * @method playAt
+   */
+  playAt(time) {
     const nextSound = this._getNextSound();
-    nextSound.play();
+    nextSound.playAt(time);
   },
 
   /**
