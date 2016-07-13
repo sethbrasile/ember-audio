@@ -1,4 +1,4 @@
-import { Beat } from 'ember-audio/classes';
+import { Beat } from 'ember-audio';
 import { module, test } from 'qunit';
 
 module('Unit | Class | beat');

@@ -1,1 +1,1 @@
-export { default } from 'ember-audio/classes/track';
+export { Track } from 'ember-audio';
