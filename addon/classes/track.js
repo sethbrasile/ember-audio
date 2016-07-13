@@ -74,7 +74,7 @@ const Track = Sound.extend({
    */
   play() {
     this._super();
-    this.get('bufferSourceNode').onended = () => this.stop();
+    this.get('_bufferSourceNode').onended = () => this.stop();
     this._trackPlayPosition();
   },
 
@@ -86,8 +86,8 @@ const Track = Sound.extend({
    */
   pause() {
     if (this.get('isPlaying')) {
-      this.get('bufferSourceNode').onended = function() {};
-      this.get('bufferSourceNode').stop();
+      this.get('_bufferSourceNode').onended = function() {};
+      this.get('_bufferSourceNode').stop();
       this.set('isPlaying', false);
     }
   },
@@ -102,7 +102,7 @@ const Track = Sound.extend({
     this.set('startOffset', 0);
 
     if (this.get('isPlaying')) {
-      this.get('bufferSourceNode').onended = function() {};
+      this.get('_bufferSourceNode').onended = function() {};
       this._super();
     }
   },
@@ -118,7 +118,7 @@ const Track = Sound.extend({
   _trackPlayPosition() {
     const ctx = this.get('audioContext');
     const startOffset = this.get('startOffset');
-    const startedPlayingAt = this.get('startedPlayingAt');
+    const startedPlayingAt = this.get('_startedPlayingAt');
 
     const animate = () => {
       if (this.get('isPlaying')) {

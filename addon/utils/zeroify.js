@@ -1,5 +1,4 @@
 /**
- * @private
  * @class utils
  */
 

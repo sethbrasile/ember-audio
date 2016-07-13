@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import noteFactory from '../../helpers/note-factory';
 
-module('Unit | Utility | note');
+module('Unit | Class | note');
 
 const A1  = noteFactory('A', null, 1);
 const Ab1 = noteFactory('A', 'b', 1);

@@ -2,7 +2,7 @@ import { BeatTrack } from 'ember-audio/classes';
 import ContextMock from '../../helpers/context-mock';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | beat track');
+module('Unit | Class | beat track');
 
 // Replace this with your real tests.
 test('it works', function(assert) {

@@ -3,7 +3,7 @@ import ContextMock from '../../helpers/context-mock';
 import AudioBufferMock from '../../helpers/audio-buffer-mock';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | track');
+module('Unit | Class | track');
 
 const audioContext = ContextMock.create();
 

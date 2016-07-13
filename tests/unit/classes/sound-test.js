@@ -3,7 +3,7 @@ import ContextMock from '../../helpers/context-mock';
 import AudioBufferMock from '../../helpers/audio-buffer-mock';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | sound');
+module('Unit | Class | sound');
 
 test('it exists', function(assert) {
   let audioContext = ContextMock.create();
@@ -84,11 +84,11 @@ test('play() calls node.connect(ctx.destination)', function(assert) {
   let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
 
-  assert.notOk(result.get('bufferSourceNode.connectCalled'));
+  assert.notOk(result.get('_bufferSourceNode.connectCalled'));
 
   result.play();
 
-  assert.ok(result.get('bufferSourceNode.connectCalled'));
+  assert.ok(result.get('_bufferSourceNode.connectCalled'));
 });
 
 test('play() connects panner', function(assert) {
