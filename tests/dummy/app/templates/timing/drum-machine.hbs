@@ -7,15 +7,6 @@
     alternated so you never hear the same sample back-to-back.
   </p>
 
-  <p class="well">
-    This is a really great example of how performant the Web Audio API is. Try
-    turning the tempo up to something ridiculous like 1200. If you hear any
-    audio artifacts ("glitches"), know that they are not caused by your
-    pc/browser, but by an acoustic property called "phase cancellation" and it's
-    happening because at that high a tempo, the same sample ends up played over
-    itself at a slightly different time.
-  </p>
-
   {{#if isLoading}}
     <div class="spinner">
       <div class="rect1"></div>
@@ -47,6 +38,34 @@
       {{/each}}
     </div>
   {{/if}}
+</div>
+
+<div class="content">
+  <p>
+    This is a really great example of how performant the Web Audio API is. Try
+    turning the tempo up to something ridiculous like 1200. If you hear any
+    audio artifacts ("glitches"), know that they are not caused by your
+    pc/browser, but by an acoustic property called "phase cancellation" and it's
+    happening because at that high a tempo, the same sample ends up played over
+    itself at a slightly different time.
+  </p>
+
+  <p>
+    Let's take it a "few" steps further. How about some eighth notes at 1
+    million BPM?
+
+    <br>
+
+    <button {{action 'engageLudicrousMode'}} class='btn btn-danger'>
+      Engage Ludicrous Mode
+    </button>
+  </p>
+
+  <p>
+    "Clicks and pops" is what you should hear if your audio hardware can't keep
+    up. Do you hear any clicks or pops? I don't. That's how awesome the Web Audio
+    API is. It's letting us truly tap in to our audio hardware.
+  </p>
 </div>
 
 <div class="content">

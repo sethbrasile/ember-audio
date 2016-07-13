@@ -52,6 +52,16 @@ export default Ember.Controller.extend({
         beat.play();
         beat.set('active', true);
       }
+    },
+
+    engageLudicrousMode() {
+      this.set('bpm', 1000000);
+
+      this.get('beatTracks').map((beatTrack) => {
+        beatTrack.get('beats').map((beat) => {
+          beat.set('active', true);
+        });
+      });
     }
   }
 });
