@@ -1,12 +1,19 @@
 <div class="content">
-  <h2>Drum Machine</h2>
+  <h2>Multisampled Drum Machine</h2>
+
+  <p>
+    Below is an example of a drum machine that loads up three samples for each
+    lane and allows you to program a drum beat. The sample is automatically
+    alternated so you never hear the same sample back-to-back.
+  </p>
 
   <p class="well">
     This is a really great example of how performant the Web Audio API is. Try
-    turning the tempo up to something ridiculous like 1200. The audio artifacts
-    ("glitches") that you're likely hearing are not caused by your pc/browser
-    "not keeping up," but by an acoustic property called "phase cancellation"
-    and it's happening because there is only a single sample for each drum.
+    turning the tempo up to something ridiculous like 1200. If you hear any
+    audio artifacts ("glitches"), know that they are not caused by your
+    pc/browser, but by an acoustic property called "phase cancellation" and it's
+    happening because at that high a tempo, the same sample ends up played over
+    itself at a slightly different time.
   </p>
 
   {{#if isLoading}}
@@ -93,7 +100,12 @@
     }),
 
     _loadBeatTrackFor(name) {
-      return this.get('audio').load(`${name}.wav`).asBeatTrack(name);
+      // 'snare1.wav', 'kick2.wav', etc..., from this project's public folder
+      const sounds = [`${name}1.wav`, `${name}2.wav`, `${name}3.wav`];
+
+      // If name === 'kick', this creates a BeatTrack instance called
+      // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
+      return this.get('audio').load(sounds).asBeatTrack(name);
     },
 
     actions: {
@@ -124,4 +136,24 @@
     }
   });
   {{/code-block}}
+</div>
+
+<div class="content">
+  <h3>Drum Samples Credits:</h3>
+
+  <p>
+    The hihats are from the "Erkans Samples" pack downloaded from the
+    <a href="http://www.ultimatemetal.com/forum/forums/andy-sneap-foh/">Andy Sneap</a>
+    section of the
+    <a href="http://www.ultimatemetal.com/forum/">Ultimate Metal Forum</a>.
+    Recorded by Erkan Dogantimur.
+  </p>
+
+  <p>
+    The snare and kick are from the "ALTQQ Drum Pack" also downloaded from the
+    <a href="http://www.ultimatemetal.com/forum/forums/andy-sneap-foh/">Andy Sneap</a>
+    section of the
+    <a href="http://www.ultimatemetal.com/forum/">Ultimate Metal Forum</a>.
+    Recorded by Fabian Prezja of Prezja Productions.
+  </p>
 </div>

@@ -1,1 +1,1 @@
-export { default } from 'ember-audio/classes/sound';
+export { Sound } from 'ember-audio';

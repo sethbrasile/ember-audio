@@ -1,10 +1,10 @@
 import Ember from 'ember';
 import Beat from './beat';
-import Sound from './sound';
+import Sampler from './sampler';
 
 /**
  * An instance of the BeatTrack class behaves very similarly to a "lane" on a
- * drum machine or a step sequencer.
+ * drum machine.
  *
  * @module Audio
  * @submodule BeatTrack
@@ -21,11 +21,11 @@ const {
  * this class behaves very similarly to a "lane" on a drum machine.
  *
  * @class BeatTrack
- * @extends Sound
+ * @extends Sampler
  *
  * @todo need a way to stop a BeatTrack once it's started
  */
-const BeatTrack = Sound.extend({
+const BeatTrack = Sampler.extend({
   numBeats: 4,
   playingTime: 100,
 

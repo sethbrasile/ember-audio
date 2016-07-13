@@ -1,4 +1,4 @@
-import { BeatTrack } from 'ember-audio/classes';
+import { BeatTrack } from 'ember-audio';
 import ContextMock from '../../helpers/context-mock';
 import { module, test } from 'qunit';
 

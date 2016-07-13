@@ -21,7 +21,11 @@ export default Ember.Controller.extend({
   }),
 
   _loadBeatTrackFor(name) {
-    return this.get('audio').load(`/ember-audio/${name}.wav`).asBeatTrack(name);
+    return this.get('audio').load([
+      `/ember-audio/drum-samples/${name}1.wav`,
+      `/ember-audio/drum-samples/${name}2.wav`,
+      `/ember-audio/drum-samples/${name}3.wav`,
+    ]).asBeatTrack(name);
   },
 
   actions: {
