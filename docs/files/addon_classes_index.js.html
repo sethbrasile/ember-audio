@@ -27,6 +27,7 @@
                             <li><a href="../modules/Audio.html">Audio</a>
                                 <ul>
                                         <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sampler">Sampler</a></li>
                                         <li><a href="../modules/Audio.html#Sound">Sound</a></li>
                                         <li><a href="../modules/Audio.html#Track">Track</a></li>
                                 </ul>
@@ -55,6 +56,7 @@
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
                             <li><a href="../classes/utils.html">utils</a></li>
@@ -67,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.1d61e3e0
+              Version: 0.0.0.1be77f13
             </div>
             
         </div>
@@ -81,6 +83,7 @@
 import Sound from &#x27;./sound&#x27;;
 import Track from &#x27;./track&#x27;;
 import BeatTrack from &#x27;./beat-track&#x27;;
+import Sampler from &#x27;./sampler&#x27;;
 
 /**
  * Provides classes that are capable of interacting with the Web Audio API&#x27;s
@@ -89,14 +92,14 @@ import BeatTrack from &#x27;./beat-track&#x27;;
  * @module Audio
  */
 
-export { Sound, Track, BeatTrack };
+export { Sound, Track, BeatTrack, Sampler };
 
 import Note from &#x27;./note&#x27;;
 import Beat from &#x27;./beat&#x27;;
 
 /**
  * Provides helper classes that represent musical concepts meant to be used by
- * classes from the Sound module.
+ * classes from the Audio module.
  *
  * @module Musical-Concepts
  */

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>BeatTrack - ember-audio</title>
-    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
-    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <title>Sampler - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
@@ -67,7 +67,7 @@
             
             <div id="sections" class="sidebox">
               <div class="hd">
-                <h2 class="no-toc">BeatTrack</h2>
+                <h2 class="no-toc">Sampler</h2>
               </div>
               <div class="bd">
             
@@ -98,6 +98,7 @@
                   <ul>
                       <li><a href="#method_playAt">playAt</a></li>
                       <li><a href="#method_playIn">playIn</a></li>
+                      <li><a href="#method_playIn">playIn</a></li>
                   </ul>
             
             
@@ -118,21 +119,17 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l17"><code>addon&#x2F;classes&#x2F;beat-track.js:17</code></a></span>
-    <h1 class="class-name">BeatTrack</h1>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l10"><code>addon&#x2F;classes&#x2F;sampler.js:10</code></a></span>
+    <h1 class="class-name">Sampler</h1>
 </div>
 
 
 
-    <div class="class-extends">
-        <h4>Extends:</h4>
-        <div><a href="../classes/Sampler.html" class="crosslink">Sampler</a> → BeatTrack</div>
-    </div>
 
-<div class="class-description"><p>An instance of this class has a single
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer" class="crosslink external" target="_blank">AudioBuffer</a> (a single "sound") but provides
-methods to play that sound repeatedly and in a rhythmic way. An instance of
-this class behaves very similarly to a "lane" on a drum machine.</p>
+<div class="class-description"><p>An instance of the Sampler class behaves just like a Sound, but allows
+many <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer" class="crosslink external" target="_blank">AudioBuffers</a> to exist and
+automatically alternately plays them (round-robin) each time any of the play
+methods are called.</p>
 </div>
 
 
@@ -163,7 +160,7 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
               <a href="#props__soundIterator">_soundIterator</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator" class="crosslink external" target="_blank">Iterator</a>
             </div>
             <div class="short-description">
-              
+              <p>Temporary storage for the iterable that comes from the _sounds Set. This iterable is meant to be replaced with a new copy every time it reaches it's end, resulting in an infinite stream of Sound instances.</p>
             </div>
           </td>
         </tr>
@@ -178,7 +175,7 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
               <a href="#props__sounds">_sounds</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="crosslink external" target="_blank">Set</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a>
             </div>
             <div class="short-description">
-              
+              <p>Acts as a register for loaded Sound instances. Set on instantiation.</p>
             </div>
           </td>
         </tr>
@@ -205,7 +202,7 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
               <a href="#method_playAt">playAt</a>(time)
             </div>
             <div class="short-description">
-              
+              <p>Gets the next Sound and plays it at the specified moment in time. A "moment in time" is measured in seconds from the moment that the <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
             </div>
           </td>
         </tr>
@@ -220,7 +217,22 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
               <a href="#method_playIn">playIn</a>( )
             </div>
             <div class="short-description">
-              
+              <p>Gets the next Sound and plays it immediately.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playIn">playIn</a>(seconds)
+            </div>
+            <div class="short-description">
+              <p>Gets the next Sound and plays it after the specified offset has elapsed.</p>
             </div>
           </td>
         </tr>
@@ -246,7 +258,7 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
               <a href="#method__getNextSound">_getNextSound</a>( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
             </div>
             <div class="short-description">
-              
+              <p>Gets _soundIterator and returns it's next value. If _soundIterator has reached it's end, replaces _soundIterator with a fresh copy from _sounds and returns the first value from that.</p>
             </div>
           </td>
         </tr>
@@ -278,9 +290,10 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
   </div>
 
 
-  <div class="property-description">Temporary storage for the iterable that comes from the _sounds Set.
+  <div class="property-description"><p>Temporary storage for the iterable that comes from the _sounds Set.
 This iterable is meant to be replaced with a new copy every time it reaches
-it's end, resulting in an infinite stream of Sound instances.</div>
+it's end, resulting in an infinite stream of Sound instances.</p>
+</div>
 
 </div>
 <div class="property item private">
@@ -295,7 +308,8 @@ it's end, resulting in an infinite stream of Sound instances.</div>
   </div>
 
 
-  <div class="property-description">Acts as a register for loaded Sound instances. Set on instantiation.</div>
+  <div class="property-description"><p>Acts as a register for loaded Sound instances. Set on instantiation.</p>
+</div>
 
 </div>
     </div>
@@ -313,14 +327,12 @@ it's end, resulting in an infinite stream of Sound instances.</div>
         </h3>
     </div>
 
-        <div class="inherited">
-          Inherited from <a href="../classes/Sampler.html#method_playAt" class="crosslink">Sampler</a>
-        </div>
 
 
-    <div class="method-description">Gets the next Sound and plays it at the specified moment in time. A
+    <div class="method-description"><p>Gets the next Sound and plays it at the specified moment in time. A
 "moment in time" is measured in seconds from the moment that the
-{{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.</div>
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
+</div>
 
       <div class="params">
         <h4>Parameters:</h4>
@@ -344,9 +356,10 @@ it's end, resulting in an infinite stream of Sound instances.</div>
                   
                 </ul>
               </td>
-              <td>The moment in time (in seconds, relative to the
-{{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
-time") when the next Sound should be played.</td>
+              <td><p>The moment in time (in seconds, relative to the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext's</a> "beginning of
+time") when the next Sound should be played.</p>
+</td>
             </tr>
 
           </tbody>
@@ -367,13 +380,61 @@ time") when the next Sound should be played.</td>
         </h3>
     </div>
 
-      <div class="overwrites">
-        Overwrites <a href="../classes/Sampler.html#method_playIn" class="crosslink">Sampler.playIn</a>
+
+
+    <div class="method-description"><p>Gets the next Sound and plays it immediately.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item">
+    <div id="method_playIn" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l51"><code>addon&#x2F;classes&#x2F;sampler.js:51</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playIn(seconds)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets the next Sound and plays it after the specified offset has elapsed.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>seconds</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Number of seconds from "now" that the next Sound
+should be played.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
       </div>
-
-
-    <div class="method-description">Gets the next Sound and plays it immediately.</div>
-
 
 
 
@@ -394,14 +455,12 @@ time") when the next Sound should be played.</td>
         </h3>
     </div>
 
-        <div class="inherited">
-          Inherited from <a href="../classes/Sampler.html#method__getNextSound" class="crosslink">Sampler</a>
-        </div>
 
 
-    <div class="method-description">Gets _soundIterator and returns it's next value. If _soundIterator has
+    <div class="method-description"><p>Gets _soundIterator and returns it's next value. If _soundIterator has
 reached it's end, replaces _soundIterator with a fresh copy from _sounds
-and returns the first value from that.</div>
+and returns the first value from that.</p>
+</div>
 
 
       <div class="return">
@@ -421,8 +480,8 @@ and returns the first value from that.</div>
         </div>
     </div>
 </div>
-<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+<script src="../assets/js/yui-prettify.js"></script>
 </body>
 </html>

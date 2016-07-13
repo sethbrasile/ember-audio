@@ -27,6 +27,7 @@
                             <li><a href="../modules/Audio.html">Audio</a>
                                 <ul>
                                         <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sampler">Sampler</a></li>
                                         <li><a href="../modules/Audio.html#Sound">Sound</a></li>
                                         <li><a href="../modules/Audio.html#Track">Track</a></li>
                                 </ul>
@@ -55,6 +56,7 @@
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
                             <li><a href="../classes/utils.html">utils</a></li>
@@ -67,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.1d61e3e0
+              Version: 0.0.0.1be77f13
             </div>
             
         </div>
@@ -80,7 +82,7 @@
 <pre class="code prettyprint linenums">
 import Ember from &#x27;ember&#x27;;
 import Sound from &#x27;./sound&#x27;;
-import { zeroify } from &#x27;../utils&#x27;;
+import { zeroify } from &#x27;ember-audio/utils&#x27;;
 
 /**
  * An instance of the Track class represents a &quot;track&quot; of music, similar in
@@ -154,7 +156,7 @@ const Track = Sound.extend({
    */
   play() {
     this._super();
-    this.get(&#x27;bufferSourceNode&#x27;).onended = () =&gt; this.stop();
+    this.get(&#x27;_bufferSourceNode&#x27;).onended = () =&gt; this.stop();
     this._trackPlayPosition();
   },
 
@@ -166,8 +168,8 @@ const Track = Sound.extend({
    */
   pause() {
     if (this.get(&#x27;isPlaying&#x27;)) {
-      this.get(&#x27;bufferSourceNode&#x27;).onended = function() {};
-      this.get(&#x27;bufferSourceNode&#x27;).stop();
+      this.get(&#x27;_bufferSourceNode&#x27;).onended = function() {};
+      this.get(&#x27;_bufferSourceNode&#x27;).stop();
       this.set(&#x27;isPlaying&#x27;, false);
     }
   },
@@ -182,7 +184,7 @@ const Track = Sound.extend({
     this.set(&#x27;startOffset&#x27;, 0);
 
     if (this.get(&#x27;isPlaying&#x27;)) {
-      this.get(&#x27;bufferSourceNode&#x27;).onended = function() {};
+      this.get(&#x27;_bufferSourceNode&#x27;).onended = function() {};
       this._super();
     }
   },
@@ -198,7 +200,7 @@ const Track = Sound.extend({
   _trackPlayPosition() {
     const ctx = this.get(&#x27;audioContext&#x27;);
     const startOffset = this.get(&#x27;startOffset&#x27;);
-    const startedPlayingAt = this.get(&#x27;startedPlayingAt&#x27;);
+    const startedPlayingAt = this.get(&#x27;_startedPlayingAt&#x27;);
 
     const animate = () =&gt; {
       if (this.get(&#x27;isPlaying&#x27;)) {

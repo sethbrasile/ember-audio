@@ -27,6 +27,7 @@
                             <li><a href="../modules/Audio.html">Audio</a>
                                 <ul>
                                         <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sampler">Sampler</a></li>
                                         <li><a href="../modules/Audio.html#Sound">Sound</a></li>
                                         <li><a href="../modules/Audio.html#Track">Track</a></li>
                                 </ul>
@@ -55,6 +56,7 @@
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
                             <li><a href="../classes/utils.html">utils</a></li>
@@ -67,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.1d61e3e0
+              Version: 0.0.0.1be77f13
             </div>
             
         </div>
@@ -79,12 +81,12 @@
 
 <pre class="code prettyprint linenums">
 import zeroify from &#x27;./zeroify&#x27;;
-import { sortNotes } from &#x27;./note-methods&#x27;;
 import { base64ToUint8, mungeSoundFont } from &#x27;./decode-base64&#x27;;
+import { arraySwap, flatten } from &#x27;./array-methods&#x27;;
 
 import {
-  arraySwap,
-  flatten,
+  sortNotes,
+  noteSort,
   octaveShift,
   octaveSort,
   extractOctaves,
@@ -99,6 +101,7 @@ import {
 export {
   zeroify,
   sortNotes,
+  noteSort,
   base64ToUint8,
   mungeSoundFont,
   arraySwap,

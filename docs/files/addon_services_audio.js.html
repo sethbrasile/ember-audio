@@ -27,6 +27,7 @@
                             <li><a href="../modules/Audio.html">Audio</a>
                                 <ul>
                                         <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
+                                        <li><a href="../modules/Audio.html#Sampler">Sampler</a></li>
                                         <li><a href="../modules/Audio.html#Sound">Sound</a></li>
                                         <li><a href="../modules/Audio.html#Track">Track</a></li>
                                 </ul>
@@ -55,6 +56,7 @@
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
                             <li><a href="../classes/utils.html">utils</a></li>
@@ -67,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.1d61e3e0
+              Version: 0.0.0.1be77f13
             </div>
             
         </div>
@@ -80,8 +82,8 @@
 <pre class="code prettyprint linenums">
 import Ember from &#x27;ember&#x27;;
 import fetch from &#x27;ember-network/fetch&#x27;;
-import { Sound, Note, Track, BeatTrack } from &#x27;ember-audio/classes&#x27;;
-import { sortNotes, base64ToUint8, mungeSoundFont } from &#x27;../utils&#x27;;
+import { Sound, Note, Track, BeatTrack, Sampler } from &#x27;ember-audio&#x27;;
+import { sortNotes, base64ToUint8, mungeSoundFont } from &#x27;ember-audio/utils&#x27;;
 
 /**
  * Provides the Audio Service
@@ -127,31 +129,40 @@ export default Service.extend({
    * the register by name, and can be called via audioService.getSound(&#x27;name&#x27;)
    *
    * @private
-   * @property sounds
+   * @property _sounds
    * @type {map}
    */
-  sounds: new Map(),
+  _sounds: new Map(),
 
   /**
-   * This acts as a register for soundfonts. A soundfont is a Map
-   * which is placed in the register by name, and can be called via
-   * audioService.getFont(&#x27;name&#x27;)
+   * This acts as a register for Sampler instances. Sampler instances are placed
+   * in the register by name, and can be called via audioService.getSampler(&#x27;name&#x27;)
    *
    * @private
-   * @property fonts
+   * @property _samplers
    * @type {map}
    */
-  fonts: new Map(),
+  _samplers: new Map(),
+
+  /**
+   * This acts as a register for soundfonts. A font is just a &#x60;Map&#x60; of Note
+   * objects which is placed in this register by name.
+   *
+   * @private
+   * @property _fonts
+   * @type {map}
+   */
+  _fonts: new Map(),
 
   /**
    * This acts as a register for Track instances. Track instances are placed in
-   * the register by name, and can be called via audioService.getTrack(&#x27;name&#x27;)
+   * this register by name, and can be called via audioService.getTrack(&#x27;name&#x27;)
    *
    * @private
-   * @property tracks
+   * @property _tracks
    * @type {map}
    */
-  tracks: new Map(),
+  _tracks: new Map(),
 
   /**
    * This acts as a register for BeatTrack instances. BeatTrack instances are
@@ -159,57 +170,63 @@ export default Service.extend({
    * audioService.getBeatTrack(&#x27;name&#x27;)
    *
    * @private
-   * @property beatTracks
+   * @property _beatTracks
    * @type {map}
    */
-  beatTracks: new Map(),
+  _beatTracks: new Map(),
 
   /**
-   * Acts as a proxy method, returns a POJO with methods that return the _load and
-   * _loadFont methods so that in the end, the method signature looks something
-   * like:
+   * Acts as a proxy method, returns a POJO with methods that return the _load
+   * and _loadFont methods so that in the end. See example.
    *
    * @example
-   *     audio.load(&#x27;some-uri&#x27;).asSound(&#x27;some-name&#x27;)
+   *     audio.load(&#x27;some-url.wav&#x27;).asSound(&#x27;some-sound&#x27;);
+   *     audio.load(&#x27;some-url.mp3&#x27;).asTrack(&#x27;some-track&#x27;);
+   *     audio.load([&#x27;some-url.mp3&#x27;]).asSampler(&#x27;some-sampler&#x27;);
+   *     audio.load([&#x27;some-url.mp3&#x27;]).asBeatTrack(&#x27;some-beat-track&#x27;);
+   *     audio.load(&#x27;some-url.js&#x27;).asFont(&#x27;some-font&#x27;);
    *
    * @method load
-   * @param {string} src The URI location of an audio file. Will be used by
-   * &quot;fetch&quot; to get the audio file. Can be a local or a relative URL
+   *
+   * @param {string|array} src The URL location of an audio file. Will be used by
+   * &quot;fetch&quot; to get the audio file. Can be a local or a relative URL. An array
+   * of URLs is required if a beatTrack is being loaded via &#x60;.asBeatTrack&#x60; or
+   * &#x60;.asSampler&#x60;.
    *
    * @return {object} returns a POJO that contains a few methods that curry
    * &quot;src&quot; &quot;type&quot; and &quot;name&quot; over to
    * {{#crossLink &quot;Audio/_load:method&quot;}}{{/crossLink}} and
-   * {{#crossLink &quot;Audio/_loadFont:method&quot;}}{{/crossLink}}
+   * {{#crossLink &quot;Audio/_loadFont:method&quot;}}{{/crossLink}} and allow you to
+   * specify what type of Sound you&#x27;d like created.
    */
   load(src) {
+    const audioContext = this.get(&#x27;context&#x27;);
     const _load = this._load.bind(this);
     const _loadFont = this._loadFont.bind(this);
+    const _loadBeatTrack = this._loadBeatTrack.bind(this);
+    const _createSoundsArray = this._createSoundsArray.bind(this);
+    const samplersRegister = this.get(&#x27;_samplers&#x27;);
 
     return {
-      /**
-       * Calls {{#crossLink &quot;Audio/_load:method&quot;}}{{/crossLink}} with name,
-       * partially applied src param from
-       * {{#crossLink &quot;Audio/load:method&quot;}}{{/crossLink}}, and type=&quot;sound&quot;
+      /*
+       * Creates a Sound instance from a src URL.
        *
-       * @method asSound
        * @param {string} name The name that this Sound instance will be
-       * registered as in the &quot;sounds&quot; register
+       * registered as in the &quot;_sounds&quot; register.
+       *
        * @return {promise|Sound} Returns a promise that resolves to a Sound
        * instance. The promise resolves when the Sound instance&#x27;s AudioBuffer
-       * (audio data) is finished loading
+       * (audio data) is finished loading.
        */
       asSound(name) {
         return _load(name, src, &#x27;sound&#x27;);
       },
 
-      /**
-       * Calls {{#crossLink &quot;Audio/_load:method&quot;}}{{/crossLink}} with name,
-       * partially applied src param from
-       * {{#crossLink &quot;Audio/load:method&quot;}}{{/crossLink}}, and type=&quot;track&quot;
+      /*
+       * Creates a Track instance from a src URL.
        *
-       * @method asSound
        * @param {string} name The name that this Track instance will be
-       * registered as in the &quot;tracks&quot; register.
+       * registered as in the &quot;_tracks&quot; register.
        *
        * @return {promise|Track} Returns a promise that resolves to a Track
        * instance. The promise resolves when the Track instance&#x27;s AudioBuffer
@@ -219,32 +236,25 @@ export default Service.extend({
         return _load(name, src, &#x27;track&#x27;);
       },
 
-      /**
-       * Calls {{#crossLink &quot;Audio/_load:method&quot;}}{{/crossLink}} with name,
-       * partially applied src param from
-       * {{#crossLink &quot;Audio/load:method&quot;}}{{/crossLink}}, and type=&quot;beatTrack&quot;
+      /*
+       * Creates a BeatTrack instance from an array of src URLs.
        *
-       * @method asBeatTrack
        * @param {string} name The name that this BeatTrack instance will be
-       * registered as in the &quot;beatTracks&quot; register
+       * registered as in the &quot;_beatTracks&quot; register
        *
        * @return {promise|Track} Returns a promise that resolves to a BeatTrack
        * instance. The promise resolves when the BeatTrack instance&#x27;s AudioBuffer
        * (audio data) is finished loading.
        */
       asBeatTrack(name) {
-        return _load(name, src, &#x27;beatTrack&#x27;);
+        return _loadBeatTrack(name, src);
       },
 
-      /**
-       * Calls {{#crossLink &quot;Audio/_loadFont:method&quot;}}{{/crossLink}} with name,
-       * and partially applied src param from
-       * {{#crossLink &quot;Audio/load:method&quot;}}{{/crossLink}}.
-       *
-       * @method asFont
+      /*
+       * Creates a font instance from a src URL.
        *
        * @param {string} name The name that this font will be registered as in
-       * the &quot;fonts&quot; register.
+       * the &quot;_fonts&quot; register.
        *
        * @return {promise|array} Returns a promise that resolves to an Array of
        * sorted note names. The promise resolves when the soundfont file is
@@ -252,61 +262,90 @@ export default Service.extend({
        */
       asFont(name) {
         return _loadFont(name, src);
+      },
+
+      /*
+       * Creates a Sampler instance from an array of src URLs.
+       *
+       * @param {string} name The name that this Sampler instance will be
+       * registered as in the _samplers register
+       *
+       * @return {promise|Sampler} Returns a promise that resolves to a Sampler
+       * instance. The promise resolves when all the Sound instances loaded into
+       * the Sampler instance are finished loading.
+       */
+      asSampler(name) {
+        return _createSoundsArray(name, src).then((sounds) =&gt; {
+          const _sounds = new Set(sounds);
+          const sampler = Sampler.create({ _sounds, audioContext, name });
+
+          samplersRegister.set(name, sampler);
+
+          return sampler;
+        });
       }
     };
   },
 
   /**
-   * Gets a BeatTrack instance by name from the beatTracks register.
+   * Gets a BeatTrack instance by name from the _beatTracks register.
    *
    * @method getBeatTrack
-   * @param {string} name The name of the BeatTrack instance that you would like
-   * to retrieve from the beatTracks register.
+   * @param {string} name The name of the BeatTrack instance that should be
+   * retrieved from the _beatTracks register.
    *
    * @return {BeatTrack} Returns the BeatTrack instance that matches the
    * provided name.
    */
   getBeatTrack(name) {
-    return this.get(&#x27;beatTracks&#x27;).get(name);
+    return this.get(&#x27;_beatTracks&#x27;).get(name);
   },
 
   /**
-   * Gets a Sound instance by name from the sounds register
+   * Gets a Sound instance by name from the _sounds register
    *
    * @method getSound
-   * @param {string} name The name of the sound that you would like to retrieve
-   * from the sounds register.
+   *
+   * @param {string} name The name of the sound that should be retrieved
+   * from the _sounds register.
    *
    * @return {Sound} returns the Sound instance that matches the provided name.
    */
   getSound(name) {
-    return this.get(&#x27;sounds&#x27;).get(name);
+    return this.get(&#x27;_sounds&#x27;).get(name);
   },
 
   /**
-   * Gets a Track instance by name from the tracks register
+   * Gets a Track instance by name from the _tracks register
    *
    * @method getTrack
-   * @param {string} name The name of the Track instance that you would like to
-   * retrieve from the tracks register.
+   *
+   * @param {string} name The name of the Track instance that should be
+   * retrieved from the _tracks register.
    *
    * @return {Track} Returns the Track instance that matches the provided name.
    */
   getTrack(name) {
-    return this.get(&#x27;tracks&#x27;).get(name);
+    return this.get(&#x27;_tracks&#x27;).get(name);
   },
 
   /**
-   * Gets a soundfont by name from the fonts register
+   * Gets a soundfont Map by name from the _fonts register and allows it to be
+   * played via the returned POJO containing a method called &#x60;play&#x60;.
+   *
+   * @example
+   *     audio.getFont(&#x27;some-font&#x27;).play(&#x27;Ab1&#x27;);
    *
    * @method getFont
-   * @param {string} name The name of the soundfont that you would like to
-   * retrieve from the fonts register.
-   * @return {Ember.Array} Returns the soundfont (an array of Note objects)
-   * that matches the provided name.
+   *
+   * @param {string} name The name of the Map that should be retrieved
+   * from the _fonts register.
+   *
+   * @return {object} Returns a POJO that has a &#x60;play&#x60; method which allows a
+   * note from the requested font to be played.
    */
   getFont(name) {
-    const font = this.get(&#x27;fonts&#x27;).get(name);
+    const font = this.get(&#x27;_fonts&#x27;).get(name);
 
     return {
       play(note) {
@@ -320,35 +359,49 @@ export default Service.extend({
   },
 
   /**
-   * Gets all instances from requested register and calls
-   * {{#crossLink &quot;Sound/stop:method&quot;}}{{/crossLink}} on each
-   * instance. Default register is &#x60;tracks&#x60;.
+   * Gets a Sampler instance by name from the _samplers register
+   *
+   * @method getSampler
+   *
+   * @param {string} name The name of the sampler that should be retrieved
+   * from the _samplers register.
+   *
+   * @return {Sampler} returns the Sampler instance that matches the provided name.
+   */
+  getSampler(name) {
+    return this.get(&#x27;_samplers&#x27;).get(name);
+  },
+
+  /**
+  * Gets all instances of requested type and calls
+  * {{#crossLink &quot;Sound/stop:method&quot;}}{{/crossLink}} on each.
    *
    * @method stopAll
    *
-   * @param {string} register=&#x27;tracks&#x27; The name of the register that you wish
-   * to stop all instances of
+   * @param {string} type=&#x27;tracks&#x27; The type of the register that you wish
+   * to stop all instances of. Can be &#x60;&#x27;tracks&#x27;&#x60;, or &#x60;&#x27;sounds&#x27;&#x60;.
    */
-  stopAll(register=&#x27;tracks&#x27;) {
-    for (let sound of this.get(register).values()) {
+  stopAll(type=&#x27;tracks&#x27;) {
+    for (let sound of this.get(&#x60;_${type}&#x60;).values()) {
       sound.stop();
     }
   },
 
   /**
-   * Gets all instances from the tracks register and calls pause() on each. Only
-   * works for the tracks register because only Track instances are pause-able
+   * Gets all Track instances and calls
+   * {{#crossLink &quot;Sound/pause:method&quot;}}{{/crossLink}} on each. Only works for
+   * tracks because only Track instances are pause-able.
    *
    * @method pauseAll
    */
   pauseAll() {
-    for (let sound of this.get(&#x27;tracks&#x27;).values()) {
+    for (let sound of this.get(&#x27;_tracks&#x27;).values()) {
       sound.pause();
     }
   },
 
   /**
-   * Gets a register by it&#x27;s name
+   * Gets a register by it&#x27;s type.
    *
    * @private
    * @method _getRegisterFor
@@ -358,11 +411,13 @@ export default Service.extend({
   _getRegisterFor(type) {
     switch(type) {
       case &#x27;track&#x27;:
-        return this.get(&#x27;tracks&#x27;);
+        return this.get(&#x27;_tracks&#x27;);
       case &#x27;beatTrack&#x27;:
-        return this.get(&#x27;beatTracks&#x27;);
+        return this.get(&#x27;_beatTracks&#x27;);
+      case &#x27;sampler&#x27;:
+        return this.get(&#x27;_samplers&#x27;);
       default:
-        return this.get(&#x27;sounds&#x27;);
+        return this.get(&#x27;_sounds&#x27;);
     }
   },
 
@@ -387,6 +442,8 @@ export default Service.extend({
         return Track.create(props);
       case &#x27;beatTrack&#x27;:
         return BeatTrack.create(props);
+      case &#x27;sampler&#x27;:
+        return Sampler.create(props);
       default:
         return Sound.create(props);
     }
@@ -407,7 +464,8 @@ export default Service.extend({
    * &quot;fetch&quot; to get the audio file. Can be a local or a relative URL
    *
    * @param {string} type Determines the type of object that should be created,
-   * as well as which register the instance should be placed in
+   * as well as which register the instance should be placed in. Can be &#x27;sound&#x27;,
+   * &#x27;track&#x27;, or &#x27;beatTrack&#x27;.
    *
    * @return {promise|Sound|Track|BeatTrack} Returns a promise which resolves
    * to an instance of a Sound, Track, or BeatTrack
@@ -435,6 +493,29 @@ export default Service.extend({
   },
 
   /**
+   * Creates a BeatTrack instance from an array of URLs.
+   *
+   * @private
+   * @method _loadBeatTrack
+   *
+   * @param {string} name The name that this BeatTrack instance will be
+   * registered as on the _beatTracks register.
+   *
+   * @param {array} srcArray An array of strings that specify URLs to load as
+   * Sounds.
+   *
+   * @return {Promise|BeatTrack} A promise that resolves to a BeatTrack instance.
+   */
+  _loadBeatTrack(name, srcArray) {
+    const audioContext = this.get(&#x27;context&#x27;);
+
+    return this._createSoundsArray(name, srcArray).then((sounds) =&gt; {
+      const _sounds = new Set(sounds);
+      return BeatTrack.create({ _sounds, audioContext, name });
+    });
+  },
+
+  /**
    * 1. Creates a Map instance (a &quot;font&quot;) and places it in the fonts register.
    * 2. Loads a soundfont file and decodes all the notes.
    * 3. Creates a Note object instance for each note.
@@ -442,11 +523,12 @@ export default Service.extend({
    * 5. Returns a promise that resolves to an array of properly sorted Note
    * object instances.
    *
-   * The notes are sorted the way that they would appear on a piano. A given
-   * note can be played as seen in the example:
+   * The notes are sorted the way that they would appear on a piano. In the
+   * example, you can see how the note &#x60;Ab1&#x60; from the &#x60;font-name&#x60; soundfont
+   * would be played:
    *
    * @example
-   *     audio.getFont(fontName).play(noteName)
+   *     audio.getFont(&#x27;font-name&#x27;).play(&#x27;Ab1&#x27;);
    *
    * @private
    * @method _loadFont
@@ -461,7 +543,7 @@ export default Service.extend({
    * has been successfully decoded. The promise resolves to an array of sorted note names.
    */
   _loadFont(instrumentName, src) {
-    const fonts = this.get(&#x27;fonts&#x27;);
+    const fonts = this.get(&#x27;_fonts&#x27;);
 
     if (fonts.has(instrumentName)) {
       const err = new Ember.Error(&#x60;ember-audio: You tried to load a soundfont instrument called &quot;${name}&quot;, but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to &quot;null&quot; with &quot;this.get(&#x27;audio.sounds&#x27;).set(&#x27;${instrumentName}&#x27;, null);&quot;.&#x60;);
@@ -491,6 +573,29 @@ export default Service.extend({
       .then(sortNotes)
 
       .catch((err) =&gt; console.error(&#x27;ember-audio:&#x27;, err));
+  },
+
+  /**
+   * Accepts an array of URLs to audio files and creates a Sound instance for
+   * each.
+   *
+   * @private
+   * @method _createSoundsArray
+   *
+   * @param {string} name The base-name of the sound. If one were loading up
+   * multiple kick drum samples, this might be &#x27;kick&#x27;.
+   *
+   * @param {array} srcArray An array of strings. Each item being a URL to an
+   * audio file that should be loaded and turned into a Sound instance.
+   *
+   * @return {Promise|array} A promise that resolves to an array of Sound objects.
+   */
+  _createSoundsArray(name, srcArray) {
+    const sounds = srcArray.map((src, idx) =&gt; {
+      return this._load(&#x60;${name}${idx}&#x60;, src, &#x27;sound&#x27;);
+    });
+
+    return all(sounds);
   },
 
   /**
@@ -571,7 +676,7 @@ export default Service.extend({
 
       note = Note.create({ letter, octave, accidental, audioBuffer, audioContext });
 
-      this.get(&#x27;fonts&#x27;).get(instrumentName).set(noteName, note);
+      this.get(&#x27;_fonts&#x27;).get(instrumentName).set(noteName, note);
 
       return note;
     });

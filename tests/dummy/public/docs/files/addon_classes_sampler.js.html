@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>addon/utils/zeroify.js - ember-audio</title>
-    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
-    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <title>addon/classes/sampler.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
@@ -76,30 +76,120 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-  <h1 class="file-name">addon/utils/zeroify.js</h1>
+  <h1 class="file-name">addon/classes/sampler.js</h1>
 </div>
 
 <pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+
 /**
- * @class utils
+ * Provides the Sampler class.
+ *
+ * @module Audio
+ * @submodule Sampler
  */
 
- /**
-  * Formats a number and converts to string: 6 becomes &#x27;06&#x27;
-  *
-  * @method zeroify
-  * @param {number} input A number that should be formatted
-  * @return {string} The number formatted and converted to string
-  */
-export default function zeroify(input) {
-  const num = Math.floor(input);
+/**
+ * An instance of the Sampler class behaves just like a Sound, but allows
+ * many {{#crossLink &quot;AudioBuffer&quot;}}AudioBuffers{{/crossLink}} to exist and
+ * automatically alternately plays them (round-robin) each time any of the play
+ * methods are called.
+ *
+ * @class Sampler
+ */
+const Sampler = Ember.Object.extend({
 
-  if (num &lt; 10) {
-    return &#x60;0${num}&#x60;;
-  }
+  /**
+   * Temporary storage for the iterable that comes from the _sounds Set.
+   * This iterable is meant to be replaced with a new copy every time it reaches
+   * it&#x27;s end, resulting in an infinite stream of Sound instances.
+   *
+   * @private
+   * @property _soundIterator
+   * @type {Iterator}
+   *
+   */
+  _soundIterator: null,
 
-  return &#x60;${num}&#x60;;
-}
+  /**
+   * Acts as a register for loaded Sound instances. Set on instantiation.
+   *
+   * @private
+   * @property _sounds
+   * @type {Set|Sound}
+   */
+  _sounds: null,
+
+  /**
+   * Gets the next Sound and plays it immediately.
+   *
+   * @method playIn
+   */
+   play() {
+     const nextSound = this._getNextSound();
+     nextSound.play();
+   },
+
+  /**
+   * Gets the next Sound and plays it after the specified offset has elapsed.
+   *
+   * @method playIn
+   *
+   * @param {number} seconds Number of seconds from &quot;now&quot; that the next Sound
+   * should be played.
+   */
+  playIn(seconds) {
+   const nextSound = this._getNextSound();
+   nextSound.playIn(seconds);
+  },
+
+  /**
+   * Gets the next Sound and plays it at the specified moment in time. A
+   * &quot;moment in time&quot; is measured in seconds from the moment that the
+   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
+   *
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
+   * time&quot;) when the next Sound should be played.
+   *
+   * @method playAt
+   */
+  playAt(time) {
+    const nextSound = this._getNextSound();
+    nextSound.playAt(time);
+  },
+
+  /**
+   * Gets _soundIterator and returns it&#x27;s next value. If _soundIterator has
+   * reached it&#x27;s end, replaces _soundIterator with a fresh copy from _sounds
+   * and returns the first value from that.
+   *
+   * @private
+   * @method _getNextSound
+   * @return {Sound}
+   */
+  _getNextSound() {
+    let soundIterator = this.get(&#x27;_soundIterator&#x27;);
+    let nextSound;
+
+    if (!soundIterator) {
+     soundIterator = this.get(&#x27;_sounds&#x27;).values();
+    }
+
+    nextSound = soundIterator.next();
+
+     if (nextSound.done) {
+       soundIterator = this.get(&#x27;_sounds&#x27;).values();
+       nextSound = soundIterator.next();
+     }
+
+     this.set(&#x27;_soundIterator&#x27;, soundIterator);
+
+     return nextSound.value;
+   }
+});
+
+export default Sampler;
 
 </pre>
 
@@ -107,8 +197,8 @@ export default function zeroify(input) {
         </div>
     </div>
 </div>
-<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+<script src="../assets/js/yui-prettify.js"></script>
 </body>
 </html>
