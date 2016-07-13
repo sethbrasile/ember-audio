@@ -98,16 +98,18 @@ export default Service.extend({
    * and _loadFont methods so that in the end. See example.
    *
    * @example
-   *     audio.load('some-url.wav').asSound('some-sound')
-   *     audio.load(['some-url.mp3']).asBeatTrack('some-beat-track')
-   *     audio.load('some-url.js').asFont('some-font')
-   *     audio.load('some-url.mp3').asTrack('some-track')
+   *     audio.load('some-url.wav').asSound('some-sound');
+   *     audio.load('some-url.mp3').asTrack('some-track');
+   *     audio.load(['some-url.mp3']).asSampler('some-sampler');
+   *     audio.load(['some-url.mp3']).asBeatTrack('some-beat-track');
+   *     audio.load('some-url.js').asFont('some-font');
    *
    * @method load
    *
    * @param {string|array} src The URL location of an audio file. Will be used by
    * "fetch" to get the audio file. Can be a local or a relative URL. An array
-   * of URLs is required if a beatTrack is being loaded via `.asBeatTrack`
+   * of URLs is required if a beatTrack is being loaded via `.asBeatTrack` or
+   * `.asSampler`.
    *
    * @return {object} returns a POJO that contains a few methods that curry
    * "src" "type" and "name" over to
@@ -123,25 +125,22 @@ export default Service.extend({
     const _createSoundsArray = this._createSoundsArray.bind(this);
 
     return {
-      /**
-       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
-       * partially applied src param from
-       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="sound"
+      /*
+       * Creates a Sound instance from a src URL.
        *
        * @param {string} name The name that this Sound instance will be
-       * registered as in the "_sounds" register
+       * registered as in the "_sounds" register.
+       *
        * @return {promise|Sound} Returns a promise that resolves to a Sound
        * instance. The promise resolves when the Sound instance's AudioBuffer
-       * (audio data) is finished loading
+       * (audio data) is finished loading.
        */
       asSound(name) {
         return _load(name, src, 'sound');
       },
 
-      /**
-       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
-       * partially applied src param from
-       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="track"
+      /*
+       * Creates a Track instance from a src URL.
        *
        * @param {string} name The name that this Track instance will be
        * registered as in the "_tracks" register.
@@ -154,10 +153,8 @@ export default Service.extend({
         return _load(name, src, 'track');
       },
 
-      /**
-       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
-       * partially applied src param from
-       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="beatTrack"
+      /*
+       * Creates a BeatTrack instance from an array of src URLs.
        *
        * @param {string} name The name that this BeatTrack instance will be
        * registered as in the "_beatTracks" register
@@ -170,10 +167,8 @@ export default Service.extend({
         return _loadBeatTrack(name, src);
       },
 
-      /**
-       * Calls {{#crossLink "Audio/_loadFont:method"}}{{/crossLink}} with name,
-       * and partially applied src param from
-       * {{#crossLink "Audio/load:method"}}{{/crossLink}}.
+      /*
+       * Creates a font instance from a src URL.
        *
        * @param {string} name The name that this font will be registered as in
        * the "_fonts" register.
@@ -186,22 +181,24 @@ export default Service.extend({
         return _loadFont(name, src);
       },
 
-      /**
-       * Calls {{#crossLink "Audio/_load:method"}}{{/crossLink}} with name,
-       * partially applied src param from
-       * {{#crossLink "Audio/load:method"}}{{/crossLink}}, and type="sampler"
+      /*
+       * Creates a Sampler instance from an array of src URLs.
        *
        * @param {string} name The name that this Sampler instance will be
        * registered as in the _samplers register
        *
        * @return {promise|Sampler} Returns a promise that resolves to a Sampler
-       * instance. The promise resolves when the Sampler instance's AudioBuffer
-       * (audio data) is finished loading
+       * instance. The promise resolves when all the Sound instances loaded into
+       * the Sampler instance are finished loading.
        */
       asSampler(name) {
         return _createSoundsArray(name, src).then((sounds) => {
           const _sounds = new Set(sounds);
-          return Sampler.create({ _sounds, audioContext, name });
+          const sampler = Sampler.create({ _sounds, audioContext, name });
+
+          this.get('_samplers').set(name, sampler);
+
+          return sampler;
         });
       }
     };
@@ -495,6 +492,21 @@ export default Service.extend({
       .catch((err) => console.error('ember-audio:', err));
   },
 
+  /**
+   * Accepts an array of URLs to audio files and creates a Sound instance for
+   * each.
+   *
+   * @private
+   * @method _createSoundsArray
+   *
+   * @param {string} name The base-name of the sound. If one were loading up
+   * multiple kick drum samples, this might be 'kick'.
+   *
+   * @param {array} srcArray An array of strings. Each item being a URL to an
+   * audio file that should be loaded and turned into a Sound instance.
+   *
+   * @return {Promise|array} A promise that resolves to an array of Sound objects.
+   */
   _createSoundsArray(name, srcArray) {
     const sounds = srcArray.map((src, idx) => {
       return this._load(`${name}${idx}`, src, 'sound');
