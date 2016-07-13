@@ -9,8 +9,8 @@ export default Ember.Controller.extend({
   initBeats: Ember.on('init', function() {
     Ember.RSVP.all([
       this._loadBeatTrackFor('kick'),
-      this._loadBeatTrackFor('snare'),
-      this._loadBeatTrackFor('hihat')
+      // this._loadBeatTrackFor('snare'),
+      // this._loadBeatTrackFor('hihat')
     ])
     .then((beatTracks) => {
       // default is 4 beats, but we're going to use 8
@@ -21,7 +21,11 @@ export default Ember.Controller.extend({
   }),
 
   _loadBeatTrackFor(name) {
-    return this.get('audio').load(`/ember-audio/${name}.wav`).asBeatTrack(name);
+    return this.get('audio').load([
+      `/ember-audio/kick.wav`,
+      `/ember-audio/snare.wav`,
+      `/ember-audio/hihat.wav`
+    ]).asBeatTrack(name);
   },
 
   actions: {

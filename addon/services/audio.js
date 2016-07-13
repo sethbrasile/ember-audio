@@ -104,6 +104,7 @@ export default Service.extend({
   load(src) {
     const _load = this._load.bind(this);
     const _loadFont = this._loadFont.bind(this);
+    const _loadBeatTrack = this._loadBeatTrack.bind(this);
 
     return {
       /**
@@ -153,7 +154,7 @@ export default Service.extend({
        * (audio data) is finished loading.
        */
       asBeatTrack(name) {
-        return _load(name, src, 'beatTrack');
+        return _loadBeatTrack(name, src);
       },
 
       /**
@@ -331,7 +332,8 @@ export default Service.extend({
    * "fetch" to get the audio file. Can be a local or a relative URL
    *
    * @param {string} type Determines the type of object that should be created,
-   * as well as which register the instance should be placed in
+   * as well as which register the instance should be placed in. Can be 'sound',
+   * 'track', or 'beatTrack'.
    *
    * @return {promise|Sound|Track|BeatTrack} Returns a promise which resolves
    * to an instance of a Sound, Track, or BeatTrack
@@ -356,6 +358,17 @@ export default Service.extend({
         console.error('ember-audio:', err);
         console.error('ember-audio:', 'This error was probably caused by a 404 or an incompatible audio file type');
       });
+  },
+
+  _loadBeatTrack(name, srcArray) {
+    const audioContext = this.get('context');
+
+    return all(
+      srcArray.map((src, idx) => this._load(`${name}${idx}`, src, 'sound'))
+    ).then((sounds) => {
+      const _sounds = new Set(sounds);
+      return BeatTrack.create({ _sounds, audioContext, name });
+    });
   },
 
   /**

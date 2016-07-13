@@ -267,15 +267,15 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Plays the audio source in `${amount}` seconds.
+   * Plays the audio source in specified amount of seconds from "now".
    *
    * @method playIn
    *
-   * @param {number} amount Number of seconds from "now" that the audio source
+   * @param {number} seconds Number of seconds from "now" that the audio source
    * should be played.
    */
-  playIn(amount) {
-    this._play(this.get('audioContext.currentTime') + amount);
+  playIn(seconds) {
+    this._play(this.get('audioContext.currentTime') + seconds);
   },
 
   /**
