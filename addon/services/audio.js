@@ -41,6 +41,7 @@ export default Service.extend({
    *
    * @property context
    * @type {AudioContext}
+   * @todo change this to audioContext to match other stuff, or change other stuff to context
    */
   context: new AudioContext(),
 

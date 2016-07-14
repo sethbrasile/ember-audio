@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { Connection } from 'ember-audio';
 import { zeroify } from 'ember-audio/utils';
 
 /**
@@ -12,6 +13,7 @@ const {
   A,
   computed,
   on,
+  get,
   set,
   run: { later }
 } = Ember;
@@ -106,10 +108,11 @@ const Sound = Ember.Object.extend({
   isPlaying: false,
 
   /**
-   * Determines what AudioNodes are connected to one-another and the order in
-   * which they are connected. Starts as `null` but set to an array on `init`
-   * via the {{#crossLink "Sound/initConnections:method"}}
-   * initConnections{{/crossLink}} method.
+   * An array of Connection instances. Determines which AudioNode instances are
+   * connected to one-another and the order in which they are connected. Starts
+   * as `null` but set to an array on `init` via the
+   * {{#crossLink "Sound/initConnections:method"}} initConnections{{/crossLink}}
+   * method.
    *
    * @property connections
    * @type {Ember.MutableArray}
@@ -159,85 +162,6 @@ const Sound = Ember.Object.extend({
   }),
 
   /**
-   * Computed property. Recreates all the connection's AudioNodes whenever the
-   * connections array changes. Any values that have been set on a node before
-   * the connections array changes will need to be re-set after the connections
-   * array changes.
-   *
-   * Doesn't create an AudioNode for any connection that has `createdOnPlay === true`
-   *
-   * @todo Get rid of need to re-set AudioNode param values after changing.
-   * Probably just get rid of this.
-   * [This](https://github.com/sethbrasile/ember-audio/blob/master/tests/dummy/app/controllers/audio-routing.js#L50)
-   * should be OK at the top of the method, but right now it's not.
-   *
-   * @private
-   * @property _createdConnections
-   * @type {number}
-   */
-  _createdConnections: computed('connections.[]', function() {
-    const connections = this.get('connections').map((connection) => {
-      const { path, name, createCommand, source, createdOnPlay } = connection;
-
-      if (path) {
-        connection.node = this.get(path);
-      } else if (createCommand && source && !createdOnPlay) {
-        connection.node = this.get(source)[createCommand]();
-      } else if (!createdOnPlay && !connection.node) {
-        console.error('ember-audio:', `The ${name} connection is not configured correctly. Please fix this connection.`);
-        return;
-      }
-
-      return connection;
-    });
-
-    return A(connections);
-  }),
-
-  /**
-   * Initializes default connections on Sound instantiation. Runs `on('init')`.
-   *
-   * @method initConnections
-   *
-   * @todo Create an actual Connection class to clarify the API for creating
-   * custom AudioNodes
-   */
-  initConnections: on('init', function() {
-    this.set('connections', A([
-      {
-        name: '_bufferSourceNode',
-        createdOnPlay: true,
-        source: 'audioContext',
-        createCommand: 'createBufferSource',
-        onPlaySetAttrsOnNode: [
-          {
-            attrNameOnNode: 'buffer',
-            relativePath: 'audioBuffer'
-          }
-        ]
-      },
-      {
-        name: 'gainNode',
-        source: 'audioContext',
-        createCommand: 'createGain'
-      },
-      {
-        name: 'pannerNode',
-        source: 'audioContext',
-        createCommand: 'createStereoPanner'
-      },
-      {
-        name: 'destination',
-        path: 'audioContext.destination'
-      }
-    ]));
-
-    // We're not consuming the CP anywhere until "play" is called, but we want
-    // the nodes available before that
-    this.get('_createdConnections');
-  }),
-
-  /**
    * Plays the audio source immediately.
    *
    * @method play
@@ -282,7 +206,7 @@ const Sound = Ember.Object.extend({
    * @method stop
    */
   stop() {
-    const node = this.get('_bufferSourceNode');
+    const node = this.getNode('_bufferSourceNode');
 
     if (node) {
       node.stop();
@@ -291,20 +215,35 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * returns a connection's AudioNode from the _createdConnections array by it's
+   * returns a connection's AudioNode from the connections array by it's
    * `name`.
+   *
+   * @method getNode
    *
    * @param {string} name The name of the AudioNode that should be returned.
    *
-   * @method getNode
    * @return {AudioNode} The requested AudioNode.
+   * @todo consider changing this to `getNodeFrom` since it's actually getting a node from a connection named `name`
    */
   getNode(name) {
-    const connection = this.get('_createdConnections').findBy('name', name);
+    const connection = this.getConnection(name);
 
     if (connection) {
-      return connection.node;
+      return get(connection, 'node');
     }
+  },
+
+  /**
+   * returns a connection from the connections array by it's name
+   *
+   * @method getConnection
+   *
+   * @param {string} name The name of the AudioNode that should be returned.
+   *
+   * @return {Connection} The requested Connection.
+   */
+  getConnection(name) {
+    return this.get('connections').findBy('name', name);
   },
 
   /**
@@ -435,10 +374,49 @@ const Sound = Ember.Object.extend({
    * @method removeConnection
    */
   removeConnection(name) {
-    const connections = this.get('connections');
-    const node = connections.findBy('name', name);
-    connections.removeObject(node);
+    this.get('connections').removeObject(this.getConnection(name));
   },
+
+  /**
+   * Initializes default connections on Sound instantiation. Runs `on('init')`.
+   *
+   * @protected
+   * @method _initConnections
+   */
+  _initConnections: on('init', function() {
+    const bufferSource = Connection.create({
+      name: '_bufferSourceNode',
+      createdOnPlay: true,
+      source: 'audioContext',
+      createCommand: 'createBufferSource',
+      onPlaySetAttrsOnNode: A([
+        {
+          attrNameOnNode: 'buffer',
+          relativePath: 'audioBuffer'
+        }
+      ])
+    });
+
+    const gain = Connection.create({
+      name: 'gainNode',
+      source: 'audioContext',
+      createCommand: 'createGain'
+    });
+
+    const panner = Connection.create({
+      name: 'pannerNode',
+      source: 'audioContext',
+      createCommand: 'createStereoPanner'
+    });
+
+    const destination = Connection.create({
+      name: 'destination',
+      path: 'audioContext.destination'
+    });
+
+    this.set('connections', A([ bufferSource, gain, panner, destination ]));
+    this._wireConnections();
+  }),
 
   /**
    * The underlying method that backs the
@@ -461,10 +439,10 @@ const Sound = Ember.Object.extend({
    */
   _play(playAt) {
     const currentTime = this.get('audioContext.currentTime');
-    const connections = this._wireUpConnections();
-    const node = connections[0].node;
 
-    node.start(playAt, this.get('startOffset'));
+    this._wireConnections();
+
+    this.getNode('_bufferSourceNode').start(playAt, this.get('startOffset'));
 
     this.set('_startedPlayingAt', playAt);
 
@@ -476,63 +454,119 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the array of connections from the
-   * _createdConnections computed property and
-   * returns the same array with any AudioNodes that need to be created at
-   * {{#crossLink "Sound/_play:method"}}{{/crossLink}} time having been created.
+   * Gets the array of Connection instances from the connections array and
+   * returns the same array, having created any AudioNode instances that needed
+   * to be created, and having connected the AudioNode instances to one another
+   * in the order in which they were present in the connections array.
    *
-   * @method _wireUpConnections
+   * @method _wireConnections
    * @private
+   *
+   * @return {array|Connection} Array of Connection instances collected from the
+   * connections array, created, connected, and ready to play.
    */
-  _wireUpConnections() {
-    // Each node is connected to the next node in the connections array
-    return this.get('_createdConnections').map((connection, idx, connections) => {
-      const nextIdx = idx + 1;
-      const currentNode = this._createNode(connection);
+  _wireConnections() {
+    const createNode = this._createNode.bind(this);
+    const setAttrsOnNode = this._setAttrsOnNode.bind(this);
+    const wireConnection = this._wireConnection;
+    const connections = this.get('connections');
 
-      if (nextIdx < connections.length) {
-        const nextNode = this._createNode(connections[nextIdx]);
-
-        // Assign nextConnection back to connections array.
-        // Since we're working one step ahead, we don't want
-        // each connection created twice
-        connections[nextIdx] = nextNode;
-
-        // Make the connection from current to next
-        currentNode.node.connect(nextNode.node);
-      }
-
-      return currentNode;
-    });
+    connections.map(createNode).map(setAttrsOnNode).map(wireConnection);
   },
 
   /**
-   * Performs the actual AudioNode creation for the
-   * {{#crossLink 'Sound/_wireUpConnections:method'}}{{/crossLink}} method.
+   * Creates an AudioNode instance for a Connection instance and sets it on it's
+   * `node` property. Unless the Connection instance's `createdOnPlay` property
+   * is true, does nothing if the AudioNode instance has already been created.
    *
    * Also sets any properties from a connection's `onPlaySetAttrsOnNode` array
    * on the node.
    *
    * @method _createNode
    * @private
+   *
+   * @param {Connection} connection A Connection instance that should have it's
+   * node created (if needed).
+   *
+   * @return {Connection} The input Connection instance after having it's node
+   * created.
    */
   _createNode(connection) {
-    const { name, createdOnPlay, source, createCommand, onPlaySetAttrsOnNode } = connection;
+    const { path, name, createdOnPlay, source, createCommand, node } = connection;
 
-    if (createdOnPlay) {
+    if (node && !createdOnPlay) {
+      // The node is already created and doesn't need to be created again
+      return connection;
+    } else if (path) {
+      connection.node = this.get(path);
+    } else if (createCommand && source) {
       connection.node = this.get(source)[createCommand]();
-      this.set(name, connection.node);
-    }
-
-    if (onPlaySetAttrsOnNode) {
-      onPlaySetAttrsOnNode.map((attr) => {
-        let { attrNameOnNode, relativePath } = attr;
-        set(connection.node, attrNameOnNode, this.get(relativePath));
-      });
+    } else if (!connection.node) {
+      console.error('ember-audio:', `The ${name} connection is not configured correctly. Please fix this connection.`);
+      return;
     }
 
     return connection;
-  }
+  },
+
+  /**
+   * Gets a Connection instance's `onPlaySetAttrsOnNode` and sets them on it's
+   * node.
+   *
+   * @private
+   * @method _setAttrsOnNode
+   *
+   * @param {Connection} The Connection instance that needs it's node's attrs
+   * set.
+   *
+   * @return {Connection} The input Connection instance after having it's nodes
+   * attrs set.
+   */
+  _setAttrsOnNode(connection) {
+    connection.get('onPlaySetAttrsOnNode').map((attr) => {
+      const { attrNameOnNode, relativePath, value } = attr;
+      const attrValue = relativePath ? this.get(relativePath) || value : value;
+      set(connection.node, attrNameOnNode, attrValue);
+    });
+
+    return connection;
+  },
+
+  /**
+   * Meant to be passed to a Array.prototype.map function. Connects a Connection
+   * instance's node to the next Connection instance's node.
+   *
+   * @private
+   * @method _wireConnection
+   *
+   * @param {Connection} connection The current Connection instance in the
+   * iteration.
+   *
+   * @param {number} idx The index of the current iteration.
+   *
+   * @param {array|Connection} connections The original array of connections.
+   *
+   * @return {Connection} The input Connection instance after having it's node
+   * connected to the next Connection instance's node.
+   */
+  _wireConnection(connection, idx, connections) {
+    const nextIdx = idx + 1;
+    const currentNode = connection;
+
+    if (nextIdx < connections.length) {
+      const nextNode = connections[nextIdx];
+
+      // Assign nextConnection back to connections array.
+      // Since we're working one step ahead, we don't want
+      // each connection created twice
+      connections[nextIdx] = nextNode;
+
+      // Make the connection from current to next
+      currentNode.node.connect(nextNode.node);
+    }
+
+    return currentNode;
+  },
 });
 
 export default Sound;
