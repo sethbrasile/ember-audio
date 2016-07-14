@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>AudioService - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
+    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            <div id="sections" class="sidebox">
+              <div class="hd">
+                <h2 class="no-toc">AudioService</h2>
+              </div>
+              <div class="bd">
+            
+            
+            
+                  <div><a href="#property-summary">Property Summary</a></div>
+            
+                  <div><a href="#method-summary">Method Summary</a></div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                  <div><a href="#public-properties">Public Properties</a></div>
+                  <ul>
+                      <li><a href="#props_context">context</a></li>
+                  </ul>
+            
+            
+                  <div><a href="#private-properties">Private Properties</a></div>
+                  <ul>
+                      <li><a href="#props__beatTracks">_beatTracks</a></li>
+                      <li><a href="#props__fonts">_fonts</a></li>
+                      <li><a href="#props__samplers">_samplers</a></li>
+                      <li><a href="#props__sounds">_sounds</a></li>
+                      <li><a href="#props__tracks">_tracks</a></li>
+                  </ul>
+            
+                  <div><a href="#public-methods">Public Methods</a></div>
+                  <ul>
+                      <li><a href="#method_getBeatTrack">getBeatTrack</a></li>
+                      <li><a href="#method_getFont">getFont</a></li>
+                      <li><a href="#method_getSampler">getSampler</a></li>
+                      <li><a href="#method_getSound">getSound</a></li>
+                      <li><a href="#method_getTrack">getTrack</a></li>
+                      <li><a href="#method_load">load</a></li>
+                      <li><a href="#method_pauseAll">pauseAll</a></li>
+                      <li><a href="#method_stopAll">stopAll</a></li>
+                  </ul>
+            
+            
+                  <div><a href="#private-methods">Private Methods</a></div>
+                  <ul>
+                      <li><a href="#method__createNoteObjects">_createNoteObjects</a></li>
+                      <li><a href="#method__createSoundFor">_createSoundFor</a></li>
+                      <li><a href="#method__createSoundsArray">_createSoundsArray</a></li>
+                      <li><a href="#method__extractDecodedKeyValuePairs">_extractDecodedKeyValuePairs</a></li>
+                      <li><a href="#method__getRegisterFor">_getRegisterFor</a></li>
+                      <li><a href="#method__load">_load</a></li>
+                      <li><a href="#method__loadBeatTrack">_loadBeatTrack</a></li>
+                      <li><a href="#method__loadFont">_loadFont</a></li>
+                  </ul>
+              </div>
+            </div>
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.4b06bac6
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l16"><code>addon&#x2F;services&#x2F;audio.js:16</code></a></span>
+    <h1 class="class-name">AudioService</h1>
+</div>
+
+
+
+
+<div class="class-description"><p>A <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.Service.html" class="crosslink external" target="_blank">Service</a> that provides methods
+for interacting with the various
+<a href="../modules/Audio.html">Audio</a> classes and the Web Audio
+API's <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a>. This can be thought of as
+the "entrypoint" to using ember-audio. An application using ember-audio
+should use this service for all interactions with the Web Audio API.</p>
+<pre class="code prettyprint"><code>// inject into an object
+Ember.Something.extend({
+  audio: Ember.inject.service()
+});
+
+// use
+loadSound() {
+  return this.get('audio').load('some.mp3').asSound('some-sound');
+}</code></pre>
+</div>
+
+
+
+
+
+
+
+  <h2 id="property-summary">Property Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Properties</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_context">context</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a>
+            </div>
+            <div class="short-description">
+              <p>An AudioContext instance from the Web Audio API. <strong>NOT</strong> available in all browsers. Not available in any version of IE (except EDGE) as of April 2016.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Private Properties</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props__beatTracks">_beatTracks</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+            </div>
+            <div class="short-description">
+              <p>This acts as a register for BeatTrack instances. BeatTrack instances are placed in the register by name, and can be called via audioService.getBeatTrack('name')</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props__fonts">_fonts</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+            </div>
+            <div class="short-description">
+              <p>This acts as a register for soundfonts. A font is just a <code>Map</code> of Note objects which is placed in this register by name.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props__samplers">_samplers</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+            </div>
+            <div class="short-description">
+              <p>This acts as a register for Sampler instances. Sampler instances are placed in the register by name, and can be called via audioService.getSampler('name')</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props__sounds">_sounds</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+            </div>
+            <div class="short-description">
+              <p>This acts as a register for Sound instances. Sound instances are placed in the register by name, and can be called via audioService.getSound('name')</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props__tracks">_tracks</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+            </div>
+            <div class="short-description">
+              <p>This acts as a register for Track instances. Track instances are placed in this register by name, and can be called via audioService.getTrack('name')</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  <h2 id="method-summary">Method Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_getBeatTrack">getBeatTrack</a>(name): <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+            </div>
+            <div class="short-description">
+              <p>Gets a BeatTrack instance by name from the _beatTracks register.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_getFont">getFont</a>(name): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
+            </div>
+            <div class="short-description">
+              <p>Gets a soundfont Map by name from the _fonts register and allows it to be played via the returned POJO containing a method called <code>play</code>.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_getSampler">getSampler</a>(name): <a href="../classes/Sampler.html" class="crosslink">Sampler</a>
+            </div>
+            <div class="short-description">
+              <p>Gets a Sampler instance by name from the _samplers register</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_getSound">getSound</a>(name): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+            </div>
+            <div class="short-description">
+              <p>Gets a Sound instance by name from the _sounds register</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_getTrack">getTrack</a>(name): <a href="../classes/Track.html" class="crosslink">Track</a>
+            </div>
+            <div class="short-description">
+              <p>Gets a Track instance by name from the _tracks register</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_load">load</a>(src): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
+            </div>
+            <div class="short-description">
+              <p>Acts as a proxy method, returns a POJO with methods that return the _load and _loadFont methods so that in the end. See example.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_pauseAll">pauseAll</a>( )
+            </div>
+            <div class="short-description">
+              <p>Gets all Track instances and calls Sound/pause:method on each. Only works for tracks because only Track instances are pause-able.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_stopAll">stopAll</a>(type=&#x27;tracks&#x27;)
+            </div>
+            <div class="short-description">
+              <p>Gets all instances of requested type and calls <a href="../classes/Sound.html#method_stop" class="crosslink">stop</a> on each.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Private Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__createNoteObjects">_createNoteObjects</a>(audioData, instrumentName): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Takes an array of arrays, each inner array acting as a key-value pair in the form <code>[noteName, audioData]</code>. Each inner array is transformed into a <a href="../classes/Note.html" class="crosslink">Note</a> and the outer array is returned. This method also sets each note on it's corresponding instrument <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a> instance by name. Each note is playable as seen in the example.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__createSoundFor">_createSoundFor</a>(type, props): <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Track.html" class="crosslink">Track</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+            </div>
+            <div class="short-description">
+              <p>Creates an <a href="../modules/Audio.html">Audio Class</a> instance (which is based on which "type" is specified), and passes "props" to the new instance.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__createSoundsArray">_createSoundsArray</a>(name, srcArray): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Accepts an array of URLs to audio files and creates a Sound instance for each.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__extractDecodedKeyValuePairs">_extractDecodedKeyValuePairs</a>(notes): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>Takes an array of base64 encoded strings (notes) and returns an array of arrays like [[name, audio], [name, audio]]</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__getRegisterFor">_getRegisterFor</a>(type): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+            </div>
+            <div class="short-description">
+              <p>Gets a register by it's type.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__load">_load</a>(name, src, type): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Track.html" class="crosslink">Track</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+            </div>
+            <div class="short-description">
+              <p>Loads and decodes an audio file, creating a Sound, Track, or BeatTrack instance (as determined by the "type" parameter) and places the instance into it's corresponding register.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__loadBeatTrack">_loadBeatTrack</a>(name, srcArray): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+            </div>
+            <div class="short-description">
+              <p>Creates a BeatTrack instance from an array of URLs.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__loadFont">_loadFont</a>(instrumentName, src): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>The notes are sorted the way that they would appear on a piano. In the example, you can see how the note <code>Ab1</code> from the <code>font-name</code> soundfont would be played:</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+    <div id="properties public">
+        <h2 id="public-properties">Public Properties</h2>
+<div class="property item">
+  <div id="props_context" class="title">
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l37"><code>addon&#x2F;services&#x2F;audio.js:37</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      context: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>An AudioContext instance from the Web Audio API. <strong>NOT</strong> available in all
+browsers. Not available in any version of IE (except EDGE)
+as of April 2016.</p>
+</div>
+
+</div>
+    </div>
+
+
+    <div id="properties private">
+        <h2 id="private-properties">Private Properties</h2>
+<div class="property item private">
+  <div id="props__beatTracks" class="title">
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l88"><code>addon&#x2F;services&#x2F;audio.js:88</code></a></span>
+    <h3 class="">
+      private
+      
+      
+      _beatTracks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>This acts as a register for BeatTrack instances. BeatTrack instances are
+placed in the register by name, and can be called via
+audioService.getBeatTrack('name')</p>
+</div>
+
+</div>
+<div class="property item private">
+  <div id="props__fonts" class="title">
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l68"><code>addon&#x2F;services&#x2F;audio.js:68</code></a></span>
+    <h3 class="">
+      private
+      
+      
+      _fonts: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>This acts as a register for soundfonts. A font is just a <code>Map</code> of Note
+objects which is placed in this register by name.</p>
+</div>
+
+</div>
+<div class="property item private">
+  <div id="props__samplers" class="title">
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l58"><code>addon&#x2F;services&#x2F;audio.js:58</code></a></span>
+    <h3 class="">
+      private
+      
+      
+      _samplers: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>This acts as a register for Sampler instances. Sampler instances are placed
+in the register by name, and can be called via audioService.getSampler('name')</p>
+</div>
+
+</div>
+<div class="property item private">
+  <div id="props__sounds" class="title">
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l48"><code>addon&#x2F;services&#x2F;audio.js:48</code></a></span>
+    <h3 class="">
+      private
+      
+      
+      _sounds: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>This acts as a register for Sound instances. Sound instances are placed in
+the register by name, and can be called via audioService.getSound('name')</p>
+</div>
+
+</div>
+<div class="property item private">
+  <div id="props__tracks" class="title">
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l78"><code>addon&#x2F;services&#x2F;audio.js:78</code></a></span>
+    <h3 class="">
+      private
+      
+      
+      _tracks: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>This acts as a register for Track instances. Track instances are placed in
+this register by name, and can be called via audioService.getTrack('name')</p>
+</div>
+
+</div>
+    </div>
+
+  <div id="methods public">
+    <h2 id="public-methods">Public Methods</h2>
+<div class="method item">
+    <div id="method_getBeatTrack" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l211"><code>addon&#x2F;services&#x2F;audio.js:211</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            getBeatTrack(name): <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets a BeatTrack instance by name from the _beatTracks register.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name of the BeatTrack instance that should be
+retrieved from the _beatTracks register.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a></span>
+          <span class="return-description"><p>Returns the BeatTrack instance that matches the
+provided name.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item">
+    <div id="method_getFont" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l253"><code>addon&#x2F;services&#x2F;audio.js:253</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            getFont(name): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets a soundfont Map by name from the _fonts register and allows it to be
+played via the returned POJO containing a method called <code>play</code>.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name of the Map that should be retrieved
+from the _fonts register.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+          <span class="return-description"><p>Returns a POJO that has a <code>play</code> method which allows a
+note from the requested font to be played.</p>
+</span>
+        </div>
+      </div>
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>audio.getFont('some-font').play('Ab1');</code></pre>
+
+</div>
+<div class="method item">
+    <div id="method_getSampler" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l282"><code>addon&#x2F;services&#x2F;audio.js:282</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            getSampler(name): <a href="../classes/Sampler.html" class="crosslink">Sampler</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets a Sampler instance by name from the _samplers register</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name of the sampler that should be retrieved
+from the _samplers register.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Sampler.html" class="crosslink">Sampler</a></span>
+          <span class="return-description"><p>returns the Sampler instance that matches the provided name.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item">
+    <div id="method_getSound" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l225"><code>addon&#x2F;services&#x2F;audio.js:225</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            getSound(name): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets a Sound instance by name from the _sounds register</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name of the sound that should be retrieved
+from the _sounds register.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Sound.html" class="crosslink">Sound</a></span>
+          <span class="return-description"><p>returns the Sound instance that matches the provided name.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item">
+    <div id="method_getTrack" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l239"><code>addon&#x2F;services&#x2F;audio.js:239</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            getTrack(name): <a href="../classes/Track.html" class="crosslink">Track</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets a Track instance by name from the _tracks register</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name of the Track instance that should be
+retrieved from the _tracks register.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Track.html" class="crosslink">Track</a></span>
+          <span class="return-description"><p>Returns the Track instance that matches the provided name.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item">
+    <div id="method_load" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l99"><code>addon&#x2F;services&#x2F;audio.js:99</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            load(src): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Acts as a proxy method, returns a POJO with methods that return the _load
+and _loadFont methods so that in the end. See example.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>src</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The URL location of an audio file. Will be used by
+"fetch" to get the audio file. Can be a local or a relative URL. An array
+of URLs is required if a beatTrack is being loaded via <code>.asBeatTrack</code> or
+<code>.asSampler</code>.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+          <span class="return-description"><p>returns a POJO that contains a few methods that curry
+"src" "type" and "name" over to
+Audio/_load:method and
+Audio/_loadFont:method and allow you to
+specify what type of Sound you'd like created.</p>
+</span>
+        </div>
+      </div>
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>audio.load('some-url.wav').asSound('some-sound');
+audio.load('some-url.mp3').asTrack('some-track');
+audio.load(['some-url.mp3']).asSampler('some-sampler');
+audio.load(['some-url.mp3']).asBeatTrack('some-beat-track');
+audio.load('some-url.js').asFont('some-font');</code></pre>
+
+</div>
+<div class="method item">
+    <div id="method_pauseAll" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l311"><code>addon&#x2F;services&#x2F;audio.js:311</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            pauseAll( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets all Track instances and calls
+Sound/pause:method on each. Only works for
+tracks because only Track instances are pause-able.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item">
+    <div id="method_stopAll" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l296"><code>addon&#x2F;services&#x2F;audio.js:296</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            stopAll(type=&#x27;tracks&#x27;)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets all instances of requested type and calls
+<a href="../classes/Sound.html#method_stop" class="crosslink">stop</a> on each.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>type=&#x27;tracks&#x27;</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The type of the register that you wish
+to stop all instances of. Can be <code>'tracks'</code>, or <code>'sounds'</code>.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+  </div>
+
+
+    <div id="methods private">
+        <h2 id="private-methods">Private Methods</h2>
+<div class="method item private">
+    <div id="method__createNoteObjects" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l558"><code>addon&#x2F;services&#x2F;audio.js:558</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _createNoteObjects(audioData, instrumentName): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Takes an array of arrays, each inner array acting as
+a key-value pair in the form <code>[noteName, audioData]</code>. Each inner array is
+transformed into a <a href="../classes/Note.html" class="crosslink">Note</a> and the outer array
+is returned. This method also sets each note on it's corresponding
+instrument <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a> instance by name. Each note
+is playable as seen in the example.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>audioData</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Array of arrays, each inner array like
+<code>[noteName, audioData]</code>.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>instrumentName</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Name of the instrument each note belongs to.
+This is the name that will be used to identify the instrument on the fonts
+register.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>Returns an Array of <a href="../classes/Note.html" class="crosslink">Notes</a></p>
+</span>
+        </div>
+      </div>
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>audioService.get('fonts').get('instrument-name').play('Ab5');</code></pre>
+
+</div>
+<div class="method item private">
+    <div id="method__createSoundFor" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l345"><code>addon&#x2F;services&#x2F;audio.js:345</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _createSoundFor(type, props): <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Track.html" class="crosslink">Track</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Creates an <a href="../modules/Audio.html">Audio Class</a>
+instance (which is based on which "type" is specified), and passes "props"
+to the new instance.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>type</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The type of
+<a href="../modules/Audio.html">Audio Class</a> to be created.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>props</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>POJO to pass to the new instance</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Track.html" class="crosslink">Track</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a></span>
+          <span class="return-description"></span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__createSoundsArray" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l499"><code>addon&#x2F;services&#x2F;audio.js:499</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _createSoundsArray(name, srcArray): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Accepts an array of URLs to audio files and creates a Sound instance for
+each.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The base-name of the sound. If one were loading up
+multiple kick drum samples, this might be 'kick'.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>srcArray</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An array of strings. Each item being a URL to an
+audio file that should be loaded and turned into a Sound instance.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>A promise that resolves to an array of Sound objects.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__extractDecodedKeyValuePairs" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l522"><code>addon&#x2F;services&#x2F;audio.js:522</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _extractDecodedKeyValuePairs(notes): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Takes an array of base64 encoded strings (notes) and returns an array of
+arrays like [[name, audio], [name, audio]]</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>notes</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Array of base64 encoded strings.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>Returns an Array of arrays. Each inner array has two
+values, <code>[noteName, decodedAudio]</code>.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__getRegisterFor" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l324"><code>addon&#x2F;services&#x2F;audio.js:324</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _getRegisterFor(type): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets a register by it's type.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>type</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Which register to return.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map" class="crosslink external" target="_blank">Map</a></span>
+          <span class="return-description"></span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__load" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l373"><code>addon&#x2F;services&#x2F;audio.js:373</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _load(name, src, type): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Track.html" class="crosslink">Track</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Loads and decodes an audio file, creating a Sound, Track, or BeatTrack
+instance (as determined by the "type" parameter) and places the instance
+into it's corresponding register.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name that the created instance should be
+registered as.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>src</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The URI location of an audio file. Will be used by
+"fetch" to get the audio file. Can be a local or a relative URL</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>type</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Determines the type of object that should be created,
+as well as which register the instance should be placed in. Can be 'sound',
+'track', or 'beatTrack'.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Track.html" class="crosslink">Track</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a></span>
+          <span class="return-description"><p>Returns a promise which resolves
+to an instance of a Sound, Track, or BeatTrack</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__loadBeatTrack" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l416"><code>addon&#x2F;services&#x2F;audio.js:416</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _loadBeatTrack(name, srcArray): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Creates a BeatTrack instance from an array of URLs.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name that this BeatTrack instance will be
+registered as on the _beatTracks register.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>srcArray</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An array of strings that specify URLs to load as
+Sounds.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a></span>
+          <span class="return-description"><p>A promise that resolves to a BeatTrack instance.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__loadFont" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l439"><code>addon&#x2F;services&#x2F;audio.js:439</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _loadFont(instrumentName, src): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><ol>
+<li>Creates a Map instance (a "font") and places it in the fonts register.</li>
+<li>Loads a soundfont file and decodes all the notes.</li>
+<li>Creates a Note object instance for each note.</li>
+<li>Places each note on the font by name.</li>
+<li>Returns a promise that resolves to an array of properly sorted Note
+object instances.</li>
+</ol>
+<p>The notes are sorted the way that they would appear on a piano. In the
+example, you can see how the note <code>Ab1</code> from the <code>font-name</code> soundfont
+would be played:</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>instrumentName</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name that you will refer to this sound
+font by.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>src</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The URI location of a soundfont file. Will be used by
+"fetch" to get the soundfont file. Can be a local or a relative URL.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" class="crosslink external" target="_blank">Promise</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a></span>
+          <span class="return-description"><p>Returns a promise that resolves when the sound font
+has been successfully decoded. The promise resolves to an array of sorted note names.</p>
+</span>
+        </div>
+      </div>
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>audio.getFont('font-name').play('Ab1');</code></pre>
+
+</div>
+    </div>
+
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+</body>
+</html>

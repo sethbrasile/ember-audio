@@ -25,20 +25,12 @@
                 <div class="bd">
                     <ul>
                             <li><a href="../modules/Audio.html">Audio</a>
-                                <ul>
-                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
-                                        <li><a href="../modules/Audio.html#Sampler">Sampler</a></li>
-                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
-                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
-                                </ul>
                             </li>
-                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
                             </li>
-                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
-                                <ul>
-                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
-                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
-                                </ul>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
                             </li>
                             <li><a href="../modules/utils.html">utils</a>
                             </li>
@@ -52,9 +44,10 @@
                 </div>
                 <div class="bd">
                     <ul>
-                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
@@ -104,15 +97,14 @@
                   <div><a href="#private-properties">Private Properties</a></div>
                   <ul>
                       <li><a href="#props__bufferSourceNode">_bufferSourceNode</a></li>
-                      <li><a href="#props__createdConnections">_createdConnections</a></li>
                       <li><a href="#props__startedPlayingAt">_startedPlayingAt</a></li>
                   </ul>
             
                   <div><a href="#public-methods">Public Methods</a></div>
                   <ul>
                       <li><a href="#method_changeGainTo">changeGainTo</a></li>
+                      <li><a href="#method_getConnection">getConnection</a></li>
                       <li><a href="#method_getNode">getNode</a></li>
-                      <li><a href="#method_initConnections">initConnections</a></li>
                       <li><a href="#method_pan">pan</a></li>
                       <li><a href="#method_pause">pause</a></li>
                       <li><a href="#method_play">play</a></li>
@@ -123,13 +115,19 @@
                       <li><a href="#method_stop">stop</a></li>
                   </ul>
             
+                  <div><a href="#protected-methods">Protected Methods</a></div>
+                  <ul>
+                      <li><a href="#method__initConnections">_initConnections</a></li>
+                  </ul>
             
                   <div><a href="#private-methods">Private Methods</a></div>
                   <ul>
                       <li><a href="#method__createNode">_createNode</a></li>
                       <li><a href="#method__play">_play</a></li>
+                      <li><a href="#method__setAttrsOnNode">_setAttrsOnNode</a></li>
                       <li><a href="#method__trackPlayPosition">_trackPlayPosition</a></li>
-                      <li><a href="#method__wireUpConnections">_wireUpConnections</a></li>
+                      <li><a href="#method__wireConnection">_wireConnection</a></li>
+                      <li><a href="#method__wireConnections">_wireConnections</a></li>
                   </ul>
               </div>
             </div>
@@ -137,14 +135,14 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.4ca17b5b
+              Version: 0.0.0.4b06bac6
             </div>
             
         </div>
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_track.js.html#l17"><code>addon&#x2F;classes&#x2F;track.js:17</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_track.js.html#l16"><code>addon&#x2F;classes&#x2F;track.js:16</code></a></span>
     <h1 class="class-name">Track</h1>
 </div>
 
@@ -216,7 +214,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
               <a href="#props_connections">connections</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
             </div>
             <div class="short-description">
-              <p>Determines what AudioNodes are connected to one-another and the order in which they are connected. Starts as <code>null</code> but set to an array on <code>init</code> via the <a href="../classes/Sound.html#method_initConnections" class="crosslink">initConnections</a> method.</p>
+              <p>An array of Connection instances. Determines which AudioNode instances are connected to one-another and the order in which they are connected. Starts as <code>null</code> but set to an array on <code>init</code> via the Sound/initConnections:method method.</p>
             </div>
           </td>
         </tr>
@@ -359,21 +357,6 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
           </td>
           <td>
             <div class="property-name ">
-              <a href="#props__createdConnections">_createdConnections</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
-            </div>
-            <div class="short-description">
-              <p>Computed property. Recreates all the connection's AudioNodes whenever the connections array changes. Any values that have been set on a node before the connections array changes will need to be re-set after the connections array changes.</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            private
-            
-            
-          </td>
-          <td>
-            <div class="property-name ">
               <a href="#props__startedPlayingAt">_startedPlayingAt</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
             </div>
             <div class="short-description">
@@ -416,10 +399,10 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method_getNode">getNode</a>(name): <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
+              <a href="#method_getConnection">getConnection</a>(name): <a href="../classes/Connection.html" class="crosslink">Connection</a>
             </div>
             <div class="short-description">
-              <p>returns a connection's AudioNode from the _createdConnections array by it's <code>name</code>.</p>
+              <p>returns a connection from the connections array by it's name</p>
             </div>
           </td>
         </tr>
@@ -431,10 +414,10 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method_initConnections">initConnections</a>( )
+              <a href="#method_getNode">getNode</a>(name): <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
             </div>
             <div class="short-description">
-              <p>Initializes default connections on Sound instantiation. Runs <code>on('init')</code>.</p>
+              <p>returns a connection's AudioNode from the connections array by it's <code>name</code>.</p>
             </div>
           </td>
         </tr>
@@ -561,6 +544,30 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
       </tbody>
     </table>
 
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Protected Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            protected
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__initConnections">_initConnections</a>( )
+            </div>
+            <div class="short-description">
+              <p>Initializes default connections on Sound instantiation. Runs <code>on('init')</code>.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <table class="summary">
       <thead>
@@ -577,10 +584,10 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method__createNode">_createNode</a>( )
+              <a href="#method__createNode">_createNode</a>(connection): <a href="../classes/Connection.html" class="crosslink">Connection</a>
             </div>
             <div class="short-description">
-              <p>Performs the actual AudioNode creation for the <a href="../classes/Sound.html#method__wireUpConnections" class="crosslink">_wireUpConnections</a> method.</p>
+              <p>Creates an AudioNode instance for a Connection instance and sets it on it's <code>node</code> property. Unless the Connection instance's <code>createdOnPlay</code> property is true, does nothing if the AudioNode instance has already been created.</p>
             </div>
           </td>
         </tr>
@@ -607,6 +614,21 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
           </td>
           <td>
             <div class="method-name ">
+              <a href="#method__setAttrsOnNode">_setAttrsOnNode</a>(The): <a href="../classes/Connection.html" class="crosslink">Connection</a>
+            </div>
+            <div class="short-description">
+              <p>Gets a Connection instance's <code>onPlaySetAttrsOnNode</code> and sets them on it's node.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
               <a href="#method__trackPlayPosition">_trackPlayPosition</a>( )
             </div>
             <div class="short-description">
@@ -622,10 +644,25 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method__wireUpConnections">_wireUpConnections</a>( )
+              <a href="#method__wireConnection">_wireConnection</a>(connection, idx, connections): <a href="../classes/Connection.html" class="crosslink">Connection</a>
             </div>
             <div class="short-description">
-              <p>Gets the array of connections from the _createdConnections computed property and returns the same array with any AudioNodes that need to be created at <a href="../classes/Sound.html#method__play" class="crosslink">_play</a> time having been created.</p>
+              <p>Meant to be passed to a Array.prototype.map function. Connects a Connection instance's node to the next Connection instance's node.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__wireConnections">_wireConnections</a>( ): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a>
+            </div>
+            <div class="short-description">
+              <p>Gets the array of Connection instances from the connections array and returns the same array, having created any AudioNode instances that needed to be created, and having connected the AudioNode instances to one another in the order in which they were present in the connections array.</p>
             </div>
           </td>
         </tr>
@@ -693,15 +730,17 @@ Web Audio API.</p>
   </div>
 
 
-  <div class="property-description"><p>Determines what AudioNodes are connected to one-another and the order in
-which they are connected. Starts as <code>null</code> but set to an array on <code>init</code>
-via the <a href="../classes/Sound.html#method_initConnections" class="crosslink">initConnections</a> method.</p>
+  <div class="property-description"><p>An array of Connection instances. Determines which AudioNode instances are
+connected to one-another and the order in which they are connected. Starts
+as <code>null</code> but set to an array on <code>init</code> via the
+Sound/initConnections:method
+method.</p>
 </div>
 
 </div>
 <div class="property item">
   <div id="props_duration" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l121"><code>addon&#x2F;classes&#x2F;sound.js:121</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l122"><code>addon&#x2F;classes&#x2F;sound.js:122</code></a></span>
     <h3 class="">
       public
       
@@ -763,7 +802,7 @@ this Sound instance is registered as on it's parent register.</p>
 </div>
 <div class="property item">
   <div id="props_percentGain" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l152"><code>addon&#x2F;classes&#x2F;sound.js:152</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l153"><code>addon&#x2F;classes&#x2F;sound.js:153</code></a></span>
     <h3 class="">
       public
       
@@ -780,7 +819,7 @@ this Sound instance is registered as on it's parent register.</p>
 </div>
 <div class="property item">
   <div id="props_percentPlayed" class="title">
-    <span class="source-link"><a href="../files/addon_classes_track.js.html#l58"><code>addon&#x2F;classes&#x2F;track.js:58</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_track.js.html#l57"><code>addon&#x2F;classes&#x2F;track.js:57</code></a></span>
     <h3 class="">
       public
       
@@ -797,7 +836,7 @@ audioBuffer, formatted as a percentage.</p>
 </div>
 <div class="property item">
   <div id="props_position" class="title">
-    <span class="source-link"><a href="../files/addon_classes_track.js.html#l27"><code>addon&#x2F;classes&#x2F;track.js:27</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_track.js.html#l26"><code>addon&#x2F;classes&#x2F;track.js:26</code></a></span>
     <h3 class="">
       public
       
@@ -864,26 +903,6 @@ the duration of the audio source.</p>
 
 </div>
 <div class="property item private">
-  <div id="props__createdConnections" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l163"><code>addon&#x2F;classes&#x2F;sound.js:163</code></a></span>
-    <h3 class="">
-      private
-      
-      
-      _createdConnections: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
-    </h3>
-  </div>
-
-
-  <div class="property-description"><p>Computed property. Recreates all the connection's AudioNodes whenever the
-connections array changes. Any values that have been set on a node before
-the connections array changes will need to be re-set after the connections
-array changes.</p>
-<p>Doesn't create an AudioNode for any connection that has <code>createdOnPlay === true</code></p>
-</div>
-
-</div>
-<div class="property item private">
   <div id="props__startedPlayingAt" class="title">
     <span class="source-link"><a href="../files/addon_classes_sound.js.html#l77"><code>addon&#x2F;classes&#x2F;sound.js:77</code></a></span>
     <h3 class="">
@@ -907,7 +926,7 @@ It will always reflect the start time of the most recent
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item">
     <div id="method_changeGainTo" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l325"><code>addon&#x2F;classes&#x2F;sound.js:325</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l262"><code>addon&#x2F;classes&#x2F;sound.js:262</code></a></span>
         <h3 class="">
             public
             
@@ -977,8 +996,68 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 
 </div>
 <div class="method item">
+    <div id="method_getConnection" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l236"><code>addon&#x2F;classes&#x2F;sound.js:236</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            getConnection(name): <a href="../classes/Connection.html" class="crosslink">Connection</a>
+        </h3>
+    </div>
+
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method_getConnection" class="crosslink">Sound</a>
+        </div>
+
+
+    <div class="method-description"><p>returns a connection from the connections array by it's name</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>name</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name of the AudioNode that should be returned.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Connection.html" class="crosslink">Connection</a></span>
+          <span class="return-description"><p>The requested Connection.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item">
     <div id="method_getNode" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l295"><code>addon&#x2F;classes&#x2F;sound.js:295</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l217"><code>addon&#x2F;classes&#x2F;sound.js:217</code></a></span>
         <h3 class="">
             public
             
@@ -992,7 +1071,7 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
         </div>
 
 
-    <div class="method-description"><p>returns a connection's AudioNode from the _createdConnections array by it's
+    <div class="method-description"><p>returns a connection's AudioNode from the connections array by it's
 <code>name</code>.</p>
 </div>
 
@@ -1038,31 +1117,8 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 
 </div>
 <div class="method item">
-    <div id="method_initConnections" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l199"><code>addon&#x2F;classes&#x2F;sound.js:199</code></a></span>
-        <h3 class="">
-            public
-            
-            
-            initConnections( )
-        </h3>
-    </div>
-
-        <div class="inherited">
-          Inherited from <a href="../classes/Sound.html#method_initConnections" class="crosslink">Sound</a>
-        </div>
-
-
-    <div class="method-description"><p>Initializes default connections on Sound instantiation. Runs <code>on('init')</code>.</p>
-</div>
-
-
-
-
-</div>
-<div class="method item">
     <div id="method_pan" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l312"><code>addon&#x2F;classes&#x2F;sound.js:312</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l249"><code>addon&#x2F;classes&#x2F;sound.js:249</code></a></span>
         <h3 class="">
             public
             
@@ -1115,7 +1171,7 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 </div>
 <div class="method item">
     <div id="method_pause" class="title">
-        <span class="source-link"><a href="../files/addon_classes_track.js.html#l81"><code>addon&#x2F;classes&#x2F;track.js:81</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_track.js.html#l80"><code>addon&#x2F;classes&#x2F;track.js:80</code></a></span>
         <h3 class="">
             public
             
@@ -1136,7 +1192,7 @@ setting startOffset back to 0.</p>
 </div>
 <div class="method item">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_track.js.html#l70"><code>addon&#x2F;classes&#x2F;track.js:70</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_track.js.html#l69"><code>addon&#x2F;classes&#x2F;track.js:69</code></a></span>
         <h3 class="">
             public
             
@@ -1159,7 +1215,7 @@ setting startOffset back to 0.</p>
 </div>
 <div class="method item">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l251"><code>addon&#x2F;classes&#x2F;sound.js:251</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l173"><code>addon&#x2F;classes&#x2F;sound.js:173</code></a></span>
         <h3 class="">
             public
             
@@ -1216,7 +1272,7 @@ time") when the audio source should be played.</p>
 </div>
 <div class="method item">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l268"><code>addon&#x2F;classes&#x2F;sound.js:268</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l190"><code>addon&#x2F;classes&#x2F;sound.js:190</code></a></span>
         <h3 class="">
             public
             
@@ -1269,7 +1325,7 @@ should be played.</p>
 </div>
 <div class="method item">
     <div id="method_removeConnection" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l432"><code>addon&#x2F;classes&#x2F;sound.js:432</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l369"><code>addon&#x2F;classes&#x2F;sound.js:369</code></a></span>
         <h3 class="">
             public
             
@@ -1321,7 +1377,7 @@ should be played.</p>
 </div>
 <div class="method item">
     <div id="method_seek" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l373"><code>addon&#x2F;classes&#x2F;sound.js:373</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l310"><code>addon&#x2F;classes&#x2F;sound.js:310</code></a></span>
         <h3 class="">
             public
             
@@ -1394,7 +1450,7 @@ soundInstance.seek(90).from('seconds');</code></pre>
 </div>
 <div class="method item">
     <div id="method_stop" class="title">
-        <span class="source-link"><a href="../files/addon_classes_track.js.html#l95"><code>addon&#x2F;classes&#x2F;track.js:95</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_track.js.html#l96"><code>addon&#x2F;classes&#x2F;track.js:96</code></a></span>
         <h3 class="">
             public
             
@@ -1418,17 +1474,43 @@ startOffset to 0.</p>
 </div>
   </div>
 
+    <div id="methods protected">
+        <h2 id="protected-methods">Protected Methods</h2>
+<div class="method item protected">
+    <div id="method__initConnections" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l380"><code>addon&#x2F;classes&#x2F;sound.js:380</code></a></span>
+        <h3 class="">
+            protected
+            
+            
+            _initConnections( )
+        </h3>
+    </div>
+
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method__initConnections" class="crosslink">Sound</a>
+        </div>
+
+
+    <div class="method-description"><p>Initializes default connections on Sound instantiation. Runs <code>on('init')</code>.</p>
+</div>
+
+
+
+
+</div>
+    </div>
 
     <div id="methods private">
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__createNode" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l511"><code>addon&#x2F;classes&#x2F;sound.js:511</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l477"><code>addon&#x2F;classes&#x2F;sound.js:477</code></a></span>
         <h3 class="">
             private
             
             
-            _createNode( )
+            _createNode(connection): <a href="../classes/Connection.html" class="crosslink">Connection</a>
         </h3>
     </div>
 
@@ -1437,19 +1519,59 @@ startOffset to 0.</p>
         </div>
 
 
-    <div class="method-description"><p>Performs the actual AudioNode creation for the
-<a href="../classes/Sound.html#method__wireUpConnections" class="crosslink">_wireUpConnections</a> method.</p>
+    <div class="method-description"><p>Creates an AudioNode instance for a Connection instance and sets it on it's
+<code>node</code> property. Unless the Connection instance's <code>createdOnPlay</code> property
+is true, does nothing if the AudioNode instance has already been created.</p>
 <p>Also sets any properties from a connection's <code>onPlaySetAttrsOnNode</code> array
 on the node.</p>
 </div>
 
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>connection</td>
+              <td><a href="../classes/Connection.html" class="crosslink">Connection</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>A Connection instance that should have it's
+node created (if needed).</p>
+</td>
+            </tr>
 
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Connection.html" class="crosslink">Connection</a></span>
+          <span class="return-description"><p>The input Connection instance after having it's node
+created.</p>
+</span>
+        </div>
+      </div>
 
 
 </div>
 <div class="method item private">
     <div id="method__play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l445"><code>addon&#x2F;classes&#x2F;sound.js:445</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l421"><code>addon&#x2F;classes&#x2F;sound.js:421</code></a></span>
         <h3 class="">
             private
             
@@ -1509,8 +1631,71 @@ time") when the audio source should be played.</p>
 
 </div>
 <div class="method item private">
+    <div id="method__setAttrsOnNode" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l512"><code>addon&#x2F;classes&#x2F;sound.js:512</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _setAttrsOnNode(The): <a href="../classes/Connection.html" class="crosslink">Connection</a>
+        </h3>
+    </div>
+
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method__setAttrsOnNode" class="crosslink">Sound</a>
+        </div>
+
+
+    <div class="method-description"><p>Gets a Connection instance's <code>onPlaySetAttrsOnNode</code> and sets them on it's
+node.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>The</td>
+              <td><a href="../classes/Connection.html" class="crosslink">Connection</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Connection instance that needs it's node's attrs
+set.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Connection.html" class="crosslink">Connection</a></span>
+          <span class="return-description"><p>The input Connection instance after having it's nodes
+attrs set.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
     <div id="method__trackPlayPosition" class="title">
-        <span class="source-link"><a href="../files/addon_classes_track.js.html#l110"><code>addon&#x2F;classes&#x2F;track.js:110</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_track.js.html#l111"><code>addon&#x2F;classes&#x2F;track.js:111</code></a></span>
         <h3 class="">
             private
             
@@ -1531,28 +1716,128 @@ Loop ends when <code>isPlaying</code> is false.</p>
 
 </div>
 <div class="method item private">
-    <div id="method__wireUpConnections" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l480"><code>addon&#x2F;classes&#x2F;sound.js:480</code></a></span>
+    <div id="method__wireConnection" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l535"><code>addon&#x2F;classes&#x2F;sound.js:535</code></a></span>
         <h3 class="">
             private
             
             
-            _wireUpConnections( )
+            _wireConnection(connection, idx, connections): <a href="../classes/Connection.html" class="crosslink">Connection</a>
         </h3>
     </div>
 
         <div class="inherited">
-          Inherited from <a href="../classes/Sound.html#method__wireUpConnections" class="crosslink">Sound</a>
+          Inherited from <a href="../classes/Sound.html#method__wireConnection" class="crosslink">Sound</a>
         </div>
 
 
-    <div class="method-description"><p>Gets the array of connections from the
-_createdConnections computed property and
-returns the same array with any AudioNodes that need to be created at
-<a href="../classes/Sound.html#method__play" class="crosslink">_play</a> time having been created.</p>
+    <div class="method-description"><p>Meant to be passed to a Array.prototype.map function. Connects a Connection
+instance's node to the next Connection instance's node.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>connection</td>
+              <td><a href="../classes/Connection.html" class="crosslink">Connection</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The current Connection instance in the
+iteration.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>idx</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The index of the current iteration.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>connections</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The original array of connections.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Connection.html" class="crosslink">Connection</a></span>
+          <span class="return-description"><p>The input Connection instance after having it's node
+connected to the next Connection instance's node.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__wireConnections" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l456"><code>addon&#x2F;classes&#x2F;sound.js:456</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _wireConnections( ): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a>
+        </h3>
+    </div>
+
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method__wireConnections" class="crosslink">Sound</a>
+        </div>
+
+
+    <div class="method-description"><p>Gets the array of Connection instances from the connections array and
+returns the same array, having created any AudioNode instances that needed
+to be created, and having connected the AudioNode instances to one another
+in the order in which they were present in the connections array.</p>
 </div>
 
 
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a></span>
+          <span class="return-description"><p>Array of Connection instances collected from the
+connections array, created, connected, and ready to play.</p>
+</span>
+        </div>
+      </div>
 
 
 </div>

@@ -25,20 +25,12 @@
                 <div class="bd">
                     <ul>
                             <li><a href="../modules/Audio.html">Audio</a>
-                                <ul>
-                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
-                                        <li><a href="../modules/Audio.html#Sampler">Sampler</a></li>
-                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
-                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
-                                </ul>
                             </li>
-                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
                             </li>
-                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
-                                <ul>
-                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
-                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
-                                </ul>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
                             </li>
                             <li><a href="../modules/utils.html">utils</a>
                             </li>
@@ -52,9 +44,10 @@
                 </div>
                 <div class="bd">
                     <ul>
-                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
@@ -69,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.4ca17b5b
+              Version: 0.0.0.4b06bac6
             </div>
             
         </div>
@@ -84,11 +77,10 @@ import Ember from &#x27;ember&#x27;;
 import Sound from &#x27;./sound&#x27;;
 
 /**
- * The Note class provides identification-focused functionality for collections
- * of musical notes.
+ * Provides helper classes that represent musical concepts meant to be used by
+ * classes from the Audio module.
  *
- * @module Musical-Concepts
- * @submodule Note
+ * @module MusicalConcepts
  */
 
 const {

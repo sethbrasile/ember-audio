@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Connection - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
+    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            <div id="sections" class="sidebox">
+              <div class="hd">
+                <h2 class="no-toc">Connection</h2>
+              </div>
+              <div class="bd">
+            
+            
+            
+                  <div><a href="#property-summary">Property Summary</a></div>
+            
+                  <div><a href="#method-summary">Method Summary</a></div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                  <div><a href="#public-properties">Public Properties</a></div>
+                  <ul>
+                      <li><a href="#props_createCommand">createCommand</a></li>
+                      <li><a href="#props_createdOnPlay">createdOnPlay</a></li>
+                      <li><a href="#props_name">name</a></li>
+                      <li><a href="#props_node">node</a></li>
+                      <li><a href="#props_onPlaySetAttrsOnNode">onPlaySetAttrsOnNode</a></li>
+                      <li><a href="#props_path">path</a></li>
+                      <li><a href="#props_source">source</a></li>
+                  </ul>
+            
+            
+            
+            
+            
+                  <div><a href="#private-methods">Private Methods</a></div>
+                  <ul>
+                      <li><a href="#method__initArrays">_initArrays</a></li>
+                  </ul>
+              </div>
+            </div>
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.4b06bac6
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l15"><code>addon&#x2F;classes&#x2F;connection.js:15</code></a></span>
+    <h1 class="class-name">Connection</h1>
+</div>
+
+
+
+
+<div class="class-description"><p>This class represents a single connection in a Sound instance's connections
+array. It is mostly just a wrapper around an AudioNode instance. It defines
+some standards for how to handle the behaviors of different AudioNode types.
+Most connections create their corresponding AudioNode immediately, but some
+AudioNodes are "throw-away" and have to be created each time a Sound instance
+is played.</p>
+<p>Most properties in this class just define how to go about getting/creating an
+AudioNode instance and setting it on this class' <code>node</code> property. Some define
+how to set properties on the AudioNode instance after it has been created.</p>
+</div>
+
+
+
+
+
+
+
+  <h2 id="property-summary">Property Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Properties</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_createCommand">createCommand</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              <p>If <code>source</code> is specified, this method will be called on the object that was retrieved from <code>source</code>. The value returned from this method is set on the <code>node</code> property.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_createdOnPlay">createdOnPlay</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+            </div>
+            <div class="short-description">
+              <p>If this is true, the AudioNode will be created every time the consuming Sound instance is played.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_name">name</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              <p>The name of the connection. This is the name that can be used to get an AudioNode instance via the <a href="../classes/Sound.html#method_getNode" class="crosslink">getNode</a> method.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_node">node</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
+            </div>
+            <div class="short-description">
+              <p>This is the main attraction here in connection-land. All the other properties in the Connection class exist to create or mutate this property. Houses an AudioNode instance that will be used by an instance of the Sound class.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_onPlaySetAttrsOnNode">onPlaySetAttrsOnNode</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+            </div>
+            <div class="short-description">
+              <p>An array of POJOs that specify properties that need to be set on a node when any of the <a href="../classes/Sound.html#method_play" class="crosslink">play</a> methods are called. For instance, an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" class="crosslink external" target="_blank">AudioBufferSourceNode</a> must be created at play time, because they can only be played once and then they are immediately thrown away.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_path">path</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              <p>If an AudioNode instance already exists and is accessible to the Sound instance, the path to the node can be placed here. If this value is specified, all options except <code>name</code> become useless. If <code>node</code> is specified, it will override this option and the AudioNode supplied to <code>node</code> will be used.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_source">source</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              <p>If <code>createCommand</code> is specified, the object at this location (relative to the Sound instance) will be used as the "source" of the <code>createCommand</code>.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+  <h2 id="method-summary">Method Summary</h2>
+
+
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Private Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__initArrays">_initArrays</a>( )
+            </div>
+            <div class="short-description">
+              <p>If any of the array types are null on init, set them to an Ember.MutableArray</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+    <div id="properties public">
+        <h2 id="public-properties">Public Properties</h2>
+<div class="property item">
+  <div id="props_createCommand" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l79"><code>addon&#x2F;classes&#x2F;connection.js:79</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      createCommand: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>If <code>source</code> is specified, this method will be called on the object that was
+retrieved from <code>source</code>. The value returned from this method is set on the
+<code>node</code> property.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// Creates the AudioNode by calling:
+// this.get('audioContext')[createCommand]();
+{
+  source: 'audioContext'
+  createCommand: createGain
+}</code></pre>
+
+</div>
+<div class="property item">
+  <div id="props_createdOnPlay" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l151"><code>addon&#x2F;classes&#x2F;connection.js:151</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      createdOnPlay: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>If this is true, the AudioNode will be created every time the consuming
+Sound instance is played.</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_name" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l31"><code>addon&#x2F;classes&#x2F;connection.js:31</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      name: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>The name of the connection. This is the name that can be used to
+get an AudioNode instance via the
+<a href="../classes/Sound.html#method_getNode" class="crosslink">getNode</a> method.</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_node" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l137"><code>addon&#x2F;classes&#x2F;connection.js:137</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      node: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>This is the main attraction here in connection-land. All the other
+properties in the Connection class exist to create or mutate this property.
+Houses an AudioNode instance that will be used by an instance of the Sound
+class.</p>
+<p>If this property is set directly, all of the other properties on this class
+(except <code>name</code>) are rendered useless.</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_onPlaySetAttrsOnNode" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l97"><code>addon&#x2F;classes&#x2F;connection.js:97</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      onPlaySetAttrsOnNode: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>An array of POJOs that specify properties that need to be set on a node
+when any of the <a href="../classes/Sound.html#method_play" class="crosslink">play</a> methods
+are called. For instance, an
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" class="crosslink external" target="_blank">AudioBufferSourceNode</a> must be created at
+play time, because they can only be played once and then they are
+immediately thrown away.</p>
+<p>Valid keys are:</p>
+<p><code>attrNameOnNode</code> {string} Determines which property on the node should be
+set to the value. This can be a nested accessor (ie. <code>'gain.value'</code>).</p>
+<p><code>relativePath</code> {string} Determines where on <code>this</code> (the Sound instance) to
+get the value. This can be a nested accessor (ie. <code>'gainNode.gain.value'</code>).</p>
+<p><code>value</code> {mixed} The direct value to set. If used along with <code>relativePath</code>,
+this will act as a default value and the value at <code>relativePath</code> will take
+precedence.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// Causes gainNode.gain.value = soundInstance.get('gainValue') || 1;
+// to be called at play-time
+
+{
+  name: 'gainNode',
+  onPlaySetAttrsOnNode: [
+    {
+      attrNameOnNode: 'gain.value',
+      relativePath: 'gainValue',
+      value: 1
+    }
+  ]
+}</code></pre>
+
+</div>
+<div class="property item">
+  <div id="props_path" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l42"><code>addon&#x2F;classes&#x2F;connection.js:42</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      path: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>If an AudioNode instance already exists and is accessible to the Sound
+instance, the path to the node can be placed here. If this value is
+specified, all options except <code>name</code> become useless. If <code>node</code> is specified,
+it will override this option and the AudioNode supplied to <code>node</code> will be
+used.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// Uses the Audio Node instance from:
+// soundInstance.get('audioContext.destination')
+{
+  name: 'destination',
+  path: 'audioContext.destination'
+}</code></pre>
+
+</div>
+<div class="property item">
+  <div id="props_source" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l62"><code>addon&#x2F;classes&#x2F;connection.js:62</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      source: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>If <code>createCommand</code> is specified, the object at this location (relative to
+the Sound instance) will be used as the "source" of the <code>createCommand</code>.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// Creates the AudioNode by calling:
+// this.get('audioContext')[createCommand]();
+{
+  source: 'audioContext'
+  createCommand: createGain
+}</code></pre>
+
+</div>
+    </div>
+
+
+
+
+
+    <div id="methods private">
+        <h2 id="private-methods">Private Methods</h2>
+<div class="method item private">
+    <div id="method__initArrays" class="title">
+        <span class="source-link"><a href="../files/addon_classes_connection.js.html#l161"><code>addon&#x2F;classes&#x2F;connection.js:161</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _initArrays( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>If any of the array types are null on init, set them to an
+Ember.MutableArray</p>
+</div>
+
+
+
+
+</div>
+    </div>
+
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+</body>
+</html>

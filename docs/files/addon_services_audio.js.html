@@ -25,20 +25,12 @@
                 <div class="bd">
                     <ul>
                             <li><a href="../modules/Audio.html">Audio</a>
-                                <ul>
-                                        <li><a href="../modules/Audio.html#BeatTrack">BeatTrack</a></li>
-                                        <li><a href="../modules/Audio.html#Sampler">Sampler</a></li>
-                                        <li><a href="../modules/Audio.html#Sound">Sound</a></li>
-                                        <li><a href="../modules/Audio.html#Track">Track</a></li>
-                                </ul>
                             </li>
-                            <li><a href="../modules/Audio-Service.html">Audio-Service</a>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
                             </li>
-                            <li><a href="../modules/Musical-Concepts.html">Musical-Concepts</a>
-                                <ul>
-                                        <li><a href="../modules/Musical-Concepts.html#Beat">Beat</a></li>
-                                        <li><a href="../modules/Musical-Concepts.html#Note">Note</a></li>
-                                </ul>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
                             </li>
                             <li><a href="../modules/utils.html">utils</a>
                             </li>
@@ -52,9 +44,10 @@
                 </div>
                 <div class="bd">
                     <ul>
-                            <li><a href="../classes/Audio.html">Audio</a></li>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
@@ -69,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.4ca17b5b
+              Version: 0.0.0.4b06bac6
             </div>
             
         </div>
@@ -87,7 +80,7 @@ import { sortNotes, base64ToUint8, mungeSoundFont } from &#x27;ember-audio/utils
 
 /**
  * Provides the Audio Service
- * @module Audio-Service
+ * @module AudioService
  */
 
 const {
@@ -99,7 +92,9 @@ const {
  * A {{#crossLink &quot;Ember.Service&quot;}}Service{{/crossLink}} that provides methods
  * for interacting with the various
  * {{#crossLinkModule &quot;Audio&quot;}}{{/crossLinkModule}} classes and the Web Audio
- * API&#x27;s {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}}.
+ * API&#x27;s {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}}. This can be thought of as
+ * the &quot;entrypoint&quot; to using ember-audio. An application using ember-audio
+ * should use this service for all interactions with the Web Audio API.
  *
  *     // inject into an object
  *     Ember.Something.extend({
@@ -111,7 +106,7 @@ const {
  *       return this.get(&#x27;audio&#x27;).load(&#x27;some.mp3&#x27;).asSound(&#x27;some-sound&#x27;);
  *     }
  *
- * @class Audio
+ * @class AudioService
  */
 export default Service.extend({
   /**
@@ -121,6 +116,7 @@ export default Service.extend({
    *
    * @property context
    * @type {AudioContext}
+   * @todo change this to audioContext to match other stuff, or change other stuff to context
    */
   context: new AudioContext(),
 

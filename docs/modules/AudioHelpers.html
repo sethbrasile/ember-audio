@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>addon/classes/beat-track.js - ember-audio</title>
+    <title>AudioHelpers - ember-audio</title>
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
     <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
@@ -69,74 +69,26 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-  <h1 class="file-name">addon/classes/beat-track.js</h1>
+  <span class="source-link"><a href="../files/addon_classes_connection.js.html#l15"><code>addon&#x2F;classes&#x2F;connection.js:15</code></a></span>
+  <h1 class="module-name">AudioHelpers</h1>
 </div>
 
-<pre class="code prettyprint linenums">
-import Ember from &#x27;ember&#x27;;
-import Beat from &#x27;./beat&#x27;;
-import Sampler from &#x27;./sampler&#x27;;
+<div class="intro"><p>Provides classes that interact with the Web Audio API indirectly by providing
+data models for the classes in the Audio module to consume.</p>
+</div>
 
-/**
- * Provides classes that are capable of interacting with the Web Audio API&#x27;s
- * AudioContext.
- *
- * @module Audio
- */
-
-const {
-  computed
-} = Ember;
-
-/**
- * An instance of this class has a single
- * {{#crossLink &quot;AudioBuffer&quot;}}{{/crossLink}} (a single &quot;sound&quot;) but provides
- * methods to play that sound repeatedly and in a rhythmic way. An instance of
- * this class behaves very similarly to a &quot;lane&quot; on a drum machine.
- *
- * @class BeatTrack
- * @extends Sampler
- *
- * @todo need a way to stop a BeatTrack once it&#x27;s started
- */
-const BeatTrack = Sampler.extend({
-  numBeats: 4,
-  playingTime: 100,
-
-  beats: computed(&#x27;numBeats&#x27;, function() {
-    const beats = [];
-    const numBeats = this.get(&#x27;numBeats&#x27;);
-
-    for (let i = 0; i &lt; numBeats; i++) {
-      beats.push(Beat.create({
-        audioBufferDuration: this.get(&#x27;audioBuffer.duration&#x27;),
-        parentPlayIn: this.playIn.bind(this),
-        parentPlay: this.play.bind(this),
-      }));
-    }
-
-    return beats;
-  }),
-
-  playBeats(bpm, noteType) {
-    this._callPlayMethodOnBeats(&#x27;playIn&#x27;, bpm, noteType);
-  },
-
-  playActiveBeats(bpm, noteType) {
-    this._callPlayMethodOnBeats(&#x27;ifActivePlayIn&#x27;, bpm, noteType);
-  },
-
-  _callPlayMethodOnBeats(method, bpm, noteType=1/4) {
-    // http://bradthemad.org/guitar/tempo_explanation.php
-    const duration = (240 * noteType) / bpm;
-    this.get(&#x27;beats&#x27;).map((beat, idx) =&gt; beat[method](idx * duration));
-  }
-});
-
-export default BeatTrack;
-
-</pre>
-
+<div class="yui3-g">
+    <div class="yui3-u-1-2">
+        <p>This module has the following classes:</p>
+        <ul>
+            <li><a href="../classes/Connection.html">Connection</a></li>
+        </ul>
+    </div>
+    <div class="yui3-u-1-2">
+    </div>
+    <div class="yui3-u-1-2">
+    </div>
+</div>
 </div>
         </div>
     </div>

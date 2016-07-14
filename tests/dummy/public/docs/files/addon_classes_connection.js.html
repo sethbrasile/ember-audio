@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/classes/connection.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.4b06bac6
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/classes/connection.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+
+const {
+  A,
+  on
+} = Ember;
+
+/**
+ * Provides classes that interact with the Web Audio API indirectly by providing
+ * data models for the classes in the Audio module to consume.
+ *
+ * @module AudioHelpers
+ */
+
+/**
+ * This class represents a single connection in a Sound instance&#x27;s connections
+ * array. It is mostly just a wrapper around an AudioNode instance. It defines
+ * some standards for how to handle the behaviors of different AudioNode types.
+ * Most connections create their corresponding AudioNode immediately, but some
+ * AudioNodes are &quot;throw-away&quot; and have to be created each time a Sound instance
+ * is played.
+ *
+ * Most properties in this class just define how to go about getting/creating an
+ * AudioNode instance and setting it on this class&#x27; &#x60;node&#x60; property. Some define
+ * how to set properties on the AudioNode instance after it has been created.
+ *
+ * @class Connection
+ */
+const Connection = Ember.Object.extend({
+
+  /**
+   * The name of the connection. This is the name that can be used to
+   * get an AudioNode instance via the
+   * {{#crossLink &quot;Sound/getNode:method&quot;}}{{/crossLink}} method.
+   *
+   * @property name
+   * @type {string}
+   * @todo change reference to getNode to getNodeFrom after renaming
+   */
+  name: null,
+
+  /**
+   * If an AudioNode instance already exists and is accessible to the Sound
+   * instance, the path to the node can be placed here. If this value is
+   * specified, all options except &#x60;name&#x60; become useless. If &#x60;node&#x60; is specified,
+   * it will override this option and the AudioNode supplied to &#x60;node&#x60; will be
+   * used.
+   *
+   * @example
+   *     // Uses the Audio Node instance from:
+   *     // soundInstance.get(&#x27;audioContext.destination&#x27;)
+   *     {
+   *       name: &#x27;destination&#x27;,
+   *       path: &#x27;audioContext.destination&#x27;
+   *     }
+   *
+   * @property path
+   * @type {string}
+   */
+  path: null,
+
+  /**
+   * If &#x60;createCommand&#x60; is specified, the object at this location (relative to
+   * the Sound instance) will be used as the &quot;source&quot; of the &#x60;createCommand&#x60;.
+   *
+   * @example
+   *     // Creates the AudioNode by calling:
+   *     // this.get(&#x27;audioContext&#x27;)[createCommand]();
+   *     {
+   *       source: &#x27;audioContext&#x27;
+   *       createCommand: createGain
+   *     }
+   *
+   * @property source
+   * @type {string}
+   */
+  source: null,
+
+  /**
+  * If &#x60;source&#x60; is specified, this method will be called on the object that was
+  * retrieved from &#x60;source&#x60;. The value returned from this method is set on the
+  * &#x60;node&#x60; property.
+  *
+  * @example
+  *     // Creates the AudioNode by calling:
+  *     // this.get(&#x27;audioContext&#x27;)[createCommand]();
+  *     {
+  *       source: &#x27;audioContext&#x27;
+  *       createCommand: createGain
+  *     }
+   *
+   * @property createCommand
+   * @type {string}
+   */
+  createCommand: null,
+
+  /**
+   * An array of POJOs that specify properties that need to be set on a node
+   * when any of the {{#crossLink &quot;Sound/play:method&quot;}}{{/crossLink}} methods
+   * are called. For instance, an
+   * {{#crossLink &quot;AudioBufferSourceNode&quot;}}{{/crossLink}} must be created at
+   * play time, because they can only be played once and then they are
+   * immediately thrown away.
+   *
+   * Valid keys are:
+   *
+   * &#x60;attrNameOnNode&#x60; {string} Determines which property on the node should be
+   * set to the value. This can be a nested accessor (ie. &#x60;&#x27;gain.value&#x27;&#x60;).
+   *
+   * &#x60;relativePath&#x60; {string} Determines where on &#x60;this&#x60; (the Sound instance) to
+   * get the value. This can be a nested accessor (ie. &#x60;&#x27;gainNode.gain.value&#x27;&#x60;).
+   *
+   * &#x60;value&#x60; {mixed} The direct value to set. If used along with &#x60;relativePath&#x60;,
+   * this will act as a default value and the value at &#x60;relativePath&#x60; will take
+   * precedence.
+   *
+   * @example
+   *     // Causes gainNode.gain.value = soundInstance.get(&#x27;gainValue&#x27;) || 1;
+   *     // to be called at play-time
+   *
+   *     {
+   *       name: &#x27;gainNode&#x27;,
+   *       onPlaySetAttrsOnNode: [
+   *         {
+   *           attrNameOnNode: &#x27;gain.value&#x27;,
+   *           relativePath: &#x27;gainValue&#x27;,
+   *           value: 1
+   *         }
+   *       ]
+   *     }
+   *
+   * @property onPlaySetAttrsOnNode
+   * @type {array}
+   */
+  onPlaySetAttrsOnNode: null,
+
+  /**
+   * This is the main attraction here in connection-land. All the other
+   * properties in the Connection class exist to create or mutate this property.
+   * Houses an AudioNode instance that will be used by an instance of the Sound
+   * class.
+   *
+   * If this property is set directly, all of the other properties on this class
+   * (except &#x60;name&#x60;) are rendered useless.
+   *
+   * @property node
+   * @type {AudioNode}
+   */
+  node: null,
+
+  /**
+   * If this is true, the AudioNode will be created every time the consuming
+   * Sound instance is played.
+   *
+   * @property createdOnPlay
+   * @type {boolean}
+   * @default false
+   */
+  createdOnPlay: false,
+
+  /**
+   * If any of the array types are null on init, set them to an
+   * Ember.MutableArray
+   *
+   * @private
+   * @method _initArrays
+   */
+  _initArrays: on(&#x27;init&#x27;, function() {
+    const arrays = [&#x27;onPlaySetAttrsOnNode&#x27;];
+
+    arrays.map((name) =&gt; {
+      if (!this.get(name)) {
+        this.set(name, A());
+      }
+    });
+  })
+});
+
+export default Connection;
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+</body>
+</html>
