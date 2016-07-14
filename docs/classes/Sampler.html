@@ -96,8 +96,8 @@
             
                   <div><a href="#public-methods">Public Methods</a></div>
                   <ul>
+                      <li><a href="#method_play">play</a></li>
                       <li><a href="#method_playAt">playAt</a></li>
-                      <li><a href="#method_playIn">playIn</a></li>
                       <li><a href="#method_playIn">playIn</a></li>
                   </ul>
             
@@ -112,7 +112,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.0692b451
+              Version: 0.0.0.4ca17b5b
             </div>
             
         </div>
@@ -199,10 +199,10 @@ methods are called.</p>
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method_playAt">playAt</a>(time)
+              <a href="#method_play">play</a>( )
             </div>
             <div class="short-description">
-              <p>Gets the next Sound and plays it at the specified moment in time. A "moment in time" is measured in seconds from the moment that the <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
+              <p>Gets the next Sound and plays it immediately.</p>
             </div>
           </td>
         </tr>
@@ -214,10 +214,10 @@ methods are called.</p>
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method_playIn">playIn</a>( )
+              <a href="#method_playAt">playAt</a>(time)
             </div>
             <div class="short-description">
-              <p>Gets the next Sound and plays it immediately.</p>
+              <p>Gets the next Sound and plays it at the specified moment in time. A "moment in time" is measured in seconds from the moment that the <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
             </div>
           </td>
         </tr>
@@ -317,6 +317,26 @@ it's end, resulting in an infinite stream of Sound instances.</p>
   <div id="methods public">
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item">
+    <div id="method_play" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l41"><code>addon&#x2F;classes&#x2F;sampler.js:41</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            play( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets the next Sound and plays it immediately.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item">
     <div id="method_playAt" class="title">
         <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l64"><code>addon&#x2F;classes&#x2F;sampler.js:64</code></a></span>
         <h3 class="">
@@ -365,26 +385,6 @@ time") when the next Sound should be played.</p>
           </tbody>
         </table>
       </div>
-
-
-
-</div>
-<div class="method item">
-    <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l41"><code>addon&#x2F;classes&#x2F;sampler.js:41</code></a></span>
-        <h3 class="">
-            public
-            
-            
-            playIn( )
-        </h3>
-    </div>
-
-
-
-    <div class="method-description"><p>Gets the next Sound and plays it immediately.</p>
-</div>
-
 
 
 

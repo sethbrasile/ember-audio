@@ -96,6 +96,7 @@
             
                   <div><a href="#public-methods">Public Methods</a></div>
                   <ul>
+                      <li><a href="#method_play">play</a></li>
                       <li><a href="#method_playAt">playAt</a></li>
                       <li><a href="#method_playIn">playIn</a></li>
                   </ul>
@@ -111,7 +112,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.0692b451
+              Version: 0.0.0.4ca17b5b
             </div>
             
         </div>
@@ -202,6 +203,21 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
           </td>
           <td>
             <div class="method-name ">
+              <a href="#method_play">play</a>( )
+            </div>
+            <div class="short-description">
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
               <a href="#method_playAt">playAt</a>(time)
             </div>
             <div class="short-description">
@@ -217,7 +233,7 @@ this class behaves very similarly to a "lane" on a drum machine.</p>
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method_playIn">playIn</a>( )
+              <a href="#method_playIn">playIn</a>(seconds)
             </div>
             <div class="short-description">
               
@@ -303,6 +319,28 @@ it's end, resulting in an infinite stream of Sound instances.</div>
   <div id="methods public">
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item">
+    <div id="method_play" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l41"><code>addon&#x2F;classes&#x2F;sampler.js:41</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            play( )
+        </h3>
+    </div>
+
+        <div class="inherited">
+          Inherited from <a href="../classes/Sampler.html#method_play" class="crosslink">Sampler</a>
+        </div>
+
+
+    <div class="method-description">Gets the next Sound and plays it immediately.</div>
+
+
+
+
+</div>
+<div class="method item">
     <div id="method_playAt" class="title">
         <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l64"><code>addon&#x2F;classes&#x2F;sampler.js:64</code></a></span>
         <h3 class="">
@@ -358,22 +396,51 @@ time") when the next Sound should be played.</td>
 </div>
 <div class="method item">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l41"><code>addon&#x2F;classes&#x2F;sampler.js:41</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l51"><code>addon&#x2F;classes&#x2F;sampler.js:51</code></a></span>
         <h3 class="">
             public
             
             
-            playIn( )
+            playIn(seconds)
         </h3>
     </div>
 
-      <div class="overwrites">
-        Overwrites <a href="../classes/Sampler.html#method_playIn" class="crosslink">Sampler.playIn</a>
+        <div class="inherited">
+          Inherited from <a href="../classes/Sampler.html#method_playIn" class="crosslink">Sampler</a>
+        </div>
+
+
+    <div class="method-description">Gets the next Sound and plays it after the specified offset has elapsed.</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>seconds</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td>Number of seconds from "now" that the next Sound
+should be played.</td>
+            </tr>
+
+          </tbody>
+        </table>
       </div>
-
-
-    <div class="method-description">Gets the next Sound and plays it immediately.</div>
-
 
 
 

@@ -2,7 +2,7 @@
     "project": {
         "name": "ember-audio",
         "description": "An Ember addon that makes working with the Web Audio API super EZ",
-        "version": "0.0.0.0692b451"
+        "version": "0.0.0.4ca17b5b"
     },
     "files": {
         "addon/classes/beat-track.js": {
@@ -673,7 +673,7 @@
             "line": 41,
             "description": "Gets the next Sound and plays it immediately.",
             "itemtype": "method",
-            "name": "playIn",
+            "name": "play",
             "class": "Sampler",
             "module": "Audio",
             "submodule": "Sampler"
