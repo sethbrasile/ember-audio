@@ -41,7 +41,7 @@ const Sampler = Ember.Object.extend({
   /**
    * Gets the next Sound and plays it immediately.
    *
-   * @method playIn
+   * @method play
    */
    play() {
      const nextSound = this._getNextSound();
