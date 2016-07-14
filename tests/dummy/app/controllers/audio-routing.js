@@ -21,6 +21,7 @@ export default Ember.Controller.extend({
   }),
 
   _makeDistortionCurve(amount) {
+    // I stole this straight from the Mozilla Web Audio API docs site
     const k = typeof amount === 'number' ? amount : 50;
     const n_samples = 44100;
     const curve = new Float32Array(n_samples);
