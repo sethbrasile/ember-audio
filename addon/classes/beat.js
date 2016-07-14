@@ -4,7 +4,7 @@ import Ember from 'ember';
  * Provides helper classes that represent musical concepts meant to be used by
  * classes from the Audio module.
  *
- * @module Musical-Concepts
+ * @module MusicalConcepts
  */
 
 const {
