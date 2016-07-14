@@ -141,7 +141,8 @@ export function createOctavesWithNotes([ notes, octaves ]) {
 }
 
 /**
- * Acts as a comparator function for javascript's array sort() method.
+ * Acts as a comparator function for the
+ * {{#crossLink "Array/sort:method"}}Array.prototype.sort{{/crossLink}} method.
  * Sorts two {{#crossLink "Note"}}{{/crossLink}} instances alphabetically, flats
  * before naturals.
  *
