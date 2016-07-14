@@ -2,11 +2,10 @@ import Ember from 'ember';
 import Sound from './sound';
 
 /**
- * The Note class provides identification-focused functionality for collections
- * of musical notes.
+ * Provides helper classes that represent musical concepts meant to be used by
+ * classes from the Audio module.
  *
  * @module Musical-Concepts
- * @submodule Note
  */
 
 const {

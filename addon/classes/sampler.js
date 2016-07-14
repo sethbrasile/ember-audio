@@ -1,10 +1,10 @@
 import Ember from 'ember';
 
 /**
- * Provides the Sampler class.
+ * Provides classes that are capable of interacting with the Web Audio API's
+ * AudioContext.
  *
  * @module Audio
- * @submodule Sampler
  */
 
 /**

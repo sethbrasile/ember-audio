@@ -1,11 +1,10 @@
 import Ember from 'ember';
 
 /**
- * An instance of the Beat class represents a single "beat" on a rhythmic
- * instrument.
+ * Provides helper classes that represent musical concepts meant to be used by
+ * classes from the Audio module.
  *
  * @module Musical-Concepts
- * @submodule Beat
  */
 
 const {

@@ -3,11 +3,10 @@ import Beat from './beat';
 import Sampler from './sampler';
 
 /**
- * An instance of the BeatTrack class behaves very similarly to a "lane" on a
- * drum machine.
+ * Provides classes that are capable of interacting with the Web Audio API's
+ * AudioContext.
  *
  * @module Audio
- * @submodule BeatTrack
  */
 
 const {

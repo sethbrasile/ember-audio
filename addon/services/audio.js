@@ -5,7 +5,7 @@ import { sortNotes, base64ToUint8, mungeSoundFont } from 'ember-audio/utils';
 
 /**
  * Provides the Audio Service
- * @module Audio-Service
+ * @module AudioService
  */
 
 const {
@@ -17,7 +17,9 @@ const {
  * A {{#crossLink "Ember.Service"}}Service{{/crossLink}} that provides methods
  * for interacting with the various
  * {{#crossLinkModule "Audio"}}{{/crossLinkModule}} classes and the Web Audio
- * API's {{#crossLink "AudioContext"}}{{/crossLink}}.
+ * API's {{#crossLink "AudioContext"}}{{/crossLink}}. This can be thought of as
+ * the "entrypoint" to using ember-audio. An application using ember-audio
+ * should use this service for all interactions with the Web Audio API.
  *
  *     // inject into an object
  *     Ember.Something.extend({
@@ -29,7 +31,7 @@ const {
  *       return this.get('audio').load('some.mp3').asSound('some-sound');
  *     }
  *
- * @class Audio
+ * @class AudioService
  */
 export default Service.extend({
   /**

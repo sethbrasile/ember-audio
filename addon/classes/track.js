@@ -3,11 +3,10 @@ import Sound from './sound';
 import { zeroify } from 'ember-audio/utils';
 
 /**
- * An instance of the Track class represents a "track" of music, similar in
- * concept to a track on a CD or an MP3 player.
+ * Provides classes that are capable of interacting with the Web Audio API's
+ * AudioContext.
  *
  * @module Audio
- * @submodule Track
  */
 
 const {

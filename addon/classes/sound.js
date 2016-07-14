@@ -2,12 +2,10 @@ import Ember from 'ember';
 import { zeroify } from 'ember-audio/utils';
 
 /**
- * The Sound class provides the core functionality for interacting with the Web
- * Audio API's AudioContext, and is the base class for all of the other classes
- * in the Audio module.
+ * Provides classes that are capable of interacting with the Web Audio API's
+ * AudioContext.
  *
  * @module Audio
- * @submodule Sound
  */
 
 const {
