@@ -379,12 +379,12 @@ const Sound = Ember.Object.extend({
       createdOnPlay: true,
       source: 'audioContext',
       createCommand: 'createBufferSource',
-      onPlaySetAttrsOnNode: A([
+      onPlaySetAttrsOnNode: [
         {
           attrNameOnNode: 'buffer',
           relativePath: 'audioBuffer'
         }
-      ])
+      ]
     });
 
     const gain = Connection.create({
