@@ -96,7 +96,6 @@
             
                   <div><a href="#private-properties">Private Properties</a></div>
                   <ul>
-                      <li><a href="#props__bufferSourceNode">_bufferSourceNode</a></li>
                       <li><a href="#props__startedPlayingAt">_startedPlayingAt</a></li>
                   </ul>
             
@@ -135,7 +134,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5ec71b38
+              Version: 0.0.0.a2f0f2c8
             </div>
             
         </div>
@@ -184,7 +183,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
               <a href="#props_audioBuffer">audioBuffer</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer" class="crosslink external" target="_blank">AudioBuffer</a>
             </div>
             <div class="short-description">
-              <p>The AudioBuffer instance that provides audio data to the _bufferSourceNode.</p>
+              <p>The AudioBuffer instance that provides audio data to the bufferSourceNode.</p>
             </div>
           </td>
         </tr>
@@ -334,21 +333,6 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
       </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>
-            private
-            
-            
-          </td>
-          <td>
-            <div class="property-name ">
-              <a href="#props__bufferSourceNode">_bufferSourceNode</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" class="crosslink external" target="_blank">AudioBufferSourceNode</a>
-            </div>
-            <div class="short-description">
-              <p>The Sound instance's <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode">audio source node</a>.</p>
-            </div>
-          </td>
-        </tr>
         <tr>
           <td>
             private
@@ -522,7 +506,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
               <a href="#method_seek">seek</a>(amount): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
             </div>
             <div class="short-description">
-              <p>Gets the _bufferSourceNode and stops the audio, changes it's play position, and restarts the audio.</p>
+              <p>Gets the bufferSourceNode and stops the audio, changes it's play position, and restarts the audio.</p>
             </div>
           </td>
         </tr>
@@ -682,7 +666,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
         <h2 id="public-properties">Public Properties</h2>
 <div class="property item">
   <div id="props_audioBuffer" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l54"><code>addon&#x2F;classes&#x2F;sound.js:54</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l44"><code>addon&#x2F;classes&#x2F;sound.js:44</code></a></span>
     <h3 class="">
       public
       
@@ -692,13 +676,13 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
   </div>
 
 
-  <div class="property-description"><p>The AudioBuffer instance that provides audio data to the _bufferSourceNode.</p>
+  <div class="property-description"><p>The AudioBuffer instance that provides audio data to the bufferSourceNode.</p>
 </div>
 
 </div>
 <div class="property item">
   <div id="props_audioContext" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l62"><code>addon&#x2F;classes&#x2F;sound.js:62</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l52"><code>addon&#x2F;classes&#x2F;sound.js:52</code></a></span>
     <h3 class="">
       public
       
@@ -720,7 +704,7 @@ Web Audio API.</p>
 </div>
 <div class="property item">
   <div id="props_connections" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l110"><code>addon&#x2F;classes&#x2F;sound.js:110</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l100"><code>addon&#x2F;classes&#x2F;sound.js:100</code></a></span>
     <h3 class="">
       public
       
@@ -740,7 +724,7 @@ method.</p>
 </div>
 <div class="property item">
   <div id="props_duration" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l122"><code>addon&#x2F;classes&#x2F;sound.js:122</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l112"><code>addon&#x2F;classes&#x2F;sound.js:112</code></a></span>
     <h3 class="">
       public
       
@@ -767,7 +751,7 @@ are <code>raw</code>, <code>string</code>, and <code>pojo</code>.</p>
 </div>
 <div class="property item">
   <div id="props_isPlaying" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l99"><code>addon&#x2F;classes&#x2F;sound.js:99</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l89"><code>addon&#x2F;classes&#x2F;sound.js:89</code></a></span>
     <h3 class="">
       public
       
@@ -802,7 +786,7 @@ this Sound instance is registered as on it's parent register.</p>
 </div>
 <div class="property item">
   <div id="props_percentGain" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l153"><code>addon&#x2F;classes&#x2F;sound.js:153</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l143"><code>addon&#x2F;classes&#x2F;sound.js:143</code></a></span>
     <h3 class="">
       public
       
@@ -863,7 +847,7 @@ formats are <code>raw</code>, <code>string</code>, and <code>pojo</code>.</p>
 </div>
 <div class="property item">
   <div id="props_startOffset" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l88"><code>addon&#x2F;classes&#x2F;sound.js:88</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l78"><code>addon&#x2F;classes&#x2F;sound.js:78</code></a></span>
     <h3 class="">
       public
       
@@ -886,25 +870,8 @@ the duration of the audio source.</p>
     <div id="properties private">
         <h2 id="private-properties">Private Properties</h2>
 <div class="property item private">
-  <div id="props__bufferSourceNode" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l44"><code>addon&#x2F;classes&#x2F;sound.js:44</code></a></span>
-    <h3 class="">
-      private
-      
-      
-      _bufferSourceNode: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" class="crosslink external" target="_blank">AudioBufferSourceNode</a>
-    </h3>
-  </div>
-
-
-  <div class="property-description"><p>The Sound instance's
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode">audio source node</a>.</p>
-</div>
-
-</div>
-<div class="property item private">
   <div id="props__startedPlayingAt" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l77"><code>addon&#x2F;classes&#x2F;sound.js:77</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l67"><code>addon&#x2F;classes&#x2F;sound.js:67</code></a></span>
     <h3 class="">
       private
       
@@ -926,7 +893,7 @@ It will always reflect the start time of the most recent
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item">
     <div id="method_changeGainTo" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l262"><code>addon&#x2F;classes&#x2F;sound.js:262</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l252"><code>addon&#x2F;classes&#x2F;sound.js:252</code></a></span>
         <h3 class="">
             public
             
@@ -997,7 +964,7 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 </div>
 <div class="method item">
     <div id="method_getConnection" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l236"><code>addon&#x2F;classes&#x2F;sound.js:236</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l226"><code>addon&#x2F;classes&#x2F;sound.js:226</code></a></span>
         <h3 class="">
             public
             
@@ -1057,7 +1024,7 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 </div>
 <div class="method item">
     <div id="method_getNode" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l217"><code>addon&#x2F;classes&#x2F;sound.js:217</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l207"><code>addon&#x2F;classes&#x2F;sound.js:207</code></a></span>
         <h3 class="">
             public
             
@@ -1118,7 +1085,7 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 </div>
 <div class="method item">
     <div id="method_pan" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l249"><code>addon&#x2F;classes&#x2F;sound.js:249</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l239"><code>addon&#x2F;classes&#x2F;sound.js:239</code></a></span>
         <h3 class="">
             public
             
@@ -1215,7 +1182,7 @@ setting startOffset back to 0.</p>
 </div>
 <div class="method item">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l173"><code>addon&#x2F;classes&#x2F;sound.js:173</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l163"><code>addon&#x2F;classes&#x2F;sound.js:163</code></a></span>
         <h3 class="">
             public
             
@@ -1272,7 +1239,7 @@ time") when the audio source should be played.</p>
 </div>
 <div class="method item">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l190"><code>addon&#x2F;classes&#x2F;sound.js:190</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l180"><code>addon&#x2F;classes&#x2F;sound.js:180</code></a></span>
         <h3 class="">
             public
             
@@ -1325,7 +1292,7 @@ should be played.</p>
 </div>
 <div class="method item">
     <div id="method_removeConnection" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l369"><code>addon&#x2F;classes&#x2F;sound.js:369</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l359"><code>addon&#x2F;classes&#x2F;sound.js:359</code></a></span>
         <h3 class="">
             public
             
@@ -1377,7 +1344,7 @@ should be played.</p>
 </div>
 <div class="method item">
     <div id="method_seek" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l310"><code>addon&#x2F;classes&#x2F;sound.js:310</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l300"><code>addon&#x2F;classes&#x2F;sound.js:300</code></a></span>
         <h3 class="">
             public
             
@@ -1391,7 +1358,7 @@ should be played.</p>
         </div>
 
 
-    <div class="method-description"><p>Gets the _bufferSourceNode and stops the audio,
+    <div class="method-description"><p>Gets the bufferSourceNode and stops the audio,
 changes it's play position, and restarts the audio.</p>
 <p>returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing
 one to specify which type of value is being provided.</p>
@@ -1478,7 +1445,7 @@ startOffset to 0.</p>
         <h2 id="protected-methods">Protected Methods</h2>
 <div class="method item protected">
     <div id="method__initConnections" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l380"><code>addon&#x2F;classes&#x2F;sound.js:380</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l370"><code>addon&#x2F;classes&#x2F;sound.js:370</code></a></span>
         <h3 class="">
             protected
             
@@ -1505,7 +1472,7 @@ startOffset to 0.</p>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__createNode" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l477"><code>addon&#x2F;classes&#x2F;sound.js:477</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l467"><code>addon&#x2F;classes&#x2F;sound.js:467</code></a></span>
         <h3 class="">
             private
             
@@ -1571,7 +1538,7 @@ created.</p>
 </div>
 <div class="method item private">
     <div id="method__play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l421"><code>addon&#x2F;classes&#x2F;sound.js:421</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l411"><code>addon&#x2F;classes&#x2F;sound.js:411</code></a></span>
         <h3 class="">
             private
             
@@ -1632,7 +1599,7 @@ time") when the audio source should be played.</p>
 </div>
 <div class="method item private">
     <div id="method__setAttrsOnNode" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l512"><code>addon&#x2F;classes&#x2F;sound.js:512</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l502"><code>addon&#x2F;classes&#x2F;sound.js:502</code></a></span>
         <h3 class="">
             private
             
@@ -1717,7 +1684,7 @@ Loop ends when <code>isPlaying</code> is false.</p>
 </div>
 <div class="method item private">
     <div id="method__wireConnection" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l535"><code>addon&#x2F;classes&#x2F;sound.js:535</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l525"><code>addon&#x2F;classes&#x2F;sound.js:525</code></a></span>
         <h3 class="">
             private
             
@@ -1808,7 +1775,7 @@ connected to the next Connection instance's node.</p>
 </div>
 <div class="method item private">
     <div id="method__wireConnections" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l456"><code>addon&#x2F;classes&#x2F;sound.js:456</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l446"><code>addon&#x2F;classes&#x2F;sound.js:446</code></a></span>
         <h3 class="">
             private
             

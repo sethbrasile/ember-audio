@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5ec71b38
+              Version: 0.0.0.a2f0f2c8
             </div>
             
         </div>
@@ -117,17 +117,7 @@ const Sound = Ember.Object.extend({
   name: null,
 
   /**
-   * The Sound instance&#x27;s
-   * [audio source node](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode).
-   *
-   * @property _bufferSourceNode
-   * @type {AudioBufferSourceNode}
-   * @private
-   */
-  _bufferSourceNode: null,
-
-  /**
-   * The AudioBuffer instance that provides audio data to the _bufferSourceNode.
+   * The AudioBuffer instance that provides audio data to the bufferSourceNode.
    *
    * @property audioBuffer
    * @type {AudioBuffer}
@@ -281,7 +271,7 @@ const Sound = Ember.Object.extend({
    * @method stop
    */
   stop() {
-    const node = this.getNode(&#x27;_bufferSourceNode&#x27;);
+    const node = this.getNode(&#x27;bufferSourceNode&#x27;);
 
     if (node) {
       node.stop();
@@ -383,7 +373,7 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the _bufferSourceNode and stops the audio,
+   * Gets the bufferSourceNode and stops the audio,
    * changes it&#x27;s play position, and restarts the audio.
    *
    * returns a pojo with the &#x60;from&#x60; method that &#x60;value&#x60; is curried to, allowing
@@ -460,16 +450,16 @@ const Sound = Ember.Object.extend({
    */
   _initConnections: on(&#x27;init&#x27;, function() {
     const bufferSource = Connection.create({
-      name: &#x27;_bufferSourceNode&#x27;,
+      name: &#x27;bufferSourceNode&#x27;,
       createdOnPlay: true,
       source: &#x27;audioContext&#x27;,
       createCommand: &#x27;createBufferSource&#x27;,
-      onPlaySetAttrsOnNode: A([
+      onPlaySetAttrsOnNode: [
         {
           attrNameOnNode: &#x27;buffer&#x27;,
           relativePath: &#x27;audioBuffer&#x27;
         }
-      ])
+      ]
     });
 
     const gain = Connection.create({
@@ -517,7 +507,7 @@ const Sound = Ember.Object.extend({
 
     this._wireConnections();
 
-    this.getNode(&#x27;_bufferSourceNode&#x27;).start(playAt, this.get(&#x27;startOffset&#x27;));
+    this.getNode(&#x27;bufferSourceNode&#x27;).start(playAt, this.get(&#x27;startOffset&#x27;));
 
     this.set(&#x27;_startedPlayingAt&#x27;, playAt);
 
@@ -641,7 +631,7 @@ const Sound = Ember.Object.extend({
     }
 
     return currentNode;
-  },
+  }
 });
 
 export default Sound;

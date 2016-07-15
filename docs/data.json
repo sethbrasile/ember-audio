@@ -2,7 +2,7 @@
     "project": {
         "name": "ember-audio",
         "description": "An Ember addon that makes working with the Web Audio API super EZ",
-        "version": "0.0.0.5ec71b38"
+        "version": "0.0.0.a2f0f2c8"
     },
     "files": {
         "addon/classes/beat-track.js": {
@@ -223,8 +223,7 @@
             "description": "An instance of this class has a single \"sound\" (comprised of one or multiple\naudio sources) but provides methods to play that sound repeatedly, mixed with\n\"rests,\" in a rhythmic way. An instance of this class behaves very similarly\nto a \"lane\" on a drum machine.",
             "extends": "Sampler",
             "todo": [
-                "need a way to stop a BeatTrack once it's started",
-                "verify that playingTime/duration stuff is still working/thought-out"
+                "need a way to stop a BeatTrack once it's started"
             ]
         },
         "Beat": {
@@ -238,8 +237,8 @@
             "module": "MusicalConcepts",
             "namespace": "",
             "file": "addon/classes/beat.js",
-            "line": 15,
-            "description": "This class represents a single \"beat\" for a rhythmic instrument. An instance of this\nclass can be set to `active` or not to facilitate the way that most drum\nmachines work (when a beat is not `active`, the time that it occupies still\nexists, but it does not cause audio to play, effectively resulting in a\n\"rest\"). It provides properties that track when it is played, and when a \"rest\"\nis played in it's place.\n\nThis class does not have the ability to create audio on it's own and is\\\nexpected be a \"child\" of one of the Sound classes. See it's implementation in\n{{#crossLink \"BeatTrack\"}}BeatTrack{{/crossLink}} for an example.\n\n    // Cannot play audio on it's own.\n    // Must pass in parentPlay and/or parentPlayIn from a parent class.\n    Beat.create({\n      parentPlayIn: this.playIn.bind(this),\n      parentPlay: this.play.bind(this),\n    });"
+            "line": 14,
+            "description": "This class represents a single \"beat\" for a rhythmic instrument. An instance of this\nclass can be set to `active` or not to facilitate the way that most drum\nmachines work (when a beat is not `active`, the time that it occupies still\nexists, but it does not cause audio to play, effectively resulting in a\n\"rest\"). It provides properties that track when it is played, and when a \"rest\"\nis played in it's place.\n\nThis class does not have the ability to create audio on it's own and is\nexpected be a \"child\" of one of the Sound classes. See it's implementation in\n{{#crossLink \"BeatTrack\"}}BeatTrack{{/crossLink}} for an example.\n\n    // Cannot play audio on it's own.\n    // Must pass in parentPlay and/or parentPlayIn from a parent class.\n    Beat.create({\n      _parentPlayIn: this.playIn.bind(this),\n      _parentPlay: this.play.bind(this),\n    });"
         },
         "Connection": {
             "name": "Connection",
@@ -345,7 +344,7 @@
     "classitems": [
         {
             "file": "addon/classes/beat-track.js",
-            "line": 30,
+            "line": 29,
             "description": "Determines the number of beats in a BeatTrack instance.",
             "itemtype": "property",
             "name": "numBeats",
@@ -355,7 +354,18 @@
         },
         {
             "file": "addon/classes/beat-track.js",
-            "line": 38,
+            "line": 37,
+            "description": "If specified, Determines length of time, in milliseconds, before isPlaying\nand currentTimeIsPlaying are automatically switched back to false after\nhaving been switched to true for each beat. 100ms is used by default.",
+            "itemtype": "property",
+            "name": "duration",
+            "type": "{number}",
+            "default": "100",
+            "class": "BeatTrack",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/beat-track.js",
+            "line": 48,
             "description": "Computed property. An array of Beat instances. The number of Beat instances\nin the array is always the same as the `numBeats` property.",
             "itemtype": "property",
             "name": "beats",
@@ -365,7 +375,7 @@
         },
         {
             "file": "addon/classes/beat-track.js",
-            "line": 60,
+            "line": 72,
             "description": "Calls play on all Beat instances in the beats array.",
             "itemtype": "method",
             "name": "playBeats",
@@ -386,7 +396,7 @@
         },
         {
             "file": "addon/classes/beat-track.js",
-            "line": 75,
+            "line": 87,
             "description": "Calls play on `active` Beat instances in the beats array. Any beat that\nis not marked active is effectively a \"rest\".",
             "itemtype": "method",
             "name": "playActiveBeats",
@@ -407,7 +417,7 @@
         },
         {
             "file": "addon/classes/beat-track.js",
-            "line": 91,
+            "line": 103,
             "description": "The underlying method behind playBeats and playActiveBeats.",
             "access": "private",
             "tagname": "",
@@ -435,7 +445,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 38,
+            "line": 37,
             "description": "If `active` is `true`, all methods of play will cause this instance to play.\nIf `active` is `false`, the `playIfActive()` and `ifActivePlayIn()`\nmethods will treat this instance as a rest (a timed period of silence).",
             "itemtype": "property",
             "name": "active",
@@ -445,7 +455,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 48,
+            "line": 47,
             "description": "Whether a Beat instance is currently playing, considering both active and\ninactive beats (rests). When switched to `true`, is automatically returned\nto false after the time specified by the duration property.",
             "itemtype": "property",
             "name": "currentTimeIsPlaying",
@@ -456,7 +466,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 59,
+            "line": 58,
             "description": "Whether a Beat instance is currently playing, considering only active beats.\nWhen switched to `true`, is automatically returned to false after the time\nspecified by the duration property.",
             "itemtype": "property",
             "name": "isPlaying",
@@ -467,7 +477,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 70,
+            "line": 69,
             "description": "On Beat instance instantiation, this property should be set to the parent's\naudioBuffer.duration.",
             "itemtype": "property",
             "name": "_audioBufferDuration",
@@ -479,21 +489,10 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 80,
-            "description": "If true, audioBuffer.duration is used instead of durationValue to determine\nlength of time that isPlaying and currentTimeIsPlaying stay true after beat\nis played.",
+            "line": 79,
+            "description": "If specified, Determines length of time, in milliseconds, before isPlaying\nand currentTimeIsPlaying are automatically switched back to false after\nhaving been switched to true. 100ms is used by default.",
             "itemtype": "property",
-            "name": "durationFromAudioBuffer",
-            "type": "{boolean}",
-            "default": "false",
-            "class": "Beat",
-            "module": "MusicalConcepts"
-        },
-        {
-            "file": "addon/classes/beat.js",
-            "line": 91,
-            "description": "Determines length of time, in milliseconds, before isPlaying and\ncurrentTimeIsPlaying are automatically switched back to false after having\nbeen switched to true.\n\nIf durationFromAudioBuffer is true, this property is not utilized.",
-            "itemtype": "property",
-            "name": "durationValue",
+            "name": "duration",
             "type": "{number}",
             "default": "100",
             "class": "Beat",
@@ -501,19 +500,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 104,
-            "description": "Computed property. Susses out which duration should be used to determine\nhow long isPlaying and currentTimeIsPlaying stay `true` after play.\n\nBy default, this value is set to durationValue, if durationFromAudioBuffer\nis true, then this value is the duration of the parent AudioBuffer.",
-            "itemtype": "property",
-            "name": "_duration",
-            "type": "{number}",
-            "access": "private",
-            "tagname": "",
-            "class": "Beat",
-            "module": "MusicalConcepts"
-        },
-        {
-            "file": "addon/classes/beat.js",
-            "line": 129,
+            "line": 90,
             "description": "Calls it's parent's `playIn()` method directly to play the beat in\n`${offset}` seconds.\n\nisPlaying and currentTimeIsPlaying are both marked true after the provided\noffset has elapsed.",
             "itemtype": "method",
             "name": "playIn",
@@ -529,7 +516,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 150,
+            "line": 111,
             "description": "If the beat is marked `active`, calls it's parent's `playIn()` method\ndirectly to play the beat in `${offset}` seconds.\n\nIf active, isPlaying is marked true after the provided offset has elapsed.\n\ncurrentTimeIsPlaying is marked true after the provided offset has elapsed,\neven if beat is not active.",
             "itemtype": "method",
             "name": "ifActivePlayIn",
@@ -545,7 +532,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 175,
+            "line": 136,
             "description": "Calls it's parent's `play()` method directly to play the beat immediately.\n\nisPlaying and currentTimeIsPlaying are both immediately marked true.",
             "itemtype": "method",
             "name": "play",
@@ -554,7 +541,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 188,
+            "line": 149,
             "description": "If `active`, calls it's parent's `play()` method directly to play the beat\nimmediately.\n\nIf `active`, isPlaying is immediately marked true.\n\ncurrentTimeIsPlaying is immediately marked true, even if beat is not active.",
             "itemtype": "method",
             "name": "playIfActive",
@@ -563,7 +550,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 207,
+            "line": 168,
             "description": "Sets `isPlaying` to `true` and sets up a timer that sets `isPlaying` back\nto false after `duration` has elapsed.",
             "itemtype": "method",
             "name": "_markPlaying",
@@ -574,7 +561,7 @@
         },
         {
             "file": "addon/classes/beat.js",
-            "line": 219,
+            "line": 180,
             "description": "Sets `currentTimeIsPlaying` to `true` and sets up a timer that sets\n`currentTimeIsPlaying` back to false after `duration` has elapsed.",
             "itemtype": "method",
             "name": "_markCurrentTimePlaying",
@@ -823,19 +810,7 @@
         {
             "file": "addon/classes/sound.js",
             "line": 44,
-            "description": "The Sound instance's\n[audio source node](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode).",
-            "itemtype": "property",
-            "name": "_bufferSourceNode",
-            "type": "{AudioBufferSourceNode}",
-            "access": "private",
-            "tagname": "",
-            "class": "Sound",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/sound.js",
-            "line": 54,
-            "description": "The AudioBuffer instance that provides audio data to the _bufferSourceNode.",
+            "description": "The AudioBuffer instance that provides audio data to the bufferSourceNode.",
             "itemtype": "property",
             "name": "audioBuffer",
             "type": "{AudioBuffer}",
@@ -844,7 +819,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 62,
+            "line": 52,
             "description": "The parent\n[AudioContext](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)\ninstance that all audio events are occurring within. It is useful for\ngetting currentTime, as well as creating new\n[AudioNodes](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode).\n\nThis is the object that facilitates and ties together all aspects of the\nWeb Audio API.",
             "itemtype": "property",
             "name": "audioContext",
@@ -854,7 +829,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 77,
+            "line": 67,
             "description": "When a Sound instance plays, this is set to the `audioContext.currentTime`.\nIt will always reflect the start time of the most recent\n{{#crossLink \"Sound/_play:method\"}}{{/crossLink}}.",
             "itemtype": "property",
             "name": "_startedPlayingAt",
@@ -866,7 +841,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 88,
+            "line": 78,
             "description": "When a Sound instance is played, this value is passed to the\n{{#crossLink \"AudioBufferSourceNode/start:method\"}}AudioBufferSourceNode.start(){{/crossLink}}\n`offset` param. Determines `where` (in seconds) the play will start, along\nthe duration of the audio source.",
             "itemtype": "property",
             "name": "startOffset",
@@ -876,7 +851,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 99,
+            "line": 89,
             "description": "Whether a sound is playing or not. Becomes true when a Sound instance\nstarts playing audio. Becomes false when the Sound instance is stopped or\nends by reaching the end of it's duration.",
             "itemtype": "property",
             "name": "isPlaying",
@@ -887,7 +862,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 110,
+            "line": 100,
             "description": "An array of Connection instances. Determines which AudioNode instances are\nconnected to one-another and the order in which they are connected. Starts\nas `null` but set to an array on `init` via the\n{{#crossLink \"Sound/initConnections:method\"}} initConnections{{/crossLink}}\nmethod.",
             "itemtype": "property",
             "name": "connections",
@@ -897,7 +872,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 122,
+            "line": 112,
             "description": "Computed property. Value is an object containing the duration of the\naudioBuffer in three formats. The three formats\nare `raw`, `string`, and `pojo`.\n\nDuration of 6 minutes would be output as:\n\n    {\n      raw: 360, // seconds\n      string: '06:00',\n      pojo: {\n        minutes: 6,\n        seconds: 0\n      }\n    }",
             "itemtype": "property",
             "name": "duration",
@@ -907,7 +882,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 153,
+            "line": 143,
             "description": "Computed property. Value is the amount of gain currently applied to the\n`gainNode` of the `connections` array, formatted as a percentage.",
             "itemtype": "property",
             "name": "percentGain",
@@ -917,7 +892,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 164,
+            "line": 154,
             "description": "Plays the audio source immediately.",
             "itemtype": "method",
             "name": "play",
@@ -926,7 +901,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 173,
+            "line": 163,
             "description": "Plays the audio source at the specified moment in time. A \"moment in time\"\nis measured in seconds from the moment that the\n{{#crossLink \"AudioContext\"}}{{/crossLink}} was instantiated.\n\nFunctionally equivalent to {{#crossLink \"Sound/_play:method\"}}{{/crossLink}}.",
             "params": [
                 {
@@ -942,7 +917,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 190,
+            "line": 180,
             "description": "Plays the audio source in specified amount of seconds from \"now\".",
             "itemtype": "method",
             "name": "playIn",
@@ -958,7 +933,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 202,
+            "line": 192,
             "description": "Stops the audio source immediately.",
             "todo": [
                 "add timed stop methods"
@@ -970,7 +945,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 217,
+            "line": 207,
             "description": "returns a connection's AudioNode from the connections array by it's\n`name`.",
             "itemtype": "method",
             "name": "getNode",
@@ -993,7 +968,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 236,
+            "line": 226,
             "description": "returns a connection from the connections array by it's name",
             "itemtype": "method",
             "name": "getConnection",
@@ -1013,7 +988,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 249,
+            "line": 239,
             "description": "Gets the `pannerNode` and changes it's pan value to the value passed in.",
             "params": [
                 {
@@ -1032,7 +1007,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 262,
+            "line": 252,
             "description": "Gets the `gainNode` and changes it's gain value to the value passed in.\nreturns a pojo with the `from` method that `value` is curried to, allowing\none to specify which type of value is being provided.",
             "example": [
                 "\n    // these all result in gainNode.gain.value === 0.9\n    soundInstance.changeGainTo(0.9).from('ratio');\n    soundInstance.changeGainTo(0.1).from('inverseRatio')\n    soundInstance.changeGainTo(90).from('percent');"
@@ -1055,8 +1030,8 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 310,
-            "description": "Gets the _bufferSourceNode and stops the audio,\nchanges it's play position, and restarts the audio.\n\nreturns a pojo with the `from` method that `value` is curried to, allowing\none to specify which type of value is being provided.",
+            "line": 300,
+            "description": "Gets the bufferSourceNode and stops the audio,\nchanges it's play position, and restarts the audio.\n\nreturns a pojo with the `from` method that `value` is curried to, allowing\none to specify which type of value is being provided.",
             "example": [
                 "\n    // for a Sound instance with a duration of 100 seconds, these will all\n    // move the play position to 90 seconds.\n    soundInstance.seek(0.9).from('ratio');\n    soundInstance.seek(0.1).from('inverseRatio')\n    soundInstance.seek(90).from('percent');\n    soundInstance.seek(90).from('seconds');"
             ],
@@ -1078,7 +1053,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 369,
+            "line": 359,
             "description": "Find's a connection in the connections array by it's `name` and removes it.",
             "params": [
                 {
@@ -1094,7 +1069,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 380,
+            "line": 370,
             "description": "Initializes default connections on Sound instantiation. Runs `on('init')`.",
             "access": "protected",
             "tagname": "",
@@ -1105,7 +1080,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 421,
+            "line": 411,
             "description": "The underlying method that backs the\n{{#crossLink \"Sound/play:method\"}}{{/crossLink}},\n{{#crossLink \"Sound/playAt:method\"}}{{/crossLink}}, and\n{{#crossLink \"Sound/playIn:method\"}}{{/crossLink}} methods.\n\nPlays the audio source at the specified moment in time. A \"moment in time\"\nis measured in seconds from the moment that the\n{{#crossLink \"AudioContext\"}}{{/crossLink}} was instantiated.\n\nFunctionally equivalent to {{#crossLink \"Sound/playAt:method\"}}{{/crossLink}}.",
             "params": [
                 {
@@ -1123,7 +1098,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 456,
+            "line": 446,
             "description": "Gets the array of Connection instances from the connections array and\nreturns the same array, having created any AudioNode instances that needed\nto be created, and having connected the AudioNode instances to one another\nin the order in which they were present in the connections array.",
             "itemtype": "method",
             "name": "_wireConnections",
@@ -1138,7 +1113,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 477,
+            "line": 467,
             "description": "Creates an AudioNode instance for a Connection instance and sets it on it's\n`node` property. Unless the Connection instance's `createdOnPlay` property\nis true, does nothing if the AudioNode instance has already been created.\n\nAlso sets any properties from a connection's `onPlaySetAttrsOnNode` array\non the node.",
             "itemtype": "method",
             "name": "_createNode",
@@ -1160,7 +1135,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 512,
+            "line": 502,
             "description": "Gets a Connection instance's `onPlaySetAttrsOnNode` and sets them on it's\nnode.",
             "access": "private",
             "tagname": "",
@@ -1182,7 +1157,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 535,
+            "line": 525,
             "description": "Meant to be passed to a Array.prototype.map function. Connects a Connection\ninstance's node to the next Connection instance's node.",
             "access": "private",
             "tagname": "",

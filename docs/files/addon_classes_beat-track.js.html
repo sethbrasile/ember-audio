@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5ec71b38
+              Version: 0.0.0.a2f0f2c8
             </div>
             
         </div>
@@ -98,7 +98,6 @@ const {
  * @extends Sampler
  *
  * @todo need a way to stop a BeatTrack once it&#x27;s started
- * @todo verify that playingTime/duration stuff is still working/thought-out
  */
 const BeatTrack = Sampler.extend({
 
@@ -111,22 +110,35 @@ const BeatTrack = Sampler.extend({
   numBeats: 4,
 
   /**
+   * If specified, Determines length of time, in milliseconds, before isPlaying
+   * and currentTimeIsPlaying are automatically switched back to false after
+   * having been switched to true for each beat. 100ms is used by default.
+   *
+   * @property duration
+   * @type {number}
+   * @default 100
+   */
+  duration: 100,
+
+  /**
    * Computed property. An array of Beat instances. The number of Beat instances
    * in the array is always the same as the &#x60;numBeats&#x60; property.
    *
    * @property beats
    * @type {array|Beat}
    */
-  beats: computed(&#x27;numBeats&#x27;, function() {
+  beats: computed(&#x27;numBeats&#x27;, &#x27;duration&#x27;, function() {
     const beats = [];
     const numBeats = this.get(&#x27;numBeats&#x27;);
 
     for (let i = 0; i &lt; numBeats; i++) {
-      beats.push(Beat.create({
-        audioBufferDuration: this.get(&#x27;audioBuffer.duration&#x27;),
-        parentPlayIn: this.playIn.bind(this),
-        parentPlay: this.play.bind(this),
-      }));
+      const beat = Beat.create({
+        duration: this.get(&#x27;duration&#x27;),
+        _parentPlayIn: this.playIn.bind(this),
+        _parentPlay: this.play.bind(this)
+      });
+
+      beats.push(beat);
     }
 
     return beats;

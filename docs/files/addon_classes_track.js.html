@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5ec71b38
+              Version: 0.0.0.a2f0f2c8
             </div>
             
         </div>
@@ -148,7 +148,7 @@ const Track = Sound.extend({
    */
   play() {
     this._super();
-    this.getNode(&#x27;_bufferSourceNode&#x27;).onended = () =&gt; this.stop();
+    this.getNode(&#x27;bufferSourceNode&#x27;).onended = () =&gt; this.stop();
     this._trackPlayPosition();
   },
 
@@ -160,7 +160,7 @@ const Track = Sound.extend({
    */
   pause() {
     if (this.get(&#x27;isPlaying&#x27;)) {
-      const node = this.getNode(&#x27;_bufferSourceNode&#x27;);
+      const node = this.getNode(&#x27;bufferSourceNode&#x27;);
 
       node.onended = function() {};
       node.stop();
@@ -178,7 +178,7 @@ const Track = Sound.extend({
     this.set(&#x27;startOffset&#x27;, 0);
 
     if (this.get(&#x27;isPlaying&#x27;)) {
-      this.getNode(&#x27;_bufferSourceNode&#x27;).onended = function() {};
+      this.getNode(&#x27;bufferSourceNode&#x27;).onended = function() {};
       this._super();
     }
   },
