@@ -35,7 +35,6 @@ const Connection = Ember.Object.extend({
    *
    * @property name
    * @type {string}
-   * @todo change reference to getNodeFrom to getNodeFromFrom after renaming
    */
   name: null,
 

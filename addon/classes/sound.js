@@ -241,10 +241,15 @@ const Sound = Ember.Object.extend({
    * @param {number} value The value, between -1 and 1 that the `panner` connection's
    * `pan.value` should be set to.
    *
-   * @method pan
-   * @todo Make "API" match "changeGainTo"
+   * @method changePanTo
    */
-  pan(value) {
+  changePanTo(value) {
+    if (value > 1) {
+      value = 1;
+    } else if (value < -1) {
+      value = -1;
+    }
+
     this.getNodeFrom('panner').pan.value = value;
   },
 
