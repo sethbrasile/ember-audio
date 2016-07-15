@@ -14,6 +14,7 @@ import Ember from 'ember';
  * methods are called.
  *
  * @class Sampler
+ * @todo provide easy method for setting gain and pan for each beat in sampler
  */
 const Sampler = Ember.Object.extend({
 
