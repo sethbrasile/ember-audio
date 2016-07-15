@@ -20,7 +20,7 @@
   // some time later...
 
   const audio = this.get('audio');
-  const now = audio.get('context.currentTime');
+  const now = audio.get('audioContext.currentTime');
 
   audio.getSound('some-sound').playAt(now + 1); // plays in 1 second
 {{/code-block}}

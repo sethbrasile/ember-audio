@@ -10,7 +10,7 @@ export default Ember.Controller.extend({
   actions: {
     playInOneSecond1() {
       const audio = this.get('audio');
-      const currentTime = audio.get('context.currentTime');
+      const currentTime = audio.get('audioContext.currentTime');
       audio.getSound('delayed-note').playAt(currentTime + 1);
     },
 

@@ -30,16 +30,16 @@
   // This is pseudo-code. The goal at this point is to get the concept across,
   // not to potentially confuse you with framework-specific stuff.
 
-  // The moment that context is created, context.currentTime starts counting seconds
-  var context = new AudioContext();
+  // The moment that audioContext is created, audioContext.currentTime starts counting seconds
+  var audioContext = new AudioContext();
 
   var sound = // Create or load a sound and hook up audio inputs and outputs.
   // Not important right now...
   // We'll say that the result is an audio "node" that is ready to play
 
   function handleClick() {
-    // Get the current time from context.
-    var now = context.currentTime;
+    // Get the current time from audioContext.
+    var now = audioContext.currentTime;
 
     // Start the sound we created up there^, adding 1 second to "now"
     // The Web Audio API deals in seconds, not milliseconds
@@ -57,12 +57,12 @@
   // Again, I want to mention that this code will not work as-is. It's ignoring
   // some other quirks of the Web Audio API. We're only focused on understanding
   // timing at the moment.
-  var context = new AudioContext();
+  var audioContext = new AudioContext();
 
   var sound = // Create or load a sound and hook up audio inputs and outputs.
 
   function handleClick() {
-    var now = context.currentTime;
+    var now = audioContext.currentTime;
 
     for (var i = 0; i &lt; 5; i++) {
       sound.start(now + i);
@@ -121,7 +121,7 @@
     actions: {
       playInOneSecond() {
         const audio = this.get('audio');
-        const currentTime = audio.get('context.currentTime');
+        const currentTime = audio.get('audioContext.currentTime');
         audio.getSound('delayed-note').playAt(currentTime + 1);
       }
     }
