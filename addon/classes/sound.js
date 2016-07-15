@@ -42,7 +42,7 @@ const Sound = Ember.Object.extend({
   name: null,
 
   /**
-   * The AudioBuffer instance that provides audio data to the bufferSourceNode.
+   * The AudioBuffer instance that provides audio data to the bufferSource connection.
    *
    * @property audioBuffer
    * @type {AudioBuffer}
@@ -142,13 +142,13 @@ const Sound = Ember.Object.extend({
 
   /**
    * Computed property. Value is the amount of gain currently applied to the
-   * `gainNode` of the `connections` array, formatted as a percentage.
+   * `gain` connection from the `connections` array, formatted as a percentage.
    *
    * @property percentGain
    * @type {number}
    */
   percentGain: computed(function() {
-    return this.getNodeFrom('gainNode').gain.value * 100;
+    return this.getNodeFrom('gain').gain.value * 100;
   }),
 
   /**
@@ -196,7 +196,7 @@ const Sound = Ember.Object.extend({
    * @method stop
    */
   stop() {
-    const node = this.getNodeFrom('bufferSourceNode');
+    const node = this.getNodeFrom('bufferSource');
 
     if (node) {
       node.stop();
@@ -236,20 +236,20 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the `pannerNode` and changes it's pan value to the value passed in.
+   * Gets the `panner` connection and changes it's pan value to the value passed in.
    *
-   * @param {number} value The value, between -1 and 1 that the `pannerNode`'s
+   * @param {number} value The value, between -1 and 1 that the `panner` connection's
    * `pan.value` should be set to.
    *
    * @method pan
    * @todo Make "API" match "changeGainTo"
    */
   pan(value) {
-    this.getNodeFrom('pannerNode').pan.value = value;
+    this.getNodeFrom('panner').pan.value = value;
   },
 
   /**
-   * Gets the `gainNode` and changes it's gain value to the value passed in.
+   * Gets the `gain` connection and changes it's gain value to the value passed in.
    * returns a pojo with the `from` method that `value` is curried to, allowing
    * one to specify which type of value is being provided.
    *
@@ -259,7 +259,7 @@ const Sound = Ember.Object.extend({
    *     soundInstance.changeGainTo(0.1).from('inverseRatio')
    *     soundInstance.changeGainTo(90).from('percent');
    *
-   * @param {number} value The value that the `gainNode`'s `gain.value` should
+   * @param {number} value The value that the `gain` connection's `gain.value` should
    * be set to. Can be a ratio, an inverseRatio or a percentage.
    *
    * @method changeGainTo
@@ -269,7 +269,7 @@ const Sound = Ember.Object.extend({
    * change accordingly.
    */
   changeGainTo(value) {
-    const gainNode = this.getNodeFrom('gainNode');
+    const gainNode = this.getNodeFrom('gain');
     const notify = () => this.notifyPropertyChange('percentGain');
 
     function adjustGain(newValue) {
@@ -297,7 +297,7 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the bufferSourceNode and stops the audio,
+   * Gets the bufferSource and stops the audio,
    * changes it's play position, and restarts the audio.
    *
    * returns a pojo with the `from` method that `value` is curried to, allowing
@@ -374,7 +374,7 @@ const Sound = Ember.Object.extend({
    */
   _initConnections: on('init', function() {
     const bufferSource = Connection.create({
-      name: 'bufferSourceNode',
+      name: 'bufferSource',
       createdOnPlay: true,
       source: 'audioContext',
       createCommand: 'createBufferSource',
@@ -387,13 +387,13 @@ const Sound = Ember.Object.extend({
     });
 
     const gain = Connection.create({
-      name: 'gainNode',
+      name: 'gain',
       source: 'audioContext',
       createCommand: 'createGain'
     });
 
     const panner = Connection.create({
-      name: 'pannerNode',
+      name: 'panner',
       source: 'audioContext',
       createCommand: 'createStereoPanner'
     });
@@ -431,7 +431,7 @@ const Sound = Ember.Object.extend({
 
     this._wireConnections();
 
-    this.getNodeFrom('bufferSourceNode').start(playAt, this.get('startOffset'));
+    this.getNodeFrom('bufferSource').start(playAt, this.get('startOffset'));
 
     this.set('_startedPlayingAt', playAt);
 

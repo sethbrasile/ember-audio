@@ -7,7 +7,7 @@ export default Ember.Controller.extend({
 
   initAudioFile: Ember.on('init', function() {
     // Eb5.mp3 is an mp3 file located in the "public" folder
-    this.get('audio').load('/ember-audio/Eb5.mp3').asSound('piano-note').then((note) => {
+    this.get('audio').load('/ember-audio/Eb5.mp3').asSound('distorted-piano-note').then((note) => {
 
       // Create the connection and insert it into the note's connections array
       note.get('connections').insertAt(1, Connection.create({
