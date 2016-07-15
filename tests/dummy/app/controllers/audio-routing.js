@@ -45,7 +45,7 @@ export default Ember.Controller.extend({
     note.changeGainTo(0.1).from('ratio');
 
     // Set distortionNode's curve to enable distortion
-    note.getNode('distortionNode').curve = curve;
+    note.getNodeFrom('distortionNode').curve = curve;
   },
 
   _removeDistortion() {
@@ -57,7 +57,7 @@ export default Ember.Controller.extend({
     note.changeGainTo(1).from('ratio');
 
     // Set distortionNode's curve to null to disable distortion
-    note.getNode('distortionNode').curve = null;
+    note.getNodeFrom('distortionNode').curve = null;
   },
 
   actions: {

@@ -148,7 +148,7 @@ const Sound = Ember.Object.extend({
    * @type {number}
    */
   percentGain: computed(function() {
-    return this.getNode('gainNode').gain.value * 100;
+    return this.getNodeFrom('gainNode').gain.value * 100;
   }),
 
   /**
@@ -196,7 +196,7 @@ const Sound = Ember.Object.extend({
    * @method stop
    */
   stop() {
-    const node = this.getNode('bufferSourceNode');
+    const node = this.getNodeFrom('bufferSourceNode');
 
     if (node) {
       node.stop();
@@ -205,17 +205,16 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * returns a connection's AudioNode from the connections array by it's
-   * `name`.
+   * returns a connection's AudioNode from the connections array by the
+   * connection's `name`.
    *
-   * @method getNode
+   * @method getNodeFrom
    *
    * @param {string} name The name of the AudioNode that should be returned.
    *
    * @return {AudioNode} The requested AudioNode.
-   * @todo consider changing this to `getNodeFrom` since it's actually getting a node from a connection named `name`
    */
-  getNode(name) {
+  getNodeFrom(name) {
     const connection = this.getConnection(name);
 
     if (connection) {
@@ -246,7 +245,7 @@ const Sound = Ember.Object.extend({
    * @todo Make "API" match "changeGainTo"
    */
   pan(value) {
-    this.getNode('pannerNode').pan.value = value;
+    this.getNodeFrom('pannerNode').pan.value = value;
   },
 
   /**
@@ -270,7 +269,7 @@ const Sound = Ember.Object.extend({
    * change accordingly.
    */
   changeGainTo(value) {
-    const gainNode = this.getNode('gainNode');
+    const gainNode = this.getNodeFrom('gainNode');
     const notify = () => this.notifyPropertyChange('percentGain');
 
     function adjustGain(newValue) {
@@ -432,7 +431,7 @@ const Sound = Ember.Object.extend({
 
     this._wireConnections();
 
-    this.getNode('bufferSourceNode').start(playAt, this.get('startOffset'));
+    this.getNodeFrom('bufferSourceNode').start(playAt, this.get('startOffset'));
 
     this.set('_startedPlayingAt', playAt);
 
