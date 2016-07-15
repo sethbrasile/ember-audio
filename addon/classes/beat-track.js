@@ -36,22 +36,35 @@ const BeatTrack = Sampler.extend({
   numBeats: 4,
 
   /**
+   * If specified, Determines length of time, in milliseconds, before isPlaying
+   * and currentTimeIsPlaying are automatically switched back to false after
+   * having been switched to true for each beat. 100ms is used by default.
+   *
+   * @property duration
+   * @type {number}
+   * @default 100
+   */
+  duration: 100,
+
+  /**
    * Computed property. An array of Beat instances. The number of Beat instances
    * in the array is always the same as the `numBeats` property.
    *
    * @property beats
    * @type {array|Beat}
    */
-  beats: computed('numBeats', function() {
+  beats: computed('numBeats', 'duration', function() {
     const beats = [];
     const numBeats = this.get('numBeats');
 
     for (let i = 0; i < numBeats; i++) {
-      beats.push(Beat.create({
-        audioBufferDuration: this.get('audioBuffer.duration'),
-        parentPlayIn: this.playIn.bind(this),
-        parentPlay: this.play.bind(this),
-      }));
+      const beat = Beat.create({
+        duration: this.get('duration'),
+        _parentPlayIn: this.playIn.bind(this),
+        _parentPlay: this.play.bind(this)
+      });
+
+      beats.push(beat);
     }
 
     return beats;

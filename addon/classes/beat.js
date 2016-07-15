@@ -8,7 +8,6 @@ import Ember from 'ember';
  */
 
 const {
-  computed,
   run: { later }
 } = Ember;
 
@@ -20,15 +19,15 @@ const {
  * "rest"). It provides properties that track when it is played, and when a "rest"
  * is played in it's place.
  *
- * This class does not have the ability to create audio on it's own and is\
+ * This class does not have the ability to create audio on it's own and is
  * expected be a "child" of one of the Sound classes. See it's implementation in
  * {{#crossLink "BeatTrack"}}BeatTrack{{/crossLink}} for an example.
  *
  *     // Cannot play audio on it's own.
  *     // Must pass in parentPlay and/or parentPlayIn from a parent class.
  *     Beat.create({
- *       parentPlayIn: this.playIn.bind(this),
- *       parentPlay: this.play.bind(this),
+ *       _parentPlayIn: this.playIn.bind(this),
+ *       _parentPlay: this.play.bind(this),
  *     });
  *
  * @class Beat
@@ -78,53 +77,15 @@ const Beat = Ember.Object.extend({
   _audioBufferDuration: null,
 
   /**
-   * If true, audioBuffer.duration is used instead of durationValue to determine
-   * length of time that isPlaying and currentTimeIsPlaying stay true after beat
-   * is played.
+   * If specified, Determines length of time, in milliseconds, before isPlaying
+   * and currentTimeIsPlaying are automatically switched back to false after
+   * having been switched to true. 100ms is used by default.
    *
-   * @property durationFromAudioBuffer
-   * @type {boolean}
-   * @default false
-   */
-  durationFromAudioBuffer: false,
-
-  /**
-   * Determines length of time, in milliseconds, before isPlaying and
-   * currentTimeIsPlaying are automatically switched back to false after having
-   * been switched to true.
-   *
-   * If durationFromAudioBuffer is true, this property is not utilized.
-   *
-   * @property durationValue
+   * @property duration
    * @type {number}
    * @default 100
    */
-  durationValue: 100,
-
-  /**
-   * Computed property. Susses out which duration should be used to determine
-   * how long isPlaying and currentTimeIsPlaying stay `true` after play.
-   *
-   * By default, this value is set to durationValue, if durationFromAudioBuffer
-   * is true, then this value is the duration of the parent AudioBuffer.
-   *
-   * @property _duration
-   * @type {number}
-   * @private
-   */
-  _duration: computed('durationFromAudioBuffer', 'durationValue', '_audioBufferDuration', {
-    get() {
-      const durationFromAudioBuffer = this.get('durationFromAudioBuffer');
-      const _audioBufferDuration = this.get('_audioBufferDuration');
-
-      if (durationFromAudioBuffer && _audioBufferDuration) {
-        // audioBuffer.duration is seconds but we need milliseconds
-        return this.get('_audioBufferDuration') * 1000;
-      } else {
-        return this.get('durationValue') || 100;
-      }
-    }
-  }),
+  duration: 100,
 
   /**
    * Calls it's parent's `playIn()` method directly to play the beat in
@@ -141,7 +102,7 @@ const Beat = Ember.Object.extend({
   playIn(offset=0) {
     const msOffset = offset * 1000;
 
-    this.get('parentPlayIn')(offset);
+    this.get('_parentPlayIn')(offset);
 
     later(() => this._markPlaying(), msOffset);
     later(() => this._markCurrentTimePlaying(), msOffset);
@@ -165,7 +126,7 @@ const Beat = Ember.Object.extend({
     const msOffset = offset * 1000;
 
     if (this.get('active')) {
-      this.get('parentPlayIn')(offset);
+      this.get('_parentPlayIn')(offset);
       later(() => this._markPlaying(), msOffset);
     }
 
@@ -180,7 +141,7 @@ const Beat = Ember.Object.extend({
    * @method play
    */
   play() {
-    this.get('parentPlay')();
+    this.get('_parentPlay')();
     this._markPlaying();
     this._markCurrentTimePlaying();
   },
@@ -197,7 +158,7 @@ const Beat = Ember.Object.extend({
    */
   playIfActive() {
     if (this.get('active')) {
-      this.get('parentPlay')();
+      this.get('_parentPlay')();
       this._markPlaying();
     }
 
@@ -213,7 +174,7 @@ const Beat = Ember.Object.extend({
    */
   _markPlaying() {
     this.set('isPlaying', true);
-    later(() => this.set('isPlaying', false), this.get('_duration'));
+    later(() => this.set('isPlaying', false), this.get('duration'));
   },
 
   /**
@@ -225,7 +186,7 @@ const Beat = Ember.Object.extend({
    */
   _markCurrentTimePlaying() {
     this.set('currentTimeIsPlaying', true);
-    later(() => this.set('currentTimeIsPlaying', false), this.get('_duration'));
+    later(() => this.set('currentTimeIsPlaying', false), this.get('duration'));
   },
 });
 
