@@ -12,7 +12,12 @@
     <div id="piano">
       <ol>
         {{#each notes as |note|}}
-          <li {{action 'playPianoNote' note.identifier}} class={{if note.accidental 'black'}}>{{note.name}}</li>
+          <li class={{if note.accidental 'black'}}
+            {{action 'playPianoNote' note.identifier on='touchStart'}}
+            {{action 'playPianoNote' note.identifier on='mouseDown'}}
+          >
+            {{note.name}}
+          </li>
         {{/each}}
       </ol>
     </div>
@@ -40,7 +45,13 @@
     &lt;div id="piano">
       &lt;ol>
         \{{#each notes as |note|}}
-          &lt;li \{{action 'playPianoNote' note.identifier}} class=\{{if note.accidental 'black'}}>\{{note.name}}&lt;/li>
+          &lt;li class=\{{if note.accidental 'black'}}
+            \{{!-- Specify both action types so multitouch works on touch devices --}}
+            \{{action 'playPianoNote' note.identifier on='touchStart'}}
+            \{{action 'playPianoNote' note.identifier on='mouseDown'}}
+          >
+            \{{note.name}}
+          &lt;/li>
         \{{/each}}
       &lt;/ol>
     &lt;/div>
