@@ -73,7 +73,7 @@ const Track = Sound.extend({
    */
   play() {
     this._super();
-    this.getNode('_bufferSourceNode').onended = () => this.stop();
+    this.getNode('bufferSourceNode').onended = () => this.stop();
     this._trackPlayPosition();
   },
 
@@ -85,7 +85,7 @@ const Track = Sound.extend({
    */
   pause() {
     if (this.get('isPlaying')) {
-      const node = this.getNode('_bufferSourceNode');
+      const node = this.getNode('bufferSourceNode');
 
       node.onended = function() {};
       node.stop();
@@ -103,7 +103,7 @@ const Track = Sound.extend({
     this.set('startOffset', 0);
 
     if (this.get('isPlaying')) {
-      this.getNode('_bufferSourceNode').onended = function() {};
+      this.getNode('bufferSourceNode').onended = function() {};
       this._super();
     }
   },
