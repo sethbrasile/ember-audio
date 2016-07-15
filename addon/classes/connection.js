@@ -31,11 +31,10 @@ const Connection = Ember.Object.extend({
   /**
    * The name of the connection. This is the name that can be used to
    * get an AudioNode instance via the
-   * {{#crossLink "Sound/getNode:method"}}{{/crossLink}} method.
+   * {{#crossLink "Sound/getNodeFrom:method"}}{{/crossLink}} method.
    *
    * @property name
    * @type {string}
-   * @todo change reference to getNode to getNodeFrom after renaming
    */
   name: null,
 

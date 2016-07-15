@@ -11,7 +11,7 @@ test('it exists', function(assert) {
   assert.ok(result);
 });
 
-test('on init, a gainNode, and pannerNode are created', function(assert) {
+test('on init, a gain, and panner are created', function(assert) {
   let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
   let ctx = result.get('audioContext');
@@ -84,31 +84,31 @@ test('play() calls node.connect(ctx.destination)', function(assert) {
   let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
 
-  result.getNode('bufferSourceNode').connectCalled = false;
+  result.getNodeFrom('bufferSource').connectCalled = false;
 
-  assert.notOk(result.getNode('bufferSourceNode').connectCalled);
+  assert.notOk(result.getNodeFrom('bufferSource').connectCalled);
   result.play();
-  assert.ok(result.getNode('bufferSourceNode').connectCalled);
+  assert.ok(result.getNodeFrom('bufferSource').connectCalled);
 });
 
 test('play() connects panner', function(assert) {
   let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
 
-  result.getNode('pannerNode').connectCalled = false;
+  result.getNodeFrom('panner').connectCalled = false;
 
-  assert.notOk(result.getNode('pannerNode').connectCalled);
+  assert.notOk(result.getNodeFrom('panner').connectCalled);
   result.play();
-  assert.ok(result.getNode('pannerNode').connectCalled);
+  assert.ok(result.getNodeFrom('panner').connectCalled);
 });
 
 test('play() connects gain', function(assert) {
   let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
 
-  result.getNode('gainNode').connectCalled = false;
+  result.getNodeFrom('gain').connectCalled = false;
 
-  assert.notOk(result.getNode('gainNode').connectCalled);
+  assert.notOk(result.getNodeFrom('gain').connectCalled);
   result.play();
-  assert.ok(result.getNode('gainNode').connectCalled);
+  assert.ok(result.getNodeFrom('gain').connectCalled);
 });
