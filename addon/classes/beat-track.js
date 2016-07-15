@@ -23,7 +23,6 @@ const {
  * @extends Sampler
  *
  * @todo need a way to stop a BeatTrack once it's started
- * @todo verify that playingTime/duration stuff is still working/thought-out
  */
 const BeatTrack = Sampler.extend({
 
