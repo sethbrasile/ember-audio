@@ -2,7 +2,7 @@
     "project": {
         "name": "ember-audio",
         "description": "An Ember addon that makes working with the Web Audio API super EZ",
-        "version": "0.0.0.4b06bac6"
+        "version": "0.0.0.5ec71b38"
     },
     "files": {
         "addon/classes/beat-track.js": {
@@ -220,10 +220,11 @@
             "namespace": "",
             "file": "addon/classes/beat-track.js",
             "line": 16,
-            "description": "An instance of this class has a single\n{{#crossLink \"AudioBuffer\"}}{{/crossLink}} (a single \"sound\") but provides\nmethods to play that sound repeatedly and in a rhythmic way. An instance of\nthis class behaves very similarly to a \"lane\" on a drum machine.",
+            "description": "An instance of this class has a single \"sound\" (comprised of one or multiple\naudio sources) but provides methods to play that sound repeatedly, mixed with\n\"rests,\" in a rhythmic way. An instance of this class behaves very similarly\nto a \"lane\" on a drum machine.",
             "extends": "Sampler",
             "todo": [
-                "need a way to stop a BeatTrack once it's started"
+                "need a way to stop a BeatTrack once it's started",
+                "verify that playingTime/duration stuff is still working/thought-out"
             ]
         },
         "Beat": {
@@ -342,6 +343,96 @@
     },
     "elements": {},
     "classitems": [
+        {
+            "file": "addon/classes/beat-track.js",
+            "line": 30,
+            "description": "Determines the number of beats in a BeatTrack instance.",
+            "itemtype": "property",
+            "name": "numBeats",
+            "type": "{number}",
+            "class": "BeatTrack",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/beat-track.js",
+            "line": 38,
+            "description": "Computed property. An array of Beat instances. The number of Beat instances\nin the array is always the same as the `numBeats` property.",
+            "itemtype": "property",
+            "name": "beats",
+            "type": "{array|Beat}",
+            "class": "BeatTrack",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/beat-track.js",
+            "line": 60,
+            "description": "Calls play on all Beat instances in the beats array.",
+            "itemtype": "method",
+            "name": "playBeats",
+            "params": [
+                {
+                    "name": "bpm",
+                    "description": "The tempo at which the beats should be played.",
+                    "type": "Number"
+                },
+                {
+                    "name": "noteType",
+                    "description": "The (rhythmic) length of each beat. Fractions\nare suggested here so that it's easy to reason about. For example, for\neighth notes, pass in `1/8`.",
+                    "type": "Number"
+                }
+            ],
+            "class": "BeatTrack",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/beat-track.js",
+            "line": 75,
+            "description": "Calls play on `active` Beat instances in the beats array. Any beat that\nis not marked active is effectively a \"rest\".",
+            "itemtype": "method",
+            "name": "playActiveBeats",
+            "params": [
+                {
+                    "name": "bpm",
+                    "description": "The tempo at which the beats and rests should be played.",
+                    "type": "Number"
+                },
+                {
+                    "name": "noteType",
+                    "description": "The (rhythmic) length of each beat/rest. Fractions\nare suggested here so that it's easy to reason about. For example, for\neighth notes, pass in `1/8`.",
+                    "type": "Number"
+                }
+            ],
+            "class": "BeatTrack",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/beat-track.js",
+            "line": 91,
+            "description": "The underlying method behind playBeats and playActiveBeats.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_callPlayMethodOnBeats",
+            "params": [
+                {
+                    "name": "method",
+                    "description": "The method that should be called on each beat.",
+                    "type": "String"
+                },
+                {
+                    "name": "bpm",
+                    "description": "The tempo that should be used to calculate the length\nof a beat/rest.",
+                    "type": "Number"
+                },
+                {
+                    "name": "noteType",
+                    "description": "The (rhythmic) length of each beat/rest that should\nbe used to calculate the length of a beat/rest in seconds.",
+                    "type": "Number"
+                }
+            ],
+            "class": "BeatTrack",
+            "module": "Audio"
+        },
         {
             "file": "addon/classes/beat.js",
             "line": 38,

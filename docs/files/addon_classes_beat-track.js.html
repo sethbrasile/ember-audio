@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.4b06bac6
+              Version: 0.0.0.5ec71b38
             </div>
             
         </div>
@@ -89,20 +89,34 @@ const {
 } = Ember;
 
 /**
- * An instance of this class has a single
- * {{#crossLink &quot;AudioBuffer&quot;}}{{/crossLink}} (a single &quot;sound&quot;) but provides
- * methods to play that sound repeatedly and in a rhythmic way. An instance of
- * this class behaves very similarly to a &quot;lane&quot; on a drum machine.
+ * An instance of this class has a single &quot;sound&quot; (comprised of one or multiple
+ * audio sources) but provides methods to play that sound repeatedly, mixed with
+ * &quot;rests,&quot; in a rhythmic way. An instance of this class behaves very similarly
+ * to a &quot;lane&quot; on a drum machine.
  *
  * @class BeatTrack
  * @extends Sampler
  *
  * @todo need a way to stop a BeatTrack once it&#x27;s started
+ * @todo verify that playingTime/duration stuff is still working/thought-out
  */
 const BeatTrack = Sampler.extend({
-  numBeats: 4,
-  playingTime: 100,
 
+  /**
+   * Determines the number of beats in a BeatTrack instance.
+   *
+   * @property numBeats
+   * @type {number}
+   */
+  numBeats: 4,
+
+  /**
+   * Computed property. An array of Beat instances. The number of Beat instances
+   * in the array is always the same as the &#x60;numBeats&#x60; property.
+   *
+   * @property beats
+   * @type {array|Beat}
+   */
   beats: computed(&#x27;numBeats&#x27;, function() {
     const beats = [];
     const numBeats = this.get(&#x27;numBeats&#x27;);
@@ -118,14 +132,51 @@ const BeatTrack = Sampler.extend({
     return beats;
   }),
 
+  /**
+   * Calls play on all Beat instances in the beats array.
+   *
+   * @method playBeats
+   *
+   * @param {number} bpm The tempo at which the beats should be played.
+   *
+   * @param noteType {number} The (rhythmic) length of each beat. Fractions
+   * are suggested here so that it&#x27;s easy to reason about. For example, for
+   * eighth notes, pass in &#x60;1/8&#x60;.
+   */
   playBeats(bpm, noteType) {
     this._callPlayMethodOnBeats(&#x27;playIn&#x27;, bpm, noteType);
   },
 
+  /**
+   * Calls play on &#x60;active&#x60; Beat instances in the beats array. Any beat that
+   * is not marked active is effectively a &quot;rest&quot;.
+   *
+   * @method playActiveBeats
+   *
+   * @param {number} bpm The tempo at which the beats and rests should be played.
+   *
+   * @param noteType {number} The (rhythmic) length of each beat/rest. Fractions
+   * are suggested here so that it&#x27;s easy to reason about. For example, for
+   * eighth notes, pass in &#x60;1/8&#x60;.
+   */
   playActiveBeats(bpm, noteType) {
     this._callPlayMethodOnBeats(&#x27;ifActivePlayIn&#x27;, bpm, noteType);
   },
 
+  /**
+   * The underlying method behind playBeats and playActiveBeats.
+   *
+   * @private
+   * @method _callPlayMethodOnBeats
+   *
+   * @param {string} method The method that should be called on each beat.
+   *
+   * @param {number} bpm The tempo that should be used to calculate the length
+   * of a beat/rest.
+   *
+   * @param noteType {number} The (rhythmic) length of each beat/rest that should
+   * be used to calculate the length of a beat/rest in seconds.
+   */
   _callPlayMethodOnBeats(method, bpm, noteType=1/4) {
     // http://bradthemad.org/guitar/tempo_explanation.php
     const duration = (240 * noteType) / bpm;
