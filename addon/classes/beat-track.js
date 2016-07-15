@@ -14,10 +14,10 @@ const {
 } = Ember;
 
 /**
- * An instance of this class has a single
- * {{#crossLink "AudioBuffer"}}{{/crossLink}} (a single "sound") but provides
- * methods to play that sound repeatedly and in a rhythmic way. An instance of
- * this class behaves very similarly to a "lane" on a drum machine.
+ * An instance of this class has a single "sound" (comprised of one or multiple
+ * audio sources) but provides methods to play that sound repeatedly, mixed with
+ * "rests," in a rhythmic way. An instance of this class behaves very similarly
+ * to a "lane" on a drum machine.
  *
  * @class BeatTrack
  * @extends Sampler
