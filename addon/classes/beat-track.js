@@ -22,7 +22,11 @@ const {
  * @class BeatTrack
  * @extends Sampler
  *
- * @todo need a way to stop a BeatTrack once it's started
+ * @todo need a way to stop a BeatTrack once it's started. Maybe by creating
+ * the times in advance and not calling play until it's the next beat or something?
+ *
+ * @todo humanize time
+ * @todo loop
  */
 const BeatTrack = Sampler.extend({
 

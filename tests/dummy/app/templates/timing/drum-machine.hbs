@@ -112,8 +112,23 @@
         this._loadBeatTrackFor('hihat')
       ])
       .then((beatTracks) => {
-        // default is 4 beats, but we're going to use 8
-        beatTracks.map((beatTrack) => beatTrack.set('numBeats', 8));
+        beatTracks.map((beatTrack) => {
+          const name = beatTrack.get('name');
+
+          // default is 4 beats, but we're going to use 8
+          beatTrack.set('numBeats', 16);
+
+          // snare and hihat are a little louder than kick, so we'll turn down the gain
+          if (name === 'snare' || name === 'hihat') {
+            beatTrack.set('gain', 0.5);
+          }
+
+          // and let's pan the hihat a little to the left
+          if (name === 'hihat') {
+            beatTrack.set('pan', -0.4);
+          }
+        });
+
         this.set('isLoading', false);
         this.set('beatTracks', beatTracks);
       });
