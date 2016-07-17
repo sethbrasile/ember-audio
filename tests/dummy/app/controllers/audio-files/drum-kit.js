@@ -1,12 +1,20 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
-  drums: Ember.A(),
+const {
+  A,
+  inject: { service },
+  on,
+  RSVP: { all },
+  Controller
+} = Ember;
+
+export default Controller.extend({
+  audio: service(),
+  drums: A(),
   isLoading: true,
 
-  initBeats: Ember.on('init', function() {
-    Ember.RSVP.all([
+  initBeats: on('init', function() {
+    all([
       this._loadSamplerFor('kick'),
       this._loadSamplerFor('snare'),
       this._loadSamplerFor('hihat')

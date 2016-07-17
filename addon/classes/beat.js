@@ -4,10 +4,12 @@ import Ember from 'ember';
  * Provides helper classes that represent musical concepts meant to be used by
  * classes from the Audio module.
  *
+ * @public
  * @module MusicalConcepts
  */
 
 const {
+  Object: EmberObject,
   run: { later }
 } = Ember;
 
@@ -30,15 +32,17 @@ const {
  *       _parentPlay: this.play.bind(this),
  *     });
  *
+ * @public
  * @class Beat
  */
-const Beat = Ember.Object.extend({
+const Beat = EmberObject.extend({
 
   /**
    * If `active` is `true`, all methods of play will cause this instance to play.
    * If `active` is `false`, the `playIfActive()` and `ifActivePlayIn()`
    * methods will treat this instance as a rest (a timed period of silence).
    *
+   * @public
    * @property active
    * @type {boolean}
    */
@@ -49,6 +53,7 @@ const Beat = Ember.Object.extend({
    * inactive beats (rests). When switched to `true`, is automatically returned
    * to false after the time specified by the duration property.
    *
+   * @public
    * @property currentTimeIsPlaying
    * @type {boolean}
    * @default false
@@ -60,6 +65,7 @@ const Beat = Ember.Object.extend({
    * When switched to `true`, is automatically returned to false after the time
    * specified by the duration property.
    *
+   * @public
    * @property isPlaying
    * @type {boolean}
    * @default false
@@ -81,6 +87,7 @@ const Beat = Ember.Object.extend({
    * and currentTimeIsPlaying are automatically switched back to false after
    * having been switched to true. 100ms is used by default.
    *
+   * @public
    * @property duration
    * @type {number}
    * @default 100
@@ -94,6 +101,7 @@ const Beat = Ember.Object.extend({
    * isPlaying and currentTimeIsPlaying are both marked true after the provided
    * offset has elapsed.
    *
+   * @public
    * @method playIn
    *
    * @param {number} offset Number of seconds from "now" that the audio should
@@ -117,6 +125,7 @@ const Beat = Ember.Object.extend({
    * currentTimeIsPlaying is marked true after the provided offset has elapsed,
    * even if beat is not active.
    *
+   * @public
    * @method ifActivePlayIn
    *
    * @param {number} offset Number of seconds from "now" that the audio should
@@ -138,6 +147,7 @@ const Beat = Ember.Object.extend({
    *
    * isPlaying and currentTimeIsPlaying are both immediately marked true.
    *
+   * @public
    * @method play
    */
   play() {
@@ -154,6 +164,7 @@ const Beat = Ember.Object.extend({
    *
    * currentTimeIsPlaying is immediately marked true, even if beat is not active.
    *
+   * @public
    * @method playIfActive
    */
   playIfActive() {
@@ -187,7 +198,7 @@ const Beat = Ember.Object.extend({
   _markCurrentTimePlaying() {
     this.set('currentTimeIsPlaying', true);
     later(() => this.set('currentTimeIsPlaying', false), this.get('duration'));
-  },
+  }
 });
 
 export default Beat;

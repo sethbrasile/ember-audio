@@ -1,11 +1,17 @@
 import Ember from 'ember';
 import { Connection } from 'ember-audio';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
+const {
+  inject: { service },
+  on,
+  Controller
+} = Ember;
+
+export default Controller.extend({
+  audio: service(),
   distortionEnabled: false,
 
-  initAudioFile: Ember.on('init', function() {
+  initAudioFile: on('init', function() {
     // Eb5.mp3 is an mp3 file located in the "public" folder
     this.get('audio').load('/ember-audio/Eb5.mp3').asSound('distorted-piano-note').then((note) => {
 
@@ -23,13 +29,13 @@ export default Ember.Controller.extend({
   _makeDistortionCurve(amount) {
     // I stole this straight from the Mozilla Web Audio API docs site
     const k = typeof amount === 'number' ? amount : 50;
-    const n_samples = 44100;
-    const curve = new Float32Array(n_samples);
+    const numSamples = 44100;
+    const curve = new Float32Array(numSamples);
     const deg = Math.PI / 180;
 
-    for (let i = 0; i < n_samples; ++i) {
-      let x = i * 2 / n_samples - 1;
-      curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+    for (let i = 0; i < numSamples; ++i) {
+      let x = i * 2 / numSamples - 1;
+      curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
     }
 
     return curve;

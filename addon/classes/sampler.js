@@ -4,8 +4,13 @@ import Ember from 'ember';
  * Provides classes that are capable of interacting with the Web Audio API's
  * AudioContext.
  *
+ * @public
  * @module Audio
  */
+
+const {
+  Object: EmberObject
+} = Ember;
 
 /**
  * An instance of the Sampler class behaves just like a Sound, but allows
@@ -13,16 +18,18 @@ import Ember from 'ember';
  * automatically alternately plays them (round-robin) each time any of the play
  * methods are called.
  *
+ * @public
  * @class Sampler
  *
  * @todo humanize gain and time - should be optional and customizable
  * @todo loop
  */
-const Sampler = Ember.Object.extend({
+const Sampler = EmberObject.extend({
 
   /**
    * Determines the gain applied to each sample.
    *
+   * @public
    * @property gain
    * @type {number}
    * @default 1
@@ -32,6 +39,7 @@ const Sampler = Ember.Object.extend({
   /**
    * Determines the stereo pan position of each sample.
    *
+   * @public
    * @property pan
    * @type {number}
    * @default 0
@@ -62,15 +70,17 @@ const Sampler = Ember.Object.extend({
   /**
    * Gets the next Sound and plays it immediately.
    *
+   * @public
    * @method play
    */
-   play() {
-     this._getNextSound().play();
-   },
+  play() {
+    this._getNextSound().play();
+  },
 
   /**
    * Gets the next Sound and plays it after the specified offset has elapsed.
    *
+   * @public
    * @method playIn
    *
    * @param {number} seconds Number of seconds from "now" that the next Sound
@@ -89,6 +99,7 @@ const Sampler = Ember.Object.extend({
    * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
    * time") when the next Sound should be played.
    *
+   * @public
    * @method playAt
    */
   playAt(time) {

@@ -2,6 +2,7 @@
  * Provides classes that are capable of interacting with the Web Audio API's
  * AudioContext.
  *
+ * @public
  * @module Audio
  */
 import Sound from './sound';
@@ -15,6 +16,7 @@ export { Sound, Track, BeatTrack, Sampler };
  * Provides helper classes that represent musical concepts meant to be used by
  * classes from the Audio module.
  *
+ * @public
  * @module MusicalConcepts
  */
 
@@ -23,12 +25,13 @@ import Beat from './beat';
 
 export { Note, Beat };
 
- /**
-  * Provides classes that interact with the Web Audio API indirectly by providing
-  * data models for the classes in the Audio module to consume.
-  *
-  * @module AudioHelpers
-  */
+/**
+ * Provides classes that interact with the Web Audio API indirectly by providing
+ * data models for the classes in the Audio module to consume.
+ *
+ * @public
+ * @module AudioHelpers
+ */
 
 import Connection from './connection';
 

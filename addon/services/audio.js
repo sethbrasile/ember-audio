@@ -5,11 +5,15 @@ import { sortNotes, base64ToUint8, mungeSoundFont } from 'ember-audio/utils';
 
 /**
  * Provides the Audio Service
+ *
+ * @public
  * @module AudioService
  */
 
 const {
   RSVP: { all, resolve },
+  Error: EmberError,
+  Logger,
   Service
 } = Ember;
 
@@ -31,6 +35,7 @@ const {
  *       return this.get('audio').load('some.mp3').asSound('some-sound');
  *     }
  *
+ * @public
  * @class AudioService
  */
 export default Service.extend({
@@ -39,6 +44,7 @@ export default Service.extend({
    * browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
    *
+   * @public
    * @property audioContext
    * @type {AudioContext}
    * @todo change this to audioContext to match other stuff, or change other stuff to audioContext
@@ -107,6 +113,7 @@ export default Service.extend({
    *     audio.load(['some-url.mp3']).asBeatTrack('some-beat-track');
    *     audio.load('some-url.js').asFont('some-font');
    *
+   * @public
    * @method load
    *
    * @param {string|array} src The URL location of an audio file. Will be used by
@@ -211,6 +218,7 @@ export default Service.extend({
   /**
    * Gets a BeatTrack instance by name from the _beatTracks register.
    *
+   * @public
    * @method getBeatTrack
    * @param {string} name The name of the BeatTrack instance that should be
    * retrieved from the _beatTracks register.
@@ -225,6 +233,7 @@ export default Service.extend({
   /**
    * Gets a Sound instance by name from the _sounds register
    *
+   * @public
    * @method getSound
    *
    * @param {string} name The name of the sound that should be retrieved
@@ -239,6 +248,7 @@ export default Service.extend({
   /**
    * Gets a Track instance by name from the _tracks register
    *
+   * @public
    * @method getTrack
    *
    * @param {string} name The name of the Track instance that should be
@@ -257,6 +267,7 @@ export default Service.extend({
    * @example
    *     audio.getFont('some-font').play('Ab1');
    *
+   * @public
    * @method getFont
    *
    * @param {string} name The name of the Map that should be retrieved
@@ -273,7 +284,7 @@ export default Service.extend({
         if (font.has(note)) {
           font.get(note).play();
         } else {
-          throw new Ember.Error(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
+          throw new EmberError(`ember-audio: You tried to play the note "${note}" from the soundfont "${name}" but the note "${note}" does not exist.`);
         }
       }
     };
@@ -282,6 +293,7 @@ export default Service.extend({
   /**
    * Gets a Sampler instance by name from the _samplers register
    *
+   * @public
    * @method getSampler
    *
    * @param {string} name The name of the sampler that should be retrieved
@@ -297,6 +309,7 @@ export default Service.extend({
   * Gets all instances of requested type and calls
   * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each.
    *
+   * @public
    * @method stopAll
    *
    * @param {string} type='tracks' The type of the register that you wish
@@ -313,6 +326,7 @@ export default Service.extend({
    * {{#crossLink "Sound/pause:method"}}{{/crossLink}} on each. Only works for
    * tracks because only Track instances are pause-able.
    *
+   * @public
    * @method pauseAll
    */
   pauseAll() {
@@ -330,7 +344,7 @@ export default Service.extend({
    * @return {map}
    */
   _getRegisterFor(type) {
-    switch(type) {
+    switch (type) {
       case 'track':
         return this.get('_tracks');
       case 'beatTrack':
@@ -358,7 +372,7 @@ export default Service.extend({
    * @return {Sound|Track|BeatTrack}
    */
   _createSoundFor(type, props) {
-    switch(type) {
+    switch (type) {
       case 'track':
         return Track.create(props);
       case 'beatTrack':
@@ -467,9 +481,9 @@ export default Service.extend({
     const fonts = this.get('_fonts');
 
     if (fonts.has(instrumentName)) {
-      const err = new Ember.Error(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to "null" with "this.get('audio.sounds').set('${instrumentName}', null);".`);
+      const err = new EmberError(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to "null" with "this.get('audio.sounds').set('${instrumentName}', null);".`);
 
-      Ember.Logger.error(err);
+      Logger.error(err);
 
       return resolve(fonts.get(instrumentName));
     }
@@ -582,24 +596,25 @@ export default Service.extend({
     const audioContext = this.get('audioContext');
 
     return audioData.map((note) => {
-      const noteName = note[0];
-      const audioBuffer = note[1];
-      const letter = noteName[0];
+      const [ noteName, audioBuffer ] = note;
+      let [ letter, accidental, octave ] = noteName;
 
-      let octave = noteName[2];
-      let accidental;
-
-      if (octave) {
-        accidental = noteName[1];
-      } else {
-        octave = noteName[1];
+      if (!octave) {
+        octave = accidental;
+        accidental = null;
       }
 
-      note = Note.create({ letter, octave, accidental, audioBuffer, audioContext });
+      const createdNote = Note.create({
+        letter,
+        octave,
+        accidental,
+        audioBuffer,
+        audioContext
+      });
 
-      this.get('_fonts').get(instrumentName).set(noteName, note);
+      this.get('_fonts').get(instrumentName).set(noteName, createdNote);
 
-      return note;
+      return createdNote;
     });
   }
 });

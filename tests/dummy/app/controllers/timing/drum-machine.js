@@ -1,13 +1,20 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
+const {
+  inject: { service },
+  on,
+  RSVP: { all },
+  Controller
+} = Ember;
+
+export default Controller.extend({
+  audio: service(),
   beatTracks: null,
   isLoading: true,
   bpm: 120,
 
-  initBeats: Ember.on('init', function() {
-    Ember.RSVP.all([
+  initBeats: on('init', function() {
+    all([
       this._loadBeatTrackFor('kick'),
       this._loadBeatTrackFor('snare'),
       this._loadBeatTrackFor('hihat')
@@ -39,7 +46,7 @@ export default Ember.Controller.extend({
     return this.get('audio').load([
       `/ember-audio/drum-samples/${name}1.wav`,
       `/ember-audio/drum-samples/${name}2.wav`,
-      `/ember-audio/drum-samples/${name}3.wav`,
+      `/ember-audio/drum-samples/${name}3.wav`
     ]).asBeatTrack(name);
   },
 
@@ -48,7 +55,7 @@ export default Ember.Controller.extend({
       this.get('beatTracks').map((beatTrack) => {
         // playActiveBeats() optionally accepts "noteType" which defaults to "1/4"
         // notes, but we want to use eighth notes
-        beatTrack.playActiveBeats(this.get('bpm'), 1/8);
+        beatTrack.playActiveBeats(this.get('bpm'), 1 / 8);
 
         // /* playActiveBeats() is a convenience method. For more control, you could do:
         // http://bradthemad.org/guitar/tempo_explanation.php */
