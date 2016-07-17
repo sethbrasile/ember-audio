@@ -15,8 +15,12 @@ import Ember from 'ember';
  *
  * @class Sampler
  * @todo provide easy method for setting gain and pan for each beat in sampler
+ * @todo humanize gain
  */
 const Sampler = Ember.Object.extend({
+
+  gain: 1,
+  pan: 0,
 
   /**
    * Temporary storage for the iterable that comes from the _sounds Set.
@@ -45,8 +49,7 @@ const Sampler = Ember.Object.extend({
    * @method play
    */
    play() {
-     const nextSound = this._getNextSound();
-     nextSound.play();
+     this._getNextSound().play();
    },
 
   /**
@@ -58,8 +61,7 @@ const Sampler = Ember.Object.extend({
    * should be played.
    */
   playIn(seconds) {
-   const nextSound = this._getNextSound();
-   nextSound.playIn(seconds);
+    this._getNextSound().playIn(seconds);
   },
 
   /**
@@ -74,8 +76,7 @@ const Sampler = Ember.Object.extend({
    * @method playAt
    */
   playAt(time) {
-    const nextSound = this._getNextSound();
-    nextSound.playAt(time);
+    this._getNextSound().playAt(time);
   },
 
   /**
@@ -92,20 +93,27 @@ const Sampler = Ember.Object.extend({
     let nextSound;
 
     if (!soundIterator) {
-     soundIterator = this.get('_sounds').values();
+      soundIterator = this.get('_sounds').values();
     }
 
     nextSound = soundIterator.next();
 
-     if (nextSound.done) {
-       soundIterator = this.get('_sounds').values();
-       nextSound = soundIterator.next();
-     }
+    if (nextSound.done) {
+      soundIterator = this.get('_sounds').values();
+      nextSound = soundIterator.next();
+    }
 
-     this.set('_soundIterator', soundIterator);
+    this.set('_soundIterator', soundIterator);
 
-     return nextSound.value;
-   }
+    return this._setGainAndPan(nextSound.value);
+  },
+
+  _setGainAndPan(sound) {
+    sound.changeGainTo(this.get('gain')).from('ratio');
+    sound.changePanTo(this.get('pan'));
+
+    return sound;
+  }
 });
 
 export default Sampler;
