@@ -23,10 +23,10 @@ const {
  * @extends Sampler
  *
  * @todo need a way to stop a BeatTrack once it's started. Maybe by creating
- * the times in advance and not calling play until it's the next beat or something?
+ * the times in advance and not calling play until it's the next beat in the
+ * queue?
  *
- * @todo humanize time
- * @todo loop
+ * @todo beats in beats array should save `active` state when numbeats/duration changes
  */
 const BeatTrack = Sampler.extend({
 

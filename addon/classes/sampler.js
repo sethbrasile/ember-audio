@@ -14,7 +14,9 @@ import Ember from 'ember';
  * methods are called.
  *
  * @class Sampler
- * @todo humanize gain
+ *
+ * @todo humanize gain and time - should be optional and customizable
+ * @todo loop
  */
 const Sampler = Ember.Object.extend({
 
