@@ -14,12 +14,26 @@ import Ember from 'ember';
  * methods are called.
  *
  * @class Sampler
- * @todo provide easy method for setting gain and pan for each beat in sampler
  * @todo humanize gain
  */
 const Sampler = Ember.Object.extend({
 
+  /**
+   * Determines the gain applied to each sample.
+   *
+   * @property gain
+   * @type {number}
+   * @default 1
+   */
   gain: 1,
+
+  /**
+   * Determines the stereo pan position of each sample.
+   *
+   * @property pan
+   * @type {number}
+   * @default 0
+   */
   pan: 0,
 
   /**
@@ -108,6 +122,14 @@ const Sampler = Ember.Object.extend({
     return this._setGainAndPan(nextSound.value);
   },
 
+  /**
+   * Applies the `gain` and `pan` properties from the Sampler instance to a
+   * Sound instance and returns the Sound instance.
+   *
+   * @private
+   * @method _setGainAndPan
+   * @return {Sound} The input sound after having it's gain and pan set
+   */
   _setGainAndPan(sound) {
     sound.changeGainTo(this.get('gain')).from('ratio');
     sound.changePanTo(this.get('pan'));
