@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.a2f0f2c8
+              Version: 0.0.0.05d205db
             </div>
             
         </div>
@@ -89,8 +89,29 @@ import Ember from &#x27;ember&#x27;;
  * methods are called.
  *
  * @class Sampler
+ *
+ * @todo humanize gain and time - should be optional and customizable
+ * @todo loop
  */
 const Sampler = Ember.Object.extend({
+
+  /**
+   * Determines the gain applied to each sample.
+   *
+   * @property gain
+   * @type {number}
+   * @default 1
+   */
+  gain: 1,
+
+  /**
+   * Determines the stereo pan position of each sample.
+   *
+   * @property pan
+   * @type {number}
+   * @default 0
+   */
+  pan: 0,
 
   /**
    * Temporary storage for the iterable that comes from the _sounds Set.
@@ -119,8 +140,7 @@ const Sampler = Ember.Object.extend({
    * @method play
    */
    play() {
-     const nextSound = this._getNextSound();
-     nextSound.play();
+     this._getNextSound().play();
    },
 
   /**
@@ -132,8 +152,7 @@ const Sampler = Ember.Object.extend({
    * should be played.
    */
   playIn(seconds) {
-   const nextSound = this._getNextSound();
-   nextSound.playIn(seconds);
+    this._getNextSound().playIn(seconds);
   },
 
   /**
@@ -148,8 +167,7 @@ const Sampler = Ember.Object.extend({
    * @method playAt
    */
   playAt(time) {
-    const nextSound = this._getNextSound();
-    nextSound.playAt(time);
+    this._getNextSound().playAt(time);
   },
 
   /**
@@ -166,20 +184,35 @@ const Sampler = Ember.Object.extend({
     let nextSound;
 
     if (!soundIterator) {
-     soundIterator = this.get(&#x27;_sounds&#x27;).values();
+      soundIterator = this.get(&#x27;_sounds&#x27;).values();
     }
 
     nextSound = soundIterator.next();
 
-     if (nextSound.done) {
-       soundIterator = this.get(&#x27;_sounds&#x27;).values();
-       nextSound = soundIterator.next();
-     }
+    if (nextSound.done) {
+      soundIterator = this.get(&#x27;_sounds&#x27;).values();
+      nextSound = soundIterator.next();
+    }
 
-     this.set(&#x27;_soundIterator&#x27;, soundIterator);
+    this.set(&#x27;_soundIterator&#x27;, soundIterator);
 
-     return nextSound.value;
-   }
+    return this._setGainAndPan(nextSound.value);
+  },
+
+  /**
+   * Applies the &#x60;gain&#x60; and &#x60;pan&#x60; properties from the Sampler instance to a
+   * Sound instance and returns the Sound instance.
+   *
+   * @private
+   * @method _setGainAndPan
+   * @return {Sound} The input sound after having it&#x27;s gain and pan set
+   */
+  _setGainAndPan(sound) {
+    sound.changeGainTo(this.get(&#x27;gain&#x27;)).from(&#x27;ratio&#x27;);
+    sound.changePanTo(this.get(&#x27;pan&#x27;));
+
+    return sound;
+  }
 });
 
 export default Sampler;

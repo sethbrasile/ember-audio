@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.a2f0f2c8
+              Version: 0.0.0.05d205db
             </div>
             
         </div>
@@ -114,11 +114,11 @@ export default Service.extend({
    * browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
    *
-   * @property context
+   * @property audioContext
    * @type {AudioContext}
-   * @todo change this to audioContext to match other stuff, or change other stuff to context
+   * @todo change this to audioContext to match other stuff, or change other stuff to audioContext
    */
-  context: new AudioContext(),
+  audioContext: new AudioContext(),
 
   /**
    * This acts as a register for Sound instances. Sound instances are placed in
@@ -196,7 +196,7 @@ export default Service.extend({
    * specify what type of Sound you&#x27;d like created.
    */
   load(src) {
-    const audioContext = this.get(&#x27;context&#x27;);
+    const audioContext = this.get(&#x27;audioContext&#x27;);
     const _load = this._load.bind(this);
     const _loadFont = this._loadFont.bind(this);
     const _loadBeatTrack = this._loadBeatTrack.bind(this);
@@ -467,7 +467,7 @@ export default Service.extend({
    * to an instance of a Sound, Track, or BeatTrack
    */
   _load(name, src, type) {
-    const audioContext = this.get(&#x27;context&#x27;);
+    const audioContext = this.get(&#x27;audioContext&#x27;);
     const register = this._getRegisterFor(type);
 
     if (register.has(name)) {
@@ -503,7 +503,7 @@ export default Service.extend({
    * @return {Promise|BeatTrack} A promise that resolves to a BeatTrack instance.
    */
   _loadBeatTrack(name, srcArray) {
-    const audioContext = this.get(&#x27;context&#x27;);
+    const audioContext = this.get(&#x27;audioContext&#x27;);
 
     return this._createSoundsArray(name, srcArray).then((sounds) =&gt; {
       const _sounds = new Set(sounds);
@@ -605,7 +605,7 @@ export default Service.extend({
    * values, &#x60;[noteName, decodedAudio]&#x60;.
    */
   _extractDecodedKeyValuePairs(notes) {
-    const ctx = this.get(&#x27;context&#x27;);
+    const ctx = this.get(&#x27;audioContext&#x27;);
     const promises = [];
 
     function decodeNote(noteName, buffer) {
@@ -654,7 +654,7 @@ export default Service.extend({
    * @return {array} Returns an Array of {{#crossLink &quot;Note&quot;}}Notes{{/crossLink}}
    */
   _createNoteObjects(audioData, instrumentName) {
-    const audioContext = this.get(&#x27;context&#x27;);
+    const audioContext = this.get(&#x27;audioContext&#x27;);
 
     return audioData.map((note) =&gt; {
       const noteName = note[0];

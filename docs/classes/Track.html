@@ -102,9 +102,9 @@
                   <div><a href="#public-methods">Public Methods</a></div>
                   <ul>
                       <li><a href="#method_changeGainTo">changeGainTo</a></li>
+                      <li><a href="#method_changePanTo">changePanTo</a></li>
                       <li><a href="#method_getConnection">getConnection</a></li>
-                      <li><a href="#method_getNode">getNode</a></li>
-                      <li><a href="#method_pan">pan</a></li>
+                      <li><a href="#method_getNodeFrom">getNodeFrom</a></li>
                       <li><a href="#method_pause">pause</a></li>
                       <li><a href="#method_play">play</a></li>
                       <li><a href="#method_playAt">playAt</a></li>
@@ -134,7 +134,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.a2f0f2c8
+              Version: 0.0.0.05d205db
             </div>
             
         </div>
@@ -183,7 +183,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
               <a href="#props_audioBuffer">audioBuffer</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer" class="crosslink external" target="_blank">AudioBuffer</a>
             </div>
             <div class="short-description">
-              <p>The AudioBuffer instance that provides audio data to the bufferSourceNode.</p>
+              <p>The AudioBuffer instance that provides audio data to the bufferSource connection.</p>
             </div>
           </td>
         </tr>
@@ -273,7 +273,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
               <a href="#props_percentGain">percentGain</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
             </div>
             <div class="short-description">
-              <p>Computed property. Value is the amount of gain currently applied to the <code>gainNode</code> of the <code>connections</code> array, formatted as a percentage.</p>
+              <p>Computed property. Value is the amount of gain currently applied to the <code>gain</code> connection from the <code>connections</code> array, formatted as a percentage.</p>
             </div>
           </td>
         </tr>
@@ -371,7 +371,22 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
               <a href="#method_changeGainTo">changeGainTo</a>(value): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
             </div>
             <div class="short-description">
-              <p>Gets the <code>gainNode</code> and changes it's gain value to the value passed in. returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing one to specify which type of value is being provided.</p>
+              <p>Gets the <code>gain</code> connection and changes it's gain value to the value passed in. returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing one to specify which type of value is being provided.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_changePanTo">changePanTo</a>(value)
+            </div>
+            <div class="short-description">
+              <p>Gets the <code>panner</code> connection and changes it's pan value to the value passed in.</p>
             </div>
           </td>
         </tr>
@@ -398,25 +413,10 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method_getNode">getNode</a>(name): <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
+              <a href="#method_getNodeFrom">getNodeFrom</a>(name): <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
             </div>
             <div class="short-description">
-              <p>returns a connection's AudioNode from the connections array by it's <code>name</code>.</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            public
-            
-            
-          </td>
-          <td>
-            <div class="method-name ">
-              <a href="#method_pan">pan</a>(value)
-            </div>
-            <div class="short-description">
-              <p>Gets the <code>pannerNode</code> and changes it's pan value to the value passed in.</p>
+              <p>returns a connection's AudioNode from the connections array by the connection's <code>name</code>.</p>
             </div>
           </td>
         </tr>
@@ -506,7 +506,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
               <a href="#method_seek">seek</a>(amount): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
             </div>
             <div class="short-description">
-              <p>Gets the bufferSourceNode and stops the audio, changes it's play position, and restarts the audio.</p>
+              <p>Gets the bufferSource and stops the audio, changes it's play position, and restarts the audio.</p>
             </div>
           </td>
         </tr>
@@ -676,7 +676,7 @@ underlying <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer
   </div>
 
 
-  <div class="property-description"><p>The AudioBuffer instance that provides audio data to the bufferSourceNode.</p>
+  <div class="property-description"><p>The AudioBuffer instance that provides audio data to the bufferSource connection.</p>
 </div>
 
 </div>
@@ -797,7 +797,7 @@ this Sound instance is registered as on it's parent register.</p>
 
 
   <div class="property-description"><p>Computed property. Value is the amount of gain currently applied to the
-<code>gainNode</code> of the <code>connections</code> array, formatted as a percentage.</p>
+<code>gain</code> connection from the <code>connections</code> array, formatted as a percentage.</p>
 </div>
 
 </div>
@@ -893,7 +893,7 @@ It will always reflect the start time of the most recent
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item">
     <div id="method_changeGainTo" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l252"><code>addon&#x2F;classes&#x2F;sound.js:252</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l256"><code>addon&#x2F;classes&#x2F;sound.js:256</code></a></span>
         <h3 class="">
             public
             
@@ -907,7 +907,7 @@ It will always reflect the start time of the most recent
         </div>
 
 
-    <div class="method-description"><p>Gets the <code>gainNode</code> and changes it's gain value to the value passed in.
+    <div class="method-description"><p>Gets the <code>gain</code> connection and changes it's gain value to the value passed in.
 returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing
 one to specify which type of value is being provided.</p>
 </div>
@@ -934,7 +934,7 @@ one to specify which type of value is being provided.</p>
                   
                 </ul>
               </td>
-              <td><p>The value that the <code>gainNode</code>'s <code>gain.value</code> should
+              <td><p>The value that the <code>gain</code> connection's <code>gain.value</code> should
 be set to. Can be a ratio, an inverseRatio or a percentage.</p>
 </td>
             </tr>
@@ -963,8 +963,61 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 
 </div>
 <div class="method item">
+    <div id="method_changePanTo" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l238"><code>addon&#x2F;classes&#x2F;sound.js:238</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            changePanTo(value)
+        </h3>
+    </div>
+
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method_changePanTo" class="crosslink">Sound</a>
+        </div>
+
+
+    <div class="method-description"><p>Gets the <code>panner</code> connection and changes it's pan value to the value passed in.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>value</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The value, between -1 and 1 that the <code>panner</code> connection's
+<code>pan.value</code> should be set to.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item">
     <div id="method_getConnection" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l226"><code>addon&#x2F;classes&#x2F;sound.js:226</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l225"><code>addon&#x2F;classes&#x2F;sound.js:225</code></a></span>
         <h3 class="">
             public
             
@@ -1023,23 +1076,23 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 
 </div>
 <div class="method item">
-    <div id="method_getNode" class="title">
+    <div id="method_getNodeFrom" class="title">
         <span class="source-link"><a href="../files/addon_classes_sound.js.html#l207"><code>addon&#x2F;classes&#x2F;sound.js:207</code></a></span>
         <h3 class="">
             public
             
             
-            getNode(name): <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
+            getNodeFrom(name): <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNode</a>
         </h3>
     </div>
 
         <div class="inherited">
-          Inherited from <a href="../classes/Sound.html#method_getNode" class="crosslink">Sound</a>
+          Inherited from <a href="../classes/Sound.html#method_getNodeFrom" class="crosslink">Sound</a>
         </div>
 
 
-    <div class="method-description"><p>returns a connection's AudioNode from the connections array by it's
-<code>name</code>.</p>
+    <div class="method-description"><p>returns a connection's AudioNode from the connections array by the
+connection's <code>name</code>.</p>
 </div>
 
       <div class="params">
@@ -1080,59 +1133,6 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
 </span>
         </div>
       </div>
-
-
-</div>
-<div class="method item">
-    <div id="method_pan" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l239"><code>addon&#x2F;classes&#x2F;sound.js:239</code></a></span>
-        <h3 class="">
-            public
-            
-            
-            pan(value)
-        </h3>
-    </div>
-
-        <div class="inherited">
-          Inherited from <a href="../classes/Sound.html#method_pan" class="crosslink">Sound</a>
-        </div>
-
-
-    <div class="method-description"><p>Gets the <code>pannerNode</code> and changes it's pan value to the value passed in.</p>
-</div>
-
-      <div class="params">
-        <h4>Parameters:</h4>
-        <table>
-          <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Attribute</th>
-            <th>Description</th>
-          </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>value</td>
-              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
-              <td>
-                <ul>
-                  
-                  
-                  
-                </ul>
-              </td>
-              <td><p>The value, between -1 and 1 that the <code>pannerNode</code>'s
-<code>pan.value</code> should be set to.</p>
-</td>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
-
 
 
 </div>
@@ -1292,7 +1292,7 @@ should be played.</p>
 </div>
 <div class="method item">
     <div id="method_removeConnection" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l359"><code>addon&#x2F;classes&#x2F;sound.js:359</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l363"><code>addon&#x2F;classes&#x2F;sound.js:363</code></a></span>
         <h3 class="">
             public
             
@@ -1344,7 +1344,7 @@ should be played.</p>
 </div>
 <div class="method item">
     <div id="method_seek" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l300"><code>addon&#x2F;classes&#x2F;sound.js:300</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l304"><code>addon&#x2F;classes&#x2F;sound.js:304</code></a></span>
         <h3 class="">
             public
             
@@ -1358,7 +1358,7 @@ should be played.</p>
         </div>
 
 
-    <div class="method-description"><p>Gets the bufferSourceNode and stops the audio,
+    <div class="method-description"><p>Gets the bufferSource and stops the audio,
 changes it's play position, and restarts the audio.</p>
 <p>returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing
 one to specify which type of value is being provided.</p>
@@ -1445,7 +1445,7 @@ startOffset to 0.</p>
         <h2 id="protected-methods">Protected Methods</h2>
 <div class="method item protected">
     <div id="method__initConnections" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l370"><code>addon&#x2F;classes&#x2F;sound.js:370</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l374"><code>addon&#x2F;classes&#x2F;sound.js:374</code></a></span>
         <h3 class="">
             protected
             
@@ -1472,7 +1472,7 @@ startOffset to 0.</p>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__createNode" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l467"><code>addon&#x2F;classes&#x2F;sound.js:467</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l471"><code>addon&#x2F;classes&#x2F;sound.js:471</code></a></span>
         <h3 class="">
             private
             
@@ -1538,7 +1538,7 @@ created.</p>
 </div>
 <div class="method item private">
     <div id="method__play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l411"><code>addon&#x2F;classes&#x2F;sound.js:411</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l415"><code>addon&#x2F;classes&#x2F;sound.js:415</code></a></span>
         <h3 class="">
             private
             
@@ -1599,7 +1599,7 @@ time") when the audio source should be played.</p>
 </div>
 <div class="method item private">
     <div id="method__setAttrsOnNode" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l502"><code>addon&#x2F;classes&#x2F;sound.js:502</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l506"><code>addon&#x2F;classes&#x2F;sound.js:506</code></a></span>
         <h3 class="">
             private
             
@@ -1684,7 +1684,7 @@ Loop ends when <code>isPlaying</code> is false.</p>
 </div>
 <div class="method item private">
     <div id="method__wireConnection" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l525"><code>addon&#x2F;classes&#x2F;sound.js:525</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l529"><code>addon&#x2F;classes&#x2F;sound.js:529</code></a></span>
         <h3 class="">
             private
             
@@ -1775,7 +1775,7 @@ connected to the next Connection instance's node.</p>
 </div>
 <div class="method item private">
     <div id="method__wireConnections" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l446"><code>addon&#x2F;classes&#x2F;sound.js:446</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sound.js.html#l450"><code>addon&#x2F;classes&#x2F;sound.js:450</code></a></span>
         <h3 class="">
             private
             

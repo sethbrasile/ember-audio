@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.a2f0f2c8
+              Version: 0.0.0.05d205db
             </div>
             
         </div>
@@ -117,7 +117,7 @@ const Sound = Ember.Object.extend({
   name: null,
 
   /**
-   * The AudioBuffer instance that provides audio data to the bufferSourceNode.
+   * The AudioBuffer instance that provides audio data to the bufferSource connection.
    *
    * @property audioBuffer
    * @type {AudioBuffer}
@@ -217,13 +217,13 @@ const Sound = Ember.Object.extend({
 
   /**
    * Computed property. Value is the amount of gain currently applied to the
-   * &#x60;gainNode&#x60; of the &#x60;connections&#x60; array, formatted as a percentage.
+   * &#x60;gain&#x60; connection from the &#x60;connections&#x60; array, formatted as a percentage.
    *
    * @property percentGain
    * @type {number}
    */
   percentGain: computed(function() {
-    return this.getNode(&#x27;gainNode&#x27;).gain.value * 100;
+    return this.getNodeFrom(&#x27;gain&#x27;).gain.value * 100;
   }),
 
   /**
@@ -271,7 +271,7 @@ const Sound = Ember.Object.extend({
    * @method stop
    */
   stop() {
-    const node = this.getNode(&#x27;bufferSourceNode&#x27;);
+    const node = this.getNodeFrom(&#x27;bufferSource&#x27;);
 
     if (node) {
       node.stop();
@@ -280,17 +280,16 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * returns a connection&#x27;s AudioNode from the connections array by it&#x27;s
-   * &#x60;name&#x60;.
+   * returns a connection&#x27;s AudioNode from the connections array by the
+   * connection&#x27;s &#x60;name&#x60;.
    *
-   * @method getNode
+   * @method getNodeFrom
    *
    * @param {string} name The name of the AudioNode that should be returned.
    *
    * @return {AudioNode} The requested AudioNode.
-   * @todo consider changing this to &#x60;getNodeFrom&#x60; since it&#x27;s actually getting a node from a connection named &#x60;name&#x60;
    */
-  getNode(name) {
+  getNodeFrom(name) {
     const connection = this.getConnection(name);
 
     if (connection) {
@@ -312,20 +311,25 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the &#x60;pannerNode&#x60; and changes it&#x27;s pan value to the value passed in.
+   * Gets the &#x60;panner&#x60; connection and changes it&#x27;s pan value to the value passed in.
    *
-   * @param {number} value The value, between -1 and 1 that the &#x60;pannerNode&#x60;&#x27;s
+   * @param {number} value The value, between -1 and 1 that the &#x60;panner&#x60; connection&#x27;s
    * &#x60;pan.value&#x60; should be set to.
    *
-   * @method pan
-   * @todo Make &quot;API&quot; match &quot;changeGainTo&quot;
+   * @method changePanTo
    */
-  pan(value) {
-    this.getNode(&#x27;pannerNode&#x27;).pan.value = value;
+  changePanTo(value) {
+    if (value &gt; 1) {
+      value = 1;
+    } else if (value &lt; -1) {
+      value = -1;
+    }
+
+    this.getNodeFrom(&#x27;panner&#x27;).pan.value = value;
   },
 
   /**
-   * Gets the &#x60;gainNode&#x60; and changes it&#x27;s gain value to the value passed in.
+   * Gets the &#x60;gain&#x60; connection and changes it&#x27;s gain value to the value passed in.
    * returns a pojo with the &#x60;from&#x60; method that &#x60;value&#x60; is curried to, allowing
    * one to specify which type of value is being provided.
    *
@@ -335,7 +339,7 @@ const Sound = Ember.Object.extend({
    *     soundInstance.changeGainTo(0.1).from(&#x27;inverseRatio&#x27;)
    *     soundInstance.changeGainTo(90).from(&#x27;percent&#x27;);
    *
-   * @param {number} value The value that the &#x60;gainNode&#x60;&#x27;s &#x60;gain.value&#x60; should
+   * @param {number} value The value that the &#x60;gain&#x60; connection&#x27;s &#x60;gain.value&#x60; should
    * be set to. Can be a ratio, an inverseRatio or a percentage.
    *
    * @method changeGainTo
@@ -345,7 +349,7 @@ const Sound = Ember.Object.extend({
    * change accordingly.
    */
   changeGainTo(value) {
-    const gainNode = this.getNode(&#x27;gainNode&#x27;);
+    const gainNode = this.getNodeFrom(&#x27;gain&#x27;);
     const notify = () =&gt; this.notifyPropertyChange(&#x27;percentGain&#x27;);
 
     function adjustGain(newValue) {
@@ -373,7 +377,7 @@ const Sound = Ember.Object.extend({
   },
 
   /**
-   * Gets the bufferSourceNode and stops the audio,
+   * Gets the bufferSource and stops the audio,
    * changes it&#x27;s play position, and restarts the audio.
    *
    * returns a pojo with the &#x60;from&#x60; method that &#x60;value&#x60; is curried to, allowing
@@ -450,7 +454,7 @@ const Sound = Ember.Object.extend({
    */
   _initConnections: on(&#x27;init&#x27;, function() {
     const bufferSource = Connection.create({
-      name: &#x27;bufferSourceNode&#x27;,
+      name: &#x27;bufferSource&#x27;,
       createdOnPlay: true,
       source: &#x27;audioContext&#x27;,
       createCommand: &#x27;createBufferSource&#x27;,
@@ -463,13 +467,13 @@ const Sound = Ember.Object.extend({
     });
 
     const gain = Connection.create({
-      name: &#x27;gainNode&#x27;,
+      name: &#x27;gain&#x27;,
       source: &#x27;audioContext&#x27;,
       createCommand: &#x27;createGain&#x27;
     });
 
     const panner = Connection.create({
-      name: &#x27;pannerNode&#x27;,
+      name: &#x27;panner&#x27;,
       source: &#x27;audioContext&#x27;,
       createCommand: &#x27;createStereoPanner&#x27;
     });
@@ -507,7 +511,7 @@ const Sound = Ember.Object.extend({
 
     this._wireConnections();
 
-    this.getNode(&#x27;bufferSourceNode&#x27;).start(playAt, this.get(&#x27;startOffset&#x27;));
+    this.getNodeFrom(&#x27;bufferSource&#x27;).start(playAt, this.get(&#x27;startOffset&#x27;));
 
     this.set(&#x27;_startedPlayingAt&#x27;, playAt);
 

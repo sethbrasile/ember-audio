@@ -79,6 +79,11 @@
             
             
             
+                  <div><a href="#public-properties">Public Properties</a></div>
+                  <ul>
+                      <li><a href="#props_gain">gain</a></li>
+                      <li><a href="#props_pan">pan</a></li>
+                  </ul>
             
             
                   <div><a href="#private-properties">Private Properties</a></div>
@@ -98,6 +103,7 @@
                   <div><a href="#private-methods">Private Methods</a></div>
                   <ul>
                       <li><a href="#method__getNextSound">_getNextSound</a></li>
+                      <li><a href="#method__setGainAndPan">_setGainAndPan</a></li>
                   </ul>
               </div>
             </div>
@@ -105,7 +111,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.a2f0f2c8
+              Version: 0.0.0.05d205db
             </div>
             
         </div>
@@ -133,6 +139,45 @@ methods are called.</p>
 
   <h2 id="property-summary">Property Summary</h2>
 
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Properties</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_gain">gain</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+            </div>
+            <div class="short-description">
+              <p>Determines the gain applied to each sample.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_pan">pan</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+            </div>
+            <div class="short-description">
+              <p>Determines the stereo pan position of each sample.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
 
     <table class="summary">
@@ -255,6 +300,21 @@ methods are called.</p>
             </div>
           </td>
         </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__setGainAndPan">_setGainAndPan</a>( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+            </div>
+            <div class="short-description">
+              <p>Applies the <code>gain</code> and <code>pan</code> properties from the Sampler instance to a Sound instance and returns the Sound instance.</p>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -267,13 +327,48 @@ methods are called.</p>
 
 
 
+    <div id="properties public">
+        <h2 id="public-properties">Public Properties</h2>
+<div class="property item">
+  <div id="props_gain" class="title">
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l23"><code>addon&#x2F;classes&#x2F;sampler.js:23</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      gain: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Determines the gain applied to each sample.</p>
+</div>
+
+</div>
+<div class="property item">
+  <div id="props_pan" class="title">
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l32"><code>addon&#x2F;classes&#x2F;sampler.js:32</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      pan: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Determines the stereo pan position of each sample.</p>
+</div>
+
+</div>
+    </div>
 
 
     <div id="properties private">
         <h2 id="private-properties">Private Properties</h2>
 <div class="property item private">
   <div id="props__soundIterator" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l20"><code>addon&#x2F;classes&#x2F;sampler.js:20</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l41"><code>addon&#x2F;classes&#x2F;sampler.js:41</code></a></span>
     <h3 class="">
       private
       
@@ -291,7 +386,7 @@ it's end, resulting in an infinite stream of Sound instances.</p>
 </div>
 <div class="property item private">
   <div id="props__sounds" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l32"><code>addon&#x2F;classes&#x2F;sampler.js:32</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l53"><code>addon&#x2F;classes&#x2F;sampler.js:53</code></a></span>
     <h3 class="">
       private
       
@@ -311,7 +406,7 @@ it's end, resulting in an infinite stream of Sound instances.</p>
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l41"><code>addon&#x2F;classes&#x2F;sampler.js:41</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l62"><code>addon&#x2F;classes&#x2F;sampler.js:62</code></a></span>
         <h3 class="">
             public
             
@@ -331,7 +426,7 @@ it's end, resulting in an infinite stream of Sound instances.</p>
 </div>
 <div class="method item">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l64"><code>addon&#x2F;classes&#x2F;sampler.js:64</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l83"><code>addon&#x2F;classes&#x2F;sampler.js:83</code></a></span>
         <h3 class="">
             public
             
@@ -384,7 +479,7 @@ time") when the next Sound should be played.</p>
 </div>
 <div class="method item">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l51"><code>addon&#x2F;classes&#x2F;sampler.js:51</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l71"><code>addon&#x2F;classes&#x2F;sampler.js:71</code></a></span>
         <h3 class="">
             public
             
@@ -439,7 +534,7 @@ should be played.</p>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__getNextSound" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l80"><code>addon&#x2F;classes&#x2F;sampler.js:80</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l98"><code>addon&#x2F;classes&#x2F;sampler.js:98</code></a></span>
         <h3 class="">
             private
             
@@ -461,6 +556,35 @@ and returns the first value from that.</p>
         <div>
           <span class="return-type"><a href="../classes/Sound.html" class="crosslink">Sound</a></span>
           <span class="return-description"></span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item private">
+    <div id="method__setGainAndPan" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l127"><code>addon&#x2F;classes&#x2F;sampler.js:127</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _setGainAndPan( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Applies the <code>gain</code> and <code>pan</code> properties from the Sampler instance to a
+Sound instance and returns the Sound instance.</p>
+</div>
+
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Sound.html" class="crosslink">Sound</a></span>
+          <span class="return-description"><p>The input sound after having it's gain and pan set</p>
+</span>
         </div>
       </div>
 

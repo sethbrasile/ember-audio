@@ -62,7 +62,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.a2f0f2c8
+              Version: 0.0.0.05d205db
             </div>
             
         </div>
@@ -97,7 +97,11 @@ const {
  * @class BeatTrack
  * @extends Sampler
  *
- * @todo need a way to stop a BeatTrack once it&#x27;s started
+ * @todo need a way to stop a BeatTrack once it&#x27;s started. Maybe by creating
+ * the times in advance and not calling play until it&#x27;s the next beat in the
+ * queue?
+ *
+ * @todo beats in beats array should save &#x60;active&#x60; state when numbeats/duration changes
  */
 const BeatTrack = Sampler.extend({
 
