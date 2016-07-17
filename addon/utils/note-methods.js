@@ -6,6 +6,7 @@ const {
 } = Ember;
 
 /**
+ * @public
  * @class utils
  */
 
@@ -15,6 +16,7 @@ const {
  *
  * @param {array} notes An array of notes that should be musically-sorted.
  *
+ * @public
  * @method sortNotes
  *
  * @return {array} Array of musically-sorted notes.

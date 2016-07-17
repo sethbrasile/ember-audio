@@ -1,11 +1,17 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
+const {
+  inject: { service },
+  on,
+  Controller
+} = Ember;
+
+export default Controller.extend({
+  audio: service(),
   isLoading: true,
   notes: null,
 
-  initSoundFont: Ember.on('init', function() {
+  initSoundFont: on('init', function() {
     // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
     this.get('audio').load('/ember-audio/piano.js').asFont('piano')
       // The promise from asFont() resolves to an array of sorted

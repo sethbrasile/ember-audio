@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 const {
   A,
+  Object: EmberObject,
   on
 } = Ember;
 
@@ -9,6 +10,7 @@ const {
  * Provides classes that interact with the Web Audio API indirectly by providing
  * data models for the classes in the Audio module to consume.
  *
+ * @public
  * @module AudioHelpers
  */
 
@@ -24,15 +26,17 @@ const {
  * AudioNode instance and setting it on this class' `node` property. Some define
  * how to set properties on the AudioNode instance after it has been created.
  *
+ * @public
  * @class Connection
  */
-const Connection = Ember.Object.extend({
+const Connection = EmberObject.extend({
 
   /**
    * The name of the connection. This is the name that can be used to
    * get an AudioNode instance via the
    * {{#crossLink "Sound/getNodeFrom:method"}}{{/crossLink}} method.
    *
+   * @public
    * @property name
    * @type {string}
    */
@@ -53,6 +57,7 @@ const Connection = Ember.Object.extend({
    *       path: 'audioContext.destination'
    *     }
    *
+   * @public
    * @property path
    * @type {string}
    */
@@ -70,6 +75,7 @@ const Connection = Ember.Object.extend({
    *       createCommand: createGain
    *     }
    *
+   * @public
    * @property source
    * @type {string}
    */
@@ -87,10 +93,11 @@ const Connection = Ember.Object.extend({
   *       source: 'audioContext'
   *       createCommand: createGain
   *     }
-   *
-   * @property createCommand
-   * @type {string}
-   */
+  *
+  * @public
+  * @property createCommand
+  * @type {string}
+  */
   createCommand: null,
 
   /**
@@ -128,6 +135,7 @@ const Connection = Ember.Object.extend({
    *       ]
    *     }
    *
+   * @public
    * @property onPlaySetAttrsOnNode
    * @type {array}
    */
@@ -142,6 +150,7 @@ const Connection = Ember.Object.extend({
    * If this property is set directly, all of the other properties on this class
    * (except `name`) are rendered useless.
    *
+   * @public
    * @property node
    * @type {AudioNode}
    */
@@ -151,6 +160,7 @@ const Connection = Ember.Object.extend({
    * If this is true, the AudioNode will be created every time the consuming
    * Sound instance is played.
    *
+   * @public
    * @property createdOnPlay
    * @type {boolean}
    * @default false

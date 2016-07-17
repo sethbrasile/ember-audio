@@ -1,9 +1,15 @@
 import Ember from 'ember';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
+const {
+  inject: { service },
+  on,
+  Controller
+} = Ember;
 
-  initAudioFile: Ember.on('init', function() {
+export default Controller.extend({
+  audio: service(),
+
+  initAudioFile: on('init', function() {
     this.get('audio').load('Eb5.mp3').asSound('piano-note');
   }),
 

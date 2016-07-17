@@ -6,11 +6,12 @@ import { zeroify } from 'ember-audio/utils';
  * Provides classes that are capable of interacting with the Web Audio API's
  * AudioContext.
  *
+ * @public
  * @module Audio
  */
 
 const {
-  computed,
+  computed
 } = Ember;
 
 /**
@@ -18,6 +19,7 @@ const {
  * a CD or an MP3 player. Provides methods for tracking the play position of the
  * underlying {{#crossLink "AudioBuffer"}}{{/crossLink}}, and pausing/resuming.
  *
+ * @public
  * @class Track
  * @extends Sound
  */
@@ -39,6 +41,7 @@ const Track = Sound.extend({
    *       }
    *     }
    *
+   * @public
    * @property position
    * @type {object}
    */
@@ -58,6 +61,7 @@ const Track = Sound.extend({
    * Computed property. Value is the current play position of the
    * audioBuffer, formatted as a percentage.
    *
+   * @public
    * @property percentPlayed
    * @type {number}
    */
@@ -69,6 +73,7 @@ const Track = Sound.extend({
   /**
    * Plays the audio source immediately.
    *
+   * @public
    * @method play
    */
   play() {
@@ -81,6 +86,7 @@ const Track = Sound.extend({
    * Pauses the audio source by stopping without
    * setting startOffset back to 0.
    *
+   * @public
    * @method pause
    */
   pause() {
@@ -97,6 +103,7 @@ const Track = Sound.extend({
    * Stops the audio source and sets
    * startOffset to 0.
    *
+   * @public
    * @method stop
    */
   stop() {

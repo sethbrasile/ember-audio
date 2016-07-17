@@ -6,6 +6,7 @@ import { zeroify } from 'ember-audio/utils';
  * Provides classes that are capable of interacting with the Web Audio API's
  * AudioContext.
  *
+ * @public
  * @module Audio
  */
 
@@ -15,7 +16,8 @@ const {
   on,
   get,
   set,
-  run: { later }
+  run: { later },
+  Object: EmberObject
 } = Ember;
 
 /**
@@ -28,14 +30,16 @@ const {
  * and provides some methods to {{#crossLink "Sound/play:method"}}{{/crossLink}}
  * and {{#crossLink "Sound/stop:method"}}{{/crossLink}} the audio source.
  *
+ * @public
  * @class Sound
  */
-const Sound = Ember.Object.extend({
+const Sound = EmberObject.extend({
 
   /**
    * When using the {{#crossLink "Audio-Service"}}{{/crossLink}}, The name that
    * this Sound instance is registered as on it's parent register.
    *
+   * @public
    * @property name
    * @type {string}
    */
@@ -44,6 +48,7 @@ const Sound = Ember.Object.extend({
   /**
    * The AudioBuffer instance that provides audio data to the bufferSource connection.
    *
+   * @public
    * @property audioBuffer
    * @type {AudioBuffer}
    */
@@ -59,6 +64,7 @@ const Sound = Ember.Object.extend({
    * This is the object that facilitates and ties together all aspects of the
    * Web Audio API.
    *
+   * @public
    * @property audioContext
    * @type {AudioContext}
    */
@@ -81,6 +87,7 @@ const Sound = Ember.Object.extend({
    * `offset` param. Determines `where` (in seconds) the play will start, along
    * the duration of the audio source.
    *
+   * @public
    * @property startOffset
    * @type {number}
    */
@@ -91,6 +98,7 @@ const Sound = Ember.Object.extend({
    * starts playing audio. Becomes false when the Sound instance is stopped or
    * ends by reaching the end of it's duration.
    *
+   * @public
    * @property isPlaying
    * @type {boolean}
    * @default false
@@ -104,6 +112,7 @@ const Sound = Ember.Object.extend({
    * {{#crossLink "Sound/initConnections:method"}} initConnections{{/crossLink}}
    * method.
    *
+   * @public
    * @property connections
    * @type {Ember.MutableArray}
    */
@@ -125,6 +134,7 @@ const Sound = Ember.Object.extend({
    *       }
    *     }
    *
+   * @public
    * @property duration
    * @type {object}
    */
@@ -144,6 +154,7 @@ const Sound = Ember.Object.extend({
    * Computed property. Value is the amount of gain currently applied to the
    * `gain` connection from the `connections` array, formatted as a percentage.
    *
+   * @public
    * @property percentGain
    * @type {number}
    */
@@ -154,6 +165,7 @@ const Sound = Ember.Object.extend({
   /**
    * Plays the audio source immediately.
    *
+   * @public
    * @method play
    */
   play() {
@@ -171,6 +183,7 @@ const Sound = Ember.Object.extend({
    * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
    * time") when the audio source should be played.
    *
+   * @public
    * @method playAt
    */
   playAt(time) {
@@ -180,6 +193,7 @@ const Sound = Ember.Object.extend({
   /**
    * Plays the audio source in specified amount of seconds from "now".
    *
+   * @public
    * @method playIn
    *
    * @param {number} seconds Number of seconds from "now" that the audio source
@@ -192,8 +206,9 @@ const Sound = Ember.Object.extend({
   /**
    * Stops the audio source immediately.
    *
-   * @todo add timed stop methods
+   * @public
    * @method stop
+   * @todo add timed stop methods
    */
   stop() {
     const node = this.getNodeFrom('bufferSource');
@@ -208,6 +223,7 @@ const Sound = Ember.Object.extend({
    * returns a connection's AudioNode from the connections array by the
    * connection's `name`.
    *
+   * @public
    * @method getNodeFrom
    *
    * @param {string} name The name of the AudioNode that should be returned.
@@ -225,6 +241,7 @@ const Sound = Ember.Object.extend({
   /**
    * returns a connection from the connections array by it's name
    *
+   * @public
    * @method getConnection
    *
    * @param {string} name The name of the AudioNode that should be returned.
@@ -241,6 +258,7 @@ const Sound = Ember.Object.extend({
    * @param {number} value The value, between -1 and 1 that the `panner` connection's
    * `pan.value` should be set to.
    *
+   * @public
    * @method changePanTo
    */
   changePanTo(value) {
@@ -267,6 +285,7 @@ const Sound = Ember.Object.extend({
    * @param {number} value The value that the `gain` connection's `gain.value` should
    * be set to. Can be a ratio, an inverseRatio or a percentage.
    *
+   * @public
    * @method changeGainTo
    *
    * @return {object} Intermediary POJO containing the `from` method which will
@@ -318,6 +337,7 @@ const Sound = Ember.Object.extend({
    *
    * @param {number} amount The new play position value.
    *
+   * @public
    * @method seek
    *
    * @return {object} Intermediary POJO containing the `from` method which will
@@ -365,6 +385,7 @@ const Sound = Ember.Object.extend({
    *
    * @param {string} name The name of the connection that should be removed.
    *
+   * @public
    * @method removeConnection
    */
   removeConnection(name) {

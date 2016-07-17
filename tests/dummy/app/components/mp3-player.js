@@ -39,7 +39,7 @@ export default Component.extend({
 
     changeVolume(e) {
       const height = e.target.offsetParent.offsetHeight;
-      const offset = e.pageY - Ember.$(e.target).parent().offset().top;
+      const offset = e.pageY - $(e.target).parent().offset().top;
       const adjustedHeight = height * 0.8;
       const adjustedOffset = offset - ((height - adjustedHeight) / 2);
       const newGain = adjustedOffset / adjustedHeight;

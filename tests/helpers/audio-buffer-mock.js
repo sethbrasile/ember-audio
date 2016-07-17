@@ -1,6 +1,10 @@
 import Ember from 'ember';
 
-const AudioBufferMock = Ember.Object.extend({
+const {
+  Object: EmberObject
+} = Ember;
+
+const AudioBufferMock = EmberObject.extend({
   duration: 65
 });
 

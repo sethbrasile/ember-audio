@@ -1,4 +1,5 @@
 /* globals blanket, module */
+/* jscs:disable */
 
 var options = {
   modulePrefix: 'ember-audio',

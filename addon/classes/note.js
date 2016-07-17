@@ -5,6 +5,7 @@ import Sound from './sound';
  * Provides helper classes that represent musical concepts meant to be used by
  * classes from the Audio module.
  *
+ * @public
  * @module MusicalConcepts
  */
 
@@ -23,6 +24,7 @@ const {
  * only functionality it provides over a
  * {{#crossLink "Sound"}}Sound{{/crossLink}}, serves to facilitate identification.
  *
+ * @public
  * @class Note
  * @extends Sound
  */
@@ -31,6 +33,7 @@ const Note = Sound.extend({
   /**
    * For note `Ab5`, this would be `A`. Value should be set on instantiation.
    *
+   * @public
    * @property letter
    * @type {string}
    */
@@ -39,6 +42,7 @@ const Note = Sound.extend({
   /**
    * For note `Ab5`, this would be `b`. Value should be set on instantiation.
    *
+   * @public
    * @property accidental
    * @type {string}
    */
@@ -47,6 +51,7 @@ const Note = Sound.extend({
   /**
    * For note `Ab5`, this would be `5`. Value should be set on instantiation.
    *
+   * @public
    * @property octave
    * @type {string}
    */
@@ -56,6 +61,7 @@ const Note = Sound.extend({
    * Computed property. Value is `${letter}${octave}` or
    * `${letter}${accidental}${octave}` if accidental exists.
    *
+   * @public
    * @property identifier
    * @type {string}
    */
@@ -80,6 +86,7 @@ const Note = Sound.extend({
    * Computed property. Value is `${letter}` or `${letter}${accidental}` if
    * accidental exists.
    *
+   * @public
    * @property name
    * @type {string}
    */

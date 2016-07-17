@@ -1,6 +1,12 @@
 import Ember from 'ember';
 
-const NodeObject = Ember.Object.extend({
+const {
+  Object: EmberObject,
+  on,
+  RSVP: { Promise }
+} = Ember;
+
+const NodeObject = EmberObject.extend({
   connectCalled: false,
   startCalled: false,
 
@@ -14,13 +20,13 @@ const NodeObject = Ember.Object.extend({
   }
 });
 
-const ContextMock = Ember.Object.extend({
+const ContextMock = EmberObject.extend({
   createBufferSourceCalled: false,
   createGainCalled: false,
   createAnalyserCalled: false,
   createStereoPannerCalled: false,
 
-  initDestination: Ember.on('init', function() {
+  initDestination: on('init', function() {
     this.destination = {};
   }),
 
@@ -47,7 +53,7 @@ const ContextMock = Ember.Object.extend({
   },
 
   decodeAudioData(data) {
-    return new Ember.RSVP.Promise((resolve) => resolve(data));
+    return new Promise((resolve) => resolve(data));
   }
 });
 

@@ -13,6 +13,7 @@ import {
 } from './note-methods';
 
 /**
+ * @public
  * @module utils
  */
 

@@ -6,6 +6,7 @@ import Sampler from './sampler';
  * Provides classes that are capable of interacting with the Web Audio API's
  * AudioContext.
  *
+ * @public
  * @module Audio
  */
 
@@ -19,6 +20,7 @@ const {
  * "rests," in a rhythmic way. An instance of this class behaves very similarly
  * to a "lane" on a drum machine.
  *
+ * @public
  * @class BeatTrack
  * @extends Sampler
  *
@@ -33,6 +35,7 @@ const BeatTrack = Sampler.extend({
   /**
    * Determines the number of beats in a BeatTrack instance.
    *
+   * @public
    * @property numBeats
    * @type {number}
    */
@@ -43,6 +46,7 @@ const BeatTrack = Sampler.extend({
    * and currentTimeIsPlaying are automatically switched back to false after
    * having been switched to true for each beat. 100ms is used by default.
    *
+   * @public
    * @property duration
    * @type {number}
    * @default 100
@@ -53,6 +57,7 @@ const BeatTrack = Sampler.extend({
    * Computed property. An array of Beat instances. The number of Beat instances
    * in the array is always the same as the `numBeats` property.
    *
+   * @public
    * @property beats
    * @type {array|Beat}
    */
@@ -76,6 +81,7 @@ const BeatTrack = Sampler.extend({
   /**
    * Calls play on all Beat instances in the beats array.
    *
+   * @public
    * @method playBeats
    *
    * @param {number} bpm The tempo at which the beats should be played.
@@ -92,6 +98,7 @@ const BeatTrack = Sampler.extend({
    * Calls play on `active` Beat instances in the beats array. Any beat that
    * is not marked active is effectively a "rest".
    *
+   * @public
    * @method playActiveBeats
    *
    * @param {number} bpm The tempo at which the beats and rests should be played.
@@ -118,7 +125,7 @@ const BeatTrack = Sampler.extend({
    * @param noteType {number} The (rhythmic) length of each beat/rest that should
    * be used to calculate the length of a beat/rest in seconds.
    */
-  _callPlayMethodOnBeats(method, bpm, noteType=1/4) {
+  _callPlayMethodOnBeats(method, bpm, noteType=1 / 4) {
     // http://bradthemad.org/guitar/tempo_explanation.php
     const duration = (240 * noteType) / bpm;
     this.get('beats').map((beat, idx) => beat[method](idx * duration));

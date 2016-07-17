@@ -1,10 +1,16 @@
 import Ember from 'ember';
 const URL = 'https://raw.githubusercontent.com/mudcube/MIDI.js/master/examples/soundfont/acoustic_grand_piano-mp3/B5.mp3';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
+const {
+  inject: { service },
+  on,
+  Controller
+} = Ember;
 
-  initAudioFiles: Ember.on('init', function() {
+export default Controller.extend({
+  audio: service(),
+
+  initAudioFiles: on('init', function() {
     const audio = this.get('audio');
 
     // Db5.mp3 is an mp3 file located in this project's "public" folder
