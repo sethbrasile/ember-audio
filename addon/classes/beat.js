@@ -34,6 +34,7 @@ const {
  *
  * @public
  * @class Beat
+ * @todo add playAt
  */
 const Beat = EmberObject.extend({
 
