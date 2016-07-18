@@ -25,6 +25,7 @@ Router.map(function() {
     this.route('drum-machine');
     this.route('with-ember-audio');
   });
+  this.route('synthesis');
 });
 
 export default Router;

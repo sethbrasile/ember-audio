@@ -1,0 +1,17 @@
+<div class="content">
+  <h2>Synthesis</h2>
+  <div id="piano">
+    <ol>
+      {{#each notes as |note|}}
+        <li class={{if note.accidental 'black'}}
+          {{action 'playNote' note on='touchStart'}}
+          {{action 'playNote' note on='mouseDown'}}
+          {{action 'stopNote' note on='touchEnd'}}
+          {{action 'stopNote' note on='mouseUp'}}
+        >
+          {{note.name}}
+        </li>
+      {{/each}}
+    </ol>
+  </div>
+</div>

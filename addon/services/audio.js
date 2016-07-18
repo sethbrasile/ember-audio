@@ -211,6 +211,37 @@ export default Service.extend({
 
           return sampler;
         });
+      },
+
+      asNoteMap(name) {
+        const audioBuffer = audioContext.createBuffer(1, 22050, 44100);
+
+        return fetch(src).then((response) => response.json())
+          .then((json) => {
+            const notes = [];
+
+            for (let noteName in json) {
+              let [ letter, accidental, octave ] = noteName;
+
+              if (!octave) {
+                octave = accidental;
+                accidental = null;
+              }
+
+              const note = Note.create({
+                audioContext,
+                audioBuffer,
+                letter,
+                accidental,
+                octave,
+                frequency: json[noteName]
+              });
+
+              notes.push(note);
+            }
+
+            return notes;
+          });
       }
     };
   },
