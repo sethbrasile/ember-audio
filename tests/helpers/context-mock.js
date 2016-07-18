@@ -9,6 +9,8 @@ const {
 const NodeObject = EmberObject.extend({
   connectCalled: false,
   startCalled: false,
+  pan: { value: null },
+  gain: { value: null },
 
   connect(obj) {
     this.set('connectCalled', true);

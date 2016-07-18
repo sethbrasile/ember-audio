@@ -2,6 +2,8 @@ import Ember from 'ember';
 import Beat from './beat';
 import Sampler from './sampler';
 
+const beatBank = new WeakMap();
+
 /**
  * Provides classes that are capable of interacting with the Web Audio API's
  * AudioContext.
@@ -27,8 +29,6 @@ const {
  * @todo need a way to stop a BeatTrack once it's started. Maybe by creating
  * the times in advance and not calling play until it's the next beat in the
  * queue?
- *
- * @todo beats in beats array should save `active` state when numbeats/duration changes
  */
 const BeatTrack = Sampler.extend({
 
@@ -55,15 +55,24 @@ const BeatTrack = Sampler.extend({
 
   /**
    * Computed property. An array of Beat instances. The number of Beat instances
-   * in the array is always the same as the `numBeats` property.
+   * in the array is always the same as the `numBeats` property. If 'numBeats'
+   * or duration changes. This property will be recomputed, but any beats that
+   * previously existed are reused so that they will maintain their `active`
+   * state.
    *
    * @public
    * @property beats
    * @type {array|Beat}
    */
   beats: computed('numBeats', 'duration', function() {
-    const beats = [];
-    const numBeats = this.get('numBeats');
+    let beats = [];
+    let numBeats = this.get('numBeats');
+    let existingBeats;
+
+    if (beatBank.has(this)) {
+      existingBeats = beatBank.get(this);
+      numBeats = numBeats - existingBeats.length;
+    }
 
     for (let i = 0; i < numBeats; i++) {
       const beat = Beat.create({
@@ -74,6 +83,12 @@ const BeatTrack = Sampler.extend({
 
       beats.push(beat);
     }
+
+    if (existingBeats) {
+      beats = existingBeats.concat(beats);
+    }
+
+    beatBank.set(this, beats);
 
     return beats;
   }),
