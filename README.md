@@ -19,7 +19,6 @@ it out.
 Still needs:
 
 - Synthesis
-- Visualization helpers
 
 ## Installation
 
