@@ -213,7 +213,7 @@ export default Service.extend({
         });
       },
 
-      asNoteMap(name) {
+      asNoteMap() {
         const audioBuffer = audioContext.createBuffer(1, 22050, 44100);
 
         return fetch(src).then((response) => response.json())
