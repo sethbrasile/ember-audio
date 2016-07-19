@@ -19,6 +19,7 @@ export default Controller.extend({
   initSynth: on('init', function() {
     const audio = this.get('audio');
 
+    // Outputs an array of all the notes on a standard "western" piano
     // Could also do `audio.createNoteArray(notes)` where notes is a POJO,
     // or `audio.load(URL).asNoteArray().then(...)` providing a URL to a JSON file
     const notes = audio.createNoteArray();

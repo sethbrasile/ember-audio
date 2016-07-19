@@ -1,0 +1,142 @@
+<div class="content">
+  <h2>Simple Polyphonic Synthesizer</h2>
+
+  <div id="piano">
+    <ol>
+      {{#each oscillators as |note|}}
+        <li class={{if note.accidental 'black'}}
+          {{action 'startNote' note on='touchStart'}}
+          {{action 'startNote' note on='mouseDown'}}
+          {{action 'stopNote' note on='touchEnd'}}
+          {{action 'stopNote' note on='mouseUp'}}
+          {{action 'stopNote' note on='mouseLeave'}}
+        >
+          {{note.name}}
+        </li>
+      {{/each}}
+    </ol>
+  </div>
+</div>
+
+<div class="content">
+  <p>
+    This is a great example of the use of some of Ember Audio's classes/mixins.
+  </p>
+
+  <p>
+    In order to create oscillators that have a "musical identity" (as in, each
+    oscillator represents a "note" that can be played), we will add the
+    <code>MusicalIdentity</code> mixin to the <code>Oscillator</code> class:
+  </p>
+</div>
+
+{{#code-block language='javascript'}}
+  import { Oscillator } from 'ember-audio';
+  import { MusicalIdentity } from 'ember-audio/mixins';
+
+  const MusicallyAwareOscillator = Oscillator.extend(MusicalIdentity);
+
+  const oscillator = MusicallyAwareOscillator.create({
+    audioContext,
+    frequency: 415.3
+  });
+
+  console.log(oscillator.get('identifier')); // logs 'Ab4'
+{{/code-block}}
+
+<div class="content">
+  <p>
+    By passing it a <code>frequency</code>, all of it's other properties are
+    calculated for us.
+  </p>
+
+  <p>
+    The inverse is also true:
+  </p>
+</div>
+
+{{#code-block language='javascript'}}
+  const oscillator = MusicallyAwareOscillator.create({
+    audioContext,
+    identifier: 'Ab4'
+  });
+
+  console.log(oscillator.get('frequency')); // logs '415.3'
+{{/code-block}}
+
+<div class="content">
+  <p>
+    Here is the complete code for the keyboard above:
+  </p>
+</div>
+
+{{#code-block language='handlebars'}}
+  &lt;div id="piano">
+    &lt;ol>
+      \{{#each oscillators as |note|}}
+        &lt;li class=\{{if note.accidental 'black'}}
+          \{{!-- These are to make it play like a "keyboard" and I'm sure
+            there's a more elegant way to handle it ¯\_(ツ)_/¯ --}}
+          \{{action 'startNote' note on='touchStart'}}
+          \{{action 'startNote' note on='mouseDown'}}
+          \{{action 'stopNote' note on='touchEnd'}}
+          \{{action 'stopNote' note on='mouseUp'}}
+          \{{action 'stopNote' note on='mouseLeave'}}
+        >
+          \{{note.name}}
+        &lt;/li>
+      \{{/each}}
+    &lt;/ol>
+  &lt;/div>
+{{/code-block}}
+
+{{#code-block language='javascript'}}
+  import Ember from 'ember';
+  import { Oscillator } from 'ember-audio';
+  import { MusicalIdentity } from 'ember-audio/mixins';
+
+  // By mixing the MusicalIdentity mixin into the Oscillator class, we get an
+  // oscillator that is aware of it's frequency, letter, accidental, octave, etc...
+  const MusicallyAwareOscillator = Oscillator.extend(MusicalIdentity);
+
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+    oscillators: null, // Put oscillators here after they're created
+
+    initSynth: Ember.on('init', function() {
+      const audio = this.get('audio');
+
+      // Outputs an array of all the notes on a standard "western" piano
+      // Could also do `audio.createNoteArray(notes)` where notes is a POJO,
+      // or `audio.load(URL).asNoteArray().then(...)` providing a URL to a JSON file
+      // See `utils/frequencyMap` for an example of what these might look like.
+      const notes = audio.createNoteArray();
+
+      // Slicing so that the keyboard isn't massive
+      const slicedNotes = notes.slice(48, 60);
+
+      // Create a MusicallyAwareOscillator instance for each note in slicedNotes
+      const oscillators = slicedNotes.map((note) => {
+        return MusicallyAwareOscillator.create({
+          type: 'square', // the "shape" of the waveform
+          frequency: note.get('frequency'),
+          audioContext: audio.get('audioContext')
+        });
+      });
+
+      this.set('oscillators', oscillators);
+    }),
+
+    actions: {
+      startNote(note) {
+        note.play();
+      },
+
+      stopNote(note) {
+        if (note.get('isPlaying')) {
+          note.stop();
+        }
+      }
+    }
+  });
+{{/code-block}}
