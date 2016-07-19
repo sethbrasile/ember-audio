@@ -1,1 +1,11 @@
-export { BeatTrack, Beat, Connection, Note, Sampler, Sound, Track, Oscillator } from './classes';
+export {
+  BeatTrack,
+  Beat,
+  Connection,
+  Note,
+  SampledNote,
+  Sampler,
+  Sound,
+  Track,
+  Oscillator
+} from './classes';

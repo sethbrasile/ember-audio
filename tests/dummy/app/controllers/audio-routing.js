@@ -22,11 +22,6 @@ export default Controller.extend({
         createCommand: 'createWaveShaper'
       }));
 
-      // Connections are usually lazily initilized when a sound is played.
-      // We need connections to exist before then in case the user enables
-      // distortion before the sound is played.
-      note.initializeConnections();
-
       this.set('note', note);
     });
   }),

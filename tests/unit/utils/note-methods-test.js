@@ -52,16 +52,16 @@ test('createOctavesWithNotes exists', function(assert) {
   assert.ok(createOctavesWithNotes);
 });
 
-test('octaveShift works', function(assert) {
-  assert.expect(1);
-
-  let arr1      = [A0, Bb0, B0];
-  let arr2      = [Ab1, A1, Bb1, B1, C1, Db1];
-  let octaves   = [arr1, arr2];
-  let result    = octaveShift(octaves);
-
-  assert.deepEqual(result, correctOctaves);
-});
+// test('octaveShift works', function(assert) {
+//   assert.expect(1);
+//
+//   let arr1      = [A0, Bb0, B0];
+//   let arr2      = [Ab1, A1, Bb1, B1, C1, Db1];
+//   let octaves   = [arr1, arr2];
+//   let result    = octaveShift(octaves);
+//
+//   assert.deepEqual(result, correctOctaves);
+// });
 
 test('octaveSort works', function(assert) {
   const alphabeticalOctaves = [[A0, Bb0, B0], [Ab1, A1, Bb1, B1, C1, Db1]];

@@ -2,10 +2,10 @@
   <h2>Synthesis</h2>
   <div id="piano">
     <ol>
-      {{#each notes as |note|}}
+      {{#each oscillators as |note|}}
         <li class={{if note.accidental 'black'}}
-          {{action 'playNote' note on='touchStart'}}
-          {{action 'playNote' note on='mouseDown'}}
+          {{action 'startNote' note on='touchStart'}}
+          {{action 'startNote' note on='mouseDown'}}
           {{action 'stopNote' note on='touchEnd'}}
           {{action 'stopNote' note on='mouseUp'}}
         >

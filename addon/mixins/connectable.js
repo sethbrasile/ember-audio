@@ -14,6 +14,7 @@ const {
   on,
   get,
   set,
+  observer,
   Mixin
 } = Ember;
 
@@ -121,6 +122,23 @@ export default Mixin.create({
     });
 
     this.set('connections', A([ bufferSource, gain, panner, destination ]));
+  }),
+
+  /*
+  * Note about _watchConnectionChanges:
+  * Yeah yeah yeah.. observers are bad. Making the connections array a computed
+  * property doesn't work very well because complete control over when it
+  * recalculates is needed.
+  */
+
+  /**
+   * Observes the connections array and runs _wireConnections each time it
+   * changes.
+   *
+   * @private
+   * @method _watchConnectionChanges
+   */
+  _watchConnectionChanges: observer('connections.[]', function() {
     this._wireConnections();
   }),
 
@@ -197,7 +215,10 @@ export default Mixin.create({
     connection.get('onPlaySetAttrsOnNode').map((attr) => {
       const { attrNameOnNode, relativePath, value } = attr;
       const attrValue = relativePath ? this.get(relativePath) || value : value;
-      set(connection.node, attrNameOnNode, attrValue);
+
+      if (connection.node && attrNameOnNode && attrValue) {
+        set(connection.node, attrNameOnNode, attrValue);
+      }
     });
 
     return connection;
