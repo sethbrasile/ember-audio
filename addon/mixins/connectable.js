@@ -92,7 +92,7 @@ export default Mixin.create({
    */
   _initConnections: on('init', function() {
     const bufferSource = Connection.create({
-      name: 'bufferSource',
+      name: 'audioSource',
       createdOnPlay: true,
       source: 'audioContext',
       createCommand: 'createBufferSource',

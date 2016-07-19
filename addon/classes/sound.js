@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Connectable } from 'ember-audio/mixins';
+import { Connectable, Playable } from 'ember-audio/mixins';
 import { zeroify } from 'ember-audio/utils';
 
 /**
@@ -12,7 +12,6 @@ import { zeroify } from 'ember-audio/utils';
 
 const {
   computed,
-  run: { later },
   Object: EmberObject
 } = Ember;
 
@@ -29,8 +28,9 @@ const {
  * @public
  * @class Sound
  * @uses Connectable
+ * @uses Playable
  */
-const Sound = EmberObject.extend(Connectable, {
+const Sound = EmberObject.extend(Connectable, Playable, {
 
   /**
    * When using the {{#crossLink "Audio-Service"}}{{/crossLink}}, The name that
@@ -91,18 +91,6 @@ const Sound = EmberObject.extend(Connectable, {
   startOffset: 0,
 
   /**
-   * Whether a sound is playing or not. Becomes true when a Sound instance
-   * starts playing audio. Becomes false when the Sound instance is stopped or
-   * ends by reaching the end of it's duration.
-   *
-   * @public
-   * @property isPlaying
-   * @type {boolean}
-   * @default false
-   */
-  isPlaying: false,
-
-  /**
    * Computed property. Value is an object containing the duration of the
    * audioBuffer in three formats. The three formats
    * are `raw`, `string`, and `pojo`.
@@ -145,63 +133,6 @@ const Sound = EmberObject.extend(Connectable, {
   percentGain: computed(function() {
     return this.getNodeFrom('gain').gain.value * 100;
   }),
-
-  /**
-   * Plays the audio source immediately.
-   *
-   * @public
-   * @method play
-   */
-  play() {
-    this._play(this.get('audioContext.currentTime'));
-  },
-
-  /**
-   * Plays the audio source at the specified moment in time. A "moment in time"
-   * is measured in seconds from the moment that the
-   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
-   *
-   * Functionally equivalent to {{#crossLink "Sound/_play:method"}}{{/crossLink}}.
-   *
-   * @param {number} time The moment in time (in seconds, relative to the
-   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
-   * time") when the audio source should be played.
-   *
-   * @public
-   * @method playAt
-   */
-  playAt(time) {
-    this._play(time);
-  },
-
-  /**
-   * Plays the audio source in specified amount of seconds from "now".
-   *
-   * @public
-   * @method playIn
-   *
-   * @param {number} seconds Number of seconds from "now" that the audio source
-   * should be played.
-   */
-  playIn(seconds) {
-    this._play(this.get('audioContext.currentTime') + seconds);
-  },
-
-  /**
-   * Stops the audio source immediately.
-   *
-   * @public
-   * @method stop
-   * @todo add timed stop methods
-   */
-  stop() {
-    const node = this.getNodeFrom('bufferSource');
-
-    if (node) {
-      node.stop();
-      this.set('isPlaying', false);
-    }
-  },
 
   /**
    * Gets the `panner` connection and changes it's pan value to the value passed in.
@@ -329,41 +260,6 @@ const Sound = EmberObject.extend(Connectable, {
         }
       }
     };
-  },
-
-  /**
-   * The underlying method that backs the
-   * {{#crossLink "Sound/play:method"}}{{/crossLink}},
-   * {{#crossLink "Sound/playAt:method"}}{{/crossLink}}, and
-   * {{#crossLink "Sound/playIn:method"}}{{/crossLink}} methods.
-   *
-   * Plays the audio source at the specified moment in time. A "moment in time"
-   * is measured in seconds from the moment that the
-   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
-   *
-   * Functionally equivalent to {{#crossLink "Sound/playAt:method"}}{{/crossLink}}.
-   *
-   * @param {number} time The moment in time (in seconds, relative to the
-   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
-   * time") when the audio source should be played.
-   *
-   * @method _play
-   * @private
-   */
-  _play(playAt) {
-    const currentTime = this.get('audioContext.currentTime');
-
-    this._wireConnections();
-
-    this.getNodeFrom('bufferSource').start(playAt, this.get('startOffset'));
-
-    this.set('_startedPlayingAt', playAt);
-
-    if (playAt === currentTime) {
-      this.set('isPlaying', true);
-    } else {
-      later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);
-    }
   }
 });
 

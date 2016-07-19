@@ -84,11 +84,11 @@ test('play() calls node.connect(ctx.destination)', function(assert) {
   let audioContext = ContextMock.create();
   let result = Sound.create({ audioContext });
 
-  result.getNodeFrom('bufferSource').connectCalled = false;
+  result.getNodeFrom('audioSource').connectCalled = false;
 
-  assert.notOk(result.getNodeFrom('bufferSource').connectCalled);
+  assert.notOk(result.getNodeFrom('audioSource').connectCalled);
   result.play();
-  assert.ok(result.getNodeFrom('bufferSource').connectCalled);
+  assert.ok(result.getNodeFrom('audioSource').connectCalled);
 });
 
 test('play() connects panner', function(assert) {

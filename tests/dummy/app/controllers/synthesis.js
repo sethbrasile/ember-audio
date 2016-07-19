@@ -31,7 +31,7 @@ export default Controller.extend({
       return MusicallyAwareOscillator.create({
         // By setting `frequency`, we get `identifier`, `name`, etc.. for free
         frequency: note.get('frequency'),
-        // default is 'sine'
+        // Default type is 'sine'
         type: 'square',
         // Oscillator instances need `audioContext` in order to make sound
         audioContext: audio.get('audioContext')
@@ -43,11 +43,13 @@ export default Controller.extend({
 
   actions: {
     startNote(note) {
-      note.start();
+      note.play();
     },
 
     stopNote(note) {
-      note.stop();
+      if (note.get('isPlaying')) {
+        note.stop();
+      }
     }
   }
 });

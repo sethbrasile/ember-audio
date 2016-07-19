@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+// TODO: move code examples to underneath mp3 player
+
 const {
   inject: { service },
   Controller

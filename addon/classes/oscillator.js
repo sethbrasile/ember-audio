@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Connectable } from 'ember-audio/mixins';
+import { Connectable, Playable } from 'ember-audio/mixins';
 import { Connection } from 'ember-audio';
 
 /**
@@ -23,8 +23,9 @@ const {
  * @public
  * @class Oscillator
  * @uses Connectable
+ * @uses Playable
  */
-const Oscillator = EmberObject.extend(Connectable, {
+const Oscillator = EmberObject.extend(Connectable, Playable, {
 
   /**
    * Determines the type of wave output by the OscillatorNode instance.
@@ -50,50 +51,6 @@ const Oscillator = EmberObject.extend(Connectable, {
   frequency: null,
 
   /**
-   * Starts the oscillator immediately.
-   *
-   * @public
-   * @method play
-   */
-  play() {
-    this._play(this.get('audioContext.currentTime'));
-  },
-
-  playAt(time) {
-    this._play(time);
-  },
-
-  playIn(amount) {
-    this._play(amount + this.get('audioContext.currentTime'));
-  },
-
-  /**
-   * Stops the oscillator immediately.
-   *
-   * @public
-   * @method stop
-   */
-  stop() {
-    this.getNodeFrom('oscillator').stop();
-  },
-
-  /**
-   * Starts the oscillator at the specified time.
-   *
-   * The underlying method that backs play, playIn, and playAt.
-   *
-   * @private
-   * @method _play
-   *
-   * @param {number} time The time relative to `audioContext`'s
-   * "beginning of time" that the oscillator should start.
-   */
-  _play(time) {
-    this._wireConnections();
-    this.getNodeFrom('oscillator').start(time);
-  },
-
-  /**
    * Initializes default connections on Sound instantiation. Runs `on('init')`.
    *
    * @protected
@@ -101,7 +58,7 @@ const Oscillator = EmberObject.extend(Connectable, {
    */
   _initConnections: on('init', function() {
     const bufferSource = Connection.create({
-      name: 'oscillator',
+      name: 'audioSource',
       createdOnPlay: true,
       source: 'audioContext',
       createCommand: 'createOscillator',
