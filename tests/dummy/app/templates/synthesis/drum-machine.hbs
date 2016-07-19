@@ -1,1 +1,12 @@
-{{outlet}}
+<div class="content">
+  <h2>Synthesized Drum Kit</h2>
+</div>
+
+<div class="content">
+  {{#each drums as |drum|}}
+    <div class="beat-pad">
+      <span class="text">{{drum.name}}</span>
+      <span class="pad" {{action 'playDrum' drum}}></span>
+    </div>
+  {{/each}}
+</div>

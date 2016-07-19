@@ -22,6 +22,7 @@ const {
  * @public
  * @class Track
  * @extends Sound
+ * @todo move play override to _play so that all super.play methods work
  */
 const Track = Sound.extend({
 
