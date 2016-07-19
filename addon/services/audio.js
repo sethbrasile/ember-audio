@@ -37,6 +37,9 @@ const {
  *
  * @public
  * @class AudioService
+ *
+ * @todo create class called something like EmberAudioLoadResponse to use in
+ * place of current POJO returned from load(). Probably a real es6 class.
  */
 export default Service.extend({
   /**
