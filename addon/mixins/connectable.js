@@ -24,6 +24,8 @@ const {
  *
  * @public
  * @class Connectable
+ * @todo figure out how to augment Ember.MutableArray so that the connections
+ * array can have methods like addConnection, removeConnection, addFilter, disableNode
  */
 export default Mixin.create({
   /**
