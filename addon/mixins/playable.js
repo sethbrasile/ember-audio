@@ -66,17 +66,36 @@ export default Mixin.create({
   },
 
   /**
-   * Starts playing immediately, but stops after specified seconds have elapsed.
+   * Starts playing the audio source immediately, but stops after specified
+   * seconds have elapsed.
    *
+   * @public
+   * @method playFor
    *
+   * @param {number} seconds The amount of time after which the audio source is
+   * stopped.
    */
   playFor(seconds) {
     this.play();
     this.stopIn(seconds);
   },
 
+  /**
+   * Starts playing the audio source after `playIn` seconds have elapsed, then
+   * stops the audio source `stopAfter` seconds after it started playing.
+   *
+   * @public
+   * @method playInAndStopAfter
+   *
+   * @param {number} playIn Number of seconds from "now" that the audio source
+   * should play.
+   *
+   * @param {number} stopAfter Number of seconds from when the audio source
+   * started playing that the audio source should be stopped.
+   */
   playInAndStopAfter(playIn, stopAfter) {
-
+    this.playIn(playIn);
+    this.stopIn(playIn + stopAfter);
   },
 
   /**
@@ -89,14 +108,44 @@ export default Mixin.create({
     this._stop(this.get('audioContext.currentTime'));
   },
 
+  /**
+   * Stops the audio source after specified seconds have elapsed.
+   *
+   * @public
+   * @method stopIn
+   *
+   * @param {number} seconds Number of seconds from "now" that the audio source
+   * should be stopped.
+   */
   stopIn(seconds) {
     this._stop(this.get('audioContext.currentTime') + seconds)
   },
 
+  /**
+   * Stops the audio source at the specified "moment in time" relative to the
+   * "beginning of time" according to the `audioContext`.
+   *
+   * Functionally equivalent to the `_stop` method.
+   *
+   * @public
+   * @method stopAt
+   *
+   * @param {number} time The time that the audio source should be stopped.
+   */
   stopAt(time) {
     this._stop(time);
   },
 
+  /**
+   * The underlying method that backs all of the `stop` methods.
+   *
+   * Functionally equivalent to the `stopAt` method.
+   *
+   * @private
+   * @method _stop
+   *
+   * @param {number} time The time that the audio source should be stopped.
+   */
   _stop(time) {
     const node = this.getNodeFrom('audioSource');
 
