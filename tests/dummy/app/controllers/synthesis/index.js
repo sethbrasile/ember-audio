@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import { Oscillator } from 'ember-audio';
 import { MusicalIdentity } from 'ember-audio/mixins';
-
+// TODO: xy pad with filters and plugins
 // By mixing the MusicalIdentity mixin into the Oscillator class, we get an
 // oscillator that is aware of it's frequency, letter, accidental, octave, etc...
 const MusicallyAwareOscillator = Oscillator.extend(MusicalIdentity);

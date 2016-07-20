@@ -93,7 +93,12 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
 
     this.set('connections', A([ bufferSource, gain, panner, destination ]));
     this._wireConnections();
-  })
+  }),
+
+  playFor(seconds) {
+    this.play();
+    this.stopIn(seconds);
+  }
 });
 
 export default Oscillator;

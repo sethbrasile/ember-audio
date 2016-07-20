@@ -214,6 +214,8 @@ export default Mixin.create({
    * attrs set.
    */
   _setAttrsOnNode(connection) {
+    const currentTime = this.get('audioContext.currentTime');
+
     connection.get('onPlaySetAttrsOnNode').map((attr) => {
       const { attrNameOnNode, relativePath, value } = attr;
       const attrValue = relativePath ? this.get(relativePath) || value : value;
@@ -221,6 +223,14 @@ export default Mixin.create({
       if (connection.node && attrNameOnNode && attrValue) {
         set(connection.node, attrNameOnNode, attrValue);
       }
+    });
+
+    connection.get('exponentialRampToValueAtTime').map((opts) => {
+      connection.node[opts.key].exponentialRampToValueAtTime(opts.value, currentTime + opts.time);
+    });
+
+    connection.get('startingValues').map((opts) => {
+      connection.node[opts.key].setValueAtTime(opts.value, currentTime);
     });
 
     return connection;

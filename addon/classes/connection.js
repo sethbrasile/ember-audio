@@ -141,6 +141,10 @@ const Connection = EmberObject.extend({
    */
   onPlaySetAttrsOnNode: null,
 
+  exponentialRampToValueAtTime: null,
+
+  startingValues: null,
+
   /**
    * This is the main attraction here in connection-land. All the other
    * properties in the Connection class exist to create or mutate this property.
@@ -175,7 +179,7 @@ const Connection = EmberObject.extend({
    * @method _initArrays
    */
   _initArrays: on('init', function() {
-    const arrays = ['onPlaySetAttrsOnNode'];
+    const arrays = ['onPlaySetAttrsOnNode', 'exponentialRampToValueAtTime', 'startingValues'];
 
     arrays.map((name) => {
       if (!this.get(name)) {

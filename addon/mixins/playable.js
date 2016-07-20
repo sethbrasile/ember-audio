@@ -70,13 +70,24 @@ export default Mixin.create({
    *
    * @public
    * @method stop
-   * @todo add timed stop methods
    */
   stop() {
+    this._stop(this.get('audioContext.currentTime'));
+  },
+
+  stopIn(seconds) {
+    this._stop(this.get('audioContext.currentTime') + seconds)
+  },
+
+  _stopAt(time) {
+    this._stop(time);
+  },
+
+  _stop(time) {
     const node = this.getNodeFrom('audioSource');
 
     if (node) {
-      node.stop();
+      node.stop(time);
       this.set('isPlaying', false);
     }
   },
