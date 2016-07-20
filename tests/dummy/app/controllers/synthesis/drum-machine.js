@@ -1,10 +1,9 @@
 import Ember from 'ember';
-import { Oscillator, Sound, Connection } from 'ember-audio';
+import { Oscillator, Sound, Connection, LayeredSound } from 'ember-audio';
 
 export default Ember.Controller.extend({
   audio: Ember.inject.service(),
   drums: null,
-  kickLength: 0.1,
 
   // TODO: maybe something like...
   // const snare = audio.createSynthDrum({
@@ -107,11 +106,7 @@ export default Ember.Controller.extend({
       osc.get('connections').insertAt(1, highpass);
     });
 
-    return {
-      play() {
-        oscillators.map((osc) => osc.playFor(0.1));
-      }
-    }
+    return LayeredSound.create({ sounds: oscillators });
   },
 
   _createKick() {
@@ -125,7 +120,6 @@ export default Ember.Controller.extend({
 
     // `gainConnection` is the Connection instance that contains the gain AudioNode
     const gainConnection = kick.getConnection('gain');
-    const kickLength = this.get('kickLength');
 
     oscillatorConnection.get('startingValues').pushObject({
       key: 'frequency',
@@ -140,20 +134,16 @@ export default Ember.Controller.extend({
     oscillatorConnection.get('exponentialRampToValueAtTime').pushObject({
       key: 'frequency',
       value: 0.01,
-      time: kickLength
+      time: 0.1
     });
 
     gainConnection.get('exponentialRampToValueAtTime').pushObject({
       key: 'gain',
       value: 0.01,
-      time: kickLength
+      time: 0.1
     });
 
-    return {
-      play() {
-        kick.playFor(kickLength);
-      }
-    };
+    return kick;
   },
 
   _createSnare() {
@@ -215,17 +205,12 @@ export default Ember.Controller.extend({
       time: 0.1
     });
 
-    return {
-      play() {
-        noise.play();
-        osc.playFor(0.1);
-      }
-    };
+    return LayeredSound.create({ sounds: [ noise, osc ] });
   },
 
   actions: {
     playDrum(drum) {
-      drum.sound.play();
+      drum.sound.playFor(0.1);
     }
   }
 });

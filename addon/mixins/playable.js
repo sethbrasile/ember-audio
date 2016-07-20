@@ -66,6 +66,20 @@ export default Mixin.create({
   },
 
   /**
+   * Starts playing immediately, but stops after specified seconds have elapsed.
+   *
+   *
+   */
+  playFor(seconds) {
+    this.play();
+    this.stopIn(seconds);
+  },
+
+  playInAndStopAfter(playIn, stopAfter) {
+
+  },
+
+  /**
    * Stops the audio source immediately.
    *
    * @public
@@ -79,7 +93,7 @@ export default Mixin.create({
     this._stop(this.get('audioContext.currentTime') + seconds)
   },
 
-  _stopAt(time) {
+  stopAt(time) {
     this._stop(time);
   },
 

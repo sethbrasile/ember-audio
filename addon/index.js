@@ -7,5 +7,6 @@ export {
   Sampler,
   Sound,
   Track,
-  Oscillator
+  Oscillator,
+  LayeredSound
 } from './classes';
