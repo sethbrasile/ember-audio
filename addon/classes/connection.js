@@ -34,7 +34,9 @@ const Connection = EmberObject.extend({
   /**
    * The name of the connection. This is the name that can be used to
    * get an AudioNode instance via the
-   * {{#crossLink "Sound/getNodeFrom:method"}}{{/crossLink}} method.
+   * {{#crossLink "Connectable/getNodeFrom:method"}}{{/crossLink}} method, or a
+   * Connection instance via the
+   * {{#crossLink "Connectable/getConnection"}}{{/crossLink}} method.
    *
    * @public
    * @property name
@@ -87,11 +89,11 @@ const Connection = EmberObject.extend({
   * `node` property.
   *
   * @example
-  *     // Creates the AudioNode by calling:
-  *     // this.get('audioContext')[createCommand]();
+  *     // results in the `node` property being created like:
+  *     // this.get('audioContext').createGain();
   *     {
   *       source: 'audioContext'
-  *       createCommand: createGain
+  *       createCommand: 'createGain'
   *     }
   *
   * @public
@@ -102,7 +104,7 @@ const Connection = EmberObject.extend({
 
   /**
    * An array of POJOs that specify properties that need to be set on a node
-   * when any of the {{#crossLink "Sound/play:method"}}{{/crossLink}} methods
+   * when any of the {{#crossLink "Playable/play:method"}}{{/crossLink}} methods
    * are called. For instance, an
    * {{#crossLink "AudioBufferSourceNode"}}{{/crossLink}} must be created at
    * play time, because they can only be played once and then they are
@@ -137,9 +139,112 @@ const Connection = EmberObject.extend({
    *
    * @public
    * @property onPlaySetAttrsOnNode
-   * @type {array}
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
    */
   onPlaySetAttrsOnNode: null,
+
+  /**
+   * Items in this array are set at play-time on the `node` via an exponential
+   * ramp that ends at the specified time.
+   *
+   * A convenience setter method called
+   * {{#crossLink "Connection/onPlaySet:method"}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.exponentialRampToValueAtTime(0.1, 1)
+   *     {
+   *       key: 'gain',
+   *       value: 0.1,
+   *       endTime: 1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet('gain').to(0.1).endingAt(1)
+   *
+   * @public
+   * @property exponentialRampToValuesAtTime
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  exponentialRampToValuesAtTime: null,
+
+  /**
+   * Items in this array are set at play-time on the `node` via a linear ramp
+   * that ends at the specified time.
+   *
+   * A convenience setter method called
+   * {{#crossLink "Connection/onPlaySet:method"}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.linearRampToValueAtTime(0.1, 1)
+   *     {
+   *       key: 'gain',
+   *       value: 0.1,
+   *       endTime: 1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet('gain').to(0.1).endingAt(1, 'linear')
+   *
+   * @public
+   * @property linearRampToValuesAtTime
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  linearRampToValuesAtTime: null,
+
+  /**
+   * Items in this array are set at play-time on the `node` via an exponential
+   * ramp that ends at the specified time.
+   *
+   * A convenience setter method called
+   * {{#crossLink "Connection/onPlaySet:method"}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.setValueAtTime(0.1, 1)
+   *     {
+   *       key: 'gain',
+   *       value: 0.1,
+   *       startTime: 1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet('gain').to(0.1).at(1)
+   *
+   * @public
+   * @property setValuesAtTime
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  setValuesAtTime: null,
+
+  /**
+   * Items in this array are set immediately at play-time on the `node`.
+   *
+   * A convenience setter method called
+   * {{#crossLink "Connection/onPlaySet:method"}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.setValueAtTime(0.1, audioContext.currentTime)
+   *     {
+   *       key: 'gain',
+   *       value: 0.1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet('gain').to(0.1)
+   *
+   * @public
+   * @property startingValues
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  startingValues: null,
 
   /**
    * This is the main attraction here in connection-land. All the other
@@ -168,6 +273,96 @@ const Connection = EmberObject.extend({
   createdOnPlay: false,
 
   /**
+   * Allows an AudioNode's values to be set at a specific time
+   * relative to the moment that it is played, every time it is played.
+   *
+   * Especially useful for creating/shaping an "envelope" (think "ADSR").
+   *
+   * @example
+   *     // results in an oscillator that starts at 150Hz and quickly drops
+   *     // down to 0.01Hz each time it's played
+   *     const kick = audio.createOscillator({ name: 'kick' });
+   *     const osc = kick.getConnection('audioSource');
+   *
+   *     osc.onPlaySet('frequency').to(150).at(0);
+   *     osc.onPlaySet('frequency').to(0.01).at(0.1);
+   *
+   * @public
+   * @method onPlaySet
+   * @todo document 'exponential' and 'linear' options
+   */
+  onPlaySet(key) {
+    const startingValues = this.get('startingValues');
+    const exponentialValues = this.get('exponentialRampToValuesAtTime');
+    const linearValues = this.get('linearRampToValuesAtTime');
+    const valuesAtTime = this.get('setValuesAtTime');
+
+    return {
+      to(value) {
+        const startValue = { key, value };
+
+        startingValues.pushObject(startValue);
+
+        return {
+          at(startTime) {
+            startingValues.removeObject(startValue);
+            valuesAtTime.pushObject({ key, value, startTime });
+          },
+          endingAt(endTime, type='exponential') {
+            startingValues.removeObject(startValue);
+
+            switch (type) {
+              case 'exponential':
+                exponentialValues.pushObject({ key, value, endTime });
+                break;
+              case 'linear':
+                linearValues.pushObject({ key, value, endTime });
+                break;
+            }
+          }
+        };
+      }
+    };
+  },
+
+  /**
+   * Convenience method that uses
+   * {{#crossLink "Connection/onPlaySet:method"}}{{/crossLink}} twice to set an
+   * initial value, and a ramped value in succession.
+   *
+   * Especially useful for creating/shaping an "envelope" (think "ADSR").
+   *
+   * @example
+   *     // results in an oscillator that starts at 150Hz and quickly drops
+   *     // down to 0.01Hz each time it's played
+   *     const kick = audio.createOscillator({ name: 'kick' });
+   *     const osc = kick.getConnection('audioSource');
+   *
+   *     osc.onPlayRamp('frequency').from(150).to(0.01).in(0.1);
+   *
+   * @public
+   * @method onPlaySet
+   */
+  onPlayRamp(key) {
+    const onPlaySet = this.onPlaySet.bind(this);
+
+    return {
+      from(startValue) {
+        return {
+          to(endValue) {
+            return {
+              in(endTime) {
+                onPlaySet(key).to(startValue);
+                onPlaySet(key).to(endValue).endingAt(endTime);
+              }
+            };
+          }
+        };
+      }
+    };
+  },
+
+  /**
    * If any of the array types are null on init, set them to an
    * Ember.MutableArray
    *
@@ -175,7 +370,13 @@ const Connection = EmberObject.extend({
    * @method _initArrays
    */
   _initArrays: on('init', function() {
-    const arrays = ['onPlaySetAttrsOnNode'];
+    const arrays = [
+      'onPlaySetAttrsOnNode',
+      'exponentialRampToValuesAtTime',
+      'linearRampToValuesAtTime',
+      'setValuesAtTime',
+      'startingValues'
+    ];
 
     arrays.map((name) => {
       if (!this.get(name)) {

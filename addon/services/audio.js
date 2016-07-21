@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import fetch from 'ember-network/fetch';
-import { Sound, Note, Track, BeatTrack, Sampler } from 'ember-audio';
-import { sortNotes, base64ToUint8, mungeSoundFont } from 'ember-audio/utils';
+import { Sound, Note, SampledNote, Track, BeatTrack, Sampler, Oscillator } from 'ember-audio';
+import { sortNotes, base64ToUint8, mungeSoundFont, frequencyMap } from 'ember-audio/utils';
 
 /**
  * Provides the Audio Service
@@ -37,6 +37,11 @@ const {
  *
  * @public
  * @class AudioService
+ *
+ * @todo create class called something like EmberAudioLoadResponse to use in
+ * place of current POJO returned from load(). Probably a real es6 class.
+ *
+ * @todo remove concept of "register" and let consuming app handle state
  */
 export default Service.extend({
   /**
@@ -134,6 +139,7 @@ export default Service.extend({
     const _loadBeatTrack = this._loadBeatTrack.bind(this);
     const _createSoundsArray = this._createSoundsArray.bind(this);
     const samplersRegister = this.get('_samplers');
+    const { createNoteArray } = this;
 
     return {
       /*
@@ -211,8 +217,86 @@ export default Service.extend({
 
           return sampler;
         });
+      },
+
+      /*
+       * Creates an array of note instances from a JSON file.
+       *
+       * @param {string} name The name that this Sampler instance will be
+       * registered as in the _samplers register
+       *
+       * @return {promise|array|Note} Returns a promise that resolves to an array
+       * of Note instances.
+       */
+      asNoteArray() {
+        return fetch(src)
+          .then((response) => response.json())
+          .then(createNoteArray);
       }
     };
+  },
+
+  /**
+   *
+   * @public
+   * @method createNoteArray
+   *
+   * @param {object|null} Optionally provided json object. If not provided,
+   * the object returned from utils/frequencyMap is used.
+   *
+   * @return {array|Note}
+   */
+  createNoteArray(json) {
+    const notes = [];
+
+    if (!json) {
+      json = frequencyMap;
+    }
+
+    for (let noteName in json) {
+      notes.push(Note.create({ frequency: json[noteName] }));
+    }
+
+    return notes;
+  },
+
+  /**
+   * Creates a Sound instance with it's audioBuffer filled with one sample's
+   * worth of white noise.
+   *
+   * @public
+   * @method createWhiteNoise
+   *
+   * @param {object} opts An object passed into the Sound instance.
+   *
+   * @return {Sound} The created white noise Sound instance.
+   */
+  createWhiteNoise(opts={}) {
+    const audioContext = this.get('audioContext');
+    const bufferSize = audioContext.sampleRate;
+    const audioBuffer = audioContext.createBuffer(1, bufferSize, bufferSize);
+    const output = audioBuffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    return Sound.create(Object.assign(opts, { audioContext, audioBuffer }));
+  },
+
+  /**
+   * Creates an Oscillator instance.
+   *
+   * @public
+   * @method createOscillator
+   *
+   * @param {object} opts An object passed into the Oscillator instance.
+   *
+   * @return {Oscillator} The created Oscillator instance.
+   */
+  createOscillator(opts={}) {
+    const audioContext = this.get('audioContext');
+    return Oscillator.create(Object.assign(opts, { audioContext }));
   },
 
   /**
@@ -596,23 +680,14 @@ export default Service.extend({
     const audioContext = this.get('audioContext');
 
     return audioData.map((note) => {
-      const [ noteName, audioBuffer ] = note;
-      let [ letter, accidental, octave ] = noteName;
-
-      if (!octave) {
-        octave = accidental;
-        accidental = null;
-      }
-
-      const createdNote = Note.create({
-        letter,
-        octave,
-        accidental,
+      const [ identifier, audioBuffer ] = note;
+      const createdNote = SampledNote.create({
+        identifier,
         audioBuffer,
         audioContext
       });
 
-      this.get('_fonts').get(instrumentName).set(noteName, createdNote);
+      this.get('_fonts').get(instrumentName).set(identifier, createdNote);
 
       return createdNote;
     });

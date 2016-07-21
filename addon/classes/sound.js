@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Connection } from 'ember-audio';
+import { Connectable, Playable } from 'ember-audio/mixins';
 import { zeroify } from 'ember-audio/utils';
 
 /**
@@ -11,12 +11,7 @@ import { zeroify } from 'ember-audio/utils';
  */
 
 const {
-  A,
   computed,
-  on,
-  get,
-  set,
-  run: { later },
   Object: EmberObject
 } = Ember;
 
@@ -32,8 +27,10 @@ const {
  *
  * @public
  * @class Sound
+ * @uses Connectable
+ * @uses Playable
  */
-const Sound = EmberObject.extend({
+const Sound = EmberObject.extend(Connectable, Playable, {
 
   /**
    * When using the {{#crossLink "Audio-Service"}}{{/crossLink}}, The name that
@@ -94,31 +91,6 @@ const Sound = EmberObject.extend({
   startOffset: 0,
 
   /**
-   * Whether a sound is playing or not. Becomes true when a Sound instance
-   * starts playing audio. Becomes false when the Sound instance is stopped or
-   * ends by reaching the end of it's duration.
-   *
-   * @public
-   * @property isPlaying
-   * @type {boolean}
-   * @default false
-   */
-  isPlaying: false,
-
-  /**
-   * An array of Connection instances. Determines which AudioNode instances are
-   * connected to one-another and the order in which they are connected. Starts
-   * as `null` but set to an array on `init` via the
-   * {{#crossLink "Sound/initConnections:method"}} initConnections{{/crossLink}}
-   * method.
-   *
-   * @public
-   * @property connections
-   * @type {Ember.MutableArray}
-   */
-  connections: null,
-
-  /**
    * Computed property. Value is an object containing the duration of the
    * audioBuffer in three formats. The three formats
    * are `raw`, `string`, and `pojo`.
@@ -161,96 +133,6 @@ const Sound = EmberObject.extend({
   percentGain: computed(function() {
     return this.getNodeFrom('gain').gain.value * 100;
   }),
-
-  /**
-   * Plays the audio source immediately.
-   *
-   * @public
-   * @method play
-   */
-  play() {
-    this._play(this.get('audioContext.currentTime'));
-  },
-
-  /**
-   * Plays the audio source at the specified moment in time. A "moment in time"
-   * is measured in seconds from the moment that the
-   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
-   *
-   * Functionally equivalent to {{#crossLink "Sound/_play:method"}}{{/crossLink}}.
-   *
-   * @param {number} time The moment in time (in seconds, relative to the
-   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
-   * time") when the audio source should be played.
-   *
-   * @public
-   * @method playAt
-   */
-  playAt(time) {
-    this._play(time);
-  },
-
-  /**
-   * Plays the audio source in specified amount of seconds from "now".
-   *
-   * @public
-   * @method playIn
-   *
-   * @param {number} seconds Number of seconds from "now" that the audio source
-   * should be played.
-   */
-  playIn(seconds) {
-    this._play(this.get('audioContext.currentTime') + seconds);
-  },
-
-  /**
-   * Stops the audio source immediately.
-   *
-   * @public
-   * @method stop
-   * @todo add timed stop methods
-   */
-  stop() {
-    const node = this.getNodeFrom('bufferSource');
-
-    if (node) {
-      node.stop();
-      this.set('isPlaying', false);
-    }
-  },
-
-  /**
-   * returns a connection's AudioNode from the connections array by the
-   * connection's `name`.
-   *
-   * @public
-   * @method getNodeFrom
-   *
-   * @param {string} name The name of the AudioNode that should be returned.
-   *
-   * @return {AudioNode} The requested AudioNode.
-   */
-  getNodeFrom(name) {
-    const connection = this.getConnection(name);
-
-    if (connection) {
-      return get(connection, 'node');
-    }
-  },
-
-  /**
-   * returns a connection from the connections array by it's name
-   *
-   * @public
-   * @method getConnection
-   *
-   * @param {string} name The name of the AudioNode that should be returned.
-   *
-   * @return {Connection} The requested Connection.
-   */
-  getConnection(name) {
-    return this.get('connections').findBy('name', name);
-  },
 
   /**
    * Gets the `panner` connection and changes it's pan value to the value passed in.
@@ -378,209 +260,6 @@ const Sound = EmberObject.extend({
         }
       }
     };
-  },
-
-  /**
-   * Find's a connection in the connections array by it's `name` and removes it.
-   *
-   * @param {string} name The name of the connection that should be removed.
-   *
-   * @public
-   * @method removeConnection
-   */
-  removeConnection(name) {
-    this.get('connections').removeObject(this.getConnection(name));
-  },
-
-  /**
-   * Initializes default connections on Sound instantiation. Runs `on('init')`.
-   *
-   * @protected
-   * @method _initConnections
-   */
-  _initConnections: on('init', function() {
-    const bufferSource = Connection.create({
-      name: 'bufferSource',
-      createdOnPlay: true,
-      source: 'audioContext',
-      createCommand: 'createBufferSource',
-      onPlaySetAttrsOnNode: [
-        {
-          attrNameOnNode: 'buffer',
-          relativePath: 'audioBuffer'
-        }
-      ]
-    });
-
-    const gain = Connection.create({
-      name: 'gain',
-      source: 'audioContext',
-      createCommand: 'createGain'
-    });
-
-    const panner = Connection.create({
-      name: 'panner',
-      source: 'audioContext',
-      createCommand: 'createStereoPanner'
-    });
-
-    const destination = Connection.create({
-      name: 'destination',
-      path: 'audioContext.destination'
-    });
-
-    this.set('connections', A([ bufferSource, gain, panner, destination ]));
-    this._wireConnections();
-  }),
-
-  /**
-   * The underlying method that backs the
-   * {{#crossLink "Sound/play:method"}}{{/crossLink}},
-   * {{#crossLink "Sound/playAt:method"}}{{/crossLink}}, and
-   * {{#crossLink "Sound/playIn:method"}}{{/crossLink}} methods.
-   *
-   * Plays the audio source at the specified moment in time. A "moment in time"
-   * is measured in seconds from the moment that the
-   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
-   *
-   * Functionally equivalent to {{#crossLink "Sound/playAt:method"}}{{/crossLink}}.
-   *
-   * @param {number} time The moment in time (in seconds, relative to the
-   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
-   * time") when the audio source should be played.
-   *
-   * @method _play
-   * @private
-   */
-  _play(playAt) {
-    const currentTime = this.get('audioContext.currentTime');
-
-    this._wireConnections();
-
-    this.getNodeFrom('bufferSource').start(playAt, this.get('startOffset'));
-
-    this.set('_startedPlayingAt', playAt);
-
-    if (playAt === currentTime) {
-      this.set('isPlaying', true);
-    } else {
-      later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);
-    }
-  },
-
-  /**
-   * Gets the array of Connection instances from the connections array and
-   * returns the same array, having created any AudioNode instances that needed
-   * to be created, and having connected the AudioNode instances to one another
-   * in the order in which they were present in the connections array.
-   *
-   * @method _wireConnections
-   * @private
-   *
-   * @return {array|Connection} Array of Connection instances collected from the
-   * connections array, created, connected, and ready to play.
-   */
-  _wireConnections() {
-    const createNode = this._createNode.bind(this);
-    const setAttrsOnNode = this._setAttrsOnNode.bind(this);
-    const wireConnection = this._wireConnection;
-    const connections = this.get('connections');
-
-    connections.map(createNode).map(setAttrsOnNode).map(wireConnection);
-  },
-
-  /**
-   * Creates an AudioNode instance for a Connection instance and sets it on it's
-   * `node` property. Unless the Connection instance's `createdOnPlay` property
-   * is true, does nothing if the AudioNode instance has already been created.
-   *
-   * Also sets any properties from a connection's `onPlaySetAttrsOnNode` array
-   * on the node.
-   *
-   * @method _createNode
-   * @private
-   *
-   * @param {Connection} connection A Connection instance that should have it's
-   * node created (if needed).
-   *
-   * @return {Connection} The input Connection instance after having it's node
-   * created.
-   */
-  _createNode(connection) {
-    const { path, name, createdOnPlay, source, createCommand, node } = connection;
-
-    if (node && !createdOnPlay) {
-      // The node is already created and doesn't need to be created again
-      return connection;
-    } else if (path) {
-      connection.node = this.get(path);
-    } else if (createCommand && source) {
-      connection.node = this.get(source)[createCommand]();
-    } else if (!connection.node) {
-      console.error('ember-audio:', `The ${name} connection is not configured correctly. Please fix this connection.`);
-      return;
-    }
-
-    return connection;
-  },
-
-  /**
-   * Gets a Connection instance's `onPlaySetAttrsOnNode` and sets them on it's
-   * node.
-   *
-   * @private
-   * @method _setAttrsOnNode
-   *
-   * @param {Connection} The Connection instance that needs it's node's attrs
-   * set.
-   *
-   * @return {Connection} The input Connection instance after having it's nodes
-   * attrs set.
-   */
-  _setAttrsOnNode(connection) {
-    connection.get('onPlaySetAttrsOnNode').map((attr) => {
-      const { attrNameOnNode, relativePath, value } = attr;
-      const attrValue = relativePath ? this.get(relativePath) || value : value;
-      set(connection.node, attrNameOnNode, attrValue);
-    });
-
-    return connection;
-  },
-
-  /**
-   * Meant to be passed to a Array.prototype.map function. Connects a Connection
-   * instance's node to the next Connection instance's node.
-   *
-   * @private
-   * @method _wireConnection
-   *
-   * @param {Connection} connection The current Connection instance in the
-   * iteration.
-   *
-   * @param {number} idx The index of the current iteration.
-   *
-   * @param {array|Connection} connections The original array of connections.
-   *
-   * @return {Connection} The input Connection instance after having it's node
-   * connected to the next Connection instance's node.
-   */
-  _wireConnection(connection, idx, connections) {
-    const nextIdx = idx + 1;
-    const currentNode = connection;
-
-    if (nextIdx < connections.length) {
-      const nextNode = connections[nextIdx];
-
-      // Assign nextConnection back to connections array.
-      // Since we're working one step ahead, we don't want
-      // each connection created twice
-      connections[nextIdx] = nextNode;
-
-      // Make the connection from current to next
-      currentNode.node.connect(nextNode.node);
-    }
-
-    return currentNode;
   }
 });
 

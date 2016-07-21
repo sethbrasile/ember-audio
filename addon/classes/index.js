@@ -9,8 +9,11 @@ import Sound from './sound';
 import Track from './track';
 import BeatTrack from './beat-track';
 import Sampler from './sampler';
+import Oscillator from './oscillator';
+import SampledNote from './sampled-note';
+import LayeredSound from './layered-sound';
 
-export { Sound, Track, BeatTrack, Sampler };
+export { Sound, Track, BeatTrack, Sampler, Oscillator, SampledNote, LayeredSound };
 
 /**
  * Provides helper classes that represent musical concepts meant to be used by
