@@ -16,10 +16,6 @@ it out.
 
 **Note**: You must be using a modern browser: http://caniuse.com/#feat=audio-api
 
-Still needs:
-
-- Synthesis
-
 ## Installation
 
 * `git clone` this repository
