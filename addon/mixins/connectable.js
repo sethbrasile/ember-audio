@@ -207,8 +207,8 @@ export default Mixin.create({
    * @private
    * @method _setAttrsOnNode
    *
-   * @param {Connection} The Connection instance that needs it's node's attrs
-   * set.
+   * @param {Connection} connection The Connection instance that needs it's
+   * node's attrs set.
    *
    * @return {Connection} The input Connection instance after having it's nodes
    * attrs set.

@@ -1,13 +1,21 @@
 import Ember from 'ember';
 
+/**
+ * Provides classes that are capable of interacting with the Web Audio API's
+ * AudioContext.
+ *
+ * @public
+ * @module Audio
+ */
+
 const {
   run: { later },
   Mixin
 } = Ember;
 
 /**
- * A mixin that allows an object to start and stop an audio source, now or in,
- * the future as well as track whether the audio source is currently playing or
+ * A mixin that allows an object to start and stop an audio source, now or in
+ * the future, as well as track whether the audio source is currently playing or
  * not.
  *
  * @public

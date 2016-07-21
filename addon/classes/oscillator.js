@@ -20,6 +20,16 @@ const {
  * A class that represents an oscillator for a synthesizer. Capable of creating
  * and starting a waveform of specified `type` at a specified `frequency`.
  *
+ * All filters from {{#crossLink "BiquadFilterNode"}}{{/crossLink}} are
+ * available and can be enabled by providing a given filter's frequency.
+ *
+ *     // creates a sine wave oscillator with a highpass at 1000Hz
+ *     const audioContext = this.get('audio.audioContext');
+ *     const osc = Oscillator.create({
+ *       audioContext,
+ *       highpassFrequency: 1000
+ *     });
+ *
  * @public
  * @class Oscillator
  * @uses Connectable
@@ -51,12 +61,23 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
   frequency: null,
 
   /**
-   * Initializes default connections on Sound instantiation. Runs `on('init')`.
+   * Initializes default connections on Oscillator instantiation. Runs `on('init')`.
    *
    * @protected
    * @method _initConnections
    */
   _initConnections: on('init', function() {
+    const filters = [
+      this._createFilter('lowpass'),
+      this._createFilter('highpass'),
+      this._createFilter('bandpass'),
+      this._createFilter('lowshelf'),
+      this._createFilter('highshelf'),
+      this._createFilter('peaking'),
+      this._createFilter('notch'),
+      this._createFilter('allpass')
+    ];
+
     const bufferSource = Connection.create({
       name: 'audioSource',
       createdOnPlay: true,
@@ -91,14 +112,74 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
       path: 'audioContext.destination'
     });
 
-    this.set('connections', A([ bufferSource, gain, panner, destination ]));
+    // always start with source
+    const connections = A([ bufferSource ]);
+
+    // Add filters if they have been defined
+    filters.map((filter) => {
+      const filterIsDefined = !!this.get(`${filter.get('name')}Frequency`);
+
+      if (filterIsDefined) {
+        connections.pushObject(filter);
+      }
+    });
+
+    // add gain, panner, and destination connections
+    connections.pushObjects([ gain, panner, destination ]);
+
+    this.set('connections', connections);
     this._wireConnections();
   }),
 
-  playFor(seconds) {
-    this.play();
-    this.stopIn(seconds);
-  }
+  _createFilter(type) {
+    return Connection.create({
+      name: type,
+      source: 'audioContext',
+      createCommand: 'createBiquadFilter',
+      onPlaySetAttrsOnNode: [
+        {
+          attrNameOnNode: 'type',
+          value: type
+        },
+        {
+          attrNameOnNode: 'frequency.value',
+          relativePath: `${type}Frequency`
+        },
+        {
+          attrNameOnNode: 'q.value',
+          relativePath: `${type}Q`
+        },
+        {
+          attrNameOnNode: 'gain.value',
+          relativePath: `${type}Gain`
+        }
+      ]
+    });
+  },
+
+  /*
+  * The below properties are for the various filter settings. Read about them
+  * here: https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode
+  */
+  lowpassFrequency: null,
+  highpassFrequency: null,
+  bandpassFrequency: null,
+  lowshelfFrequency: null,
+  highshelfFrequency: null,
+  peakingFrequency: null,
+  notchFrequency: null,
+  allpassFrequency: null,
+
+  lowpassQ: null,
+  highpassQ: null,
+  bandpassQ: null,
+  peakingQ: null,
+  notchQ: null,
+  allpassQ: null,
+
+  lowshelfGain: null,
+  highshelfGain: null,
+  peakingGain: null,
 });
 
 export default Oscillator;
