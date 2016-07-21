@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -96,6 +102,9 @@
             
                   <div><a href="#public-methods">Public Methods</a></div>
                   <ul>
+                      <li><a href="#method_createNoteArray">createNoteArray</a></li>
+                      <li><a href="#method_createOscillator">createOscillator</a></li>
+                      <li><a href="#method_createWhiteNoise">createWhiteNoise</a></li>
                       <li><a href="#method_getBeatTrack">getBeatTrack</a></li>
                       <li><a href="#method_getFont">getFont</a></li>
                       <li><a href="#method_getSampler">getSampler</a></li>
@@ -124,14 +133,14 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_services_audio.js.html#l16"><code>addon&#x2F;services&#x2F;audio.js:16</code></a></span>
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l20"><code>addon&#x2F;services&#x2F;audio.js:20</code></a></span>
     <h1 class="class-name">AudioService</h1>
 </div>
 
@@ -291,6 +300,51 @@ loadSound() {
           </td>
           <td>
             <div class="method-name ">
+              <a href="#method_createNoteArray">createNoteArray</a>(Optionally): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Note.html" class="crosslink">Note</a>
+            </div>
+            <div class="short-description">
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_createOscillator">createOscillator</a>(opts): <a href="../classes/Oscillator.html" class="crosslink">Oscillator</a>
+            </div>
+            <div class="short-description">
+              <p>Creates an Oscillator instance.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_createWhiteNoise">createWhiteNoise</a>(opts): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+            </div>
+            <div class="short-description">
+              <p>Creates a Sound instance with it's audioBuffer filled with one sample's worth of white noise.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
               <a href="#method_getBeatTrack">getBeatTrack</a>(name): <a href="../classes/BeatTrack.html" class="crosslink">BeatTrack</a>
             </div>
             <div class="short-description">
@@ -399,7 +453,7 @@ loadSound() {
               <a href="#method_stopAll">stopAll</a>(type=&#x27;tracks&#x27;)
             </div>
             <div class="short-description">
-              <p>Gets all instances of requested type and calls <a href="../classes/Sound.html#method_stop" class="crosslink">stop</a> on each.</p>
+              <p>Gets all instances of requested type and calls Sound/stop:method on each.</p>
             </div>
           </td>
         </tr>
@@ -548,9 +602,9 @@ loadSound() {
 
     <div id="properties public">
         <h2 id="public-properties">Public Properties</h2>
-<div class="property item">
+<div class="property item public">
   <div id="props_audioContext" class="title">
-    <span class="source-link"><a href="../files/addon_services_audio.js.html#l37"><code>addon&#x2F;services&#x2F;audio.js:37</code></a></span>
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l47"><code>addon&#x2F;services&#x2F;audio.js:47</code></a></span>
     <h3 class="">
       public
       
@@ -573,7 +627,7 @@ as of April 2016.</p>
         <h2 id="private-properties">Private Properties</h2>
 <div class="property item private">
   <div id="props__beatTracks" class="title">
-    <span class="source-link"><a href="../files/addon_services_audio.js.html#l88"><code>addon&#x2F;services&#x2F;audio.js:88</code></a></span>
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l99"><code>addon&#x2F;services&#x2F;audio.js:99</code></a></span>
     <h3 class="">
       private
       
@@ -591,7 +645,7 @@ audioService.getBeatTrack('name')</p>
 </div>
 <div class="property item private">
   <div id="props__fonts" class="title">
-    <span class="source-link"><a href="../files/addon_services_audio.js.html#l68"><code>addon&#x2F;services&#x2F;audio.js:68</code></a></span>
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l79"><code>addon&#x2F;services&#x2F;audio.js:79</code></a></span>
     <h3 class="">
       private
       
@@ -608,7 +662,7 @@ objects which is placed in this register by name.</p>
 </div>
 <div class="property item private">
   <div id="props__samplers" class="title">
-    <span class="source-link"><a href="../files/addon_services_audio.js.html#l58"><code>addon&#x2F;services&#x2F;audio.js:58</code></a></span>
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l69"><code>addon&#x2F;services&#x2F;audio.js:69</code></a></span>
     <h3 class="">
       private
       
@@ -625,7 +679,7 @@ in the register by name, and can be called via audioService.getSampler('name')</
 </div>
 <div class="property item private">
   <div id="props__sounds" class="title">
-    <span class="source-link"><a href="../files/addon_services_audio.js.html#l48"><code>addon&#x2F;services&#x2F;audio.js:48</code></a></span>
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l59"><code>addon&#x2F;services&#x2F;audio.js:59</code></a></span>
     <h3 class="">
       private
       
@@ -642,7 +696,7 @@ the register by name, and can be called via audioService.getSound('name')</p>
 </div>
 <div class="property item private">
   <div id="props__tracks" class="title">
-    <span class="source-link"><a href="../files/addon_services_audio.js.html#l78"><code>addon&#x2F;services&#x2F;audio.js:78</code></a></span>
+    <span class="source-link"><a href="../files/addon_services_audio.js.html#l89"><code>addon&#x2F;services&#x2F;audio.js:89</code></a></span>
     <h3 class="">
       private
       
@@ -661,9 +715,180 @@ this register by name, and can be called via audioService.getTrack('name')</p>
 
   <div id="methods public">
     <h2 id="public-methods">Public Methods</h2>
-<div class="method item">
+<div class="method item public">
+    <div id="method_createNoteArray" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l239"><code>addon&#x2F;services&#x2F;audio.js:239</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            createNoteArray(Optionally): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Note.html" class="crosslink">Note</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"></div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Optionally</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a> | Null</td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>provided json object. If not provided,
+the object returned from utils/frequencyMap is used.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Note.html" class="crosslink">Note</a></span>
+          <span class="return-description"></span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item public">
+    <div id="method_createOscillator" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l287"><code>addon&#x2F;services&#x2F;audio.js:287</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            createOscillator(opts): <a href="../classes/Oscillator.html" class="crosslink">Oscillator</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Creates an Oscillator instance.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>opts</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An object passed into the Oscillator instance.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Oscillator.html" class="crosslink">Oscillator</a></span>
+          <span class="return-description"><p>The created Oscillator instance.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item public">
+    <div id="method_createWhiteNoise" class="title">
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l263"><code>addon&#x2F;services&#x2F;audio.js:263</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            createWhiteNoise(opts): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Creates a Sound instance with it's audioBuffer filled with one sample's
+worth of white noise.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>opts</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>An object passed into the Sound instance.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="../classes/Sound.html" class="crosslink">Sound</a></span>
+          <span class="return-description"><p>The created white noise Sound instance.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
+<div class="method item public">
     <div id="method_getBeatTrack" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l211"><code>addon&#x2F;services&#x2F;audio.js:211</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l302"><code>addon&#x2F;services&#x2F;audio.js:302</code></a></span>
         <h3 class="">
             public
             
@@ -720,9 +945,9 @@ provided name.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_getFont" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l253"><code>addon&#x2F;services&#x2F;audio.js:253</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l347"><code>addon&#x2F;services&#x2F;audio.js:347</code></a></span>
         <h3 class="">
             public
             
@@ -783,9 +1008,9 @@ note from the requested font to be played.</p>
         <pre class="code prettyprint"><code>audio.getFont('some-font').play('Ab1');</code></pre>
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_getSampler" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l282"><code>addon&#x2F;services&#x2F;audio.js:282</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l377"><code>addon&#x2F;services&#x2F;audio.js:377</code></a></span>
         <h3 class="">
             public
             
@@ -841,9 +1066,9 @@ from the _samplers register.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_getSound" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l225"><code>addon&#x2F;services&#x2F;audio.js:225</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l317"><code>addon&#x2F;services&#x2F;audio.js:317</code></a></span>
         <h3 class="">
             public
             
@@ -899,9 +1124,9 @@ from the _sounds register.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_getTrack" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l239"><code>addon&#x2F;services&#x2F;audio.js:239</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l332"><code>addon&#x2F;services&#x2F;audio.js:332</code></a></span>
         <h3 class="">
             public
             
@@ -957,9 +1182,9 @@ retrieved from the _tracks register.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_load" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l99"><code>addon&#x2F;services&#x2F;audio.js:99</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l110"><code>addon&#x2F;services&#x2F;audio.js:110</code></a></span>
         <h3 class="">
             public
             
@@ -1029,9 +1254,9 @@ audio.load(['some-url.mp3']).asBeatTrack('some-beat-track');
 audio.load('some-url.js').asFont('some-font');</code></pre>
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_pauseAll" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l311"><code>addon&#x2F;services&#x2F;audio.js:311</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l408"><code>addon&#x2F;services&#x2F;audio.js:408</code></a></span>
         <h3 class="">
             public
             
@@ -1051,9 +1276,9 @@ tracks because only Track instances are pause-able.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_stopAll" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l296"><code>addon&#x2F;services&#x2F;audio.js:296</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l392"><code>addon&#x2F;services&#x2F;audio.js:392</code></a></span>
         <h3 class="">
             public
             
@@ -1065,7 +1290,7 @@ tracks because only Track instances are pause-able.</p>
 
 
     <div class="method-description"><p>Gets all instances of requested type and calls
-<a href="../classes/Sound.html#method_stop" class="crosslink">stop</a> on each.</p>
+Sound/stop:method on each.</p>
 </div>
 
       <div class="params">
@@ -1109,7 +1334,7 @@ to stop all instances of. Can be <code>'tracks'</code>, or <code>'sounds'</code>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__createNoteObjects" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l558"><code>addon&#x2F;services&#x2F;audio.js:558</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l656"><code>addon&#x2F;services&#x2F;audio.js:656</code></a></span>
         <h3 class="">
             private
             
@@ -1191,7 +1416,7 @@ register.</p>
 </div>
 <div class="method item private">
     <div id="method__createSoundFor" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l345"><code>addon&#x2F;services&#x2F;audio.js:345</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l443"><code>addon&#x2F;services&#x2F;audio.js:443</code></a></span>
         <h3 class="">
             private
             
@@ -1264,7 +1489,7 @@ to the new instance.</p>
 </div>
 <div class="method item private">
     <div id="method__createSoundsArray" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l499"><code>addon&#x2F;services&#x2F;audio.js:499</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l597"><code>addon&#x2F;services&#x2F;audio.js:597</code></a></span>
         <h3 class="">
             private
             
@@ -1338,7 +1563,7 @@ audio file that should be loaded and turned into a Sound instance.</p>
 </div>
 <div class="method item private">
     <div id="method__extractDecodedKeyValuePairs" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l522"><code>addon&#x2F;services&#x2F;audio.js:522</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l620"><code>addon&#x2F;services&#x2F;audio.js:620</code></a></span>
         <h3 class="">
             private
             
@@ -1397,7 +1622,7 @@ values, <code>[noteName, decodedAudio]</code>.</p>
 </div>
 <div class="method item private">
     <div id="method__getRegisterFor" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l324"><code>addon&#x2F;services&#x2F;audio.js:324</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l422"><code>addon&#x2F;services&#x2F;audio.js:422</code></a></span>
         <h3 class="">
             private
             
@@ -1453,7 +1678,7 @@ values, <code>[noteName, decodedAudio]</code>.</p>
 </div>
 <div class="method item private">
     <div id="method__load" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l373"><code>addon&#x2F;services&#x2F;audio.js:373</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l471"><code>addon&#x2F;services&#x2F;audio.js:471</code></a></span>
         <h3 class="">
             private
             
@@ -1545,7 +1770,7 @@ to an instance of a Sound, Track, or BeatTrack</p>
 </div>
 <div class="method item private">
     <div id="method__loadBeatTrack" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l416"><code>addon&#x2F;services&#x2F;audio.js:416</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l514"><code>addon&#x2F;services&#x2F;audio.js:514</code></a></span>
         <h3 class="">
             private
             
@@ -1618,7 +1843,7 @@ Sounds.</p>
 </div>
 <div class="method item private">
     <div id="method__loadFont" class="title">
-        <span class="source-link"><a href="../files/addon_services_audio.js.html#l439"><code>addon&#x2F;services&#x2F;audio.js:439</code></a></span>
+        <span class="source-link"><a href="../files/addon_services_audio.js.html#l537"><code>addon&#x2F;services&#x2F;audio.js:537</code></a></span>
         <h3 class="">
             private
             

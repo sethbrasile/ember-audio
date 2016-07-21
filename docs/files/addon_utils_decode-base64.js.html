@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -62,7 +68,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
@@ -74,6 +80,7 @@
 
 <pre class="code prettyprint linenums">
 /**
+ * @public
  * @class utils
  */
 
@@ -86,7 +93,7 @@
  * @return {Uint8Array} A Uint8Array of converted &quot;binary&quot; audio data.
  */
 export function base64ToUint8(base64String) {
-  const sB64Enc = base64String.replace(/[^A-Za-z0-9\+\/]/g, &quot;&quot;);
+  const sB64Enc = base64String.replace(/[^A-Za-z0-9\+\/]/g, &#x27;&#x27;);
   const nInLen = sB64Enc.length;
   const nOutLen = nInLen * 3 + 1 &gt;&gt; 2;
   const taBytes = new Uint8Array(nOutLen);
@@ -118,31 +125,31 @@ export function base64ToUint8(base64String) {
  * @param {string} soundfont A soundfont as a long base64 string
  * @return {object} A JSON representation of all the notes in the font
  */
- export function mungeSoundFont(soundfont) {
-   const begin = soundfont.indexOf(&#x27;=&#x27;, soundfont.indexOf(&#x27;MIDI.Soundfont.&#x27;)) + 2;
-   const end = soundfont.lastIndexOf(&#x27;&quot;&#x27;) + 1;
-   const string = (soundfont.slice(begin, end) + &#x27;}&#x27;)
-     .replace(new RegExp(&#x27;data:audio/mp3;base64,&#x27;, &#x27;g&#x27;), &#x27;&#x27;)
-     .replace(new RegExp(&#x27;data:audio/mpeg;base64,&#x27;, &#x27;g&#x27;), &#x27;&#x27;)
-     .replace(new RegExp(&#x27;data:audio/ogg;base64,&#x27;, &#x27;g&#x27;), &#x27;&#x27;);
+export function mungeSoundFont(soundfont) {
+  const begin = soundfont.indexOf(&#x27;=&#x27;, soundfont.indexOf(&#x27;MIDI.Soundfont.&#x27;)) + 2;
+  const end = soundfont.lastIndexOf(&#x27;&quot;&#x27;) + 1;
+  const string = (&#x60;${soundfont.slice(begin, end)}}&#x60;)
+    .replace(new RegExp(&#x27;data:audio/mp3;base64,&#x27;, &#x27;g&#x27;), &#x27;&#x27;)
+    .replace(new RegExp(&#x27;data:audio/mpeg;base64,&#x27;, &#x27;g&#x27;), &#x27;&#x27;)
+    .replace(new RegExp(&#x27;data:audio/ogg;base64,&#x27;, &#x27;g&#x27;), &#x27;&#x27;);
 
-   return JSON.parse(string);
- }
+  return JSON.parse(string);
+}
 
- function b64ToUint6(nChr) {
-   return nChr &gt; 64 &amp;&amp; nChr &lt; 91 ?
-       nChr - 65
-     : nChr &gt; 96 &amp;&amp; nChr &lt; 123 ?
-       nChr - 71
-     : nChr &gt; 47 &amp;&amp; nChr &lt; 58 ?
-       nChr + 4
-     : nChr === 43 ?
-       62
-     : nChr === 47 ?
-       63
-     :
-       0;
- }
+function b64ToUint6(nChr) {
+  return nChr &gt; 64 &amp;&amp; nChr &lt; 91 ?
+     nChr - 65
+   : nChr &gt; 96 &amp;&amp; nChr &lt; 123 ?
+     nChr - 71
+   : nChr &gt; 47 &amp;&amp; nChr &lt; 58 ?
+     nChr + 4
+   : nChr === 43 ?
+     62
+   : nChr === 47 ?
+     63
+   :
+     0;
+}
 
 </pre>
 

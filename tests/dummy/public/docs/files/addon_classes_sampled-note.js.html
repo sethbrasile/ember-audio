@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>addon/utils/zeroify.js - ember-audio</title>
-    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
-    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <title>addon/classes/sampled-note.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
@@ -75,32 +75,41 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-  <h1 class="file-name">addon/utils/zeroify.js</h1>
+  <h1 class="file-name">addon/classes/sampled-note.js</h1>
 </div>
 
 <pre class="code prettyprint linenums">
-/**
- * @public
- * @class utils
- */
+import Sound from &#x27;./sound&#x27;;
+import { MusicalIdentity } from &#x27;ember-audio/mixins&#x27;;
 
 /**
- * Formats a number and converts to string: 6 becomes &#x27;06&#x27;
+ * Provides helper classes that represent musical concepts meant to be used by
+ * classes from the Audio module.
  *
  * @public
- * @method zeroify
- * @param {number} input A number that should be formatted
- * @return {string} The number formatted and converted to string
+ * @module MusicalConcepts
  */
-export default function zeroify(input) {
-  const num = Math.floor(input);
 
-  if (num &lt; 10) {
-    return &#x60;0${num}&#x60;;
-  }
+/**
+ * Represents a musical note, created from sampled audio.
+ * When a soundfont is created via the
+ * {{#crossLink &quot;Audio&quot;}}Audio Service{{/crossLink}}, an instance of this class
+ * is created for every musical note that is represented in a soundfont. This
+ * class can be used for any collection of Sound instances where each instance
+ * needs an awareness of what &quot;musical note&quot; it is (i.e. octave, accidental, etc..).
+ *
+ * This class only makes sense when used in the context of a collection, as the
+ * only functionality it provides over a
+ * {{#crossLink &quot;Sound&quot;}}Sound{{/crossLink}}, serves to facilitate identification.
+ *
+ * @public
+ * @class SampledNote
+ * @extends Sound
+ * @uses MusicalIdentity
+ */
+const SampledNote = Sound.extend(MusicalIdentity);
 
-  return &#x60;${num}&#x60;;
-}
+export default SampledNote;
 
 </pre>
 
@@ -108,8 +117,8 @@ export default function zeroify(input) {
         </div>
     </div>
 </div>
-<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+<script src="../assets/js/yui-prettify.js"></script>
 </body>
 </html>

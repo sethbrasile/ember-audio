@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/mixins/playable.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.5b0fc03d
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/mixins/playable.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+
+/**
+ * Provides classes that are capable of interacting with the Web Audio API&#x27;s
+ * AudioContext.
+ *
+ * @public
+ * @module Audio
+ */
+
+const {
+  run: { later },
+  Mixin
+} = Ember;
+
+/**
+ * A mixin that allows an object to start and stop an audio source, now or in
+ * the future, as well as track whether the audio source is currently playing or
+ * not.
+ *
+ * @public
+ * @class Playable
+ */
+export default Mixin.create({
+  /**
+   * Whether an audio source is playing or not.
+   *
+   * @public
+   * @property isPlaying
+   * @type {boolean}
+   * @default false
+   */
+  isPlaying: false,
+
+  /**
+   * Plays the audio source immediately.
+   *
+   * @public
+   * @method play
+   */
+  play() {
+    this._play(this.get(&#x27;audioContext.currentTime&#x27;));
+  },
+
+  /**
+   * Plays the audio source at the specified moment in time. A &quot;moment in time&quot;
+   * is measured in seconds from the moment that the
+   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
+   *
+   * Functionally equivalent to {{#crossLink &quot;Playable/_play:method&quot;}}{{/crossLink}}.
+   *
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
+   * time&quot;) when the audio source should be played.
+   *
+   * @public
+   * @method playAt
+   */
+  playAt(time) {
+    this._play(time);
+  },
+
+  /**
+   * Plays the audio source in specified amount of seconds from &quot;now&quot;.
+   *
+   * @public
+   * @method playIn
+   *
+   * @param {number} seconds Number of seconds from &quot;now&quot; that the audio source
+   * should be played.
+   */
+  playIn(seconds) {
+    this._play(this.get(&#x27;audioContext.currentTime&#x27;) + seconds);
+  },
+
+  /**
+   * Starts playing the audio source immediately, but stops after specified
+   * seconds have elapsed.
+   *
+   * @public
+   * @method playFor
+   *
+   * @param {number} seconds The amount of time after which the audio source is
+   * stopped.
+   */
+  playFor(seconds) {
+    this.play();
+    this.stopIn(seconds);
+  },
+
+  /**
+   * Starts playing the audio source after &#x60;playIn&#x60; seconds have elapsed, then
+   * stops the audio source &#x60;stopAfter&#x60; seconds after it started playing.
+   *
+   * @public
+   * @method playInAndStopAfter
+   *
+   * @param {number} playIn Number of seconds from &quot;now&quot; that the audio source
+   * should play.
+   *
+   * @param {number} stopAfter Number of seconds from when the audio source
+   * started playing that the audio source should be stopped.
+   */
+  playInAndStopAfter(playIn, stopAfter) {
+    this.playIn(playIn);
+    this.stopIn(playIn + stopAfter);
+  },
+
+  /**
+   * Stops the audio source immediately.
+   *
+   * @public
+   * @method stop
+   */
+  stop() {
+    this._stop(this.get(&#x27;audioContext.currentTime&#x27;));
+  },
+
+  /**
+   * Stops the audio source after specified seconds have elapsed.
+   *
+   * @public
+   * @method stopIn
+   *
+   * @param {number} seconds Number of seconds from &quot;now&quot; that the audio source
+   * should be stopped.
+   */
+  stopIn(seconds) {
+    this._stop(this.get(&#x27;audioContext.currentTime&#x27;) + seconds);
+  },
+
+  /**
+   * Stops the audio source at the specified &quot;moment in time&quot; relative to the
+   * &quot;beginning of time&quot; according to the &#x60;audioContext&#x60;.
+   *
+   * Functionally equivalent to the &#x60;_stop&#x60; method.
+   *
+   * @public
+   * @method stopAt
+   *
+   * @param {number} time The time that the audio source should be stopped.
+   */
+  stopAt(time) {
+    this._stop(time);
+  },
+
+  /**
+   * The underlying method that backs all of the &#x60;stop&#x60; methods.
+   *
+   * Functionally equivalent to the &#x60;stopAt&#x60; method.
+   *
+   * @private
+   * @method _stop
+   *
+   * @param {number} time The time that the audio source should be stopped.
+   */
+  _stop(time) {
+    const node = this.getNodeFrom(&#x27;audioSource&#x27;);
+
+    if (node) {
+      node.stop(time);
+      this.set(&#x27;isPlaying&#x27;, false);
+    }
+  },
+
+  /**
+   * The underlying method that backs the
+   * {{#crossLink &quot;Playable/play:method&quot;}}{{/crossLink}},
+   * {{#crossLink &quot;Playable/playAt:method&quot;}}{{/crossLink}}, and
+   * {{#crossLink &quot;Playable/playIn:method&quot;}}{{/crossLink}} methods.
+   *
+   * Plays the audio source at the specified moment in time. A &quot;moment in time&quot;
+   * is measured in seconds from the moment that the
+   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
+   *
+   * Functionally equivalent to {{#crossLink &quot;Sound/playAt:method&quot;}}{{/crossLink}}.
+   *
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
+   * time&quot;) when the audio source should be played.
+   *
+   * @method _play
+   * @private
+   */
+  _play(playAt) {
+    const currentTime = this.get(&#x27;audioContext.currentTime&#x27;);
+
+    this._wireConnections();
+
+    const node = this.getNodeFrom(&#x27;audioSource&#x27;);
+
+    node.start(playAt, this.get(&#x27;startOffset&#x27;));
+
+    this.set(&#x27;_startedPlayingAt&#x27;, playAt);
+
+    if (playAt === currentTime) {
+      this.set(&#x27;isPlaying&#x27;, true);
+    } else {
+      later(() =&gt; this.set(&#x27;isPlaying&#x27;, true), (playAt - currentTime) * 1000);
+    }
+  }
+});
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/mixins/musical-identity.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.5b0fc03d
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/mixins/musical-identity.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+import { frequencyMap } from &#x27;ember-audio/utils&#x27;;
+
+/**
+ * Provides helper classes that represent musical concepts meant to be used by
+ * classes from the Audio module.
+ *
+ * @public
+ * @module MusicalConcepts
+ */
+
+const {
+  computed,
+  Mixin
+} = Ember;
+
+/**
+ * This mixin allows an object to have an awareness of it&#x27;s &quot;musical identity&quot;
+ * or &quot;note value&quot; based on western musical standards (a standard piano).
+ * If any of the following are provided, all of the remaining properties will be
+ * calculated:
+ *
+ * 1. frequency
+ * 2. identifier (i.e. &quot;Ab1&quot;)
+ * 3. letter, octave, and (optionally) accidental
+ *
+ * This mixin only makes sense when the consuming object is part of a collection,
+ * as the only functionality it provides serves to facilitate identification.
+ *
+ * @public
+ * @class MusicalIdentity
+ */
+export default Mixin.create({
+
+  /**
+   * For note &#x60;Ab5&#x60;, this would be &#x60;A&#x60;.
+   *
+   * @public
+   * @property letter
+   * @type {string}
+   */
+  letter: null,
+
+  /**
+   * For note &#x60;Ab5&#x60;, this would be &#x60;b&#x60;.
+   *
+   * @public
+   * @property accidental
+   * @type {string}
+   */
+  accidental: null,
+
+  /**
+   * For note &#x60;Ab5&#x60;, this would be &#x60;5&#x60;.
+   *
+   * @public
+   * @property octave
+   * @type {string}
+   */
+  octave: null,
+
+  /**
+   * Computed property. Value is &#x60;${letter}&#x60; or &#x60;${letter}${accidental}&#x60; if
+   * accidental exists.
+   *
+   * @public
+   * @property name
+   * @type {string}
+   */
+  name: computed(&#x27;letter&#x27;, &#x27;accidental&#x27;, function() {
+    const accidental = this.get(&#x27;accidental&#x27;);
+    const letter = this.get(&#x27;letter&#x27;);
+
+    if (accidental) {
+      return &#x60;${letter}${accidental}&#x60;;
+    } else {
+      return letter;
+    }
+  }),
+
+  /**
+   * Computed property. The frequency of the note in hertz. Calculated by
+   * comparing western musical standards (a standard piano) and the note
+   * identifier (i.e. &#x60;Ab1&#x60;). If this property is set directly, all other
+   * properties are updated to reflect the provided frequency.
+   *
+   * @public
+   * @property
+   * @type {number}
+   */
+  frequency: computed(&#x27;identifier&#x27;, {
+    get() {
+      const identifier = this.get(&#x27;identifier&#x27;);
+
+      if (identifier) {
+        return frequencyMap[identifier];
+      }
+    },
+
+    set(key, value) {
+      for (let key in frequencyMap) {
+        if (value === frequencyMap[key]) {
+          this.set(&#x27;identifier&#x27;, key);
+          return value;
+        }
+      }
+    }
+  }),
+
+  /**
+   * Computed property. Value is &#x60;${letter}${octave}&#x60; or
+   * &#x60;${letter}${accidental}${octave}&#x60; if accidental exists. If this property
+   * is set directly, all other properties are updated to reflect the provided
+   * identifier.
+   *
+   * @public
+   * @property identifier
+   * @type {string}
+   */
+  identifier: computed(&#x27;letter&#x27;, &#x27;octave&#x27;, &#x27;accidental&#x27;, {
+    get() {
+      const accidental = this.get(&#x27;accidental&#x27;);
+      const letter = this.get(&#x27;letter&#x27;);
+      const octave = this.get(&#x27;octave&#x27;);
+      let output;
+
+      if (accidental) {
+        output = &#x60;${letter}${accidental}${octave}&#x60;;
+      } else {
+        output = &#x60;${letter}${octave}&#x60;;
+      }
+
+      return output;
+    },
+
+    set(key, value) {
+      const [ letter ] = value;
+      const octave = value[2] || value[1];
+      let accidental;
+
+      if (value[2]) {
+        accidental = value[1];
+      }
+
+      this.setProperties({ letter, octave, accidental });
+
+      return value;
+    }
+  })
+});
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+</body>
+</html>

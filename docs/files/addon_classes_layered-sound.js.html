@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>addon/classes/sampler.js - ember-audio</title>
+    <title>addon/classes/layered-sound.js - ember-audio</title>
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
     <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
@@ -75,7 +75,7 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-  <h1 class="file-name">addon/classes/sampler.js</h1>
+  <h1 class="file-name">addon/classes/layered-sound.js</h1>
 </div>
 
 <pre class="code prettyprint linenums">
@@ -90,149 +90,110 @@ import Ember from &#x27;ember&#x27;;
  */
 
 const {
+  A,
+  on,
   Object: EmberObject
 } = Ember;
 
 /**
- * An instance of the Sampler class behaves just like a Sound, but allows
- * many {{#crossLink &quot;AudioBuffer&quot;}}AudioBuffers{{/crossLink}} to exist and
- * automatically alternately plays them (round-robin) each time any of the play
- * methods are called.
+ * Allows multiple instances of anything that uses
+ * {{#crossLink &quot;Playable&quot;}}{{/crossLink}} to be loaded up and played at the
+ * same time.
  *
  * @public
- * @class Sampler
- *
- * @todo humanize gain and time - should be optional and customizable
- * @todo loop
+ * @class LayeredSound
  */
-const Sampler = EmberObject.extend({
-
+const LayeredSound = EmberObject.extend({
   /**
-   * Determines the gain applied to each sample.
+   * Acts as a register for different types of sounds. Anything that uses
+   * {{#crossLink &quot;Playable&quot;}}{{/crossLink}} can be added to this register.
    *
    * @public
-   * @property gain
-   * @type {number}
-   * @default 1
+   * @property sounds
+   * @type {array|Sound|Oscillator}
    */
-  gain: 1,
+  sounds: null,
 
   /**
-   * Determines the stereo pan position of each sample.
-   *
-   * @public
-   * @property pan
-   * @type {number}
-   * @default 0
-   */
-  pan: 0,
-
-  /**
-   * Temporary storage for the iterable that comes from the _sounds Set.
-   * This iterable is meant to be replaced with a new copy every time it reaches
-   * it&#x27;s end, resulting in an infinite stream of Sound instances.
-   *
-   * @private
-   * @property _soundIterator
-   * @type {Iterator}
-   *
-   */
-  _soundIterator: null,
-
-  /**
-   * Acts as a register for loaded Sound instances. Set on instantiation.
-   *
-   * @private
-   * @property _sounds
-   * @type {Set|Sound}
-   */
-  _sounds: null,
-
-  /**
-   * Gets the next Sound and plays it immediately.
+   * Maps through objects in &#x60;sounds&#x60; and calls &#x60;play&#x60; on each
    *
    * @public
    * @method play
    */
   play() {
-    this._getNextSound().play();
+    this.get(&#x27;sounds&#x27;).map((sound) =&gt; sound.play());
   },
 
   /**
-   * Gets the next Sound and plays it after the specified offset has elapsed.
+   * Maps through objects in &#x60;sounds&#x60; and calls &#x60;playAt&#x60; on each, passing
+   * through the &#x60;time&#x60; param to each sound.
+   *
+   * @public
+   * @method playAt
+   *
+   * @param {number} time The time to pass to each object&#x27;s &#x60;playAt&#x60; method.
+   */
+  playAt(time) {
+    this.get(&#x27;sounds&#x27;).map((sound) =&gt; sound.playAt(time));
+  },
+
+  /**
+   * Maps through objects in &#x60;sounds&#x60; and calls &#x60;playIn&#x60; on each, passing
+   * through the &#x60;seconds&#x60; param to each sound.
    *
    * @public
    * @method playIn
    *
-   * @param {number} seconds Number of seconds from &quot;now&quot; that the next Sound
-   * should be played.
+   * @param {number} seconds The seconds to pass to each object&#x27;s &#x60;playIn&#x60; method.
    */
   playIn(seconds) {
-    this._getNextSound().playIn(seconds);
+    this.get(&#x27;sounds&#x27;).map((sound) =&gt; sound.playIn(seconds));
   },
 
   /**
-   * Gets the next Sound and plays it at the specified moment in time. A
-   * &quot;moment in time&quot; is measured in seconds from the moment that the
-   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
-   *
-   * @param {number} time The moment in time (in seconds, relative to the
-   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
-   * time&quot;) when the next Sound should be played.
+   * Maps through objects in &#x60;sounds&#x60; and calls &#x60;playFor&#x60; on each, passing
+   * through the &#x60;seconds&#x60; param to each sound.
    *
    * @public
-   * @method playAt
+   * @method playFor
+   *
+   * @param {number} seconds The seconds to pass to each object&#x27;s &#x60;playFor&#x60; method.
    */
-  playAt(time) {
-    this._getNextSound().playAt(time);
+  playFor(seconds) {
+    this.get(&#x27;sounds&#x27;).map((sound) =&gt; sound.playFor(seconds));
   },
 
   /**
-   * Gets _soundIterator and returns it&#x27;s next value. If _soundIterator has
-   * reached it&#x27;s end, replaces _soundIterator with a fresh copy from _sounds
-   * and returns the first value from that.
+   * Maps through objects in &#x60;sounds&#x60; and calls &#x60;playInAndStopAfter&#x60; on each,
+   * passing through the &#x60;playIn&#x60; and &#x60;stopAfter&#x60; params to each sound.
    *
-   * @private
-   * @method _getNextSound
-   * @return {Sound}
+   * @public
+   * @method playForIn
+   *
+   * @param {number} playIn Seconds to pass to each object&#x27;s
+   * &#x60;playInAndStopAfter&#x60; method.
+   *
+   * @param {number} stopAfter Seconds to pass to each object&#x27;s
+   * &#x60;playInAndStopAfter&#x60; method.
    */
-  _getNextSound() {
-    let soundIterator = this.get(&#x27;_soundIterator&#x27;);
-    let nextSound;
-
-    if (!soundIterator) {
-      soundIterator = this.get(&#x27;_sounds&#x27;).values();
-    }
-
-    nextSound = soundIterator.next();
-
-    if (nextSound.done) {
-      soundIterator = this.get(&#x27;_sounds&#x27;).values();
-      nextSound = soundIterator.next();
-    }
-
-    this.set(&#x27;_soundIterator&#x27;, soundIterator);
-
-    return this._setGainAndPan(nextSound.value);
+  playInAndStopAfter(playIn, stopAfter) {
+    this.get(&#x27;sounds&#x27;).map((sound) =&gt; sound.playInAndStopAfter(playIn, stopAfter));
   },
 
   /**
-   * Applies the &#x60;gain&#x60; and &#x60;pan&#x60; properties from the Sampler instance to a
-   * Sound instance and returns the Sound instance.
+   * If &#x60;sounds&#x60; is null on instantiation, sets it to &#x60;A()&#x60;
    *
    * @private
-   * @method _setGainAndPan
-   * @return {Sound} The input sound after having it&#x27;s gain and pan set
+   * @method _initSounds
    */
-  _setGainAndPan(sound) {
-    sound.changeGainTo(this.get(&#x27;gain&#x27;)).from(&#x27;ratio&#x27;);
-    sound.changePanTo(this.get(&#x27;pan&#x27;));
-
-    return sound;
-  }
+  _initSounds: on(&#x27;init&#x27;, function() {
+    if (!this.get(&#x27;sounds&#x27;)) {
+      this.set(&#x27;sounds&#x27;, A());
+    }
+  })
 });
 
-export default Sampler;
+export default LayeredSound;
 
 </pre>
 

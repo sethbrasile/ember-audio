@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -117,14 +123,14 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l16"><code>addon&#x2F;classes&#x2F;beat-track.js:16</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l19"><code>addon&#x2F;classes&#x2F;beat-track.js:19</code></a></span>
     <h1 class="class-name">BeatTrack</h1>
 </div>
 
@@ -167,7 +173,7 @@ to a "lane" on a drum machine.</p>
               <a href="#props_beats">beats</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Beat.html" class="crosslink">Beat</a>
             </div>
             <div class="short-description">
-              <p>Computed property. An array of Beat instances. The number of Beat instances in the array is always the same as the <code>numBeats</code> property.</p>
+              <p>Computed property. An array of Beat instances. The number of Beat instances in the array is always the same as the <code>numBeats</code> property. If 'numBeats' or duration changes. This property will be recomputed, but any beats that previously existed are reused so that they will maintain their <code>active</code> state.</p>
             </div>
           </td>
         </tr>
@@ -429,9 +435,9 @@ to a "lane" on a drum machine.</p>
 
     <div id="properties public">
         <h2 id="public-properties">Public Properties</h2>
-<div class="property item">
+<div class="property item public">
   <div id="props_beats" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l52"><code>addon&#x2F;classes&#x2F;beat-track.js:52</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l56"><code>addon&#x2F;classes&#x2F;beat-track.js:56</code></a></span>
     <h3 class="">
       public
       
@@ -442,13 +448,16 @@ to a "lane" on a drum machine.</p>
 
 
   <div class="property-description"><p>Computed property. An array of Beat instances. The number of Beat instances
-in the array is always the same as the <code>numBeats</code> property.</p>
+in the array is always the same as the <code>numBeats</code> property. If 'numBeats'
+or duration changes. This property will be recomputed, but any beats that
+previously existed are reused so that they will maintain their <code>active</code>
+state.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_duration" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l41"><code>addon&#x2F;classes&#x2F;beat-track.js:41</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l44"><code>addon&#x2F;classes&#x2F;beat-track.js:44</code></a></span>
     <h3 class="">
       public
       
@@ -464,9 +473,9 @@ having been switched to true for each beat. 100ms is used by default.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_gain" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l23"><code>addon&#x2F;classes&#x2F;sampler.js:23</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l29"><code>addon&#x2F;classes&#x2F;sampler.js:29</code></a></span>
     <h3 class="">
       public
       
@@ -479,9 +488,9 @@ having been switched to true for each beat. 100ms is used by default.</p>
   <div class="property-description">Determines the gain applied to each sample.</div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_numBeats" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l33"><code>addon&#x2F;classes&#x2F;beat-track.js:33</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l35"><code>addon&#x2F;classes&#x2F;beat-track.js:35</code></a></span>
     <h3 class="">
       public
       
@@ -495,9 +504,9 @@ having been switched to true for each beat. 100ms is used by default.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_pan" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l32"><code>addon&#x2F;classes&#x2F;sampler.js:32</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l39"><code>addon&#x2F;classes&#x2F;sampler.js:39</code></a></span>
     <h3 class="">
       public
       
@@ -517,7 +526,7 @@ having been switched to true for each beat. 100ms is used by default.</p>
         <h2 id="private-properties">Private Properties</h2>
 <div class="property item private">
   <div id="props__soundIterator" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l41"><code>addon&#x2F;classes&#x2F;sampler.js:41</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l49"><code>addon&#x2F;classes&#x2F;sampler.js:49</code></a></span>
     <h3 class="">
       private
       
@@ -534,7 +543,7 @@ it's end, resulting in an infinite stream of Sound instances.</div>
 </div>
 <div class="property item private">
   <div id="props__sounds" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l53"><code>addon&#x2F;classes&#x2F;sampler.js:53</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l61"><code>addon&#x2F;classes&#x2F;sampler.js:61</code></a></span>
     <h3 class="">
       private
       
@@ -551,9 +560,9 @@ it's end, resulting in an infinite stream of Sound instances.</div>
 
   <div id="methods public">
     <h2 id="public-methods">Public Methods</h2>
-<div class="method item">
+<div class="method item public">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l62"><code>addon&#x2F;classes&#x2F;sampler.js:62</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l70"><code>addon&#x2F;classes&#x2F;sampler.js:70</code></a></span>
         <h3 class="">
             public
             
@@ -573,9 +582,9 @@ it's end, resulting in an infinite stream of Sound instances.</div>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_playActiveBeats" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l91"><code>addon&#x2F;classes&#x2F;beat-track.js:91</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l112"><code>addon&#x2F;classes&#x2F;beat-track.js:112</code></a></span>
         <h3 class="">
             public
             
@@ -639,9 +648,9 @@ eighth notes, pass in <code>1/8</code>.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l83"><code>addon&#x2F;classes&#x2F;sampler.js:83</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l93"><code>addon&#x2F;classes&#x2F;sampler.js:93</code></a></span>
         <h3 class="">
             public
             
@@ -693,9 +702,9 @@ time") when the next Sound should be played.</td>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_playBeats" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l76"><code>addon&#x2F;classes&#x2F;beat-track.js:76</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l96"><code>addon&#x2F;classes&#x2F;beat-track.js:96</code></a></span>
         <h3 class="">
             public
             
@@ -758,9 +767,9 @@ eighth notes, pass in <code>1/8</code>.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l71"><code>addon&#x2F;classes&#x2F;sampler.js:71</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l80"><code>addon&#x2F;classes&#x2F;sampler.js:80</code></a></span>
         <h3 class="">
             public
             
@@ -816,7 +825,7 @@ should be played.</td>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__callPlayMethodOnBeats" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l107"><code>addon&#x2F;classes&#x2F;beat-track.js:107</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat-track.js.html#l129"><code>addon&#x2F;classes&#x2F;beat-track.js:129</code></a></span>
         <h3 class="">
             private
             
@@ -895,7 +904,7 @@ be used to calculate the length of a beat/rest in seconds.</p>
 </div>
 <div class="method item private">
     <div id="method__getNextSound" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l98"><code>addon&#x2F;classes&#x2F;sampler.js:98</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l109"><code>addon&#x2F;classes&#x2F;sampler.js:109</code></a></span>
         <h3 class="">
             private
             
@@ -926,7 +935,7 @@ and returns the first value from that.</div>
 </div>
 <div class="method item private">
     <div id="method__setGainAndPan" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l127"><code>addon&#x2F;classes&#x2F;sampler.js:127</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l138"><code>addon&#x2F;classes&#x2F;sampler.js:138</code></a></span>
         <h3 class="">
             private
             

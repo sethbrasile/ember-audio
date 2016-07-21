@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -113,14 +119,14 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l14"><code>addon&#x2F;classes&#x2F;beat.js:14</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l16"><code>addon&#x2F;classes&#x2F;beat.js:16</code></a></span>
     <h1 class="class-name">Beat</h1>
 </div>
 
@@ -372,9 +378,9 @@ Beat.create({
 
     <div id="properties public">
         <h2 id="public-properties">Public Properties</h2>
-<div class="property item">
+<div class="property item public">
   <div id="props_active" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l37"><code>addon&#x2F;classes&#x2F;beat.js:37</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l41"><code>addon&#x2F;classes&#x2F;beat.js:41</code></a></span>
     <h3 class="">
       public
       
@@ -390,9 +396,9 @@ methods will treat this instance as a rest (a timed period of silence).</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_currentTimeIsPlaying" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l47"><code>addon&#x2F;classes&#x2F;beat.js:47</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l52"><code>addon&#x2F;classes&#x2F;beat.js:52</code></a></span>
     <h3 class="">
       public
       
@@ -408,9 +414,9 @@ to false after the time specified by the duration property.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_duration" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l79"><code>addon&#x2F;classes&#x2F;beat.js:79</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l86"><code>addon&#x2F;classes&#x2F;beat.js:86</code></a></span>
     <h3 class="">
       public
       
@@ -426,9 +432,9 @@ having been switched to true. 100ms is used by default.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_isPlaying" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l58"><code>addon&#x2F;classes&#x2F;beat.js:58</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l64"><code>addon&#x2F;classes&#x2F;beat.js:64</code></a></span>
     <h3 class="">
       public
       
@@ -451,7 +457,7 @@ specified by the duration property.</p>
         <h2 id="private-properties">Private Properties</h2>
 <div class="property item private">
   <div id="props__audioBufferDuration" class="title">
-    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l69"><code>addon&#x2F;classes&#x2F;beat.js:69</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_beat.js.html#l76"><code>addon&#x2F;classes&#x2F;beat.js:76</code></a></span>
     <h3 class="">
       private
       
@@ -470,9 +476,9 @@ audioBuffer.duration.</p>
 
   <div id="methods public">
     <h2 id="public-methods">Public Methods</h2>
-<div class="method item">
+<div class="method item public">
     <div id="method_ifActivePlayIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l111"><code>addon&#x2F;classes&#x2F;beat.js:111</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l120"><code>addon&#x2F;classes&#x2F;beat.js:120</code></a></span>
         <h3 class="">
             public
             
@@ -524,9 +530,9 @@ play.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l136"><code>addon&#x2F;classes&#x2F;beat.js:136</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l146"><code>addon&#x2F;classes&#x2F;beat.js:146</code></a></span>
         <h3 class="">
             public
             
@@ -545,9 +551,9 @@ play.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_playIfActive" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l149"><code>addon&#x2F;classes&#x2F;beat.js:149</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l160"><code>addon&#x2F;classes&#x2F;beat.js:160</code></a></span>
         <h3 class="">
             public
             
@@ -568,9 +574,9 @@ immediately.</p>
 
 
 </div>
-<div class="method item">
+<div class="method item public">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l90"><code>addon&#x2F;classes&#x2F;beat.js:90</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l98"><code>addon&#x2F;classes&#x2F;beat.js:98</code></a></span>
         <h3 class="">
             public
             
@@ -628,7 +634,7 @@ play.</p>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__markCurrentTimePlaying" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l180"><code>addon&#x2F;classes&#x2F;beat.js:180</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l192"><code>addon&#x2F;classes&#x2F;beat.js:192</code></a></span>
         <h3 class="">
             private
             
@@ -649,7 +655,7 @@ play.</p>
 </div>
 <div class="method item private">
     <div id="method__markPlaying" class="title">
-        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l168"><code>addon&#x2F;classes&#x2F;beat.js:168</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_beat.js.html#l180"><code>addon&#x2F;classes&#x2F;beat.js:180</code></a></span>
         <h3 class="">
             private
             

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>addon/classes/sampler.js - ember-audio</title>
+    <title>addon/classes/sampled-note.js - ember-audio</title>
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
     <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
@@ -75,164 +75,41 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-  <h1 class="file-name">addon/classes/sampler.js</h1>
+  <h1 class="file-name">addon/classes/sampled-note.js</h1>
 </div>
 
 <pre class="code prettyprint linenums">
-import Ember from &#x27;ember&#x27;;
+import Sound from &#x27;./sound&#x27;;
+import { MusicalIdentity } from &#x27;ember-audio/mixins&#x27;;
 
 /**
- * Provides classes that are capable of interacting with the Web Audio API&#x27;s
- * AudioContext.
+ * Provides helper classes that represent musical concepts meant to be used by
+ * classes from the Audio module.
  *
  * @public
- * @module Audio
+ * @module MusicalConcepts
  */
-
-const {
-  Object: EmberObject
-} = Ember;
 
 /**
- * An instance of the Sampler class behaves just like a Sound, but allows
- * many {{#crossLink &quot;AudioBuffer&quot;}}AudioBuffers{{/crossLink}} to exist and
- * automatically alternately plays them (round-robin) each time any of the play
- * methods are called.
+ * Represents a musical note, created from sampled audio.
+ * When a soundfont is created via the
+ * {{#crossLink &quot;Audio&quot;}}Audio Service{{/crossLink}}, an instance of this class
+ * is created for every musical note that is represented in a soundfont. This
+ * class can be used for any collection of Sound instances where each instance
+ * needs an awareness of what &quot;musical note&quot; it is (i.e. octave, accidental, etc..).
+ *
+ * This class only makes sense when used in the context of a collection, as the
+ * only functionality it provides over a
+ * {{#crossLink &quot;Sound&quot;}}Sound{{/crossLink}}, serves to facilitate identification.
  *
  * @public
- * @class Sampler
- *
- * @todo humanize gain and time - should be optional and customizable
- * @todo loop
+ * @class SampledNote
+ * @extends Sound
+ * @uses MusicalIdentity
  */
-const Sampler = EmberObject.extend({
+const SampledNote = Sound.extend(MusicalIdentity);
 
-  /**
-   * Determines the gain applied to each sample.
-   *
-   * @public
-   * @property gain
-   * @type {number}
-   * @default 1
-   */
-  gain: 1,
-
-  /**
-   * Determines the stereo pan position of each sample.
-   *
-   * @public
-   * @property pan
-   * @type {number}
-   * @default 0
-   */
-  pan: 0,
-
-  /**
-   * Temporary storage for the iterable that comes from the _sounds Set.
-   * This iterable is meant to be replaced with a new copy every time it reaches
-   * it&#x27;s end, resulting in an infinite stream of Sound instances.
-   *
-   * @private
-   * @property _soundIterator
-   * @type {Iterator}
-   *
-   */
-  _soundIterator: null,
-
-  /**
-   * Acts as a register for loaded Sound instances. Set on instantiation.
-   *
-   * @private
-   * @property _sounds
-   * @type {Set|Sound}
-   */
-  _sounds: null,
-
-  /**
-   * Gets the next Sound and plays it immediately.
-   *
-   * @public
-   * @method play
-   */
-  play() {
-    this._getNextSound().play();
-  },
-
-  /**
-   * Gets the next Sound and plays it after the specified offset has elapsed.
-   *
-   * @public
-   * @method playIn
-   *
-   * @param {number} seconds Number of seconds from &quot;now&quot; that the next Sound
-   * should be played.
-   */
-  playIn(seconds) {
-    this._getNextSound().playIn(seconds);
-  },
-
-  /**
-   * Gets the next Sound and plays it at the specified moment in time. A
-   * &quot;moment in time&quot; is measured in seconds from the moment that the
-   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
-   *
-   * @param {number} time The moment in time (in seconds, relative to the
-   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
-   * time&quot;) when the next Sound should be played.
-   *
-   * @public
-   * @method playAt
-   */
-  playAt(time) {
-    this._getNextSound().playAt(time);
-  },
-
-  /**
-   * Gets _soundIterator and returns it&#x27;s next value. If _soundIterator has
-   * reached it&#x27;s end, replaces _soundIterator with a fresh copy from _sounds
-   * and returns the first value from that.
-   *
-   * @private
-   * @method _getNextSound
-   * @return {Sound}
-   */
-  _getNextSound() {
-    let soundIterator = this.get(&#x27;_soundIterator&#x27;);
-    let nextSound;
-
-    if (!soundIterator) {
-      soundIterator = this.get(&#x27;_sounds&#x27;).values();
-    }
-
-    nextSound = soundIterator.next();
-
-    if (nextSound.done) {
-      soundIterator = this.get(&#x27;_sounds&#x27;).values();
-      nextSound = soundIterator.next();
-    }
-
-    this.set(&#x27;_soundIterator&#x27;, soundIterator);
-
-    return this._setGainAndPan(nextSound.value);
-  },
-
-  /**
-   * Applies the &#x60;gain&#x60; and &#x60;pan&#x60; properties from the Sampler instance to a
-   * Sound instance and returns the Sound instance.
-   *
-   * @private
-   * @method _setGainAndPan
-   * @return {Sound} The input sound after having it&#x27;s gain and pan set
-   */
-  _setGainAndPan(sound) {
-    sound.changeGainTo(this.get(&#x27;gain&#x27;)).from(&#x27;ratio&#x27;);
-    sound.changePanTo(this.get(&#x27;pan&#x27;));
-
-    return sound;
-  }
-});
-
-export default Sampler;
+export default SampledNote;
 
 </pre>
 

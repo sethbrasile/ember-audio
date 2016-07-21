@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -62,7 +68,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
@@ -79,10 +85,12 @@ import Ember from &#x27;ember&#x27;;
  * Provides helper classes that represent musical concepts meant to be used by
  * classes from the Audio module.
  *
+ * @public
  * @module MusicalConcepts
  */
 
 const {
+  Object: EmberObject,
   run: { later }
 } = Ember;
 
@@ -105,15 +113,18 @@ const {
  *       _parentPlay: this.play.bind(this),
  *     });
  *
+ * @public
  * @class Beat
+ * @todo add playAt
  */
-const Beat = Ember.Object.extend({
+const Beat = EmberObject.extend({
 
   /**
    * If &#x60;active&#x60; is &#x60;true&#x60;, all methods of play will cause this instance to play.
    * If &#x60;active&#x60; is &#x60;false&#x60;, the &#x60;playIfActive()&#x60; and &#x60;ifActivePlayIn()&#x60;
    * methods will treat this instance as a rest (a timed period of silence).
    *
+   * @public
    * @property active
    * @type {boolean}
    */
@@ -124,6 +135,7 @@ const Beat = Ember.Object.extend({
    * inactive beats (rests). When switched to &#x60;true&#x60;, is automatically returned
    * to false after the time specified by the duration property.
    *
+   * @public
    * @property currentTimeIsPlaying
    * @type {boolean}
    * @default false
@@ -135,6 +147,7 @@ const Beat = Ember.Object.extend({
    * When switched to &#x60;true&#x60;, is automatically returned to false after the time
    * specified by the duration property.
    *
+   * @public
    * @property isPlaying
    * @type {boolean}
    * @default false
@@ -156,6 +169,7 @@ const Beat = Ember.Object.extend({
    * and currentTimeIsPlaying are automatically switched back to false after
    * having been switched to true. 100ms is used by default.
    *
+   * @public
    * @property duration
    * @type {number}
    * @default 100
@@ -169,6 +183,7 @@ const Beat = Ember.Object.extend({
    * isPlaying and currentTimeIsPlaying are both marked true after the provided
    * offset has elapsed.
    *
+   * @public
    * @method playIn
    *
    * @param {number} offset Number of seconds from &quot;now&quot; that the audio should
@@ -192,6 +207,7 @@ const Beat = Ember.Object.extend({
    * currentTimeIsPlaying is marked true after the provided offset has elapsed,
    * even if beat is not active.
    *
+   * @public
    * @method ifActivePlayIn
    *
    * @param {number} offset Number of seconds from &quot;now&quot; that the audio should
@@ -213,6 +229,7 @@ const Beat = Ember.Object.extend({
    *
    * isPlaying and currentTimeIsPlaying are both immediately marked true.
    *
+   * @public
    * @method play
    */
   play() {
@@ -229,6 +246,7 @@ const Beat = Ember.Object.extend({
    *
    * currentTimeIsPlaying is immediately marked true, even if beat is not active.
    *
+   * @public
    * @method playIfActive
    */
   playIfActive() {
@@ -262,7 +280,7 @@ const Beat = Ember.Object.extend({
   _markCurrentTimePlaying() {
     this.set(&#x27;currentTimeIsPlaying&#x27;, true);
     later(() =&gt; this.set(&#x27;currentTimeIsPlaying&#x27;, false), this.get(&#x27;duration&#x27;));
-  },
+  }
 });
 
 export default Beat;

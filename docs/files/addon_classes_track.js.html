@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -62,7 +68,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
@@ -81,11 +87,12 @@ import { zeroify } from &#x27;ember-audio/utils&#x27;;
  * Provides classes that are capable of interacting with the Web Audio API&#x27;s
  * AudioContext.
  *
+ * @public
  * @module Audio
  */
 
 const {
-  computed,
+  computed
 } = Ember;
 
 /**
@@ -93,8 +100,10 @@ const {
  * a CD or an MP3 player. Provides methods for tracking the play position of the
  * underlying {{#crossLink &quot;AudioBuffer&quot;}}{{/crossLink}}, and pausing/resuming.
  *
+ * @public
  * @class Track
  * @extends Sound
+ * @todo move play override to _play so that all super.play methods work
  */
 const Track = Sound.extend({
 
@@ -114,6 +123,7 @@ const Track = Sound.extend({
    *       }
    *     }
    *
+   * @public
    * @property position
    * @type {object}
    */
@@ -133,6 +143,7 @@ const Track = Sound.extend({
    * Computed property. Value is the current play position of the
    * audioBuffer, formatted as a percentage.
    *
+   * @public
    * @property percentPlayed
    * @type {number}
    */
@@ -144,11 +155,12 @@ const Track = Sound.extend({
   /**
    * Plays the audio source immediately.
    *
+   * @public
    * @method play
    */
   play() {
     this._super();
-    this.getNodeFrom(&#x27;bufferSource&#x27;).onended = () =&gt; this.stop();
+    this.getNodeFrom(&#x27;audioSource&#x27;).onended = () =&gt; this.stop();
     this._trackPlayPosition();
   },
 
@@ -156,11 +168,12 @@ const Track = Sound.extend({
    * Pauses the audio source by stopping without
    * setting startOffset back to 0.
    *
+   * @public
    * @method pause
    */
   pause() {
     if (this.get(&#x27;isPlaying&#x27;)) {
-      const node = this.getNodeFrom(&#x27;bufferSource&#x27;);
+      const node = this.getNodeFrom(&#x27;audioSource&#x27;);
 
       node.onended = function() {};
       node.stop();
@@ -172,13 +185,14 @@ const Track = Sound.extend({
    * Stops the audio source and sets
    * startOffset to 0.
    *
+   * @public
    * @method stop
    */
   stop() {
     this.set(&#x27;startOffset&#x27;, 0);
 
     if (this.get(&#x27;isPlaying&#x27;)) {
-      this.getNodeFrom(&#x27;bufferSource&#x27;).onended = function() {};
+      this.getNodeFrom(&#x27;audioSource&#x27;).onended = function() {};
       this._super();
     }
   },

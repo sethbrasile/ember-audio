@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -62,7 +68,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
@@ -77,6 +83,7 @@ import Ember from &#x27;ember&#x27;;
 
 const {
   A,
+  Object: EmberObject,
   on
 } = Ember;
 
@@ -84,6 +91,7 @@ const {
  * Provides classes that interact with the Web Audio API indirectly by providing
  * data models for the classes in the Audio module to consume.
  *
+ * @public
  * @module AudioHelpers
  */
 
@@ -99,15 +107,19 @@ const {
  * AudioNode instance and setting it on this class&#x27; &#x60;node&#x60; property. Some define
  * how to set properties on the AudioNode instance after it has been created.
  *
+ * @public
  * @class Connection
  */
-const Connection = Ember.Object.extend({
+const Connection = EmberObject.extend({
 
   /**
    * The name of the connection. This is the name that can be used to
    * get an AudioNode instance via the
-   * {{#crossLink &quot;Sound/getNodeFrom:method&quot;}}{{/crossLink}} method.
+   * {{#crossLink &quot;Connectable/getNodeFrom:method&quot;}}{{/crossLink}} method, or a
+   * Connection instance via the
+   * {{#crossLink &quot;Connectable/getConnection&quot;}}{{/crossLink}} method.
    *
+   * @public
    * @property name
    * @type {string}
    */
@@ -128,6 +140,7 @@ const Connection = Ember.Object.extend({
    *       path: &#x27;audioContext.destination&#x27;
    *     }
    *
+   * @public
    * @property path
    * @type {string}
    */
@@ -145,6 +158,7 @@ const Connection = Ember.Object.extend({
    *       createCommand: createGain
    *     }
    *
+   * @public
    * @property source
    * @type {string}
    */
@@ -156,21 +170,22 @@ const Connection = Ember.Object.extend({
   * &#x60;node&#x60; property.
   *
   * @example
-  *     // Creates the AudioNode by calling:
-  *     // this.get(&#x27;audioContext&#x27;)[createCommand]();
+  *     // results in the &#x60;node&#x60; property being created like:
+  *     // this.get(&#x27;audioContext&#x27;).createGain();
   *     {
   *       source: &#x27;audioContext&#x27;
-  *       createCommand: createGain
+  *       createCommand: &#x27;createGain&#x27;
   *     }
-   *
-   * @property createCommand
-   * @type {string}
-   */
+  *
+  * @public
+  * @property createCommand
+  * @type {string}
+  */
   createCommand: null,
 
   /**
    * An array of POJOs that specify properties that need to be set on a node
-   * when any of the {{#crossLink &quot;Sound/play:method&quot;}}{{/crossLink}} methods
+   * when any of the {{#crossLink &quot;Playable/play:method&quot;}}{{/crossLink}} methods
    * are called. For instance, an
    * {{#crossLink &quot;AudioBufferSourceNode&quot;}}{{/crossLink}} must be created at
    * play time, because they can only be played once and then they are
@@ -203,10 +218,114 @@ const Connection = Ember.Object.extend({
    *       ]
    *     }
    *
+   * @public
    * @property onPlaySetAttrsOnNode
-   * @type {array}
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
    */
   onPlaySetAttrsOnNode: null,
+
+  /**
+   * Items in this array are set at play-time on the &#x60;node&#x60; via an exponential
+   * ramp that ends at the specified time.
+   *
+   * A convenience setter method called
+   * {{#crossLink &quot;Connection/onPlaySet:method&quot;}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.exponentialRampToValueAtTime(0.1, 1)
+   *     {
+   *       key: &#x27;gain&#x27;,
+   *       value: 0.1,
+   *       endTime: 1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet(&#x27;gain&#x27;).to(0.1).endingAt(1)
+   *
+   * @public
+   * @property exponentialRampToValuesAtTime
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  exponentialRampToValuesAtTime: null,
+
+  /**
+   * Items in this array are set at play-time on the &#x60;node&#x60; via a linear ramp
+   * that ends at the specified time.
+   *
+   * A convenience setter method called
+   * {{#crossLink &quot;Connection/onPlaySet:method&quot;}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.linearRampToValueAtTime(0.1, 1)
+   *     {
+   *       key: &#x27;gain&#x27;,
+   *       value: 0.1,
+   *       endTime: 1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet(&#x27;gain&#x27;).to(0.1).endingAt(1, &#x27;linear&#x27;)
+   *
+   * @public
+   * @property linearRampToValuesAtTime
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  linearRampToValuesAtTime: null,
+
+  /**
+   * Items in this array are set at play-time on the &#x60;node&#x60; via an exponential
+   * ramp that ends at the specified time.
+   *
+   * A convenience setter method called
+   * {{#crossLink &quot;Connection/onPlaySet:method&quot;}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.setValueAtTime(0.1, 1)
+   *     {
+   *       key: &#x27;gain&#x27;,
+   *       value: 0.1,
+   *       startTime: 1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet(&#x27;gain&#x27;).to(0.1).at(1)
+   *
+   * @public
+   * @property setValuesAtTime
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  setValuesAtTime: null,
+
+  /**
+   * Items in this array are set immediately at play-time on the &#x60;node&#x60;.
+   *
+   * A convenience setter method called
+   * {{#crossLink &quot;Connection/onPlaySet:method&quot;}}{{/crossLink}} exists for this
+   * array and should be used unless it does not allow enough freedom for your
+   * use-case.
+   *
+   * @example
+   *     // at play time: connection.node.gain.setValueAtTime(0.1, audioContext.currentTime)
+   *     {
+   *       key: &#x27;gain&#x27;,
+   *       value: 0.1
+   *     }
+   *     // the same thing can be accomplished like:
+   *     connection.onPlaySet(&#x27;gain&#x27;).to(0.1)
+   *
+   * @public
+   * @property startingValues
+   * @type {Ember.MutableArray}
+   * @default Ember.A() via _initArrays
+   */
+  startingValues: null,
 
   /**
    * This is the main attraction here in connection-land. All the other
@@ -217,6 +336,7 @@ const Connection = Ember.Object.extend({
    * If this property is set directly, all of the other properties on this class
    * (except &#x60;name&#x60;) are rendered useless.
    *
+   * @public
    * @property node
    * @type {AudioNode}
    */
@@ -226,11 +346,102 @@ const Connection = Ember.Object.extend({
    * If this is true, the AudioNode will be created every time the consuming
    * Sound instance is played.
    *
+   * @public
    * @property createdOnPlay
    * @type {boolean}
    * @default false
    */
   createdOnPlay: false,
+
+  /**
+   * Allows an AudioNode&#x27;s values to be set at a specific time
+   * relative to the moment that it is played, every time it is played.
+   *
+   * Especially useful for creating/shaping an &quot;envelope&quot; (think &quot;ADSR&quot;).
+   *
+   * @example
+   *     // results in an oscillator that starts at 150Hz and quickly drops
+   *     // down to 0.01Hz each time it&#x27;s played
+   *     const kick = audio.createOscillator({ name: &#x27;kick&#x27; });
+   *     const osc = kick.getConnection(&#x27;audioSource&#x27;);
+   *
+   *     osc.onPlaySet(&#x27;frequency&#x27;).to(150).at(0);
+   *     osc.onPlaySet(&#x27;frequency&#x27;).to(0.01).at(0.1);
+   *
+   * @public
+   * @method onPlaySet
+   * @todo document &#x27;exponential&#x27; and &#x27;linear&#x27; options
+   */
+  onPlaySet(key) {
+    const startingValues = this.get(&#x27;startingValues&#x27;);
+    const exponentialValues = this.get(&#x27;exponentialRampToValuesAtTime&#x27;);
+    const linearValues = this.get(&#x27;linearRampToValuesAtTime&#x27;);
+    const valuesAtTime = this.get(&#x27;setValuesAtTime&#x27;);
+
+    return {
+      to(value) {
+        const startValue = { key, value };
+
+        startingValues.pushObject(startValue);
+
+        return {
+          at(startTime) {
+            startingValues.removeObject(startValue);
+            valuesAtTime.pushObject({ key, value, startTime });
+          },
+          endingAt(endTime, type=&#x27;exponential&#x27;) {
+            startingValues.removeObject(startValue);
+
+            switch (type) {
+              case &#x27;exponential&#x27;:
+                exponentialValues.pushObject({ key, value, endTime });
+                break;
+              case &#x27;linear&#x27;:
+                linearValues.pushObject({ key, value, endTime });
+                break;
+            }
+          }
+        };
+      }
+    };
+  },
+
+  /**
+   * Convenience method that uses
+   * {{#crossLink &quot;Connection/onPlaySet:method&quot;}}{{/crossLink}} twice to set an
+   * initial value, and a ramped value in succession.
+   *
+   * Especially useful for creating/shaping an &quot;envelope&quot; (think &quot;ADSR&quot;).
+   *
+   * @example
+   *     // results in an oscillator that starts at 150Hz and quickly drops
+   *     // down to 0.01Hz each time it&#x27;s played
+   *     const kick = audio.createOscillator({ name: &#x27;kick&#x27; });
+   *     const osc = kick.getConnection(&#x27;audioSource&#x27;);
+   *
+   *     osc.onPlayRamp(&#x27;frequency&#x27;).from(150).to(0.01).in(0.1);
+   *
+   * @public
+   * @method onPlaySet
+   */
+  onPlayRamp(key) {
+    const onPlaySet = this.onPlaySet.bind(this);
+
+    return {
+      from(startValue) {
+        return {
+          to(endValue) {
+            return {
+              in(endTime) {
+                onPlaySet(key).to(startValue);
+                onPlaySet(key).to(endValue).endingAt(endTime);
+              }
+            };
+          }
+        };
+      }
+    };
+  },
 
   /**
    * If any of the array types are null on init, set them to an
@@ -240,7 +451,13 @@ const Connection = Ember.Object.extend({
    * @method _initArrays
    */
   _initArrays: on(&#x27;init&#x27;, function() {
-    const arrays = [&#x27;onPlaySetAttrsOnNode&#x27;];
+    const arrays = [
+      &#x27;onPlaySetAttrsOnNode&#x27;,
+      &#x27;exponentialRampToValuesAtTime&#x27;,
+      &#x27;linearRampToValuesAtTime&#x27;,
+      &#x27;setValuesAtTime&#x27;,
+      &#x27;startingValues&#x27;
+    ];
 
     arrays.map((name) =&gt; {
       if (!this.get(name)) {

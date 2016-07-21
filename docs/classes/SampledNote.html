@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Sound - ember-audio</title>
+    <title>SampledNote - ember-audio</title>
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
     <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
@@ -66,7 +66,7 @@
             
             <div id="sections" class="sidebox">
               <div class="hd">
-                <h2 class="no-toc">Sound</h2>
+                <h2 class="no-toc">SampledNote</h2>
               </div>
               <div class="bd">
             
@@ -87,12 +87,17 @@
             
                   <div><a href="#public-properties">Public Properties</a></div>
                   <ul>
+                      <li><a href="#props_accidental">accidental</a></li>
                       <li><a href="#props_audioBuffer">audioBuffer</a></li>
                       <li><a href="#props_audioContext">audioContext</a></li>
                       <li><a href="#props_connections">connections</a></li>
                       <li><a href="#props_duration">duration</a></li>
+                      <li><a href="#props_identifier">identifier</a></li>
                       <li><a href="#props_isPlaying">isPlaying</a></li>
+                      <li><a href="#props_letter">letter</a></li>
+                      <li><a href="#props_"></a></li>
                       <li><a href="#props_name">name</a></li>
+                      <li><a href="#props_octave">octave</a></li>
                       <li><a href="#props_percentGain">percentGain</a></li>
                       <li><a href="#props_startOffset">startOffset</a></li>
                   </ul>
@@ -149,25 +154,29 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_sound.js.html#l18"><code>addon&#x2F;classes&#x2F;sound.js:18</code></a></span>
-    <h1 class="class-name">Sound</h1>
+    <span class="source-link"><a href="../files/addon_classes_sampled-note.js.html#l12"><code>addon&#x2F;classes&#x2F;sampled-note.js:12</code></a></span>
+    <h1 class="class-name">SampledNote</h1>
 </div>
 
     Uses:
-        <a href="Connectable.html">Connectable</a>
-        <a href="Playable.html">Playable</a>
+        <a href="MusicalIdentity.html">MusicalIdentity</a>
     <br>
 
 
+    <div class="class-extends">
+        <h4>Extends:</h4>
+        <div><a href="../classes/Sound.html" class="crosslink">Sound</a> → SampledNote</div>
+    </div>
 
-<div class="class-description"><p>The Sound class provides the core functionality for
-interacting with the Web Audio API's AudioContext, and is the base class for
-all other <a href="../modules/Audio.html">Audio</a> types. It prepares
-an audio source, provides various methods for interacting with the audio source,
-creates <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode" class="crosslink external" target="_blank">AudioNodes</a> from the
-connections array, sets up the necessary connections/routing between them,
-and provides some methods to Sound/play:method
-and Sound/stop:method the audio source.</p>
+<div class="class-description"><p>Represents a musical note, created from sampled audio.
+When a soundfont is created via the
+Audio, an instance of this class
+is created for every musical note that is represented in a soundfont. This
+class can be used for any collection of Sound instances where each instance
+needs an awareness of what "musical note" it is (i.e. octave, accidental, etc..).</p>
+<p>This class only makes sense when used in the context of a collection, as the
+only functionality it provides over a
+<a href="../classes/Sound.html" class="crosslink">Sound</a>, serves to facilitate identification.</p>
 </div>
 
 
@@ -193,10 +202,25 @@ and Sound/stop:method the audio source.</p>
           </td>
           <td>
             <div class="property-name ">
+              <a href="#props_accidental">accidental</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
               <a href="#props_audioBuffer">audioBuffer</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer" class="crosslink external" target="_blank">AudioBuffer</a>
             </div>
             <div class="short-description">
-              <p>The AudioBuffer instance that provides audio data to the bufferSource connection.</p>
+              
             </div>
           </td>
         </tr>
@@ -211,7 +235,7 @@ and Sound/stop:method the audio source.</p>
               <a href="#props_audioContext">audioContext</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a>
             </div>
             <div class="short-description">
-              <p>The parent <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext">AudioContext</a> instance that all audio events are occurring within. It is useful for getting currentTime, as well as creating new <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode">AudioNodes</a>.</p>
+              
             </div>
           </td>
         </tr>
@@ -241,7 +265,22 @@ and Sound/stop:method the audio source.</p>
               <a href="#props_duration">duration</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
             </div>
             <div class="short-description">
-              <p>Computed property. Value is an object containing the duration of the audioBuffer in three formats. The three formats are <code>raw</code>, <code>string</code>, and <code>pojo</code>.</p>
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_identifier">identifier</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              
             </div>
           </td>
         </tr>
@@ -268,10 +307,55 @@ and Sound/stop:method the audio source.</p>
           </td>
           <td>
             <div class="property-name ">
+              <a href="#props_letter">letter</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_"></a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+            </div>
+            <div class="short-description">
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
               <a href="#props_name">name</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
-              <p>When using the Audio-Service, The name that this Sound instance is registered as on it's parent register.</p>
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_octave">octave</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+            </div>
+            <div class="short-description">
+              
             </div>
           </td>
         </tr>
@@ -286,7 +370,7 @@ and Sound/stop:method the audio source.</p>
               <a href="#props_percentGain">percentGain</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
             </div>
             <div class="short-description">
-              <p>Computed property. Value is the amount of gain currently applied to the <code>gain</code> connection from the <code>connections</code> array, formatted as a percentage.</p>
+              
             </div>
           </td>
         </tr>
@@ -301,7 +385,7 @@ and Sound/stop:method the audio source.</p>
               <a href="#props_startOffset">startOffset</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
             </div>
             <div class="short-description">
-              <p>When a Sound instance is played, this value is passed to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode#start:method" class="crosslink external" target="_blank">AudioBufferSourceNode.start()</a> <code>offset</code> param. Determines <code>where</code> (in seconds) the play will start, along the duration of the audio source.</p>
+              
             </div>
           </td>
         </tr>
@@ -327,7 +411,7 @@ and Sound/stop:method the audio source.</p>
               <a href="#props__startedPlayingAt">_startedPlayingAt</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
             </div>
             <div class="short-description">
-              <p>When a Sound instance plays, this is set to the <code>audioContext.currentTime</code>. It will always reflect the start time of the most recent Sound/_play:method.</p>
+              
             </div>
           </td>
         </tr>
@@ -354,7 +438,7 @@ and Sound/stop:method the audio source.</p>
               <a href="#method_changeGainTo">changeGainTo</a>(value): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
             </div>
             <div class="short-description">
-              <p>Gets the <code>gain</code> connection and changes it's gain value to the value passed in. returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing one to specify which type of value is being provided.</p>
+              
             </div>
           </td>
         </tr>
@@ -369,7 +453,7 @@ and Sound/stop:method the audio source.</p>
               <a href="#method_changePanTo">changePanTo</a>(value)
             </div>
             <div class="short-description">
-              <p>Gets the <code>panner</code> connection and changes it's pan value to the value passed in.</p>
+              
             </div>
           </td>
         </tr>
@@ -504,7 +588,7 @@ and Sound/stop:method the audio source.</p>
               <a href="#method_seek">seek</a>(amount): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a>
             </div>
             <div class="short-description">
-              <p>Gets the bufferSource and stops the audio, changes it's play position, and restarts the audio.</p>
+              
             </div>
           </td>
         </tr>
@@ -708,6 +792,21 @@ and Sound/stop:method the audio source.</p>
     <div id="properties public">
         <h2 id="public-properties">Public Properties</h2>
 <div class="property item public">
+  <div id="props_accidental" class="title">
+    <span class="source-link"><a href="../files/addon_mixins_musical-identity.js.html#l44"><code>addon&#x2F;mixins&#x2F;musical-identity.js:44</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      accidental: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description">For note <code>Ab5</code>, this would be <code>b</code>.</div>
+
+</div>
+<div class="property item public">
   <div id="props_audioBuffer" class="title">
     <span class="source-link"><a href="../files/addon_classes_sound.js.html#l45"><code>addon&#x2F;classes&#x2F;sound.js:45</code></a></span>
     <h3 class="">
@@ -719,8 +818,7 @@ and Sound/stop:method the audio source.</p>
   </div>
 
 
-  <div class="property-description"><p>The AudioBuffer instance that provides audio data to the bufferSource connection.</p>
-</div>
+  <div class="property-description">The AudioBuffer instance that provides audio data to the bufferSource connection.</div>
 
 </div>
 <div class="property item public">
@@ -735,14 +833,14 @@ and Sound/stop:method the audio source.</p>
   </div>
 
 
-  <div class="property-description"><p>The parent
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext">AudioContext</a>
+  <div class="property-description">The parent
+[AudioContext](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext)
 instance that all audio events are occurring within. It is useful for
 getting currentTime, as well as creating new
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioNode">AudioNodes</a>.</p>
-<p>This is the object that facilitates and ties together all aspects of the
-Web Audio API.</p>
-</div>
+[AudioNodes](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode).
+
+This is the object that facilitates and ties together all aspects of the
+Web Audio API.</div>
 
 </div>
 <div class="property item public">
@@ -776,19 +874,38 @@ method.</div>
   </div>
 
 
-  <div class="property-description"><p>Computed property. Value is an object containing the duration of the
+  <div class="property-description">Computed property. Value is an object containing the duration of the
 audioBuffer in three formats. The three formats
-are <code>raw</code>, <code>string</code>, and <code>pojo</code>.</p>
-<p>Duration of 6 minutes would be output as:</p>
-<pre class="code prettyprint"><code>{
-  raw: 360, // seconds
-  string: '06:00',
-  pojo: {
-    minutes: 6,
-    seconds: 0
-  }
-}</code></pre>
+are <code>raw</code>, <code>string</code>, and <code>pojo</code>.
+
+Duration of 6 minutes would be output as:
+
+    {
+      raw: 360, // seconds
+      string: '06:00',
+      pojo: {
+        minutes: 6,
+        seconds: 0
+      }
+    }</div>
+
 </div>
+<div class="property item public">
+  <div id="props_identifier" class="title">
+    <span class="source-link"><a href="../files/addon_mixins_musical-identity.js.html#l110"><code>addon&#x2F;mixins&#x2F;musical-identity.js:110</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      identifier: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description">Computed property. Value is <code>${letter}${octave}</code> or
+<code>${letter}${accidental}${octave}</code> if accidental exists. If this property
+is set directly, all other properties are updated to reflect the provided
+identifier.</div>
 
 </div>
 <div class="property item public">
@@ -807,6 +924,39 @@ are <code>raw</code>, <code>string</code>, and <code>pojo</code>.</p>
 
 </div>
 <div class="property item public">
+  <div id="props_letter" class="title">
+    <span class="source-link"><a href="../files/addon_mixins_musical-identity.js.html#l35"><code>addon&#x2F;mixins&#x2F;musical-identity.js:35</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      letter: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description">For note <code>Ab5</code>, this would be <code>A</code>.</div>
+
+</div>
+<div class="property item public">
+  <div id="props_" class="title">
+    <span class="source-link"><a href="../files/addon_mixins_musical-identity.js.html#l81"><code>addon&#x2F;mixins&#x2F;musical-identity.js:81</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      : <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description">Computed property. The frequency of the note in hertz. Calculated by
+comparing western musical standards (a standard piano) and the note
+identifier (i.e. <code>Ab1</code>). If this property is set directly, all other
+properties are updated to reflect the provided frequency.</div>
+
+</div>
+<div class="property item public">
   <div id="props_name" class="title">
     <span class="source-link"><a href="../files/addon_classes_sound.js.html#l35"><code>addon&#x2F;classes&#x2F;sound.js:35</code></a></span>
     <h3 class="">
@@ -818,9 +968,23 @@ are <code>raw</code>, <code>string</code>, and <code>pojo</code>.</p>
   </div>
 
 
-  <div class="property-description"><p>When using the Audio-Service, The name that
-this Sound instance is registered as on it's parent register.</p>
+  <div class="property-description">When using the {{#crossLink "Audio-Service"}}{{/crossLink}}, The name that
+this Sound instance is registered as on it's parent register.</div>
+
 </div>
+<div class="property item public">
+  <div id="props_octave" class="title">
+    <span class="source-link"><a href="../files/addon_mixins_musical-identity.js.html#l53"><code>addon&#x2F;mixins&#x2F;musical-identity.js:53</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      octave: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description">For note <code>Ab5</code>, this would be <code>5</code>.</div>
 
 </div>
 <div class="property item public">
@@ -835,9 +999,8 @@ this Sound instance is registered as on it's parent register.</p>
   </div>
 
 
-  <div class="property-description"><p>Computed property. Value is the amount of gain currently applied to the
-<code>gain</code> connection from the <code>connections</code> array, formatted as a percentage.</p>
-</div>
+  <div class="property-description">Computed property. Value is the amount of gain currently applied to the
+<code>gain</code> connection from the <code>connections</code> array, formatted as a percentage.</div>
 
 </div>
 <div class="property item public">
@@ -852,11 +1015,10 @@ this Sound instance is registered as on it's parent register.</p>
   </div>
 
 
-  <div class="property-description"><p>When a Sound instance is played, this value is passed to the
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode#start:method" class="crosslink external" target="_blank">AudioBufferSourceNode.start()</a>
+  <div class="property-description">When a Sound instance is played, this value is passed to the
+{{#crossLink "AudioBufferSourceNode/start:method"}}AudioBufferSourceNode.start(){{/crossLink}}
 <code>offset</code> param. Determines <code>where</code> (in seconds) the play will start, along
-the duration of the audio source.</p>
-</div>
+the duration of the audio source.</div>
 
 </div>
     </div>
@@ -876,10 +1038,9 @@ the duration of the audio source.</p>
   </div>
 
 
-  <div class="property-description"><p>When a Sound instance plays, this is set to the <code>audioContext.currentTime</code>.
+  <div class="property-description">When a Sound instance plays, this is set to the <code>audioContext.currentTime</code>.
 It will always reflect the start time of the most recent
-Sound/_play:method.</p>
-</div>
+{{#crossLink "Sound/_play:method"}}{{/crossLink}}.</div>
 
 </div>
     </div>
@@ -897,12 +1058,14 @@ Sound/_play:method.</p>
         </h3>
     </div>
 
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method_changeGainTo" class="crosslink">Sound</a>
+        </div>
 
 
-    <div class="method-description"><p>Gets the <code>gain</code> connection and changes it's gain value to the value passed in.
+    <div class="method-description">Gets the <code>gain</code> connection and changes it's gain value to the value passed in.
 returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing
-one to specify which type of value is being provided.</p>
-</div>
+one to specify which type of value is being provided.</div>
 
       <div class="params">
         <h4>Parameters:</h4>
@@ -926,9 +1089,8 @@ one to specify which type of value is being provided.</p>
                   
                 </ul>
               </td>
-              <td><p>The value that the <code>gain</code> connection's <code>gain.value</code> should
-be set to. Can be a ratio, an inverseRatio or a percentage.</p>
-</td>
+              <td>The value that the <code>gain</code> connection's <code>gain.value</code> should
+be set to. Can be a ratio, an inverseRatio or a percentage.</td>
             </tr>
 
           </tbody>
@@ -939,10 +1101,9 @@ be set to. Can be a ratio, an inverseRatio or a percentage.</p>
         <h4>Return:</h4>
         <div>
           <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-          <span class="return-description"><p>Intermediary POJO containing the <code>from</code> method which will
+          <span class="return-description">Intermediary POJO containing the <code>from</code> method which will
 determine the type of value that <code>gain.value</code> is being set to and make the
-change accordingly.</p>
-</span>
+change accordingly.</span>
         </div>
       </div>
 
@@ -965,10 +1126,12 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
         </h3>
     </div>
 
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method_changePanTo" class="crosslink">Sound</a>
+        </div>
 
 
-    <div class="method-description"><p>Gets the <code>panner</code> connection and changes it's pan value to the value passed in.</p>
-</div>
+    <div class="method-description">Gets the <code>panner</code> connection and changes it's pan value to the value passed in.</div>
 
       <div class="params">
         <h4>Parameters:</h4>
@@ -992,9 +1155,8 @@ soundInstance.changeGainTo(90).from('percent');</code></pre>
                   
                 </ul>
               </td>
-              <td><p>The value, between -1 and 1 that the <code>panner</code> connection's
-<code>pan.value</code> should be set to.</p>
-</td>
+              <td>The value, between -1 and 1 that the <code>panner</code> connection's
+<code>pan.value</code> should be set to.</td>
             </tr>
 
           </tbody>
@@ -1427,13 +1589,16 @@ started playing that the audio source should be stopped.</td>
         </h3>
     </div>
 
+        <div class="inherited">
+          Inherited from <a href="../classes/Sound.html#method_seek" class="crosslink">Sound</a>
+        </div>
 
 
-    <div class="method-description"><p>Gets the bufferSource and stops the audio,
-changes it's play position, and restarts the audio.</p>
-<p>returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing
-one to specify which type of value is being provided.</p>
-</div>
+    <div class="method-description">Gets the bufferSource and stops the audio,
+changes it's play position, and restarts the audio.
+
+returns a pojo with the <code>from</code> method that <code>value</code> is curried to, allowing
+one to specify which type of value is being provided.</div>
 
       <div class="params">
         <h4>Parameters:</h4>
@@ -1457,8 +1622,7 @@ one to specify which type of value is being provided.</p>
                   
                 </ul>
               </td>
-              <td><p>The new play position value.</p>
-</td>
+              <td>The new play position value.</td>
             </tr>
 
           </tbody>
@@ -1469,10 +1633,9 @@ one to specify which type of value is being provided.</p>
         <h4>Return:</h4>
         <div>
           <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
-          <span class="return-description"><p>Intermediary POJO containing the <code>from</code> method which will
+          <span class="return-description">Intermediary POJO containing the <code>from</code> method which will
 determine the type of value that play position is being set to and make the
-change accordingly.</p>
-</span>
+change accordingly.</span>
         </div>
       </div>
 

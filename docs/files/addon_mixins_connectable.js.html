@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/mixins/connectable.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
+    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.5b0fc03d
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/mixins/connectable.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+import { Connection } from &#x27;ember-audio&#x27;;
+
+/**
+ * Provides classes that are capable of interacting with the Web Audio API&#x27;s
+ * AudioContext.
+ *
+ * @public
+ * @module Audio
+ */
+
+const {
+  A,
+  on,
+  get,
+  set,
+  observer,
+  Mixin
+} = Ember;
+
+/**
+ * A mixin that allows an object to create AudioNodes and connect them together.
+ * Depends on &#x60;audioContext&#x60; being available on the consuming object.
+ *
+ * @public
+ * @class Connectable
+ * @todo figure out how to augment Ember.MutableArray so that the connections
+ * array can have methods like addConnection, removeConnection, addFilter, disableNode
+ */
+export default Mixin.create({
+  /**
+   * An array of Connection instances. Determines which AudioNode instances are
+   * connected to one-another and the order in which they are connected. Starts
+   * as &#x60;null&#x60; but set to an array on &#x60;init&#x60; via the
+   * {{#crossLink &quot;Connectable/initConnections:method&quot;}} initConnections{{/crossLink}}
+   * method.
+   *
+   * @public
+   * @property connections
+   * @type {Ember.MutableArray}
+   */
+  connections: null,
+
+  /**
+   * returns a connection&#x27;s AudioNode from the connections array by the
+   * connection&#x27;s &#x60;name&#x60;.
+   *
+   * @public
+   * @method getNodeFrom
+   *
+   * @param {string} name The name of the AudioNode that should be returned.
+   *
+   * @return {AudioNode} The requested AudioNode.
+   */
+  getNodeFrom(name) {
+    const connection = this.getConnection(name);
+
+    if (connection) {
+      return get(connection, &#x27;node&#x27;);
+    }
+  },
+
+  /**
+   * returns a connection from the connections array by it&#x27;s name
+   *
+   * @public
+   * @method getConnection
+   *
+   * @param {string} name The name of the AudioNode that should be returned.
+   *
+   * @return {Connection} The requested Connection.
+   */
+  getConnection(name) {
+    return this.get(&#x27;connections&#x27;).findBy(&#x27;name&#x27;, name);
+  },
+
+  /**
+   * Find&#x27;s a connection in the connections array by it&#x27;s &#x60;name&#x60; and removes it.
+   *
+   * @param {string} name The name of the connection that should be removed.
+   *
+   * @public
+   * @method removeConnection
+   */
+  removeConnection(name) {
+    this.get(&#x27;connections&#x27;).removeObject(this.getConnection(name));
+  },
+
+  /**
+   * Initializes default connections on Sound instantiation. Runs &#x60;on(&#x27;init&#x27;)&#x60;.
+   *
+   * @protected
+   * @method _initConnections
+   */
+  _initConnections: on(&#x27;init&#x27;, function() {
+    const bufferSource = Connection.create({
+      name: &#x27;audioSource&#x27;,
+      createdOnPlay: true,
+      source: &#x27;audioContext&#x27;,
+      createCommand: &#x27;createBufferSource&#x27;,
+      onPlaySetAttrsOnNode: [
+        {
+          attrNameOnNode: &#x27;buffer&#x27;,
+          relativePath: &#x27;audioBuffer&#x27;
+        }
+      ]
+    });
+
+    const gain = Connection.create({
+      name: &#x27;gain&#x27;,
+      source: &#x27;audioContext&#x27;,
+      createCommand: &#x27;createGain&#x27;
+    });
+
+    const panner = Connection.create({
+      name: &#x27;panner&#x27;,
+      source: &#x27;audioContext&#x27;,
+      createCommand: &#x27;createStereoPanner&#x27;
+    });
+
+    const destination = Connection.create({
+      name: &#x27;destination&#x27;,
+      path: &#x27;audioContext.destination&#x27;
+    });
+
+    this.set(&#x27;connections&#x27;, A([ bufferSource, gain, panner, destination ]));
+  }),
+
+  /*
+  * Note about _watchConnectionChanges:
+  * Yeah yeah yeah.. observers are bad. Making the connections array a computed
+  * property doesn&#x27;t work very well because complete control over when it
+  * recalculates is needed.
+  */
+
+  /**
+   * Observes the connections array and runs _wireConnections each time it
+   * changes.
+   *
+   * @private
+   * @method _watchConnectionChanges
+   */
+  _watchConnectionChanges: observer(&#x27;connections.[]&#x27;, function() {
+    this._wireConnections();
+  }),
+
+  /**
+   * Gets the array of Connection instances from the connections array and
+   * returns the same array, having created any AudioNode instances that needed
+   * to be created, and having connected the AudioNode instances to one another
+   * in the order in which they were present in the connections array.
+   *
+   * @private
+   * @method _wireConnections
+   *
+   * @return {array|Connection} Array of Connection instances collected from the
+   * connections array, created, connected, and ready to play.
+   */
+  _wireConnections() {
+    const createNode = this._createNode.bind(this);
+    const setAttrsOnNode = this._setAttrsOnNode.bind(this);
+    const wireConnection = this._wireConnection;
+    const connections = this.get(&#x27;connections&#x27;);
+
+    connections.map(createNode).map(setAttrsOnNode).map(wireConnection);
+  },
+
+  /**
+   * Creates an AudioNode instance for a Connection instance and sets it on it&#x27;s
+   * &#x60;node&#x60; property. Unless the Connection instance&#x27;s &#x60;createdOnPlay&#x60; property
+   * is true, does nothing if the AudioNode instance has already been created.
+   *
+   * Also sets any properties from a connection&#x27;s &#x60;onPlaySetAttrsOnNode&#x60; array
+   * on the node.
+   *
+   * @private
+   * @method _createNode
+   *
+   * @param {Connection} connection A Connection instance that should have it&#x27;s
+   * node created (if needed).
+   *
+   * @return {Connection} The input Connection instance after having it&#x27;s node
+   * created.
+   */
+  _createNode(connection) {
+    const { path, name, createdOnPlay, source, createCommand, node } = connection;
+
+    if (node &amp;&amp; !createdOnPlay) {
+      // The node is already created and doesn&#x27;t need to be created again
+      return connection;
+    } else if (path) {
+      connection.node = this.get(path);
+    } else if (createCommand &amp;&amp; source) {
+      connection.node = this.get(source)[createCommand]();
+    } else if (!connection.node) {
+      console.error(&#x27;ember-audio:&#x27;, &#x60;The ${name} connection is not configured correctly. Please fix this connection.&#x60;);
+      return;
+    }
+
+    return connection;
+  },
+
+  /**
+   * Gets a Connection instance&#x27;s &#x60;onPlaySetAttrsOnNode&#x60; and sets them on it&#x27;s
+   * node.
+   *
+   * @private
+   * @method _setAttrsOnNode
+   *
+   * @param {Connection} connection The Connection instance that needs it&#x27;s
+   * node&#x27;s attrs set.
+   *
+   * @return {Connection} The input Connection instance after having it&#x27;s nodes
+   * attrs set.
+   */
+  _setAttrsOnNode(connection) {
+    const currentTime = this.get(&#x27;audioContext.currentTime&#x27;);
+
+    connection.get(&#x27;onPlaySetAttrsOnNode&#x27;).map((attr) =&gt; {
+      const { attrNameOnNode, relativePath, value } = attr;
+      const attrValue = relativePath ? this.get(relativePath) || value : value;
+
+      if (connection.node &amp;&amp; attrNameOnNode &amp;&amp; attrValue) {
+        set(connection.node, attrNameOnNode, attrValue);
+      }
+    });
+
+    connection.get(&#x27;exponentialRampToValuesAtTime&#x27;).map((opts) =&gt; {
+      const time = currentTime + opts.endTime;
+      connection.node[opts.key].exponentialRampToValueAtTime(opts.value, time);
+    });
+
+    connection.get(&#x27;linearRampToValuesAtTime&#x27;).map((opts) =&gt; {
+      const time = currentTime + opts.endTime;
+      connection.node[opts.key].linearRampToValueAtTime(opts.value, time);
+    });
+
+    connection.get(&#x27;setValuesAtTime&#x27;).map((opts) =&gt; {
+      const time = currentTime + opts.startTime;
+      connection.node[opts.key].setValueAtTime(opts.value, time);
+    });
+
+    connection.get(&#x27;startingValues&#x27;).map((opts) =&gt; {
+      connection.node[opts.key].setValueAtTime(opts.value, currentTime);
+    });
+
+    return connection;
+  },
+
+  /**
+   * Meant to be passed to a Array.prototype.map function. Connects a Connection
+   * instance&#x27;s node to the next Connection instance&#x27;s node.
+   *
+   * @private
+   * @method _wireConnection
+   *
+   * @param {Connection} connection The current Connection instance in the
+   * iteration.
+   *
+   * @param {number} idx The index of the current iteration.
+   *
+   * @param {array|Connection} connections The original array of connections.
+   *
+   * @return {Connection} The input Connection instance after having it&#x27;s node
+   * connected to the next Connection instance&#x27;s node.
+   */
+  _wireConnection(connection, idx, connections) {
+    const nextIdx = idx + 1;
+    const currentNode = connection;
+
+    if (nextIdx &lt; connections.length) {
+      const nextNode = connections[nextIdx];
+
+      // Assign nextConnection back to connections array.
+      // Since we&#x27;re working one step ahead, we don&#x27;t want
+      // each connection created twice
+      connections[nextIdx] = nextNode;
+
+      // Make the connection from current to next
+      currentNode.node.connect(nextNode.node);
+    }
+
+    return currentNode;
+  }
+});
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+</body>
+</html>

@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -83,15 +89,24 @@
                   <ul>
                       <li><a href="#props_createCommand">createCommand</a></li>
                       <li><a href="#props_createdOnPlay">createdOnPlay</a></li>
+                      <li><a href="#props_exponentialRampToValuesAtTime">exponentialRampToValuesAtTime</a></li>
+                      <li><a href="#props_linearRampToValuesAtTime">linearRampToValuesAtTime</a></li>
                       <li><a href="#props_name">name</a></li>
                       <li><a href="#props_node">node</a></li>
                       <li><a href="#props_onPlaySetAttrsOnNode">onPlaySetAttrsOnNode</a></li>
                       <li><a href="#props_path">path</a></li>
+                      <li><a href="#props_setValuesAtTime">setValuesAtTime</a></li>
                       <li><a href="#props_source">source</a></li>
+                      <li><a href="#props_startingValues">startingValues</a></li>
                   </ul>
             
             
             
+                  <div><a href="#public-methods">Public Methods</a></div>
+                  <ul>
+                      <li><a href="#method_onPlaySet">onPlaySet</a></li>
+                      <li><a href="#method_onPlaySet">onPlaySet</a></li>
+                  </ul>
             
             
                   <div><a href="#private-methods">Private Methods</a></div>
@@ -104,14 +119,14 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l15"><code>addon&#x2F;classes&#x2F;connection.js:15</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l17"><code>addon&#x2F;classes&#x2F;connection.js:17</code></a></span>
     <h1 class="class-name">Connection</h1>
 </div>
 
@@ -182,10 +197,40 @@ how to set properties on the AudioNode instance after it has been created.</p>
           </td>
           <td>
             <div class="property-name ">
+              <a href="#props_exponentialRampToValuesAtTime">exponentialRampToValuesAtTime</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+            </div>
+            <div class="short-description">
+              <p>Items in this array are set at play-time on the <code>node</code> via an exponential ramp that ends at the specified time.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_linearRampToValuesAtTime">linearRampToValuesAtTime</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+            </div>
+            <div class="short-description">
+              <p>Items in this array are set at play-time on the <code>node</code> via a linear ramp that ends at the specified time.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
               <a href="#props_name">name</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
-              <p>The name of the connection. This is the name that can be used to get an AudioNode instance via the <a href="../classes/Sound.html#method_getNodeFrom" class="crosslink">getNodeFrom</a> method.</p>
+              <p>The name of the connection. This is the name that can be used to get an AudioNode instance via the <a href="../classes/Connectable.html#method_getNodeFrom" class="crosslink">getNodeFrom</a> method, or a Connection instance via the <a href="../classes/Connectable.html#method_getConnection" class="crosslink">getConnection</a> method.</p>
             </div>
           </td>
         </tr>
@@ -212,10 +257,10 @@ how to set properties on the AudioNode instance after it has been created.</p>
           </td>
           <td>
             <div class="property-name ">
-              <a href="#props_onPlaySetAttrsOnNode">onPlaySetAttrsOnNode</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+              <a href="#props_onPlaySetAttrsOnNode">onPlaySetAttrsOnNode</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
             </div>
             <div class="short-description">
-              <p>An array of POJOs that specify properties that need to be set on a node when any of the <a href="../classes/Sound.html#method_play" class="crosslink">play</a> methods are called. For instance, an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" class="crosslink external" target="_blank">AudioBufferSourceNode</a> must be created at play time, because they can only be played once and then they are immediately thrown away.</p>
+              <p>An array of POJOs that specify properties that need to be set on a node when any of the <a href="../classes/Playable.html#method_play" class="crosslink">play</a> methods are called. For instance, an <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" class="crosslink external" target="_blank">AudioBufferSourceNode</a> must be created at play time, because they can only be played once and then they are immediately thrown away.</p>
             </div>
           </td>
         </tr>
@@ -242,10 +287,40 @@ how to set properties on the AudioNode instance after it has been created.</p>
           </td>
           <td>
             <div class="property-name ">
+              <a href="#props_setValuesAtTime">setValuesAtTime</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+            </div>
+            <div class="short-description">
+              <p>Items in this array are set at play-time on the <code>node</code> via an exponential ramp that ends at the specified time.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
               <a href="#props_source">source</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
               <p>If <code>createCommand</code> is specified, the object at this location (relative to the Sound instance) will be used as the "source" of the <code>createCommand</code>.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_startingValues">startingValues</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+            </div>
+            <div class="short-description">
+              <p>Items in this array are set immediately at play-time on the <code>node</code>.</p>
             </div>
           </td>
         </tr>
@@ -256,6 +331,45 @@ how to set properties on the AudioNode instance after it has been created.</p>
 
   <h2 id="method-summary">Method Summary</h2>
 
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_onPlaySet">onPlaySet</a>( )
+            </div>
+            <div class="short-description">
+              <p>Allows an AudioNode's values to be set at a specific time relative to the moment that it is played, every time it is played.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_onPlaySet">onPlaySet</a>( )
+            </div>
+            <div class="short-description">
+              <p>Convenience method that uses <a href="../classes/Connection.html#method_onPlaySet" class="crosslink">onPlaySet</a> twice to set an initial value, and a ramped value in succession.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
 
     <table class="summary">
@@ -294,9 +408,9 @@ how to set properties on the AudioNode instance after it has been created.</p>
 
     <div id="properties public">
         <h2 id="public-properties">Public Properties</h2>
-<div class="property item">
+<div class="property item public">
   <div id="props_createCommand" class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l78"><code>addon&#x2F;classes&#x2F;connection.js:78</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l86"><code>addon&#x2F;classes&#x2F;connection.js:86</code></a></span>
     <h3 class="">
       public
       
@@ -312,17 +426,17 @@ retrieved from <code>source</code>. The value returned from this method is set o
 </div>
 
     <h4>Example:</h4>
-    <pre class="code prettyprint"><code>// Creates the AudioNode by calling:
-// this.get('audioContext')[createCommand]();
+    <pre class="code prettyprint"><code>// results in the <code>node</code> property being created like:
+// this.get('audioContext').createGain();
 {
   source: 'audioContext'
-  createCommand: createGain
+  createCommand: 'createGain'
 }</code></pre>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_createdOnPlay" class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l150"><code>addon&#x2F;classes&#x2F;connection.js:150</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l264"><code>addon&#x2F;classes&#x2F;connection.js:264</code></a></span>
     <h3 class="">
       public
       
@@ -337,9 +451,71 @@ Sound instance is played.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
+  <div id="props_exponentialRampToValuesAtTime" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l147"><code>addon&#x2F;classes&#x2F;connection.js:147</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      exponentialRampToValuesAtTime: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Items in this array are set at play-time on the <code>node</code> via an exponential
+ramp that ends at the specified time.</p>
+<p>A convenience setter method called
+<a href="../classes/Connection.html#method_onPlaySet" class="crosslink">onPlaySet</a> exists for this
+array and should be used unless it does not allow enough freedom for your
+use-case.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// at play time: connection.node.gain.exponentialRampToValueAtTime(0.1, 1)
+{
+  key: 'gain',
+  value: 0.1,
+  endTime: 1
+}
+// the same thing can be accomplished like:
+connection.onPlaySet('gain').to(0.1).endingAt(1)</code></pre>
+
+</div>
+<div class="property item public">
+  <div id="props_linearRampToValuesAtTime" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l173"><code>addon&#x2F;classes&#x2F;connection.js:173</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      linearRampToValuesAtTime: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Items in this array are set at play-time on the <code>node</code> via a linear ramp
+that ends at the specified time.</p>
+<p>A convenience setter method called
+<a href="../classes/Connection.html#method_onPlaySet" class="crosslink">onPlaySet</a> exists for this
+array and should be used unless it does not allow enough freedom for your
+use-case.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// at play time: connection.node.gain.linearRampToValueAtTime(0.1, 1)
+{
+  key: 'gain',
+  value: 0.1,
+  endTime: 1
+}
+// the same thing can be accomplished like:
+connection.onPlaySet('gain').to(0.1).endingAt(1, 'linear')</code></pre>
+
+</div>
+<div class="property item public">
   <div id="props_name" class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l31"><code>addon&#x2F;classes&#x2F;connection.js:31</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l34"><code>addon&#x2F;classes&#x2F;connection.js:34</code></a></span>
     <h3 class="">
       public
       
@@ -351,13 +527,15 @@ Sound instance is played.</p>
 
   <div class="property-description"><p>The name of the connection. This is the name that can be used to
 get an AudioNode instance via the
-<a href="../classes/Sound.html#method_getNodeFrom" class="crosslink">getNodeFrom</a> method.</p>
+<a href="../classes/Connectable.html#method_getNodeFrom" class="crosslink">getNodeFrom</a> method, or a
+Connection instance via the
+<a href="../classes/Connectable.html#method_getConnection" class="crosslink">getConnection</a> method.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_node" class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l136"><code>addon&#x2F;classes&#x2F;connection.js:136</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l249"><code>addon&#x2F;classes&#x2F;connection.js:249</code></a></span>
     <h3 class="">
       public
       
@@ -376,20 +554,20 @@ class.</p>
 </div>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_onPlaySetAttrsOnNode" class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l96"><code>addon&#x2F;classes&#x2F;connection.js:96</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l105"><code>addon&#x2F;classes&#x2F;connection.js:105</code></a></span>
     <h3 class="">
       public
       
       
-      onPlaySetAttrsOnNode: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a>
+      onPlaySetAttrsOnNode: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
     </h3>
   </div>
 
 
   <div class="property-description"><p>An array of POJOs that specify properties that need to be set on a node
-when any of the <a href="../classes/Sound.html#method_play" class="crosslink">play</a> methods
+when any of the <a href="../classes/Playable.html#method_play" class="crosslink">play</a> methods
 are called. For instance, an
 <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode" class="crosslink external" target="_blank">AudioBufferSourceNode</a> must be created at
 play time, because they can only be played once and then they are
@@ -420,9 +598,9 @@ precedence.</p>
 }</code></pre>
 
 </div>
-<div class="property item">
+<div class="property item public">
   <div id="props_path" class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l41"><code>addon&#x2F;classes&#x2F;connection.js:41</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l47"><code>addon&#x2F;classes&#x2F;connection.js:47</code></a></span>
     <h3 class="">
       public
       
@@ -448,9 +626,40 @@ used.</p>
 }</code></pre>
 
 </div>
-<div class="property item">
+<div class="property item public">
+  <div id="props_setValuesAtTime" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l199"><code>addon&#x2F;classes&#x2F;connection.js:199</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      setValuesAtTime: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Items in this array are set at play-time on the <code>node</code> via an exponential
+ramp that ends at the specified time.</p>
+<p>A convenience setter method called
+<a href="../classes/Connection.html#method_onPlaySet" class="crosslink">onPlaySet</a> exists for this
+array and should be used unless it does not allow enough freedom for your
+use-case.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// at play time: connection.node.gain.setValueAtTime(0.1, 1)
+{
+  key: 'gain',
+  value: 0.1,
+  startTime: 1
+}
+// the same thing can be accomplished like:
+connection.onPlaySet('gain').to(0.1).at(1)</code></pre>
+
+</div>
+<div class="property item public">
   <div id="props_source" class="title">
-    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l61"><code>addon&#x2F;classes&#x2F;connection.js:61</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l68"><code>addon&#x2F;classes&#x2F;connection.js:68</code></a></span>
     <h3 class="">
       public
       
@@ -473,17 +682,111 @@ the Sound instance) will be used as the "source" of the <code>createCommand</cod
 }</code></pre>
 
 </div>
+<div class="property item public">
+  <div id="props_startingValues" class="title">
+    <span class="source-link"><a href="../files/addon_classes_connection.js.html#l225"><code>addon&#x2F;classes&#x2F;connection.js:225</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      startingValues: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Items in this array are set immediately at play-time on the <code>node</code>.</p>
+<p>A convenience setter method called
+<a href="../classes/Connection.html#method_onPlaySet" class="crosslink">onPlaySet</a> exists for this
+array and should be used unless it does not allow enough freedom for your
+use-case.</p>
+</div>
+
+    <h4>Example:</h4>
+    <pre class="code prettyprint"><code>// at play time: connection.node.gain.setValueAtTime(0.1, audioContext.currentTime)
+{
+  key: 'gain',
+  value: 0.1
+}
+// the same thing can be accomplished like:
+connection.onPlaySet('gain').to(0.1)</code></pre>
+
+</div>
     </div>
 
 
 
+  <div id="methods public">
+    <h2 id="public-methods">Public Methods</h2>
+<div class="method item public">
+    <div id="method_onPlaySet" class="title">
+        <span class="source-link"><a href="../files/addon_classes_connection.js.html#l275"><code>addon&#x2F;classes&#x2F;connection.js:275</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            onPlaySet( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Allows an AudioNode's values to be set at a specific time
+relative to the moment that it is played, every time it is played.</p>
+<p>Especially useful for creating/shaping an "envelope" (think "ADSR").</p>
+</div>
+
+
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>// results in an oscillator that starts at 150Hz and quickly drops
+// down to 0.01Hz each time it's played
+const kick = audio.createOscillator({ name: 'kick' });
+const osc = kick.getConnection('audioSource');
+
+osc.onPlaySet('frequency').to(150).at(0);
+osc.onPlaySet('frequency').to(0.01).at(0.1);</code></pre>
+
+</div>
+<div class="method item public">
+    <div id="method_onPlaySet" class="title">
+        <span class="source-link"><a href="../files/addon_classes_connection.js.html#l328"><code>addon&#x2F;classes&#x2F;connection.js:328</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            onPlaySet( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Convenience method that uses
+<a href="../classes/Connection.html#method_onPlaySet" class="crosslink">onPlaySet</a> twice to set an
+initial value, and a ramped value in succession.</p>
+<p>Especially useful for creating/shaping an "envelope" (think "ADSR").</p>
+</div>
+
+
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>// results in an oscillator that starts at 150Hz and quickly drops
+// down to 0.01Hz each time it's played
+const kick = audio.createOscillator({ name: 'kick' });
+const osc = kick.getConnection('audioSource');
+
+osc.onPlayRamp('frequency').from(150).to(0.01).in(0.1);</code></pre>
+
+</div>
+  </div>
 
 
     <div id="methods private">
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__initArrays" class="title">
-        <span class="source-link"><a href="../files/addon_classes_connection.js.html#l160"><code>addon&#x2F;classes&#x2F;connection.js:160</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_connection.js.html#l365"><code>addon&#x2F;classes&#x2F;connection.js:365</code></a></span>
         <h3 class="">
             private
             

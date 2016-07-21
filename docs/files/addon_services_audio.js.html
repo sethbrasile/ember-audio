@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -62,7 +68,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
@@ -75,16 +81,20 @@
 <pre class="code prettyprint linenums">
 import Ember from &#x27;ember&#x27;;
 import fetch from &#x27;ember-network/fetch&#x27;;
-import { Sound, Note, Track, BeatTrack, Sampler } from &#x27;ember-audio&#x27;;
-import { sortNotes, base64ToUint8, mungeSoundFont } from &#x27;ember-audio/utils&#x27;;
+import { Sound, Note, SampledNote, Track, BeatTrack, Sampler, Oscillator } from &#x27;ember-audio&#x27;;
+import { sortNotes, base64ToUint8, mungeSoundFont, frequencyMap } from &#x27;ember-audio/utils&#x27;;
 
 /**
  * Provides the Audio Service
+ *
+ * @public
  * @module AudioService
  */
 
 const {
   RSVP: { all, resolve },
+  Error: EmberError,
+  Logger,
   Service
 } = Ember;
 
@@ -106,7 +116,13 @@ const {
  *       return this.get(&#x27;audio&#x27;).load(&#x27;some.mp3&#x27;).asSound(&#x27;some-sound&#x27;);
  *     }
  *
+ * @public
  * @class AudioService
+ *
+ * @todo create class called something like EmberAudioLoadResponse to use in
+ * place of current POJO returned from load(). Probably a real es6 class.
+ *
+ * @todo remove concept of &quot;register&quot; and let consuming app handle state
  */
 export default Service.extend({
   /**
@@ -114,6 +130,7 @@ export default Service.extend({
    * browsers. Not available in any version of IE (except EDGE)
    * as of April 2016.
    *
+   * @public
    * @property audioContext
    * @type {AudioContext}
    * @todo change this to audioContext to match other stuff, or change other stuff to audioContext
@@ -182,6 +199,7 @@ export default Service.extend({
    *     audio.load([&#x27;some-url.mp3&#x27;]).asBeatTrack(&#x27;some-beat-track&#x27;);
    *     audio.load(&#x27;some-url.js&#x27;).asFont(&#x27;some-font&#x27;);
    *
+   * @public
    * @method load
    *
    * @param {string|array} src The URL location of an audio file. Will be used by
@@ -202,6 +220,7 @@ export default Service.extend({
     const _loadBeatTrack = this._loadBeatTrack.bind(this);
     const _createSoundsArray = this._createSoundsArray.bind(this);
     const samplersRegister = this.get(&#x27;_samplers&#x27;);
+    const { createNoteArray } = this;
 
     return {
       /*
@@ -279,13 +298,92 @@ export default Service.extend({
 
           return sampler;
         });
+      },
+
+      /*
+       * Creates an array of note instances from a JSON file.
+       *
+       * @param {string} name The name that this Sampler instance will be
+       * registered as in the _samplers register
+       *
+       * @return {promise|array|Note} Returns a promise that resolves to an array
+       * of Note instances.
+       */
+      asNoteArray() {
+        return fetch(src)
+          .then((response) =&gt; response.json())
+          .then(createNoteArray);
       }
     };
   },
 
   /**
+   *
+   * @public
+   * @method createNoteArray
+   *
+   * @param {object|null} Optionally provided json object. If not provided,
+   * the object returned from utils/frequencyMap is used.
+   *
+   * @return {array|Note}
+   */
+  createNoteArray(json) {
+    const notes = [];
+
+    if (!json) {
+      json = frequencyMap;
+    }
+
+    for (let noteName in json) {
+      notes.push(Note.create({ frequency: json[noteName] }));
+    }
+
+    return notes;
+  },
+
+  /**
+   * Creates a Sound instance with it&#x27;s audioBuffer filled with one sample&#x27;s
+   * worth of white noise.
+   *
+   * @public
+   * @method createWhiteNoise
+   *
+   * @param {object} opts An object passed into the Sound instance.
+   *
+   * @return {Sound} The created white noise Sound instance.
+   */
+  createWhiteNoise(opts={}) {
+    const audioContext = this.get(&#x27;audioContext&#x27;);
+    const bufferSize = audioContext.sampleRate;
+    const audioBuffer = audioContext.createBuffer(1, bufferSize, bufferSize);
+    const output = audioBuffer.getChannelData(0);
+
+    for (let i = 0; i &lt; bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    return Sound.create(Object.assign(opts, { audioContext, audioBuffer }));
+  },
+
+  /**
+   * Creates an Oscillator instance.
+   *
+   * @public
+   * @method createOscillator
+   *
+   * @param {object} opts An object passed into the Oscillator instance.
+   *
+   * @return {Oscillator} The created Oscillator instance.
+   */
+  createOscillator(opts={}) {
+    const audioContext = this.get(&#x27;audioContext&#x27;);
+    return Oscillator.create(Object.assign(opts, { audioContext }));
+  },
+
+  /**
    * Gets a BeatTrack instance by name from the _beatTracks register.
    *
+   * @public
    * @method getBeatTrack
    * @param {string} name The name of the BeatTrack instance that should be
    * retrieved from the _beatTracks register.
@@ -300,6 +398,7 @@ export default Service.extend({
   /**
    * Gets a Sound instance by name from the _sounds register
    *
+   * @public
    * @method getSound
    *
    * @param {string} name The name of the sound that should be retrieved
@@ -314,6 +413,7 @@ export default Service.extend({
   /**
    * Gets a Track instance by name from the _tracks register
    *
+   * @public
    * @method getTrack
    *
    * @param {string} name The name of the Track instance that should be
@@ -332,6 +432,7 @@ export default Service.extend({
    * @example
    *     audio.getFont(&#x27;some-font&#x27;).play(&#x27;Ab1&#x27;);
    *
+   * @public
    * @method getFont
    *
    * @param {string} name The name of the Map that should be retrieved
@@ -348,7 +449,7 @@ export default Service.extend({
         if (font.has(note)) {
           font.get(note).play();
         } else {
-          throw new Ember.Error(&#x60;ember-audio: You tried to play the note &quot;${note}&quot; from the soundfont &quot;${name}&quot; but the note &quot;${note}&quot; does not exist.&#x60;);
+          throw new EmberError(&#x60;ember-audio: You tried to play the note &quot;${note}&quot; from the soundfont &quot;${name}&quot; but the note &quot;${note}&quot; does not exist.&#x60;);
         }
       }
     };
@@ -357,6 +458,7 @@ export default Service.extend({
   /**
    * Gets a Sampler instance by name from the _samplers register
    *
+   * @public
    * @method getSampler
    *
    * @param {string} name The name of the sampler that should be retrieved
@@ -372,6 +474,7 @@ export default Service.extend({
   * Gets all instances of requested type and calls
   * {{#crossLink &quot;Sound/stop:method&quot;}}{{/crossLink}} on each.
    *
+   * @public
    * @method stopAll
    *
    * @param {string} type=&#x27;tracks&#x27; The type of the register that you wish
@@ -388,6 +491,7 @@ export default Service.extend({
    * {{#crossLink &quot;Sound/pause:method&quot;}}{{/crossLink}} on each. Only works for
    * tracks because only Track instances are pause-able.
    *
+   * @public
    * @method pauseAll
    */
   pauseAll() {
@@ -405,7 +509,7 @@ export default Service.extend({
    * @return {map}
    */
   _getRegisterFor(type) {
-    switch(type) {
+    switch (type) {
       case &#x27;track&#x27;:
         return this.get(&#x27;_tracks&#x27;);
       case &#x27;beatTrack&#x27;:
@@ -433,7 +537,7 @@ export default Service.extend({
    * @return {Sound|Track|BeatTrack}
    */
   _createSoundFor(type, props) {
-    switch(type) {
+    switch (type) {
       case &#x27;track&#x27;:
         return Track.create(props);
       case &#x27;beatTrack&#x27;:
@@ -542,9 +646,9 @@ export default Service.extend({
     const fonts = this.get(&#x27;_fonts&#x27;);
 
     if (fonts.has(instrumentName)) {
-      const err = new Ember.Error(&#x60;ember-audio: You tried to load a soundfont instrument called &quot;${name}&quot;, but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to &quot;null&quot; with &quot;this.get(&#x27;audio.sounds&#x27;).set(&#x27;${instrumentName}&#x27;, null);&quot;.&#x60;);
+      const err = new EmberError(&#x60;ember-audio: You tried to load a soundfont instrument called &quot;${name}&quot;, but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you set it explicitly to &quot;null&quot; with &quot;this.get(&#x27;audio.sounds&#x27;).set(&#x27;${instrumentName}&#x27;, null);&quot;.&#x60;);
 
-      Ember.Logger.error(err);
+      Logger.error(err);
 
       return resolve(fonts.get(instrumentName));
     }
@@ -657,24 +761,16 @@ export default Service.extend({
     const audioContext = this.get(&#x27;audioContext&#x27;);
 
     return audioData.map((note) =&gt; {
-      const noteName = note[0];
-      const audioBuffer = note[1];
-      const letter = noteName[0];
+      const [ identifier, audioBuffer ] = note;
+      const createdNote = SampledNote.create({
+        identifier,
+        audioBuffer,
+        audioContext
+      });
 
-      let octave = noteName[2];
-      let accidental;
+      this.get(&#x27;_fonts&#x27;).get(instrumentName).set(identifier, createdNote);
 
-      if (octave) {
-        accidental = noteName[1];
-      } else {
-        octave = noteName[1];
-      }
-
-      note = Note.create({ letter, octave, accidental, audioBuffer, audioContext });
-
-      this.get(&#x27;_fonts&#x27;).get(instrumentName).set(noteName, note);
-
-      return note;
+      return createdNote;
     });
   }
 });

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Playable - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
+    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            <div id="sections" class="sidebox">
+              <div class="hd">
+                <h2 class="no-toc">Playable</h2>
+              </div>
+              <div class="bd">
+            
+            
+            
+                  <div><a href="#property-summary">Property Summary</a></div>
+            
+                  <div><a href="#method-summary">Method Summary</a></div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                  <div><a href="#public-properties">Public Properties</a></div>
+                  <ul>
+                      <li><a href="#props_isPlaying">isPlaying</a></li>
+                  </ul>
+            
+            
+            
+                  <div><a href="#public-methods">Public Methods</a></div>
+                  <ul>
+                      <li><a href="#method_play">play</a></li>
+                      <li><a href="#method_playAt">playAt</a></li>
+                      <li><a href="#method_playFor">playFor</a></li>
+                      <li><a href="#method_playIn">playIn</a></li>
+                      <li><a href="#method_playInAndStopAfter">playInAndStopAfter</a></li>
+                      <li><a href="#method_stop">stop</a></li>
+                      <li><a href="#method_stopAt">stopAt</a></li>
+                      <li><a href="#method_stopIn">stopIn</a></li>
+                  </ul>
+            
+            
+                  <div><a href="#private-methods">Private Methods</a></div>
+                  <ul>
+                      <li><a href="#method__play">_play</a></li>
+                      <li><a href="#method__stop">_stop</a></li>
+                  </ul>
+              </div>
+            </div>
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.5b0fc03d
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+    <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l16"><code>addon&#x2F;mixins&#x2F;playable.js:16</code></a></span>
+    <h1 class="class-name">Playable</h1>
+</div>
+
+
+
+
+<div class="class-description"><p>A mixin that allows an object to start and stop an audio source, now or in
+the future, as well as track whether the audio source is currently playing or
+not.</p>
+</div>
+
+
+
+
+
+
+
+  <h2 id="property-summary">Property Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Properties</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_isPlaying">isPlaying</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+            </div>
+            <div class="short-description">
+              <p>Whether an audio source is playing or not.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+  <h2 id="method-summary">Method Summary</h2>
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Public Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_play">play</a>( )
+            </div>
+            <div class="short-description">
+              <p>Plays the audio source immediately.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playAt">playAt</a>(time)
+            </div>
+            <div class="short-description">
+              <p>Plays the audio source at the specified moment in time. A "moment in time" is measured in seconds from the moment that the <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playFor">playFor</a>(seconds)
+            </div>
+            <div class="short-description">
+              <p>Starts playing the audio source immediately, but stops after specified seconds have elapsed.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playIn">playIn</a>(seconds)
+            </div>
+            <div class="short-description">
+              <p>Plays the audio source in specified amount of seconds from "now".</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playInAndStopAfter">playInAndStopAfter</a>(playIn, stopAfter)
+            </div>
+            <div class="short-description">
+              <p>Starts playing the audio source after <code>playIn</code> seconds have elapsed, then stops the audio source <code>stopAfter</code> seconds after it started playing.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_stop">stop</a>( )
+            </div>
+            <div class="short-description">
+              <p>Stops the audio source immediately.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_stopAt">stopAt</a>(time)
+            </div>
+            <div class="short-description">
+              <p>Stops the audio source at the specified "moment in time" relative to the "beginning of time" according to the <code>audioContext</code>.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_stopIn">stopIn</a>(seconds)
+            </div>
+            <div class="short-description">
+              <p>Stops the audio source after specified seconds have elapsed.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <table class="summary">
+      <thead>
+      <tr>
+        <th colspan="2">Private Methods</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__play">_play</a>(time)
+            </div>
+            <div class="short-description">
+              <p>The underlying method that backs the <a href="../classes/Playable.html#method_play" class="crosslink">play</a>, <a href="../classes/Playable.html#method_playAt" class="crosslink">playAt</a>, and <a href="../classes/Playable.html#method_playIn" class="crosslink">playIn</a> methods.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method__stop">_stop</a>(time)
+            </div>
+            <div class="short-description">
+              <p>The underlying method that backs all of the <code>stop</code> methods.</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+
+
+    <div id="properties public">
+        <h2 id="public-properties">Public Properties</h2>
+<div class="property item public">
+  <div id="props_isPlaying" class="title">
+    <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l25"><code>addon&#x2F;mixins&#x2F;playable.js:25</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      isPlaying: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean" class="crosslink external" target="_blank">Boolean</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description"><p>Whether an audio source is playing or not.</p>
+</div>
+
+</div>
+    </div>
+
+
+
+  <div id="methods public">
+    <h2 id="public-methods">Public Methods</h2>
+<div class="method item public">
+    <div id="method_play" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l35"><code>addon&#x2F;mixins&#x2F;playable.js:35</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            play( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Plays the audio source immediately.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_playAt" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l45"><code>addon&#x2F;mixins&#x2F;playable.js:45</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playAt(time)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Plays the audio source at the specified moment in time. A "moment in time"
+is measured in seconds from the moment that the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
+<p>Functionally equivalent to <a href="../classes/Playable.html#method__play" class="crosslink">_play</a>.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>time</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The moment in time (in seconds, relative to the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext's</a> "beginning of
+time") when the audio source should be played.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_playFor" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l76"><code>addon&#x2F;mixins&#x2F;playable.js:76</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playFor(seconds)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Starts playing the audio source immediately, but stops after specified
+seconds have elapsed.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>seconds</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The amount of time after which the audio source is
+stopped.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_playIn" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l63"><code>addon&#x2F;mixins&#x2F;playable.js:63</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playIn(seconds)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Plays the audio source in specified amount of seconds from "now".</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>seconds</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Number of seconds from "now" that the audio source
+should be played.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_playInAndStopAfter" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l91"><code>addon&#x2F;mixins&#x2F;playable.js:91</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playInAndStopAfter(playIn, stopAfter)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Starts playing the audio source after <code>playIn</code> seconds have elapsed, then
+stops the audio source <code>stopAfter</code> seconds after it started playing.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>playIn</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Number of seconds from "now" that the audio source
+should play.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>stopAfter</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Number of seconds from when the audio source
+started playing that the audio source should be stopped.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_stop" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l109"><code>addon&#x2F;mixins&#x2F;playable.js:109</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            stop( )
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Stops the audio source immediately.</p>
+</div>
+
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_stopAt" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l132"><code>addon&#x2F;mixins&#x2F;playable.js:132</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            stopAt(time)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Stops the audio source at the specified "moment in time" relative to the
+"beginning of time" according to the <code>audioContext</code>.</p>
+<p>Functionally equivalent to the <code>_stop</code> method.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>time</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The time that the audio source should be stopped.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_stopIn" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l119"><code>addon&#x2F;mixins&#x2F;playable.js:119</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            stopIn(seconds)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Stops the audio source after specified seconds have elapsed.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>seconds</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Number of seconds from "now" that the audio source
+should be stopped.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+  </div>
+
+
+    <div id="methods private">
+        <h2 id="private-methods">Private Methods</h2>
+<div class="method item private">
+    <div id="method__play" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l166"><code>addon&#x2F;mixins&#x2F;playable.js:166</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _play(time)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>The underlying method that backs the
+<a href="../classes/Playable.html#method_play" class="crosslink">play</a>,
+<a href="../classes/Playable.html#method_playAt" class="crosslink">playAt</a>, and
+<a href="../classes/Playable.html#method_playIn" class="crosslink">playIn</a> methods.</p>
+<p>Plays the audio source at the specified moment in time. A "moment in time"
+is measured in seconds from the moment that the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
+<p>Functionally equivalent to Sound/playAt:method.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>time</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The moment in time (in seconds, relative to the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext's</a> "beginning of
+time") when the audio source should be played.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item private">
+    <div id="method__stop" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l147"><code>addon&#x2F;mixins&#x2F;playable.js:147</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _stop(time)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>The underlying method that backs all of the <code>stop</code> methods.</p>
+<p>Functionally equivalent to the <code>stopAt</code> method.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>time</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The time that the audio source should be stopped.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+    </div>
+
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+</body>
+</html>

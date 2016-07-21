@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Sampler - ember-audio</title>
+    <title>LayeredSound - ember-audio</title>
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
     <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
@@ -66,7 +66,7 @@
             
             <div id="sections" class="sidebox">
               <div class="hd">
-                <h2 class="no-toc">Sampler</h2>
+                <h2 class="no-toc">LayeredSound</h2>
               </div>
               <div class="bd">
             
@@ -87,29 +87,24 @@
             
                   <div><a href="#public-properties">Public Properties</a></div>
                   <ul>
-                      <li><a href="#props_gain">gain</a></li>
-                      <li><a href="#props_pan">pan</a></li>
+                      <li><a href="#props_sounds">sounds</a></li>
                   </ul>
             
             
-                  <div><a href="#private-properties">Private Properties</a></div>
-                  <ul>
-                      <li><a href="#props__soundIterator">_soundIterator</a></li>
-                      <li><a href="#props__sounds">_sounds</a></li>
-                  </ul>
             
                   <div><a href="#public-methods">Public Methods</a></div>
                   <ul>
                       <li><a href="#method_play">play</a></li>
                       <li><a href="#method_playAt">playAt</a></li>
+                      <li><a href="#method_playFor">playFor</a></li>
+                      <li><a href="#method_playForIn">playForIn</a></li>
                       <li><a href="#method_playIn">playIn</a></li>
                   </ul>
             
             
                   <div><a href="#private-methods">Private Methods</a></div>
                   <ul>
-                      <li><a href="#method__getNextSound">_getNextSound</a></li>
-                      <li><a href="#method__setGainAndPan">_setGainAndPan</a></li>
+                      <li><a href="#method__initSounds">_initSounds</a></li>
                   </ul>
               </div>
             </div>
@@ -124,17 +119,16 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l15"><code>addon&#x2F;classes&#x2F;sampler.js:15</code></a></span>
-    <h1 class="class-name">Sampler</h1>
+    <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l17"><code>addon&#x2F;classes&#x2F;layered-sound.js:17</code></a></span>
+    <h1 class="class-name">LayeredSound</h1>
 </div>
 
 
 
 
-<div class="class-description"><p>An instance of the Sampler class behaves just like a Sound, but allows
-many <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioBuffer" class="crosslink external" target="_blank">AudioBuffers</a> to exist and
-automatically alternately plays them (round-robin) each time any of the play
-methods are called.</p>
+<div class="class-description"><p>Allows multiple instances of anything that uses
+<a href="../classes/Playable.html" class="crosslink">Playable</a> to be loaded up and played at the
+same time.</p>
 </div>
 
 
@@ -160,25 +154,10 @@ methods are called.</p>
           </td>
           <td>
             <div class="property-name ">
-              <a href="#props_gain">gain</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+              <a href="#props_sounds">sounds</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Oscillator.html" class="crosslink">Oscillator</a>
             </div>
             <div class="short-description">
-              <p>Determines the gain applied to each sample.</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            public
-            
-            
-          </td>
-          <td>
-            <div class="property-name ">
-              <a href="#props_pan">pan</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
-            </div>
-            <div class="short-description">
-              <p>Determines the stereo pan position of each sample.</p>
+              <p>Acts as a register for different types of sounds. Anything that uses <a href="../classes/Playable.html" class="crosslink">Playable</a> can be added to this register.</p>
             </div>
           </td>
         </tr>
@@ -186,45 +165,6 @@ methods are called.</p>
     </table>
 
 
-    <table class="summary">
-      <thead>
-      <tr>
-        <th colspan="2">Private Properties</th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            private
-            
-            
-          </td>
-          <td>
-            <div class="property-name ">
-              <a href="#props__soundIterator">_soundIterator</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator" class="crosslink external" target="_blank">Iterator</a>
-            </div>
-            <div class="short-description">
-              <p>Temporary storage for the iterable that comes from the _sounds Set. This iterable is meant to be replaced with a new copy every time it reaches it's end, resulting in an infinite stream of Sound instances.</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            private
-            
-            
-          </td>
-          <td>
-            <div class="property-name ">
-              <a href="#props__sounds">_sounds</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="crosslink external" target="_blank">Set</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a>
-            </div>
-            <div class="short-description">
-              <p>Acts as a register for loaded Sound instances. Set on instantiation.</p>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
 
   <h2 id="method-summary">Method Summary</h2>
 
@@ -246,7 +186,7 @@ methods are called.</p>
               <a href="#method_play">play</a>( )
             </div>
             <div class="short-description">
-              <p>Gets the next Sound and plays it immediately.</p>
+              <p>Maps through objects in <code>sounds</code> and calls <code>play</code> on each</p>
             </div>
           </td>
         </tr>
@@ -261,7 +201,37 @@ methods are called.</p>
               <a href="#method_playAt">playAt</a>(time)
             </div>
             <div class="short-description">
-              <p>Gets the next Sound and plays it at the specified moment in time. A "moment in time" is measured in seconds from the moment that the <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
+              <p>Maps through objects in <code>sounds</code> and calls <code>playAt</code> on each, passing through the <code>time</code> param to each sound.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playFor">playFor</a>(seconds)
+            </div>
+            <div class="short-description">
+              <p>Maps through objects in <code>sounds</code> and calls <code>playFor</code> on each, passing through the <code>seconds</code> param to each sound.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_playForIn">playForIn</a>(playIn, stopAfter)
+            </div>
+            <div class="short-description">
+              <p>Maps through objects in <code>sounds</code> and calls <code>playInAndStopAfter</code> on each, passing through the <code>playIn</code> and <code>stopAfter</code> params to each sound.</p>
             </div>
           </td>
         </tr>
@@ -276,7 +246,7 @@ methods are called.</p>
               <a href="#method_playIn">playIn</a>(seconds)
             </div>
             <div class="short-description">
-              <p>Gets the next Sound and plays it after the specified offset has elapsed.</p>
+              <p>Maps through objects in <code>sounds</code> and calls <code>playIn</code> on each, passing through the <code>seconds</code> param to each sound.</p>
             </div>
           </td>
         </tr>
@@ -299,25 +269,10 @@ methods are called.</p>
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method__getNextSound">_getNextSound</a>( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+              <a href="#method__initSounds">_initSounds</a>( )
             </div>
             <div class="short-description">
-              <p>Gets _soundIterator and returns it's next value. If _soundIterator has reached it's end, replaces _soundIterator with a fresh copy from _sounds and returns the first value from that.</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            private
-            
-            
-          </td>
-          <td>
-            <div class="method-name ">
-              <a href="#method__setGainAndPan">_setGainAndPan</a>( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
-            </div>
-            <div class="short-description">
-              <p>Applies the <code>gain</code> and <code>pan</code> properties from the Sampler instance to a Sound instance and returns the Sound instance.</p>
+              <p>If <code>sounds</code> is null on instantiation, sets it to <code>A()</code></p>
             </div>
           </td>
         </tr>
@@ -336,83 +291,31 @@ methods are called.</p>
     <div id="properties public">
         <h2 id="public-properties">Public Properties</h2>
 <div class="property item public">
-  <div id="props_gain" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l29"><code>addon&#x2F;classes&#x2F;sampler.js:29</code></a></span>
+  <div id="props_sounds" class="title">
+    <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l26"><code>addon&#x2F;classes&#x2F;layered-sound.js:26</code></a></span>
     <h3 class="">
       public
       
       
-      gain: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
+      sounds: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Oscillator.html" class="crosslink">Oscillator</a>
     </h3>
   </div>
 
 
-  <div class="property-description"><p>Determines the gain applied to each sample.</p>
-</div>
-
-</div>
-<div class="property item public">
-  <div id="props_pan" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l39"><code>addon&#x2F;classes&#x2F;sampler.js:39</code></a></span>
-    <h3 class="">
-      public
-      
-      
-      pan: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
-    </h3>
-  </div>
-
-
-  <div class="property-description"><p>Determines the stereo pan position of each sample.</p>
+  <div class="property-description"><p>Acts as a register for different types of sounds. Anything that uses
+<a href="../classes/Playable.html" class="crosslink">Playable</a> can be added to this register.</p>
 </div>
 
 </div>
     </div>
 
 
-    <div id="properties private">
-        <h2 id="private-properties">Private Properties</h2>
-<div class="property item private">
-  <div id="props__soundIterator" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l49"><code>addon&#x2F;classes&#x2F;sampler.js:49</code></a></span>
-    <h3 class="">
-      private
-      
-      
-      _soundIterator: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator" class="crosslink external" target="_blank">Iterator</a>
-    </h3>
-  </div>
-
-
-  <div class="property-description"><p>Temporary storage for the iterable that comes from the _sounds Set.
-This iterable is meant to be replaced with a new copy every time it reaches
-it's end, resulting in an infinite stream of Sound instances.</p>
-</div>
-
-</div>
-<div class="property item private">
-  <div id="props__sounds" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l61"><code>addon&#x2F;classes&#x2F;sampler.js:61</code></a></span>
-    <h3 class="">
-      private
-      
-      
-      _sounds: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="crosslink external" target="_blank">Set</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a>
-    </h3>
-  </div>
-
-
-  <div class="property-description"><p>Acts as a register for loaded Sound instances. Set on instantiation.</p>
-</div>
-
-</div>
-    </div>
 
   <div id="methods public">
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item public">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l70"><code>addon&#x2F;classes&#x2F;sampler.js:70</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l36"><code>addon&#x2F;classes&#x2F;layered-sound.js:36</code></a></span>
         <h3 class="">
             public
             
@@ -423,7 +326,7 @@ it's end, resulting in an infinite stream of Sound instances.</p>
 
 
 
-    <div class="method-description"><p>Gets the next Sound and plays it immediately.</p>
+    <div class="method-description"><p>Maps through objects in <code>sounds</code> and calls <code>play</code> on each</p>
 </div>
 
 
@@ -432,7 +335,7 @@ it's end, resulting in an infinite stream of Sound instances.</p>
 </div>
 <div class="method item public">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l93"><code>addon&#x2F;classes&#x2F;sampler.js:93</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l46"><code>addon&#x2F;classes&#x2F;layered-sound.js:46</code></a></span>
         <h3 class="">
             public
             
@@ -443,9 +346,8 @@ it's end, resulting in an infinite stream of Sound instances.</p>
 
 
 
-    <div class="method-description"><p>Gets the next Sound and plays it at the specified moment in time. A
-"moment in time" is measured in seconds from the moment that the
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
+    <div class="method-description"><p>Maps through objects in <code>sounds</code> and calls <code>playAt</code> on each, passing
+through the <code>time</code> param to each sound.</p>
 </div>
 
       <div class="params">
@@ -470,9 +372,7 @@ it's end, resulting in an infinite stream of Sound instances.</p>
                   
                 </ul>
               </td>
-              <td><p>The moment in time (in seconds, relative to the
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext's</a> "beginning of
-time") when the next Sound should be played.</p>
+              <td><p>The time to pass to each object's <code>playAt</code> method.</p>
 </td>
             </tr>
 
@@ -484,19 +384,20 @@ time") when the next Sound should be played.</p>
 
 </div>
 <div class="method item public">
-    <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l80"><code>addon&#x2F;classes&#x2F;sampler.js:80</code></a></span>
+    <div id="method_playFor" class="title">
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l72"><code>addon&#x2F;classes&#x2F;layered-sound.js:72</code></a></span>
         <h3 class="">
             public
             
             
-            playIn(seconds)
+            playFor(seconds)
         </h3>
     </div>
 
 
 
-    <div class="method-description"><p>Gets the next Sound and plays it after the specified offset has elapsed.</p>
+    <div class="method-description"><p>Maps through objects in <code>sounds</code> and calls <code>playFor</code> on each, passing
+through the <code>seconds</code> param to each sound.</p>
 </div>
 
       <div class="params">
@@ -521,8 +422,123 @@ time") when the next Sound should be played.</p>
                   
                 </ul>
               </td>
-              <td><p>Number of seconds from "now" that the next Sound
-should be played.</p>
+              <td><p>The seconds to pass to each object's <code>playFor</code> method.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_playForIn" class="title">
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l85"><code>addon&#x2F;classes&#x2F;layered-sound.js:85</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playForIn(playIn, stopAfter)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Maps through objects in <code>sounds</code> and calls <code>playInAndStopAfter</code> on each,
+passing through the <code>playIn</code> and <code>stopAfter</code> params to each sound.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>playIn</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Seconds to pass to each object's
+<code>playInAndStopAfter</code> method.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>stopAfter</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>Seconds to pass to each object's
+<code>playInAndStopAfter</code> method.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+</div>
+<div class="method item public">
+    <div id="method_playIn" class="title">
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l59"><code>addon&#x2F;classes&#x2F;layered-sound.js:59</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            playIn(seconds)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Maps through objects in <code>sounds</code> and calls <code>playIn</code> on each, passing
+through the <code>seconds</code> param to each sound.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>seconds</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The seconds to pass to each object's <code>playIn</code> method.</p>
 </td>
             </tr>
 
@@ -539,60 +555,22 @@ should be played.</p>
     <div id="methods private">
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
-    <div id="method__getNextSound" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l109"><code>addon&#x2F;classes&#x2F;sampler.js:109</code></a></span>
+    <div id="method__initSounds" class="title">
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l102"><code>addon&#x2F;classes&#x2F;layered-sound.js:102</code></a></span>
         <h3 class="">
             private
             
             
-            _getNextSound( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
+            _initSounds( )
         </h3>
     </div>
 
 
 
-    <div class="method-description"><p>Gets _soundIterator and returns it's next value. If _soundIterator has
-reached it's end, replaces _soundIterator with a fresh copy from _sounds
-and returns the first value from that.</p>
+    <div class="method-description"><p>If <code>sounds</code> is null on instantiation, sets it to <code>A()</code></p>
 </div>
 
 
-      <div class="return">
-        <h4>Return:</h4>
-        <div>
-          <span class="return-type"><a href="../classes/Sound.html" class="crosslink">Sound</a></span>
-          <span class="return-description"></span>
-        </div>
-      </div>
-
-
-</div>
-<div class="method item private">
-    <div id="method__setGainAndPan" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l138"><code>addon&#x2F;classes&#x2F;sampler.js:138</code></a></span>
-        <h3 class="">
-            private
-            
-            
-            _setGainAndPan( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
-        </h3>
-    </div>
-
-
-
-    <div class="method-description"><p>Applies the <code>gain</code> and <code>pan</code> properties from the Sampler instance to a
-Sound instance and returns the Sound instance.</p>
-</div>
-
-
-      <div class="return">
-        <h4>Return:</h4>
-        <div>
-          <span class="return-type"><a href="../classes/Sound.html" class="crosslink">Sound</a></span>
-          <span class="return-description"><p>The input sound after having it's gain and pan set</p>
-</span>
-        </div>
-      </div>
 
 
 </div>

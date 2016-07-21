@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>addon/classes/oscillator.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
+    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div class="yui3-g">
+        <div id="sidebar" class="yui3-u">
+            <div class="logo">
+              <a href="../index.html">
+                  ember-audio
+              </a>
+            </div>
+            
+            <div id="modules" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Modules</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../modules/Audio.html">Audio</a>
+                            </li>
+                            <li><a href="../modules/AudioHelpers.html">AudioHelpers</a>
+                            </li>
+                            <li><a href="../modules/AudioService.html">AudioService</a>
+                            </li>
+                            <li><a href="../modules/MusicalConcepts.html">MusicalConcepts</a>
+                            </li>
+                            <li><a href="../modules/utils.html">utils</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id="classes" class="sidebox">
+                <div class="hd">
+                    <h2 class="no-toc">Classes</h2>
+                </div>
+                <div class="bd">
+                    <ul>
+                            <li><a href="../classes/AudioService.html">AudioService</a></li>
+                            <li><a href="../classes/Beat.html">Beat</a></li>
+                            <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
+                            <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
+                            <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
+                            <li><a href="../classes/Sampler.html">Sampler</a></li>
+                            <li><a href="../classes/Sound.html">Sound</a></li>
+                            <li><a href="../classes/Track.html">Track</a></li>
+                            <li><a href="../classes/utils.html">utils</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            <div class="version-info">
+              Version: 0.0.0.5b0fc03d
+            </div>
+            
+        </div>
+
+        <div id="main" class="yui3-u">
+            <div class="content"><div class="title">
+  <h1 class="file-name">addon/classes/oscillator.js</h1>
+</div>
+
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
+import { Connectable, Playable } from &#x27;ember-audio/mixins&#x27;;
+import { Connection } from &#x27;ember-audio&#x27;;
+
+/**
+ * Provides classes that are capable of interacting with the Web Audio API&#x27;s
+ * AudioContext.
+ *
+ * @public
+ * @module Audio
+ */
+
+const {
+  A,
+  on,
+  Object: EmberObject
+} = Ember;
+
+/**
+ * A class that represents an oscillator for a synthesizer. Capable of creating
+ * and starting a waveform of specified &#x60;type&#x60; at a specified &#x60;frequency&#x60;.
+ *
+ * All filters from {{#crossLink &quot;BiquadFilterNode&quot;}}{{/crossLink}} are
+ * available and can be enabled by providing a given filter&#x27;s frequency.
+ *
+ *     // creates a sine wave oscillator with a highpass at 1000Hz
+ *     const audioContext = this.get(&#x27;audio.audioContext&#x27;);
+ *     const osc = Oscillator.create({
+ *       audioContext,
+ *       highpassFrequency: 1000
+ *     });
+ *
+ * @public
+ * @class Oscillator
+ * @uses Connectable
+ * @uses Playable
+ * @todo figure out why &#x60;isPlaying&#x60; isn&#x27;t working for Oscillator
+ */
+const Oscillator = EmberObject.extend(Connectable, Playable, {
+
+  /**
+   * Determines the type of wave output by the OscillatorNode instance.
+   * Corresponds directly to &#x60;type&#x60; from
+   * {{#crossLink &quot;OscillatorNode&quot;}}{{/crossLink}}
+   *
+   * @public
+   * @property type
+   * @type {string}
+   * @default &#x27;sine&#x27;
+   */
+  type: &#x27;sine&#x27;,
+
+  /**
+   * Determines the frequency of the wave output by the OscillatorNode instance.
+   * Corresponds directly to &#x60;frequency&#x60; from
+   * {{#crossLink &quot;OscillatorNode&quot;}}{{/crossLink}}
+   *
+   * @public
+   * @property frequency
+   * @type {number}
+   */
+  frequency: null,
+
+  /**
+   * Initializes default connections on Oscillator instantiation. Runs &#x60;on(&#x27;init&#x27;)&#x60;.
+   *
+   * @protected
+   * @method _initConnections
+   */
+  _initConnections: on(&#x27;init&#x27;, function() {
+    const filters = [
+      this._createFilter(&#x27;lowpass&#x27;),
+      this._createFilter(&#x27;highpass&#x27;),
+      this._createFilter(&#x27;bandpass&#x27;),
+      this._createFilter(&#x27;lowshelf&#x27;),
+      this._createFilter(&#x27;highshelf&#x27;),
+      this._createFilter(&#x27;peaking&#x27;),
+      this._createFilter(&#x27;notch&#x27;),
+      this._createFilter(&#x27;allpass&#x27;)
+    ];
+
+    const bufferSource = Connection.create({
+      name: &#x27;audioSource&#x27;,
+      createdOnPlay: true,
+      source: &#x27;audioContext&#x27;,
+      createCommand: &#x27;createOscillator&#x27;,
+      onPlaySetAttrsOnNode: [
+        {
+          attrNameOnNode: &#x27;frequency.value&#x27;,
+          relativePath: &#x27;frequency&#x27;
+        },
+        {
+          attrNameOnNode: &#x27;type&#x27;,
+          relativePath: &#x27;type&#x27;
+        }
+      ]
+    });
+
+    const gain = Connection.create({
+      name: &#x27;gain&#x27;,
+      source: &#x27;audioContext&#x27;,
+      createCommand: &#x27;createGain&#x27;
+    });
+
+    const panner = Connection.create({
+      name: &#x27;panner&#x27;,
+      source: &#x27;audioContext&#x27;,
+      createCommand: &#x27;createStereoPanner&#x27;
+    });
+
+    const destination = Connection.create({
+      name: &#x27;destination&#x27;,
+      path: &#x27;audioContext.destination&#x27;
+    });
+
+    // always start with source
+    const connections = A([ bufferSource ]);
+
+    // Add filters if they have been defined
+    filters.map((filter) =&gt; {
+      const filterIsDefined = !!this.get(&#x60;${filter.get(&#x27;name&#x27;)}Frequency&#x60;);
+
+      if (filterIsDefined) {
+        connections.pushObject(filter);
+      }
+    });
+
+    // add gain, panner, and destination connections
+    connections.pushObjects([ gain, panner, destination ]);
+
+    this.set(&#x27;connections&#x27;, connections);
+    this._wireConnections();
+  }),
+
+  _createFilter(type) {
+    return Connection.create({
+      name: type,
+      source: &#x27;audioContext&#x27;,
+      createCommand: &#x27;createBiquadFilter&#x27;,
+      onPlaySetAttrsOnNode: [
+        {
+          attrNameOnNode: &#x27;type&#x27;,
+          value: type
+        },
+        {
+          attrNameOnNode: &#x27;frequency.value&#x27;,
+          relativePath: &#x60;${type}Frequency&#x60;
+        },
+        {
+          attrNameOnNode: &#x27;q.value&#x27;,
+          relativePath: &#x60;${type}Q&#x60;
+        },
+        {
+          attrNameOnNode: &#x27;gain.value&#x27;,
+          relativePath: &#x60;${type}Gain&#x60;
+        }
+      ]
+    });
+  },
+
+  /*
+  * The below properties are for the various filter settings. Read about them
+  * here: https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode
+  */
+
+  /**
+   * Determines the Frequency for the lowpass filter. The lowpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property lowpassFrequency
+   * @type {number}
+   */
+  lowpassFrequency: null,
+
+  /**
+   * Determines the Frequency for the highpass filter. The highpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property highpassFrequency
+   * @type {number}
+   */
+  highpassFrequency: null,
+
+  /**
+   * Determines the Frequency for the bandpass filter. The bandpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property bandpassFrequency
+   * @type {number}
+   */
+  bandpassFrequency: null,
+
+  /**
+   * Determines the Frequency for the lowshelf filter. The lowshelf filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property lowshelfFrequency
+   * @type {number}
+   */
+  lowshelfFrequency: null,
+
+  /**
+   * Determines the Frequency for the highshelf filter. The highshelf filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property highshelfFrequency
+   * @type {number}
+   */
+  highshelfFrequency: null,
+
+  /**
+   * Determines the Frequency for the peaking filter. The peaking filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property peakingFrequency
+   * @type {number}
+   */
+  peakingFrequency: null,
+
+  /**
+   * Determines the Frequency for the notch filter. The notch filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property notchFrequency
+   * @type {number}
+   */
+  notchFrequency: null,
+
+  /**
+   * Determines the Frequency for the allpass filter. The allpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property allpassFrequency
+   * @type {number}
+   */
+  allpassFrequency: null,
+
+  /**
+   * Determines the Q for the lowpass filter. Has No effect if lowpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property lowpassQ
+   * @type {number}
+   */
+  lowpassQ: null,
+
+  /**
+   * Determines the Q for the highpass filter. Has No effect if highpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property highpassQ
+   * @type {number}
+   */
+  highpassQ: null,
+
+  /**
+   * Determines the Q for the bandpass filter. Has No effect if bandpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property bandpassQ
+   * @type {number}
+   */
+  bandpassQ: null,
+
+  /**
+   * Determines the Q for the peaking filter. Has No effect if peakingFrequency
+   * is not set.
+   *
+   * @public
+   * @property peakingQ
+   * @type {number}
+   */
+  peakingQ: null,
+
+  /**
+   * Determines the Q for the notch filter. Has No effect if notchFrequency
+   * is not set.
+   *
+   * @public
+   * @property notchQ
+   * @type {number}
+   */
+  notchQ: null,
+
+  /**
+   * Determines the Q for the allpass filter. Has No effect if allpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property allpassQ
+   * @type {number}
+   */
+  allpassQ: null,
+
+  /**
+   * Determines the Gain for the lowshelf filter. Has no effect if
+   * lowshelfFrequency is not set.
+   *
+   * @public
+   * @property lowshelfGain
+   * @type {number}
+   */
+  lowshelfGain: null,
+
+  /**
+   * Determines the Gain for the highshelf filter. Has no effect if
+   * highshelfFrequency is not set.
+   *
+   * @public
+   * @property highshelfGain
+   * @type {number}
+   */
+  highshelfGain: null,
+
+  /**
+   * Determines the Gain for the peaking filter. Has no effect if
+   * peakingFrequency is not set.
+   *
+   * @public
+   * @property peakingGain
+   * @type {number}
+   */
+  peakingGain: null
+});
+
+export default Oscillator;
+
+</pre>
+
+</div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+</body>
+</html>

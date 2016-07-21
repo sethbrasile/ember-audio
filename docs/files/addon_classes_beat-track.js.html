@@ -47,8 +47,14 @@
                             <li><a href="../classes/AudioService.html">AudioService</a></li>
                             <li><a href="../classes/Beat.html">Beat</a></li>
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
+                            <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
+                            <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
+                            <li><a href="../classes/Oscillator.html">Oscillator</a></li>
+                            <li><a href="../classes/Playable.html">Playable</a></li>
+                            <li><a href="../classes/SampledNote.html">SampledNote</a></li>
                             <li><a href="../classes/Sampler.html">Sampler</a></li>
                             <li><a href="../classes/Sound.html">Sound</a></li>
                             <li><a href="../classes/Track.html">Track</a></li>
@@ -62,7 +68,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.05d205db
+              Version: 0.0.0.5b0fc03d
             </div>
             
         </div>
@@ -77,10 +83,13 @@ import Ember from &#x27;ember&#x27;;
 import Beat from &#x27;./beat&#x27;;
 import Sampler from &#x27;./sampler&#x27;;
 
+const beatBank = new WeakMap();
+
 /**
  * Provides classes that are capable of interacting with the Web Audio API&#x27;s
  * AudioContext.
  *
+ * @public
  * @module Audio
  */
 
@@ -94,20 +103,20 @@ const {
  * &quot;rests,&quot; in a rhythmic way. An instance of this class behaves very similarly
  * to a &quot;lane&quot; on a drum machine.
  *
+ * @public
  * @class BeatTrack
  * @extends Sampler
  *
  * @todo need a way to stop a BeatTrack once it&#x27;s started. Maybe by creating
  * the times in advance and not calling play until it&#x27;s the next beat in the
  * queue?
- *
- * @todo beats in beats array should save &#x60;active&#x60; state when numbeats/duration changes
  */
 const BeatTrack = Sampler.extend({
 
   /**
    * Determines the number of beats in a BeatTrack instance.
    *
+   * @public
    * @property numBeats
    * @type {number}
    */
@@ -118,6 +127,7 @@ const BeatTrack = Sampler.extend({
    * and currentTimeIsPlaying are automatically switched back to false after
    * having been switched to true for each beat. 100ms is used by default.
    *
+   * @public
    * @property duration
    * @type {number}
    * @default 100
@@ -126,14 +136,24 @@ const BeatTrack = Sampler.extend({
 
   /**
    * Computed property. An array of Beat instances. The number of Beat instances
-   * in the array is always the same as the &#x60;numBeats&#x60; property.
+   * in the array is always the same as the &#x60;numBeats&#x60; property. If &#x27;numBeats&#x27;
+   * or duration changes. This property will be recomputed, but any beats that
+   * previously existed are reused so that they will maintain their &#x60;active&#x60;
+   * state.
    *
+   * @public
    * @property beats
    * @type {array|Beat}
    */
   beats: computed(&#x27;numBeats&#x27;, &#x27;duration&#x27;, function() {
-    const beats = [];
-    const numBeats = this.get(&#x27;numBeats&#x27;);
+    let beats = [];
+    let numBeats = this.get(&#x27;numBeats&#x27;);
+    let existingBeats;
+
+    if (beatBank.has(this)) {
+      existingBeats = beatBank.get(this);
+      numBeats = numBeats - existingBeats.length;
+    }
 
     for (let i = 0; i &lt; numBeats; i++) {
       const beat = Beat.create({
@@ -145,12 +165,19 @@ const BeatTrack = Sampler.extend({
       beats.push(beat);
     }
 
+    if (existingBeats) {
+      beats = existingBeats.concat(beats);
+    }
+
+    beatBank.set(this, beats);
+
     return beats;
   }),
 
   /**
    * Calls play on all Beat instances in the beats array.
    *
+   * @public
    * @method playBeats
    *
    * @param {number} bpm The tempo at which the beats should be played.
@@ -167,6 +194,7 @@ const BeatTrack = Sampler.extend({
    * Calls play on &#x60;active&#x60; Beat instances in the beats array. Any beat that
    * is not marked active is effectively a &quot;rest&quot;.
    *
+   * @public
    * @method playActiveBeats
    *
    * @param {number} bpm The tempo at which the beats and rests should be played.
@@ -193,7 +221,7 @@ const BeatTrack = Sampler.extend({
    * @param noteType {number} The (rhythmic) length of each beat/rest that should
    * be used to calculate the length of a beat/rest in seconds.
    */
-  _callPlayMethodOnBeats(method, bpm, noteType=1/4) {
+  _callPlayMethodOnBeats(method, bpm, noteType=1 / 4) {
     // http://bradthemad.org/guitar/tempo_explanation.php
     const duration = (240 * noteType) / bpm;
     this.get(&#x27;beats&#x27;).map((beat, idx) =&gt; beat[method](idx * duration));

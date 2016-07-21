@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Note - ember-audio</title>
-    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
-    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <title>MusicalIdentity - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
@@ -66,7 +66,7 @@
             
             <div id="sections" class="sidebox">
               <div class="hd">
-                <h2 class="no-toc">Note</h2>
+                <h2 class="no-toc">MusicalIdentity</h2>
               </div>
               <div class="bd">
             
@@ -111,19 +111,24 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-    <span class="source-link"><a href="../files/addon_classes_note.js.html#l16"><code>addon&#x2F;classes&#x2F;note.js:16</code></a></span>
-    <h1 class="class-name">Note</h1>
+    <span class="source-link"><a href="../files/addon_mixins_musical-identity.js.html#l17"><code>addon&#x2F;mixins&#x2F;musical-identity.js:17</code></a></span>
+    <h1 class="class-name">MusicalIdentity</h1>
 </div>
 
-    Uses:
-        <a href="MusicalIdentity.html">MusicalIdentity</a>
-    <br>
 
 
 
-<div class="class-description"><p>A class that represents a musical note, but does not carry any audio data.</p>
-<p>This class only makes sense when used in the context of a collection, as the
-only functionality it provides serves to facilitate identification.</p>
+<div class="class-description"><p>This mixin allows an object to have an awareness of it's "musical identity"
+or "note value" based on western musical standards (a standard piano).
+If any of the following are provided, all of the remaining properties will be
+calculated:</p>
+<ol>
+<li>frequency</li>
+<li>identifier (i.e. "Ab1")</li>
+<li>letter, octave, and (optionally) accidental</li>
+</ol>
+<p>This mixin only makes sense when the consuming object is part of a collection,
+as the only functionality it provides serves to facilitate identification.</p>
 </div>
 
 
@@ -152,7 +157,7 @@ only functionality it provides serves to facilitate identification.</p>
               <a href="#props_accidental">accidental</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
-              
+              <p>For note <code>Ab5</code>, this would be <code>b</code>.</p>
             </div>
           </td>
         </tr>
@@ -167,7 +172,7 @@ only functionality it provides serves to facilitate identification.</p>
               <a href="#props_letter">letter</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
-              
+              <p>For note <code>Ab5</code>, this would be <code>A</code>.</p>
             </div>
           </td>
         </tr>
@@ -182,7 +187,7 @@ only functionality it provides serves to facilitate identification.</p>
               <a href="#props_name">name</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
-              
+              <p>Computed property. Value is <code>${letter}</code> or <code>${letter}${accidental}</code> if accidental exists.</p>
             </div>
           </td>
         </tr>
@@ -197,7 +202,7 @@ only functionality it provides serves to facilitate identification.</p>
               <a href="#props_octave">octave</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
-              
+              <p>For note <code>Ab5</code>, this would be <code>5</code>.</p>
             </div>
           </td>
         </tr>
@@ -212,7 +217,7 @@ only functionality it provides serves to facilitate identification.</p>
               <a href="#props_"></a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a>
             </div>
             <div class="short-description">
-              
+              <p>Computed property. The frequency of the note in hertz. Calculated by comparing western musical standards (a standard piano) and the note identifier (i.e. <code>Ab1</code>). If this property is set directly, all other properties are updated to reflect the provided frequency.</p>
             </div>
           </td>
         </tr>
@@ -227,7 +232,7 @@ only functionality it provides serves to facilitate identification.</p>
               <a href="#props_identifier">identifier</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a>
             </div>
             <div class="short-description">
-              
+              <p>Computed property. Value is <code>${letter}${octave}</code> or <code>${letter}${accidental}${octave}</code> if accidental exists. If this property is set directly, all other properties are updated to reflect the provided identifier.</p>
             </div>
           </td>
         </tr>
@@ -260,7 +265,8 @@ only functionality it provides serves to facilitate identification.</p>
   </div>
 
 
-  <div class="property-description">For note <code>Ab5</code>, this would be <code>b</code>.</div>
+  <div class="property-description"><p>For note <code>Ab5</code>, this would be <code>b</code>.</p>
+</div>
 
 </div>
 <div class="property item public">
@@ -275,7 +281,8 @@ only functionality it provides serves to facilitate identification.</p>
   </div>
 
 
-  <div class="property-description">For note <code>Ab5</code>, this would be <code>A</code>.</div>
+  <div class="property-description"><p>For note <code>Ab5</code>, this would be <code>A</code>.</p>
+</div>
 
 </div>
 <div class="property item public">
@@ -290,8 +297,9 @@ only functionality it provides serves to facilitate identification.</p>
   </div>
 
 
-  <div class="property-description">Computed property. Value is <code>${letter}</code> or <code>${letter}${accidental}</code> if
-accidental exists.</div>
+  <div class="property-description"><p>Computed property. Value is <code>${letter}</code> or <code>${letter}${accidental}</code> if
+accidental exists.</p>
+</div>
 
 </div>
 <div class="property item public">
@@ -306,7 +314,8 @@ accidental exists.</div>
   </div>
 
 
-  <div class="property-description">For note <code>Ab5</code>, this would be <code>5</code>.</div>
+  <div class="property-description"><p>For note <code>Ab5</code>, this would be <code>5</code>.</p>
+</div>
 
 </div>
 <div class="property item public">
@@ -321,10 +330,11 @@ accidental exists.</div>
   </div>
 
 
-  <div class="property-description">Computed property. The frequency of the note in hertz. Calculated by
+  <div class="property-description"><p>Computed property. The frequency of the note in hertz. Calculated by
 comparing western musical standards (a standard piano) and the note
 identifier (i.e. <code>Ab1</code>). If this property is set directly, all other
-properties are updated to reflect the provided frequency.</div>
+properties are updated to reflect the provided frequency.</p>
+</div>
 
 </div>
 <div class="property item public">
@@ -339,10 +349,11 @@ properties are updated to reflect the provided frequency.</div>
   </div>
 
 
-  <div class="property-description">Computed property. Value is <code>${letter}${octave}</code> or
+  <div class="property-description"><p>Computed property. Value is <code>${letter}${octave}</code> or
 <code>${letter}${accidental}${octave}</code> if accidental exists. If this property
 is set directly, all other properties are updated to reflect the provided
-identifier.</div>
+identifier.</p>
+</div>
 
 </div>
     </div>
@@ -357,8 +368,8 @@ identifier.</div>
         </div>
     </div>
 </div>
-<script src="../assets/vendor/prettify/prettify-min-8256dd2a219b0a9249c1d906fcd6e5ce.js" integrity="sha256-PEoKViCR7OSNGsCeUia4/l2IgG+X47MpYSqwA8cSrsg= sha512-Fl/zkN7BnIL5B6NIi/jhpjvXRWHwfUMcGM7mAbJMAL9P3/W1nbC0Dt3pLszfpg+QSg0/aKKfanQdzLrrkV1ToA==" ></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+<script src="../assets/js/yui-prettify.js"></script>
 </body>
 </html>
