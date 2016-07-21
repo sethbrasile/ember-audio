@@ -40,6 +40,8 @@ const {
  *
  * @todo create class called something like EmberAudioLoadResponse to use in
  * place of current POJO returned from load(). Probably a real es6 class.
+ *
+ * @todo remove concept of "register" and let consuming app handle state
  */
 export default Service.extend({
   /**

@@ -19,11 +19,8 @@ export default Ember.Controller.extend({
     const osc = kick.getConnection('audioSource');
     const gain = kick.getConnection('gain');
 
-    osc.setValueFor('frequency').to(150).at(0);
-    gain.setValueFor('gain').to(1).at(0);
-
-    osc.setValueFor('frequency').to(0.01).at(0.1)
-    gain.setValueFor('gain').to(0.01).at(0.1);
+    osc.onPlayRamp('frequency').from(150).to(0.01).in(0.1);
+    gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
 
     return kick;
   },
@@ -55,15 +52,14 @@ export default Ember.Controller.extend({
 
   _createSnareOscillator() {
     const audio = this.get('audio');
-    const oscillator = audio.createOscillator({ type: 'triangle' });
-    const osc = oscillator.getConnection('audioSource');
-    const gain = oscillator.getConnection('gain');
+    const snare = audio.createOscillator({ type: 'triangle' });
+    const oscillator = snare.getConnection('audioSource');
+    const gain = snare.getConnection('gain');
 
-    osc.setValueFor('frequency').to(100).at(0);
-    gain.setValueFor('gain').to(1).at(0);
-    gain.setValueFor('gain').to(0.01).at(0.1);
+    oscillator.onPlayRamp('frequency').from(100).to(60).in(0.1);
+    gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
 
-    return oscillator;
+    return snare;
   },
 
   _createSnareNoise() {
@@ -71,8 +67,7 @@ export default Ember.Controller.extend({
     const noise = audio.createWhiteNoise({ name: 'snare', highpassFrequency: 1000 });
     const gain = noise.getConnection('gain');
 
-    gain.setValueFor('gain').to(1).at(0);
-    gain.setValueFor('gain').to(0.001).at(0.1);
+    gain.onPlayRamp('gain').from(1).to(0.001).in(0.1)
 
     return noise;
   },
@@ -80,10 +75,10 @@ export default Ember.Controller.extend({
   _createHihatEnvelope(oscillator) {
     const gain = oscillator.getConnection('gain');
 
-    gain.setValueFor('gain').to(0.00001).at(0);
-    gain.setValueFor('gain').to(1).at(0.02);
-    gain.setValueFor('gain').to(0.3).at(0.03);
-    gain.setValueFor('gain').to(0.00001).at(0.3);
+    gain.onPlayRamp('gain').from(0.00001).to(1).in(0.02);
+
+    gain.onPlaySet('gain').to(0.3).endingAt(0.03);
+    gain.onPlaySet('gain').to(0.00001).endingAt(0.3);
 
     return oscillator;
   },

@@ -225,8 +225,19 @@ export default Mixin.create({
       }
     });
 
-    connection.get('exponentialRampToValueAtTime').map((opts) => {
-      connection.node[opts.key].exponentialRampToValueAtTime(opts.value, currentTime + opts.time);
+    connection.get('exponentialRampToValuesAtTime').map((opts) => {
+      const time = currentTime + opts.endTime;
+      connection.node[opts.key].exponentialRampToValueAtTime(opts.value, time);
+    });
+
+    connection.get('linearRampToValuesAtTime').map((opts) => {
+      const time = currentTime + opts.endTime;
+      connection.node[opts.key].linearRampToValueAtTime(opts.value, time);
+    });
+
+    connection.get('setValuesAtTime').map((opts) => {
+      const time = currentTime + opts.startTime;
+      connection.node[opts.key].setValueAtTime(opts.value, time);
     });
 
     connection.get('startingValues').map((opts) => {

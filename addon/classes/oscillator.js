@@ -34,6 +34,7 @@ const {
  * @class Oscillator
  * @uses Connectable
  * @uses Playable
+ * @todo figure out why `isPlaying` isn't working for Oscillator
  */
 const Oscillator = EmberObject.extend(Connectable, Playable, {
 
