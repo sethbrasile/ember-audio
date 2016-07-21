@@ -162,25 +162,176 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
   * The below properties are for the various filter settings. Read about them
   * here: https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode
   */
+
+  /**
+   * Determines the Frequency for the lowpass filter. The lowpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property lowpassFrequency
+   * @type {number}
+   */
   lowpassFrequency: null,
+
+  /**
+   * Determines the Frequency for the highpass filter. The highpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property highpassFrequency
+   * @type {number}
+   */
   highpassFrequency: null,
+
+  /**
+   * Determines the Frequency for the bandpass filter. The bandpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property bandpassFrequency
+   * @type {number}
+   */
   bandpassFrequency: null,
+
+  /**
+   * Determines the Frequency for the lowshelf filter. The lowshelf filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property lowshelfFrequency
+   * @type {number}
+   */
   lowshelfFrequency: null,
+
+  /**
+   * Determines the Frequency for the highshelf filter. The highshelf filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property highshelfFrequency
+   * @type {number}
+   */
   highshelfFrequency: null,
+
+  /**
+   * Determines the Frequency for the peaking filter. The peaking filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property peakingFrequency
+   * @type {number}
+   */
   peakingFrequency: null,
+
+  /**
+   * Determines the Frequency for the notch filter. The notch filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property notchFrequency
+   * @type {number}
+   */
   notchFrequency: null,
+
+  /**
+   * Determines the Frequency for the allpass filter. The allpass filter is
+   * disabled if this is not provided.
+   *
+   * @public
+   * @property allpassFrequency
+   * @type {number}
+   */
   allpassFrequency: null,
 
+  /**
+   * Determines the Q for the lowpass filter. Has No effect if lowpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property lowpassQ
+   * @type {number}
+   */
   lowpassQ: null,
+
+  /**
+   * Determines the Q for the highpass filter. Has No effect if highpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property highpassQ
+   * @type {number}
+   */
   highpassQ: null,
+
+  /**
+   * Determines the Q for the bandpass filter. Has No effect if bandpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property bandpassQ
+   * @type {number}
+   */
   bandpassQ: null,
+
+  /**
+   * Determines the Q for the peaking filter. Has No effect if peakingFrequency
+   * is not set.
+   *
+   * @public
+   * @property peakingQ
+   * @type {number}
+   */
   peakingQ: null,
+
+  /**
+   * Determines the Q for the notch filter. Has No effect if notchFrequency
+   * is not set.
+   *
+   * @public
+   * @property notchQ
+   * @type {number}
+   */
   notchQ: null,
+
+  /**
+   * Determines the Q for the allpass filter. Has No effect if allpassFrequency
+   * is not set.
+   *
+   * @public
+   * @property allpassQ
+   * @type {number}
+   */
   allpassQ: null,
 
+  /**
+   * Determines the Gain for the lowshelf filter. Has no effect if
+   * lowshelfFrequency is not set.
+   *
+   * @public
+   * @property lowshelfGain
+   * @type {number}
+   */
   lowshelfGain: null,
+
+  /**
+   * Determines the Gain for the highshelf filter. Has no effect if
+   * highshelfFrequency is not set.
+   *
+   * @public
+   * @property highshelfGain
+   * @type {number}
+   */
   highshelfGain: null,
-  peakingGain: null,
+
+  /**
+   * Determines the Gain for the peaking filter. Has no effect if
+   * peakingFrequency is not set.
+   *
+   * @public
+   * @property peakingGain
+   * @type {number}
+   */
+  peakingGain: null
 });
 
 export default Oscillator;
