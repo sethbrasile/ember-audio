@@ -6,8 +6,318 @@
   {{#each drums as |drum|}}
     <div class="beat-pad">
       <span class="text">{{drum.name}}</span>
-      <span class="pad" {{action 'playDrum' drum}}></span>
+      <span class="pad"
+        {{action 'playDrum' drum on='touchStart'}}
+        {{action 'playDrum' drum on='mouseDown'}}></span>
     </div>
   {{/each}}
 </div>
-{{!-- http://joesul.li/van/synthesizing-hi-hats/ --}}
+
+<div class="content">
+  <p>
+    Synthesis is a pretty complex topic. For the most part, it's all about
+    filtering oscillators and controlling gain (controlling gain is referred to
+    as controlling
+    <a href="https://en.wikipedia.org/wiki/Synthesizer#Attack_Decay_Sustain_Release_.28ADSR.29_envelope">
+      envelope
+    </a>
+    in synth-land).
+  </p>
+  <p>
+    In order to synthesize a drum sound, we can create an oscillator, play the
+    oscillator in short bursts, and transform the envelope very quickly before
+    the sound is stopped.
+  </p>
+  <p>
+    Here's the function that outputs the kick sound from the beat-pads above:
+  </p>
+</div>
+
+{{#code-block language='javascript'}}
+  _createKick() {
+    const audio = this.get('audio');
+    const kick = audio.createOscillator({ name: 'kick' });
+    const osc = kick.getConnection('audioSource');
+    const gain = kick.getConnection('gain');
+
+    osc.onPlayRamp('frequency').from(150).to(0.01).in(0.1);
+    gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
+
+    return kick;
+  }
+{{/code-block}}
+
+<div class="content">
+  <p>
+    A <code>Connection</code> instance has a method called
+    <code>onPlayRamp</code> that lets us set a starting value, then use
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioParam/exponentialRampToValueAtTime">
+      exponentialRampToValueAtTime
+    </a>
+    to ramp up/down to another value, each time the oscillator is played.
+  </p>
+  <p>
+    By doing:
+  </p>
+</div>
+
+{{#code-block language='javascript'}}
+  osc.onPlayRamp('frequency').from(150).to(0.01).in(0.1);
+{{/code-block}}
+
+<div class="content">
+  <p>
+    Each time the oscillator is played, we are setting it's frequency to 150Hz,
+    then ramping it down to 0.01Hz over the course of 0.1 seconds.
+  </p>
+  <p>
+    We can make some adjustments and end up with a "bass drop."
+  </p>
+  <p class="note">
+    (If your speakers are turned up, you should probably turn them down, and
+    you probably can't even hear this if you're on a laptop :D)
+  </p>
+
+  <button {{action 'playBassDrop'}} class="btn btn-danger">Play Bass Drop</button>
+</div>
+
+{{#code-block language='javascript'}}
+  playBassDrop() {
+    const audio = this.get('audio');
+    const bassDrop = audio.createOscillator();
+    const osc = bassDrop.getConnection('audioSource');
+    const gain = bassDrop.getConnection('gain');
+
+    // We can specify 'linear' to get a linear ramp instead of an exponential one
+    osc.onPlayRamp('frequency', 'linear').from(100).to(0.01).in(10);
+
+    // We automate gain as well, so we don't end up with a loud click when the audio stops
+    gain.onPlayRamp('gain').from(1).to(0.01).in(10);
+
+    bassDrop.playFor(10);
+  }
+{{/code-block}}
+
+<div class="content">
+  <p>
+    The snare and hihat sounds use the same concepts, but they're a bit more
+    complex.
+  </p>
+  <p>
+    For the snare, we create an oscillator that mimics the "meat" of the snare
+    tone. It's similar to the kick sound, but doesn't drop as low. We also create
+    a Sound instance that's loaded up with "white noise" that we use to mimic
+    the "crack" of the snare (the "snares" on the bottom of the snare).
+  </p>
+  <p>
+    We shape the "envelope" of each, then layer the two sounds together.
+  </p>
+  <p>
+    In case you're curious, here are both sounds individually.
+  </p>
+
+  <button {{action 'playSnareMeat'}} class="btn btn-primary">
+    Play Snare Meat
+  </button>
+
+  <button {{action 'playSnareCrack'}} class="btn btn-primary">
+    Play Snare Crack
+  </button>
+</div>
+
+{{#code-block language='javascript'}}
+  _createSnare() {
+    const oscillator = this._createSnareOscillator();
+    const noise = this._createSnareNoise();
+
+    // A LayeredSound instance lets us stack multiple sounds to be played at once
+    return LayeredSound.create({ name: 'snare', sounds: [ noise, oscillator ] });
+  },
+
+  _createSnareOscillator() {
+    const audio = this.get('audio');
+    const snare = audio.createOscillator({ type: 'triangle' });
+    const oscillator = snare.getConnection('audioSource');
+    const gain = snare.getConnection('gain');
+
+    oscillator.onPlayRamp('frequency').from(100).to(60).in(0.1);
+    gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
+
+    return snare;
+  },
+
+  _createSnareNoise() {
+    const audio = this.get('audio');
+    const noise = audio.createWhiteNoise({ name: 'snare', highpassFrequency: 1000 });
+    const gain = noise.getConnection('gain');
+
+    gain.onPlayRamp('gain').from(1).to(0.001).in(0.1);
+
+    return noise;
+  }
+{{/code-block}}
+
+<div class="content">
+  <p>
+    For the hihat, we create an oscillator for each of 6 different overtones of
+    a fundamental frequency (in our case, we're using <code>40</code>). We
+    heavily filter each oscillator, then shape the envelope for each so that
+    the gain ramps up and back down very quickly, then layer them all together.
+  </p>
+</div>
+
+{{#code-block language='javascript'}}
+  _createHihat() {
+    // http://joesul.li/van/synthesizing-hi-hats/
+    const overtones = [ 2, 3, 4.16, 5.43, 6.79, 8.21 ];
+
+    const oscillators = overtones
+      // Create an oscillator for each overtone
+      .map(this._createHihatOscillator.bind(this))
+
+      // Shape the envelope for each oscillator
+      .map(this._createHihatEnvelope);
+
+    // Layer them all together
+    return LayeredSound.create({ name: 'hihat', sounds: oscillators });
+  },
+
+  _createHihatOscillator(overtone) {
+    const fundamental = 40;
+
+    return this.get('audio').createOscillator({
+      type: 'square',
+      highpassFrequency: 7000,
+      bandpassFrequency: 10000,
+      frequency: fundamental * overtone
+    });
+  },
+
+  _createHihatEnvelope(oscillator) {
+    const gain = oscillator.getConnection('gain');
+
+    gain.onPlayRamp('gain').from(0.00001).to(1).in(0.02);
+
+    gain.onPlaySet('gain').to(0.3).endingAt(0.03);
+    gain.onPlaySet('gain').to(0.00001).endingAt(0.3);
+
+    return oscillator;
+  }
+{{/code-block}}
+
+<div class="content">
+  <p>
+    Here's the full code for the synthesized drum kit example:
+  </p>
+</div>
+
+{{#code-block language='handlebars'}}
+  \{{#each drums as |drum|}}
+    &lt;div class="beat-pad">
+      &lt;span class="text">\{{drum.name}}&lt;/span>
+      &lt;span class="pad"
+        \{{action 'playDrum' drum on='touchStart'}}
+        \{{action 'playDrum' drum on='mouseDown'}}>&lt;/span>
+    &lt;/div>
+  \{{/each}}
+{{/code-block}}
+
+{{#code-block language='javascript'}}
+  import Ember from 'ember';
+  import { LayeredSound } from 'ember-audio';
+
+  export default Ember.Whatever.extend({
+    audio: Ember.inject.service(),
+    drums: null,
+
+    initDrums: Ember.on('init', function() {
+      this.set('drums', [
+        this._createKick(),
+        this._createSnare(),
+        this._createHihat()
+      ]);
+    }),
+
+    _createKick() {
+      const audio = this.get('audio');
+      const kick = audio.createOscillator({ name: 'kick' });
+      const osc = kick.getConnection('audioSource');
+      const gain = kick.getConnection('gain');
+
+      osc.onPlayRamp('frequency').from(150).to(0.01).in(0.1);
+      gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
+
+      return kick;
+    },
+
+    _createSnare() {
+      const noise = this._createSnareNoise();
+      const oscillator = this._createSnareOscillator();
+
+      return LayeredSound.create({ name: 'snare', sounds: [ noise, oscillator ] });
+    },
+
+    _createSnareOscillator() {
+      const audio = this.get('audio');
+      const snare = audio.createOscillator({ type: 'triangle' });
+      const oscillator = snare.getConnection('audioSource');
+      const gain = snare.getConnection('gain');
+
+      oscillator.onPlayRamp('frequency').from(100).to(60).in(0.1);
+      gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
+
+      return snare;
+    },
+
+    _createSnareNoise() {
+      const audio = this.get('audio');
+      const noise = audio.createWhiteNoise({ name: 'snare', highpassFrequency: 1000 });
+      const gain = noise.getConnection('gain');
+
+      gain.onPlayRamp('gain').from(1).to(0.001).in(0.1);
+
+      return noise;
+    },
+
+    _createHihat() {
+      // http://joesul.li/van/synthesizing-hi-hats/
+      const ratios = [ 2, 3, 4.16, 5.43, 6.79, 8.21 ];
+
+      const oscillators = ratios
+        .map(this._createHihatOscillator.bind(this))
+        .map(this._createHihatEnvelope);
+
+      return LayeredSound.create({ name: 'hihat', sounds: oscillators });
+    },
+
+    _createHihatOscillator(ratio) {
+      const fundamental = 40;
+
+      return this.get('audio').createOscillator({
+        type: 'square',
+        highpassFrequency: 7000,
+        bandpassFrequency: 10000,
+        frequency: fundamental * ratio
+      });
+    },
+
+    _createHihatEnvelope(oscillator) {
+      const gain = oscillator.getConnection('gain');
+
+      gain.onPlayRamp('gain').from(0.00001).to(1).in(0.02);
+
+      gain.onPlaySet('gain').to(0.3).endingAt(0.03);
+      gain.onPlaySet('gain').to(0.00001).endingAt(0.3);
+
+      return oscillator;
+    },
+
+    actions: {
+      playDrum(drum) {
+        // Only play for 0.1 seconds so that playing in quick succession doesn't
+        // result in distortion
+        drum.playFor(0.1);
+      }
+    }
+  });
+{{/code-block}}

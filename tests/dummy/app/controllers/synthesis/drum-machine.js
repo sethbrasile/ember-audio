@@ -1,11 +1,17 @@
 import Ember from 'ember';
 import { LayeredSound } from 'ember-audio';
 
-export default Ember.Controller.extend({
-  audio: Ember.inject.service(),
+const {
+  inject: { service },
+  on,
+  Controller
+} = Ember;
+
+export default Controller.extend({
+  audio: service(),
   drums: null,
 
-  initDrums: Ember.on('init', function() {
+  initDrums: on('init', function() {
     this.set('drums', [
       this._createKick(),
       this._createSnare(),
@@ -26,28 +32,10 @@ export default Ember.Controller.extend({
   },
 
   _createSnare() {
-    const audio = this.get('audio');
     const noise = this._createSnareNoise();
     const oscillator = this._createSnareOscillator();
 
     return LayeredSound.create({ name: 'snare', sounds: [ noise, oscillator ] });
-  },
-
-  _createHihat() {
-    const audio = this.get('audio');
-    var fundamental = 40;
-    var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
-
-    const oscillators = ratios.map((ratio) => {
-      return audio.createOscillator({
-        type: 'square',
-        highpassFrequency: 7000,
-        bandpassFrequency: 10000,
-        frequency: fundamental * ratio
-      });
-    }).map(this._createHihatEnvelope);
-
-    return LayeredSound.create({ name: 'hihat', sounds: oscillators });
   },
 
   _createSnareOscillator() {
@@ -67,9 +55,31 @@ export default Ember.Controller.extend({
     const noise = audio.createWhiteNoise({ name: 'snare', highpassFrequency: 1000 });
     const gain = noise.getConnection('gain');
 
-    gain.onPlayRamp('gain').from(1).to(0.001).in(0.1)
+    gain.onPlayRamp('gain').from(1).to(0.001).in(0.1);
 
     return noise;
+  },
+
+  _createHihat() {
+    // http://joesul.li/van/synthesizing-hi-hats/
+    const ratios = [ 2, 3, 4.16, 5.43, 6.79, 8.21 ];
+
+    const oscillators = ratios
+      .map(this._createHihatOscillator.bind(this))
+      .map(this._createHihatEnvelope);
+
+    return LayeredSound.create({ name: 'hihat', sounds: oscillators });
+  },
+
+  _createHihatOscillator(ratio) {
+    const fundamental = 40;
+
+    return this.get('audio').createOscillator({
+      type: 'square',
+      highpassFrequency: 7000,
+      bandpassFrequency: 10000,
+      frequency: fundamental * ratio
+    });
   },
 
   _createHihatEnvelope(oscillator) {
@@ -88,6 +98,29 @@ export default Ember.Controller.extend({
       // Only play for 0.1 seconds so that playing in quick succession doesn't
       // result in distortion
       drum.playFor(0.1);
+    },
+
+    playBassDrop() {
+      const audio = this.get('audio');
+      const bassDrop = audio.createOscillator();
+      const osc = bassDrop.getConnection('audioSource');
+      const gain = bassDrop.getConnection('gain');
+
+      // We can specify 'linear' to get a linear ramp instead of an exponential one
+      osc.onPlayRamp('frequency', 'linear').from(100).to(0.01).in(10);
+
+      // We automate gain as well, so we don't end up with a loud click when the audio stops
+      gain.onPlayRamp('gain').from(1).to(0.01).in(10);
+
+      bassDrop.playFor(10);
+    },
+
+    playSnareMeat() {
+      this._createSnareOscillator().playFor(0.1);
+    },
+
+    playSnareCrack() {
+      this._createSnareNoise().playFor(0.1);
     }
   }
 });

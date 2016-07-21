@@ -126,7 +126,7 @@ export default Mixin.create({
    * should be stopped.
    */
   stopIn(seconds) {
-    this._stop(this.get('audioContext.currentTime') + seconds)
+    this._stop(this.get('audioContext.currentTime') + seconds);
   },
 
   /**

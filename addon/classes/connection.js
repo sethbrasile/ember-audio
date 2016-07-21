@@ -311,7 +311,7 @@ const Connection = EmberObject.extend({
           endingAt(endTime, type='exponential') {
             startingValues.removeObject(startValue);
 
-            switch(type) {
+            switch (type) {
               case 'exponential':
                 exponentialValues.pushObject({ key, value, endTime });
                 break;
@@ -320,9 +320,9 @@ const Connection = EmberObject.extend({
                 break;
             }
           }
-        }
+        };
       }
-    }
+    };
   },
 
   /**
@@ -355,9 +355,9 @@ const Connection = EmberObject.extend({
                 onPlaySet(key).to(startValue);
                 onPlaySet(key).to(endValue).endingAt(endTime);
               }
-            }
+            };
           }
-        }
+        };
       }
     };
   },

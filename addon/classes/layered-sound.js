@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import { Playable } from 'ember-audio/mixins';
 
 /**
  * Provides classes that are capable of interacting with the Web Audio API's
@@ -10,17 +9,23 @@ import { Playable } from 'ember-audio/mixins';
  */
 
 const {
+  A,
+  on,
   Object: EmberObject
 } = Ember;
 
 /**
+ * Allows multiple instances of anything that uses
+ * {{#crossLink "Playable"}}{{/crossLink}} to be loaded up and played at the
+ * same time.
  *
- *
+ * @public
+ * @class LayeredSound
  */
 const LayeredSound = EmberObject.extend({
   /**
-   * Acts as a register for loaded different types of sounds. Set on
-   * instantiation. Anything that has a `play` method can be placed in this array.
+   * Acts as a register for different types of sounds. Anything that uses
+   * {{#crossLink "Playable"}}{{/crossLink}} can be added to this register.
    *
    * @public
    * @property sounds
@@ -92,7 +97,19 @@ const LayeredSound = EmberObject.extend({
    */
   playInAndStopAfter(playIn, stopAfter) {
     this.get('sounds').map((sound) => sound.playInAndStopAfter(playIn, stopAfter));
-  }
+  },
+
+  /**
+   * If `sounds` is null on instantiation, sets it to `A()`
+   *
+   * @private
+   * @method _initSounds
+   */
+  _initSounds: on('init', function() {
+    if (!this.get('sounds')) {
+      this.set('sounds', A());
+    }
+  })
 });
 
 export default LayeredSound;

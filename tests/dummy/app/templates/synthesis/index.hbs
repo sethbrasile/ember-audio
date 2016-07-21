@@ -9,8 +9,8 @@
           {{action 'startNote' note on='mouseDown'}}
           {{action 'stopNote' note on='touchEnd'}}
           {{action 'stopNote' note on='mouseUp'}}
-          {{action 'stopNote' note on='mouseLeave'}}
-        >
+          {{action 'stopNote' note on='mouseLeave'}}>
+
           {{note.name}}
         </li>
       {{/each}}
@@ -36,12 +36,18 @@
 
   const MusicallyAwareOscillator = Oscillator.extend(MusicalIdentity);
 
-  const oscillator = MusicallyAwareOscillator.create({
-    audioContext,
-    frequency: 415.3
-  });
+  export default Ember.Whatever.extend({
+    someFunction() {
+      const audioContext = this.get('audio.audioContext');
 
-  console.log(oscillator.get('identifier')); // logs 'Ab4'
+      const oscillator = MusicallyAwareOscillator.create({
+        audioContext,
+        frequency: 415.3
+      });
+
+      console.log(oscillator.get('identifier')); // logs 'Ab4'
+    }
+  });
 {{/code-block}}
 
 <div class="content">
@@ -75,14 +81,13 @@
     &lt;ol>
       \{{#each oscillators as |note|}}
         &lt;li class=\{{if note.accidental 'black'}}
-          \{{!-- These are to make it play like a "keyboard" and I'm sure
-            there's a more elegant way to handle it ¯\_(ツ)_/¯ --}}
+          \{{!-- These are to make it play like a "keyboard" on touch devices
+            and I'm sure there's a more elegant way to handle it ¯\_(ツ)_/¯ --}}
           \{{action 'startNote' note on='touchStart'}}
           \{{action 'startNote' note on='mouseDown'}}
           \{{action 'stopNote' note on='touchEnd'}}
           \{{action 'stopNote' note on='mouseUp'}}
-          \{{action 'stopNote' note on='mouseLeave'}}
-        >
+          \{{action 'stopNote' note on='mouseLeave'}}>
           \{{note.name}}
         &lt;/li>
       \{{/each}}
