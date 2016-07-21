@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import fetch from 'ember-network/fetch';
-import { Sound, Note, SampledNote, Track, BeatTrack, Sampler } from 'ember-audio';
+import { Sound, Note, SampledNote, Track, BeatTrack, Sampler, Oscillator } from 'ember-audio';
 import { sortNotes, base64ToUint8, mungeSoundFont, frequencyMap } from 'ember-audio/utils';
 
 /**
@@ -258,17 +258,43 @@ export default Service.extend({
     return notes;
   },
 
-  createWhiteNoiseBuffer() {
-    const context = this.get('audioContext');
-    const bufferSize = context.sampleRate;
-    const buffer = context.createBuffer(1, bufferSize, bufferSize);
-    const output = buffer.getChannelData(0);
+  /**
+   * Creates a Sound instance with it's audioBuffer filled with one sample's
+   * worth of white noise.
+   *
+   * @public
+   * @method createWhiteNoise
+   *
+   * @param {object} opts An object passed into the Sound instance.
+   *
+   * @return {Sound} The created white noise Sound instance.
+   */
+  createWhiteNoise(opts={}) {
+    const audioContext = this.get('audioContext');
+    const bufferSize = audioContext.sampleRate;
+    const audioBuffer = audioContext.createBuffer(1, bufferSize, bufferSize);
+    const output = audioBuffer.getChannelData(0);
 
     for (let i = 0; i < bufferSize; i++) {
       output[i] = Math.random() * 2 - 1;
     }
 
-    return buffer;
+    return Sound.create(Object.assign(opts, { audioContext, audioBuffer }));
+  },
+
+  /**
+   * Creates an Oscillator instance.
+   *
+   * @public
+   * @method createOscillator
+   *
+   * @param {object} opts An object passed into the Oscillator instance.
+   *
+   * @return {Oscillator} The created Oscillator instance.
+   */
+  createOscillator(opts={}) {
+    const audioContext = this.get('audioContext');
+    return Oscillator.create(Object.assign(opts, { audioContext }));
   },
 
   /**

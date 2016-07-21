@@ -186,7 +186,26 @@ const Connection = EmberObject.extend({
         this.set(name, A());
       }
     });
-  })
+  }),
+
+  setValueFor(key) {
+    const startingValues = this.get('startingValues');
+    const exponential = this.get('exponentialRampToValueAtTime');
+
+    return {
+      to(value) {
+        return {
+          at(time) {
+            if (time === 0) {
+              startingValues.pushObject({ key, value });
+            } else {
+              exponential.pushObject({ key, value, time });
+            }
+          }
+        }
+      }
+    }
+  }
 });
 
 export default Connection;

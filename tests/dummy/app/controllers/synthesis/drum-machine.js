@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { Oscillator, Sound, Connection, LayeredSound } from 'ember-audio';
+import { LayeredSound } from 'ember-audio';
 
 export default Ember.Controller.extend({
   audio: Ember.inject.service(),
@@ -7,156 +7,92 @@ export default Ember.Controller.extend({
 
   initDrums: Ember.on('init', function() {
     this.set('drums', [
-      { name: 'kick', sound: this._createKick() },
-      { name: 'snare', sound: this._createSnare() },
-      { name: 'hihat', sound: this._createHihat() }
+      this._createKick(),
+      this._createSnare(),
+      this._createHihat()
     ]);
   }),
 
-  _createHihat() {
-    const audioContext = this.get('audio.audioContext');
-
-    var fundamental = 40;
-    var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
-
-    const oscillators = ratios.map((ratio) => {
-      return Oscillator.create({
-        audioContext,
-        type: 'square',
-        highpassFrequency: 7000,
-        bandpassFrequency: 10000,
-        frequency: fundamental * ratio
-      });
-    });
-
-    oscillators.map((osc) => {
-      const gainConnection = osc.getConnection('gain');
-
-      gainConnection.get('startingValues').pushObject({
-        key: 'gain',
-        value: 0.00001,
-        time: 0
-      });
-
-      gainConnection.get('exponentialRampToValueAtTime').pushObjects([
-        {
-          key: 'gain',
-          value: 1,
-          time: 0.02
-        },
-        {
-          key: 'gain',
-          value: 0.3,
-          time: 0.03
-        },
-        {
-          key: 'gain',
-          value: 0.00001,
-          time: 0.3
-        }
-      ]);
-    });
-
-    return LayeredSound.create({ sounds: oscillators });
-  },
-
   _createKick() {
-    const audioContext = this.get('audio.audioContext');
+    const audio = this.get('audio');
+    const kick = audio.createOscillator({ name: 'kick' });
+    const osc = kick.getConnection('audioSource');
+    const gain = kick.getConnection('gain');
 
-    // `kick` is an Ember Audio Oscillator instance
-    const kick = Oscillator.create({ audioContext });
-    const oscillatorConnection = kick.getConnection('audioSource');
-    const gainConnection = kick.getConnection('gain');
+    osc.setValueFor('frequency').to(150).at(0);
+    gain.setValueFor('gain').to(1).at(0);
 
-    // const osc = kick.getConnection('audioSource');
-    // const gain = kick.getConnection('gain');
-
-    // Set initial values that are reset on each play
-    // osc.setValueFor('frequency').to(150).at(0);
-    // gain.setValueFor('gain').to(1).at(0);
-
-    // Set timed values that are reset on each play
-    // osc.setValueFor('frequency').to(0.01).at(0.1)
-    // gain.setValueFor('gain').to(0.01).at(0.1);
-
-    oscillatorConnection.get('startingValues').pushObject({
-      key: 'frequency',
-      value: 150
-    });
-
-    gainConnection.get('startingValues').pushObject({
-      key: 'gain',
-      value: 1
-    });
-
-    oscillatorConnection.get('exponentialRampToValueAtTime').pushObject({
-      key: 'frequency',
-      value: 0.01,
-      time: 0.1
-    });
-
-    gainConnection.get('exponentialRampToValueAtTime').pushObject({
-      key: 'gain',
-      value: 0.01,
-      time: 0.1
-    });
+    osc.setValueFor('frequency').to(0.01).at(0.1)
+    gain.setValueFor('gain').to(0.01).at(0.1);
 
     return kick;
   },
 
   _createSnare() {
     const audio = this.get('audio');
-    const audioContext = audio.get('audioContext');
-    const audioBuffer = audio.createWhiteNoiseBuffer();
-    const noise = Sound.create({
-      audioContext,
-      audioBuffer,
-      name: 'snare',
-      highpassFrequency: 1000
-    });
+    const noise = this._createSnareNoise();
+    const oscillator = this._createSnareOscillator();
 
-    const noiseEnvelope = noise.getConnection('gain');
+    return LayeredSound.create({ name: 'snare', sounds: [ noise, oscillator ] });
+  },
 
-    noiseEnvelope.get('startingValues').pushObject({
-      key: 'gain',
-      value: 1
-    });
+  _createHihat() {
+    const audio = this.get('audio');
+    var fundamental = 40;
+    var ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
 
-    noiseEnvelope.get('exponentialRampToValueAtTime').pushObject({
-      key: 'gain',
-      value: 0.001,
-      time: 0.1
-    });
+    const oscillators = ratios.map((ratio) => {
+      return audio.createOscillator({
+        type: 'square',
+        highpassFrequency: 7000,
+        bandpassFrequency: 10000,
+        frequency: fundamental * ratio
+      });
+    }).map(this._createHihatEnvelope);
 
-    const osc = Oscillator.create({ audioContext, type: 'triangle' });
-    // `oscillatorConnection` is the Connection instance that contains the actual oscillator
-    const oscillatorConnection = osc.getConnection('audioSource');
+    return LayeredSound.create({ name: 'hihat', sounds: oscillators });
+  },
 
-    // `gainConnection` is the Connection instance that contains the gain AudioNode
-    const gainConnection = osc.getConnection('gain');
+  _createSnareOscillator() {
+    const audio = this.get('audio');
+    const oscillator = audio.createOscillator({ type: 'triangle' });
+    const osc = oscillator.getConnection('audioSource');
+    const gain = oscillator.getConnection('gain');
 
-    oscillatorConnection.get('startingValues').pushObject({
-      key: 'frequency',
-      value: 100
-    });
+    osc.setValueFor('frequency').to(100).at(0);
+    gain.setValueFor('gain').to(1).at(0);
+    gain.setValueFor('gain').to(0.01).at(0.1);
 
-    gainConnection.get('startingValues').pushObject({
-      key: 'gain',
-      value: 1
-    });
+    return oscillator;
+  },
 
-    gainConnection.get('exponentialRampToValueAtTime').pushObject({
-      key: 'gain',
-      value: 0.01,
-      time: 0.1
-    });
+  _createSnareNoise() {
+    const audio = this.get('audio');
+    const noise = audio.createWhiteNoise({ name: 'snare', highpassFrequency: 1000 });
+    const gain = noise.getConnection('gain');
 
-    return LayeredSound.create({ sounds: [ noise, osc ] });
+    gain.setValueFor('gain').to(1).at(0);
+    gain.setValueFor('gain').to(0.001).at(0.1);
+
+    return noise;
+  },
+
+  _createHihatEnvelope(oscillator) {
+    const gain = oscillator.getConnection('gain');
+
+    gain.setValueFor('gain').to(0.00001).at(0);
+    gain.setValueFor('gain').to(1).at(0.02);
+    gain.setValueFor('gain').to(0.3).at(0.03);
+    gain.setValueFor('gain').to(0.00001).at(0.3);
+
+    return oscillator;
   },
 
   actions: {
     playDrum(drum) {
-      drum.sound.playFor(0.1);
+      // Only play for 0.1 seconds so that playing in quick succession doesn't
+      // result in distortion
+      drum.playFor(0.1);
     }
   }
 });
