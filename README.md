@@ -3,7 +3,10 @@
 [![Build Status](https://travis-ci.org/sethbrasile/ember-audio.svg?branch=master)](https://travis-ci.org/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Test Coverage](https://codeclimate.com/github/sethbrasile/ember-audio/badges/coverage.svg)](https://codeclimate.com/github/sethbrasile/ember-audio/coverage) [![Dependencies](https://david-dm.org/sethbrasile/ember-audio.svg)](https://david-dm.org/sethbrasile/ember-audio) [![Ember Observer Score](http://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)
 
 #### Need your help!
-I'm still feeling out how the API for this would be best designed, so please give me feedback/suggestions if you have any.
+Ember Audio is currently in `alpha` and I'm still feeling out how the API for
+this would be best designed, so please give me feedback/suggestions if you have
+any. Pull requests and issues are welcome. You can also contact me on the Ember
+community slack: `@sethbrasile`.
 
 #### Installation
 `ember install ember-audio`
