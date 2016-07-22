@@ -5,16 +5,21 @@
 #### Need your help!
 I'm still feeling out how the API for this would be best designed, so please give me feedback/suggestions if you have any.
 
+#### Installation
+`ember install ember-audio`
+
 #### [Interactive Demo/Documentation](http://sethbrasile.github.io/ember-audio)
 
-Ember-audio provides an `audio` service that makes working with the Web
-Audio API super EZ.
+Ember Audio has no external dependencies and provides an `audio` service and
+various classes/mixins that make working with the Web Audio API super EZ.
 
-This is not done and not released yet! It does however, work. Feel free to take
-a look at the code (there are inline docs) and the dummy app if you want to try
-it out.
+Ember Audio aims to simplify sampling, triggering, routing, scheduling,
+synthesizing, soundfonts, and working with audio in-general.
 
-**Note**: You must be using a modern browser: http://caniuse.com/#feat=audio-api
+**Note**: Ember Audio will probably not fully respect semver until it is out of
+alpha!
+
+**Note**: Your target browsers must be modern!: http://caniuse.com/#feat=audio-api
 
 ## Installation
 
