@@ -21,6 +21,8 @@ alpha!
 
 **Note**: Your target browsers must be modern!: http://caniuse.com/#feat=audio-api
 
+# Contributing
+
 ## Installation
 
 * `git clone` this repository
@@ -30,7 +32,7 @@ alpha!
 ## Running
 
 * `ember serve`
-* Visit your app at http://localhost:4200.
+* Visit your app at http://localhost:4200/ember-audio/.
 
 ## Running Tests
 
