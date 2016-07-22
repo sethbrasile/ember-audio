@@ -2,7 +2,7 @@
     "project": {
         "name": "ember-audio",
         "description": "An Ember addon that makes working with the Web Audio API super EZ",
-        "version": "0.0.0.5b0fc03d"
+        "version": "0.0.0.9f71ed7a"
     },
     "files": {
         "addon/classes/beat-track.js": {
@@ -28,6 +28,15 @@
             "modules": {},
             "classes": {
                 "Connection": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "addon/classes/font.js": {
+            "name": "addon/classes/font.js",
+            "modules": {},
+            "classes": {
+                "Font": 1
             },
             "fors": {},
             "namespaces": {}
@@ -193,6 +202,7 @@
             "elements": {},
             "classes": {
                 "BeatTrack": 1,
+                "Font": 1,
                 "LayeredSound": 1,
                 "Oscillator": 1,
                 "Sampler": 1,
@@ -333,6 +343,22 @@
             "access": "public",
             "tagname": ""
         },
+        "Font": {
+            "name": "Font",
+            "shortname": "Font",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "Audio",
+            "namespace": "",
+            "file": "addon/classes/font.js",
+            "line": 17,
+            "description": "Allows multiple Note instances to be loaded up and played via their\n`identifier`.",
+            "access": "public",
+            "tagname": ""
+        },
         "LayeredSound": {
             "name": "LayeredSound",
             "shortname": "LayeredSound",
@@ -422,7 +448,7 @@
             "module": "Audio",
             "namespace": "",
             "file": "addon/classes/sampler.js",
-            "line": 15,
+            "line": 16,
             "description": "An instance of the Sampler class behaves just like a Sound, but allows\nmany {{#crossLink \"AudioBuffer\"}}AudioBuffers{{/crossLink}} to exist and\nautomatically alternately plays them (round-robin) each time any of the play\nmethods are called.",
             "access": "public",
             "tagname": "",
@@ -546,12 +572,13 @@
             "namespace": "",
             "file": "addon/services/audio.js",
             "line": 20,
-            "description": "A {{#crossLink \"Ember.Service\"}}Service{{/crossLink}} that provides methods\nfor interacting with the various\n{{#crossLinkModule \"Audio\"}}{{/crossLinkModule}} classes and the Web Audio\nAPI's {{#crossLink \"AudioContext\"}}{{/crossLink}}. This can be thought of as\nthe \"entrypoint\" to using ember-audio. An application using ember-audio\nshould use this service for all interactions with the Web Audio API.\n\n    // inject into an object\n    Ember.Something.extend({\n      audio: Ember.inject.service()\n    });\n\n    // use\n    loadSound() {\n      return this.get('audio').load('some.mp3').asSound('some-sound');\n    }",
+            "description": "A {{#crossLink \"Ember.Service\"}}Service{{/crossLink}} that provides methods\nfor interacting with the various\n{{#crossLinkModule \"Audio\"}}{{/crossLinkModule}} classes and the Web Audio\nAPI's {{#crossLink \"AudioContext\"}}{{/crossLink}}. This can be thought of as\nthe \"entrypoint\" to using ember-audio. An application using ember-audio\nshould use this service for all interactions with the Web Audio API.\n\n    Ember.Something.extend({\n      audio: Ember.inject.service(),\n\n      loadSound() {\n        return this.get('audio').load('some.mp3').asSound('some-sound');\n      }\n    });",
             "access": "public",
             "tagname": "",
             "todo": [
-                "create class called something like EmberAudioLoadResponse to use in\nplace of current POJO returned from load(). Probably a real es6 class.",
-                "remove concept of \"register\" and let consuming app handle state"
+                "consider creating a class called something like EmberAudioLoadResponse\nto use in place of current POJO returned from load().",
+                "consider removing concept of \"registers\". They only exist at the moment\nfor their caching behavior. Might want to let users decide what is cached\nfor memory reasons? A long running app (like a game)",
+                "might end up with lots\nof sounds."
             ]
         },
         "utils": {
@@ -1031,9 +1058,72 @@
             "module": "AudioHelpers"
         },
         {
+            "file": "addon/classes/font.js",
+            "line": 26,
+            "description": "Acts as a register for all the notes in the font. If null on instantiation,\nset to `A()` via `_initNotes`.",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "property",
+            "name": "notes",
+            "type": "{Ember.MutableArray}",
+            "class": "Font",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/font.js",
+            "line": 36,
+            "description": "Plays a note from `notes`, given it's `identifier`.",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "play",
+            "params": [
+                {
+                    "name": "identifier",
+                    "description": "The identifier for the note that should be\nplayed.",
+                    "type": "String"
+                }
+            ],
+            "class": "Font",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/font.js",
+            "line": 49,
+            "description": "Gets a note from `notes`, given it's identifier.",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "getNote",
+            "params": [
+                {
+                    "name": "identifier",
+                    "description": "The identifier for the note that should be\nreturned,",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "The specified Note instance.",
+                "type": "Note"
+            },
+            "class": "Font",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/font.js",
+            "line": 64,
+            "description": "Sets `notes` to `A()` if null on instantiation.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_initNotes",
+            "class": "Font",
+            "module": "Audio"
+        },
+        {
             "file": "addon/classes/layered-sound.js",
             "line": 26,
-            "description": "Acts as a register for different types of sounds. Anything that uses\n{{#crossLink \"Playable\"}}{{/crossLink}} can be added to this register.",
+            "description": "Acts as a register for different types of sounds. Anything that uses\n{{#crossLink \"Playable\"}}{{/crossLink}} can be added to this register.\nIf not set on instantiation, set to `A()` via `_initSounds`.",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
@@ -1044,7 +1134,7 @@
         },
         {
             "file": "addon/classes/layered-sound.js",
-            "line": 36,
+            "line": 37,
             "description": "Maps through objects in `sounds` and calls `play` on each",
             "access": "public",
             "tagname": "",
@@ -1055,7 +1145,7 @@
         },
         {
             "file": "addon/classes/layered-sound.js",
-            "line": 46,
+            "line": 47,
             "description": "Maps through objects in `sounds` and calls `playAt` on each, passing\nthrough the `time` param to each sound.",
             "access": "public",
             "tagname": "",
@@ -1073,7 +1163,7 @@
         },
         {
             "file": "addon/classes/layered-sound.js",
-            "line": 59,
+            "line": 60,
             "description": "Maps through objects in `sounds` and calls `playIn` on each, passing\nthrough the `seconds` param to each sound.",
             "access": "public",
             "tagname": "",
@@ -1091,7 +1181,7 @@
         },
         {
             "file": "addon/classes/layered-sound.js",
-            "line": 72,
+            "line": 73,
             "description": "Maps through objects in `sounds` and calls `playFor` on each, passing\nthrough the `seconds` param to each sound.",
             "access": "public",
             "tagname": "",
@@ -1109,7 +1199,7 @@
         },
         {
             "file": "addon/classes/layered-sound.js",
-            "line": 85,
+            "line": 86,
             "description": "Maps through objects in `sounds` and calls `playInAndStopAfter` on each,\npassing through the `playIn` and `stopAfter` params to each sound.",
             "access": "public",
             "tagname": "",
@@ -1132,7 +1222,7 @@
         },
         {
             "file": "addon/classes/layered-sound.js",
-            "line": 102,
+            "line": 103,
             "description": "If `sounds` is null on instantiation, sets it to `A()`",
             "access": "private",
             "tagname": "",
@@ -1179,7 +1269,29 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 166,
+            "line": 135,
+            "description": "Creates a Connection instance with a filter of the specified type.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_createFilter",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "Determines what type of filter will be created.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "A connection with a BiquadFilterNode of the specified\ntype.",
+                "type": "Connection"
+            },
+            "class": "Oscillator",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/oscillator.js",
+            "line": 177,
             "description": "Determines the Frequency for the lowpass filter. The lowpass filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1191,7 +1303,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 176,
+            "line": 187,
             "description": "Determines the Frequency for the highpass filter. The highpass filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1203,7 +1315,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 186,
+            "line": 197,
             "description": "Determines the Frequency for the bandpass filter. The bandpass filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1215,7 +1327,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 196,
+            "line": 207,
             "description": "Determines the Frequency for the lowshelf filter. The lowshelf filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1227,7 +1339,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 206,
+            "line": 217,
             "description": "Determines the Frequency for the highshelf filter. The highshelf filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1239,7 +1351,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 216,
+            "line": 227,
             "description": "Determines the Frequency for the peaking filter. The peaking filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1251,7 +1363,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 226,
+            "line": 237,
             "description": "Determines the Frequency for the notch filter. The notch filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1263,7 +1375,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 236,
+            "line": 247,
             "description": "Determines the Frequency for the allpass filter. The allpass filter is\ndisabled if this is not provided.",
             "access": "public",
             "tagname": "",
@@ -1275,7 +1387,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 246,
+            "line": 257,
             "description": "Determines the Q for the lowpass filter. Has No effect if lowpassFrequency\nis not set.",
             "access": "public",
             "tagname": "",
@@ -1287,7 +1399,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 256,
+            "line": 267,
             "description": "Determines the Q for the highpass filter. Has No effect if highpassFrequency\nis not set.",
             "access": "public",
             "tagname": "",
@@ -1299,7 +1411,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 266,
+            "line": 277,
             "description": "Determines the Q for the bandpass filter. Has No effect if bandpassFrequency\nis not set.",
             "access": "public",
             "tagname": "",
@@ -1311,7 +1423,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 276,
+            "line": 287,
             "description": "Determines the Q for the peaking filter. Has No effect if peakingFrequency\nis not set.",
             "access": "public",
             "tagname": "",
@@ -1323,7 +1435,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 286,
+            "line": 297,
             "description": "Determines the Q for the notch filter. Has No effect if notchFrequency\nis not set.",
             "access": "public",
             "tagname": "",
@@ -1335,7 +1447,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 296,
+            "line": 307,
             "description": "Determines the Q for the allpass filter. Has No effect if allpassFrequency\nis not set.",
             "access": "public",
             "tagname": "",
@@ -1347,7 +1459,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 306,
+            "line": 317,
             "description": "Determines the Gain for the lowshelf filter. Has no effect if\nlowshelfFrequency is not set.",
             "access": "public",
             "tagname": "",
@@ -1359,7 +1471,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 316,
+            "line": 327,
             "description": "Determines the Gain for the highshelf filter. Has no effect if\nhighshelfFrequency is not set.",
             "access": "public",
             "tagname": "",
@@ -1371,7 +1483,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 326,
+            "line": 337,
             "description": "Determines the Gain for the peaking filter. Has no effect if\npeakingFrequency is not set.",
             "access": "public",
             "tagname": "",
@@ -1383,7 +1495,7 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 29,
+            "line": 30,
             "description": "Determines the gain applied to each sample.",
             "access": "public",
             "tagname": "",
@@ -1396,7 +1508,7 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 39,
+            "line": 40,
             "description": "Determines the stereo pan position of each sample.",
             "access": "public",
             "tagname": "",
@@ -1409,8 +1521,8 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 49,
-            "description": "Temporary storage for the iterable that comes from the _sounds Set.\nThis iterable is meant to be replaced with a new copy every time it reaches\nit's end, resulting in an infinite stream of Sound instances.",
+            "line": 50,
+            "description": "Temporary storage for the iterable that comes from the sounds Set.\nThis iterable is meant to be replaced with a new copy every time it reaches\nit's end, resulting in an infinite stream of Sound instances.",
             "access": "private",
             "tagname": "",
             "itemtype": "property",
@@ -1421,20 +1533,20 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 61,
-            "description": "Acts as a register for loaded Sound instances. Set on instantiation.",
-            "access": "private",
+            "line": 62,
+            "description": "Acts as a register for loaded audio sources. Audio sources can be anything\nthat uses {{#crossLink \"Playable\"}}{{/crossLink}}. If not set on\ninstantiation, automatically set to `new Set()` via `_initSounds`.",
+            "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "_sounds",
-            "type": "{Set|Sound}",
+            "name": "sounds",
+            "type": "{set}",
             "class": "Sampler",
             "module": "Audio"
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 70,
-            "description": "Gets the next Sound and plays it immediately.",
+            "line": 73,
+            "description": "Gets the next audio source and plays it immediately.",
             "access": "public",
             "tagname": "",
             "itemtype": "method",
@@ -1444,7 +1556,7 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 80,
+            "line": 83,
             "description": "Gets the next Sound and plays it after the specified offset has elapsed.",
             "access": "public",
             "tagname": "",
@@ -1462,7 +1574,7 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 93,
+            "line": 96,
             "description": "Gets the next Sound and plays it at the specified moment in time. A\n\"moment in time\" is measured in seconds from the moment that the\n{{#crossLink \"AudioContext\"}}{{/crossLink}} was instantiated.",
             "params": [
                 {
@@ -1480,8 +1592,8 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 109,
-            "description": "Gets _soundIterator and returns it's next value. If _soundIterator has\nreached it's end, replaces _soundIterator with a fresh copy from _sounds\nand returns the first value from that.",
+            "line": 112,
+            "description": "Gets _soundIterator and returns it's next value. If _soundIterator has\nreached it's end, replaces _soundIterator with a fresh copy from sounds\nand returns the first value from that.",
             "access": "private",
             "tagname": "",
             "itemtype": "method",
@@ -1495,7 +1607,7 @@
         },
         {
             "file": "addon/classes/sampler.js",
-            "line": 138,
+            "line": 141,
             "description": "Applies the `gain` and `pan` properties from the Sampler instance to a\nSound instance and returns the Sound instance.",
             "access": "private",
             "tagname": "",
@@ -1505,6 +1617,17 @@
                 "description": "The input sound after having it's gain and pan set",
                 "type": "Sound"
             },
+            "class": "Sampler",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/sampler.js",
+            "line": 156,
+            "description": "Sets `sounds` to `new Set()` if null on instantiation.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_initSounds",
             "class": "Sampler",
             "module": "Audio"
         },
@@ -2173,7 +2296,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 47,
+            "line": 49,
             "description": "An AudioContext instance from the Web Audio API. **NOT** available in all\nbrowsers. Not available in any version of IE (except EDGE)\nas of April 2016.",
             "access": "public",
             "tagname": "",
@@ -2189,7 +2312,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 59,
+            "line": 61,
             "description": "This acts as a register for Sound instances. Sound instances are placed in\nthe register by name, and can be called via audioService.getSound('name')",
             "access": "private",
             "tagname": "",
@@ -2201,7 +2324,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 69,
+            "line": 71,
             "description": "This acts as a register for Sampler instances. Sampler instances are placed\nin the register by name, and can be called via audioService.getSampler('name')",
             "access": "private",
             "tagname": "",
@@ -2213,8 +2336,8 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 79,
-            "description": "This acts as a register for soundfonts. A font is just a `Map` of Note\nobjects which is placed in this register by name.",
+            "line": 81,
+            "description": "This acts as a register for soundfonts. A font is just a `Map` of Note\nobjects which is placed in this register by name, and can be played like:\n`audioService.getFont('some-font').play('Ab1');`",
             "access": "private",
             "tagname": "",
             "itemtype": "property",
@@ -2225,7 +2348,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 89,
+            "line": 92,
             "description": "This acts as a register for Track instances. Track instances are placed in\nthis register by name, and can be called via audioService.getTrack('name')",
             "access": "private",
             "tagname": "",
@@ -2237,7 +2360,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 99,
+            "line": 102,
             "description": "This acts as a register for BeatTrack instances. BeatTrack instances are\nplaced in the register by name, and can be called via\naudioService.getBeatTrack('name')",
             "access": "private",
             "tagname": "",
@@ -2249,7 +2372,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 110,
+            "line": 113,
             "description": "Acts as a proxy method, returns a POJO with methods that return the _load\nand _loadFont methods so that in the end. See example.",
             "example": [
                 "\n    audio.load('some-url.wav').asSound('some-sound');\n    audio.load('some-url.mp3').asTrack('some-track');\n    audio.load(['some-url.mp3']).asSampler('some-sampler');\n    audio.load(['some-url.mp3']).asBeatTrack('some-beat-track');\n    audio.load('some-url.js').asFont('some-font');"
@@ -2269,20 +2392,24 @@
                 "description": "returns a POJO that contains a few methods that curry\n\"src\" \"type\" and \"name\" over to\n{{#crossLink \"Audio/_load:method\"}}{{/crossLink}} and\n{{#crossLink \"Audio/_loadFont:method\"}}{{/crossLink}} and allow you to\nspecify what type of Sound you'd like created.",
                 "type": "Object"
             },
+            "todo": [
+                "find a better way than returning a POJO"
+            ],
             "class": "AudioService",
             "module": "AudioService"
         },
         {
             "file": "addon/services/audio.js",
-            "line": 239,
+            "line": 244,
+            "description": "Creates an array of Note objects from a json object containing notes and\nfrequency values.",
             "access": "public",
             "tagname": "",
             "itemtype": "method",
             "name": "createNoteArray",
             "params": [
                 {
-                    "name": "Optionally",
-                    "description": "provided json object. If not provided,\n the object returned from utils/frequencyMap is used.",
+                    "name": "json",
+                    "description": "Optionally provided json object. If not provided,\nthe object returned from utils/frequencyMap is used.",
                     "type": "Object|null"
                 }
             ],
@@ -2290,12 +2417,15 @@
                 "description": "",
                 "type": "Array|Note"
             },
+            "todo": [
+                "allow createNoteArray to accept array of note names with no frequencies"
+            ],
             "class": "AudioService",
             "module": "AudioService"
         },
         {
             "file": "addon/services/audio.js",
-            "line": 263,
+            "line": 271,
             "description": "Creates a Sound instance with it's audioBuffer filled with one sample's\nworth of white noise.",
             "access": "public",
             "tagname": "",
@@ -2317,7 +2447,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 287,
+            "line": 295,
             "description": "Creates an Oscillator instance.",
             "access": "public",
             "tagname": "",
@@ -2339,7 +2469,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 302,
+            "line": 310,
             "description": "Gets a BeatTrack instance by name from the _beatTracks register.",
             "access": "public",
             "tagname": "",
@@ -2361,7 +2491,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 317,
+            "line": 325,
             "description": "Gets a Sound instance by name from the _sounds register",
             "access": "public",
             "tagname": "",
@@ -2383,7 +2513,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 332,
+            "line": 340,
             "description": "Gets a Track instance by name from the _tracks register",
             "access": "public",
             "tagname": "",
@@ -2405,7 +2535,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 347,
+            "line": 355,
             "description": "Gets a soundfont Map by name from the _fonts register and allows it to be\nplayed via the returned POJO containing a method called `play`.",
             "example": [
                 "\n    audio.getFont('some-font').play('Ab1');"
@@ -2430,7 +2560,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 377,
+            "line": 375,
             "description": "Gets a Sampler instance by name from the _samplers register",
             "access": "public",
             "tagname": "",
@@ -2452,7 +2582,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 392,
+            "line": 390,
             "description": "Gets all instances of requested type and calls\n{{#crossLink \"Sound/stop:method\"}}{{/crossLink}} on each.",
             "access": "public",
             "tagname": "",
@@ -2470,7 +2600,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 408,
+            "line": 406,
             "description": "Gets all Track instances and calls\n{{#crossLink \"Sound/pause:method\"}}{{/crossLink}} on each. Only works for\ntracks because only Track instances are pause-able.",
             "access": "public",
             "tagname": "",
@@ -2481,7 +2611,30 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 422,
+            "line": 420,
+            "description": "Given a sound's name and type, removes the sound from it's register.",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "removeFromRegister",
+            "params": [
+                {
+                    "name": "type",
+                    "description": "The type of sound that should be removed. Can be\n'sound', 'track', 'font', 'beatTrack', or 'sampler'.",
+                    "type": "String"
+                },
+                {
+                    "name": "name",
+                    "description": "The name of the sound that should be removed.",
+                    "type": "String"
+                }
+            ],
+            "class": "AudioService",
+            "module": "AudioService"
+        },
+        {
+            "file": "addon/services/audio.js",
+            "line": 436,
             "description": "Gets a register by it's type.",
             "access": "private",
             "tagname": "",
@@ -2503,7 +2656,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 443,
+            "line": 459,
             "description": "Creates an {{#crossLinkModule \"Audio\"}}Audio Class{{/crossLinkModule}}\ninstance (which is based on which \"type\" is specified), and passes \"props\"\nto the new instance.",
             "access": "private",
             "tagname": "",
@@ -2530,7 +2683,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 471,
+            "line": 487,
             "description": "Loads and decodes an audio file, creating a Sound, Track, or BeatTrack\ninstance (as determined by the \"type\" parameter) and places the instance\ninto it's corresponding register.",
             "access": "private",
             "tagname": "",
@@ -2562,35 +2715,8 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 514,
-            "description": "Creates a BeatTrack instance from an array of URLs.",
-            "access": "private",
-            "tagname": "",
-            "itemtype": "method",
-            "name": "_loadBeatTrack",
-            "params": [
-                {
-                    "name": "name",
-                    "description": "The name that this BeatTrack instance will be\nregistered as on the _beatTracks register.",
-                    "type": "String"
-                },
-                {
-                    "name": "srcArray",
-                    "description": "An array of strings that specify URLs to load as\nSounds.",
-                    "type": "Array"
-                }
-            ],
-            "return": {
-                "description": "A promise that resolves to a BeatTrack instance.",
-                "type": "Promise|BeatTrack"
-            },
-            "class": "AudioService",
-            "module": "AudioService"
-        },
-        {
-            "file": "addon/services/audio.js",
-            "line": 537,
-            "description": "1. Creates a Map instance (a \"font\") and places it in the fonts register.\n2. Loads a soundfont file and decodes all the notes.\n3. Creates a Note object instance for each note.\n4. Places each note on the font by name.\n5. Returns a promise that resolves to an array of properly sorted Note\nobject instances.\n\nThe notes are sorted the way that they would appear on a piano. In the\nexample, you can see how the note `Ab1` from the `font-name` soundfont\nwould be played:",
+            "line": 530,
+            "description": "1. Creates a Font instance and places it in the fonts register.\n2. Loads a soundfont file and decodes all the notes.\n3. Creates a Note instance for each note.\n4. Places each note on the font, using the note's identifier as key.\n5. Returns a promise that resolves to an array of properly sorted Note\nobject instances.\n\nThe notes are sorted the way that they would appear on a piano. In the\nexample, you can see how the note `Ab1` from the `font-name` soundfont\nwould be played:",
             "example": [
                 "\n    audio.getFont('font-name').play('Ab1');"
             ],
@@ -2619,7 +2745,34 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 597,
+            "line": 589,
+            "description": "Creates a BeatTrack instance from an array of URLs.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "_loadBeatTrack",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "The name that this BeatTrack instance will be\nregistered as on the _beatTracks register.",
+                    "type": "String"
+                },
+                {
+                    "name": "srcArray",
+                    "description": "An array of strings that specify URLs to load as\nSounds.",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "A promise that resolves to a BeatTrack instance.",
+                "type": "Promise|BeatTrack"
+            },
+            "class": "AudioService",
+            "module": "AudioService"
+        },
+        {
+            "file": "addon/services/audio.js",
+            "line": 612,
             "description": "Accepts an array of URLs to audio files and creates a Sound instance for\neach.",
             "access": "private",
             "tagname": "",
@@ -2646,7 +2799,7 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 620,
+            "line": 635,
             "description": "Takes an array of base64 encoded strings (notes) and returns an array of\narrays like [[name, audio], [name, audio]]",
             "access": "private",
             "tagname": "",
@@ -2668,15 +2821,15 @@
         },
         {
             "file": "addon/services/audio.js",
-            "line": 656,
+            "line": 671,
             "description": "Takes an array of arrays, each inner array acting as\na key-value pair in the form `[noteName, audioData]`. Each inner array is\ntransformed into a {{#crossLink \"Note\"}}{{/crossLink}} and the outer array\nis returned. This method also sets each note on it's corresponding\ninstrument {{#crossLink \"Map\"}}{{/crossLink}} instance by name. Each note\nis playable as seen in the example.",
             "example": [
-                "\n    audioService.get('fonts').get('instrument-name').play('Ab5');"
+                "\n    audioService.getFont('font-name').play('Ab5');"
             ],
             "access": "private",
             "tagname": "",
             "itemtype": "method",
-            "name": "_createNoteObjects",
+            "name": "_createNoteObjectsForFont",
             "params": [
                 {
                     "name": "audioData",

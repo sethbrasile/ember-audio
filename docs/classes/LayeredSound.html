@@ -49,6 +49,7 @@
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Font.html">Font</a></li>
                             <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
                             <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
@@ -112,7 +113,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5b0fc03d
+              Version: 0.0.0.9f71ed7a
             </div>
             
         </div>
@@ -157,7 +158,7 @@ same time.</p>
               <a href="#props_sounds">sounds</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a> | <a href="../classes/Oscillator.html" class="crosslink">Oscillator</a>
             </div>
             <div class="short-description">
-              <p>Acts as a register for different types of sounds. Anything that uses <a href="../classes/Playable.html" class="crosslink">Playable</a> can be added to this register.</p>
+              <p>Acts as a register for different types of sounds. Anything that uses <a href="../classes/Playable.html" class="crosslink">Playable</a> can be added to this register. If not set on instantiation, set to <code>A()</code> via <code>_initSounds</code>.</p>
             </div>
           </td>
         </tr>
@@ -303,7 +304,8 @@ same time.</p>
 
 
   <div class="property-description"><p>Acts as a register for different types of sounds. Anything that uses
-<a href="../classes/Playable.html" class="crosslink">Playable</a> can be added to this register.</p>
+<a href="../classes/Playable.html" class="crosslink">Playable</a> can be added to this register.
+If not set on instantiation, set to <code>A()</code> via <code>_initSounds</code>.</p>
 </div>
 
 </div>
@@ -315,7 +317,7 @@ same time.</p>
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item public">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l36"><code>addon&#x2F;classes&#x2F;layered-sound.js:36</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l37"><code>addon&#x2F;classes&#x2F;layered-sound.js:37</code></a></span>
         <h3 class="">
             public
             
@@ -335,7 +337,7 @@ same time.</p>
 </div>
 <div class="method item public">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l46"><code>addon&#x2F;classes&#x2F;layered-sound.js:46</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l47"><code>addon&#x2F;classes&#x2F;layered-sound.js:47</code></a></span>
         <h3 class="">
             public
             
@@ -385,7 +387,7 @@ through the <code>time</code> param to each sound.</p>
 </div>
 <div class="method item public">
     <div id="method_playFor" class="title">
-        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l72"><code>addon&#x2F;classes&#x2F;layered-sound.js:72</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l73"><code>addon&#x2F;classes&#x2F;layered-sound.js:73</code></a></span>
         <h3 class="">
             public
             
@@ -435,7 +437,7 @@ through the <code>seconds</code> param to each sound.</p>
 </div>
 <div class="method item public">
     <div id="method_playForIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l85"><code>addon&#x2F;classes&#x2F;layered-sound.js:85</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l86"><code>addon&#x2F;classes&#x2F;layered-sound.js:86</code></a></span>
         <h3 class="">
             public
             
@@ -501,7 +503,7 @@ passing through the <code>playIn</code> and <code>stopAfter</code> params to eac
 </div>
 <div class="method item public">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l59"><code>addon&#x2F;classes&#x2F;layered-sound.js:59</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l60"><code>addon&#x2F;classes&#x2F;layered-sound.js:60</code></a></span>
         <h3 class="">
             public
             
@@ -556,7 +558,7 @@ through the <code>seconds</code> param to each sound.</p>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__initSounds" class="title">
-        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l102"><code>addon&#x2F;classes&#x2F;layered-sound.js:102</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_layered-sound.js.html#l103"><code>addon&#x2F;classes&#x2F;layered-sound.js:103</code></a></span>
         <h3 class="">
             private
             

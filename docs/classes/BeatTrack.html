@@ -49,6 +49,7 @@
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Font.html">Font</a></li>
                             <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
                             <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
@@ -92,13 +93,13 @@
                       <li><a href="#props_gain">gain</a></li>
                       <li><a href="#props_numBeats">numBeats</a></li>
                       <li><a href="#props_pan">pan</a></li>
+                      <li><a href="#props_sounds">sounds</a></li>
                   </ul>
             
             
                   <div><a href="#private-properties">Private Properties</a></div>
                   <ul>
                       <li><a href="#props__soundIterator">_soundIterator</a></li>
-                      <li><a href="#props__sounds">_sounds</a></li>
                   </ul>
             
                   <div><a href="#public-methods">Public Methods</a></div>
@@ -115,6 +116,7 @@
                   <ul>
                       <li><a href="#method__callPlayMethodOnBeats">_callPlayMethodOnBeats</a></li>
                       <li><a href="#method__getNextSound">_getNextSound</a></li>
+                      <li><a href="#method__initSounds">_initSounds</a></li>
                       <li><a href="#method__setGainAndPan">_setGainAndPan</a></li>
                   </ul>
               </div>
@@ -123,7 +125,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5b0fc03d
+              Version: 0.0.0.9f71ed7a
             </div>
             
         </div>
@@ -237,6 +239,21 @@ to a "lane" on a drum machine.</p>
             </div>
           </td>
         </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="property-name ">
+              <a href="#props_sounds">sounds</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="crosslink external" target="_blank">Set</a>
+            </div>
+            <div class="short-description">
+              
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -257,21 +274,6 @@ to a "lane" on a drum machine.</p>
           <td>
             <div class="property-name ">
               <a href="#props__soundIterator">_soundIterator</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator" class="crosslink external" target="_blank">Iterator</a>
-            </div>
-            <div class="short-description">
-              
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            private
-            
-            
-          </td>
-          <td>
-            <div class="property-name ">
-              <a href="#props__sounds">_sounds</a>: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="crosslink external" target="_blank">Set</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a>
             </div>
             <div class="short-description">
               
@@ -414,6 +416,21 @@ to a "lane" on a drum machine.</p>
           </td>
           <td>
             <div class="method-name ">
+              <a href="#method__initSounds">_initSounds</a>( )
+            </div>
+            <div class="short-description">
+              
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            private
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
               <a href="#method__setGainAndPan">_setGainAndPan</a>( ): <a href="../classes/Sound.html" class="crosslink">Sound</a>
             </div>
             <div class="short-description">
@@ -475,7 +492,7 @@ having been switched to true for each beat. 100ms is used by default.</p>
 </div>
 <div class="property item public">
   <div id="props_gain" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l29"><code>addon&#x2F;classes&#x2F;sampler.js:29</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l30"><code>addon&#x2F;classes&#x2F;sampler.js:30</code></a></span>
     <h3 class="">
       public
       
@@ -506,7 +523,7 @@ having been switched to true for each beat. 100ms is used by default.</p>
 </div>
 <div class="property item public">
   <div id="props_pan" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l39"><code>addon&#x2F;classes&#x2F;sampler.js:39</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l40"><code>addon&#x2F;classes&#x2F;sampler.js:40</code></a></span>
     <h3 class="">
       public
       
@@ -519,6 +536,23 @@ having been switched to true for each beat. 100ms is used by default.</p>
   <div class="property-description">Determines the stereo pan position of each sample.</div>
 
 </div>
+<div class="property item public">
+  <div id="props_sounds" class="title">
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l62"><code>addon&#x2F;classes&#x2F;sampler.js:62</code></a></span>
+    <h3 class="">
+      public
+      
+      
+      sounds: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="crosslink external" target="_blank">Set</a>
+    </h3>
+  </div>
+
+
+  <div class="property-description">Acts as a register for loaded audio sources. Audio sources can be anything
+that uses {{#crossLink "Playable"}}{{/crossLink}}. If not set on
+instantiation, automatically set to <code>new Set()</code> via <code>_initSounds</code>.</div>
+
+</div>
     </div>
 
 
@@ -526,7 +560,7 @@ having been switched to true for each beat. 100ms is used by default.</p>
         <h2 id="private-properties">Private Properties</h2>
 <div class="property item private">
   <div id="props__soundIterator" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l49"><code>addon&#x2F;classes&#x2F;sampler.js:49</code></a></span>
+    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l50"><code>addon&#x2F;classes&#x2F;sampler.js:50</code></a></span>
     <h3 class="">
       private
       
@@ -536,24 +570,9 @@ having been switched to true for each beat. 100ms is used by default.</p>
   </div>
 
 
-  <div class="property-description">Temporary storage for the iterable that comes from the _sounds Set.
+  <div class="property-description">Temporary storage for the iterable that comes from the sounds Set.
 This iterable is meant to be replaced with a new copy every time it reaches
 it's end, resulting in an infinite stream of Sound instances.</div>
-
-</div>
-<div class="property item private">
-  <div id="props__sounds" class="title">
-    <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l61"><code>addon&#x2F;classes&#x2F;sampler.js:61</code></a></span>
-    <h3 class="">
-      private
-      
-      
-      _sounds: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set" class="crosslink external" target="_blank">Set</a> | <a href="../classes/Sound.html" class="crosslink">Sound</a>
-    </h3>
-  </div>
-
-
-  <div class="property-description">Acts as a register for loaded Sound instances. Set on instantiation.</div>
 
 </div>
     </div>
@@ -562,7 +581,7 @@ it's end, resulting in an infinite stream of Sound instances.</div>
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item public">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l70"><code>addon&#x2F;classes&#x2F;sampler.js:70</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l73"><code>addon&#x2F;classes&#x2F;sampler.js:73</code></a></span>
         <h3 class="">
             public
             
@@ -576,7 +595,7 @@ it's end, resulting in an infinite stream of Sound instances.</div>
         </div>
 
 
-    <div class="method-description">Gets the next Sound and plays it immediately.</div>
+    <div class="method-description">Gets the next audio source and plays it immediately.</div>
 
 
 
@@ -650,7 +669,7 @@ eighth notes, pass in <code>1/8</code>.</p>
 </div>
 <div class="method item public">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l93"><code>addon&#x2F;classes&#x2F;sampler.js:93</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l96"><code>addon&#x2F;classes&#x2F;sampler.js:96</code></a></span>
         <h3 class="">
             public
             
@@ -769,7 +788,7 @@ eighth notes, pass in <code>1/8</code>.</p>
 </div>
 <div class="method item public">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l80"><code>addon&#x2F;classes&#x2F;sampler.js:80</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l83"><code>addon&#x2F;classes&#x2F;sampler.js:83</code></a></span>
         <h3 class="">
             public
             
@@ -904,7 +923,7 @@ be used to calculate the length of a beat/rest in seconds.</p>
 </div>
 <div class="method item private">
     <div id="method__getNextSound" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l109"><code>addon&#x2F;classes&#x2F;sampler.js:109</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l112"><code>addon&#x2F;classes&#x2F;sampler.js:112</code></a></span>
         <h3 class="">
             private
             
@@ -919,7 +938,7 @@ be used to calculate the length of a beat/rest in seconds.</p>
 
 
     <div class="method-description">Gets _soundIterator and returns it's next value. If _soundIterator has
-reached it's end, replaces _soundIterator with a fresh copy from _sounds
+reached it's end, replaces _soundIterator with a fresh copy from sounds
 and returns the first value from that.</div>
 
 
@@ -934,8 +953,30 @@ and returns the first value from that.</div>
 
 </div>
 <div class="method item private">
+    <div id="method__initSounds" class="title">
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l156"><code>addon&#x2F;classes&#x2F;sampler.js:156</code></a></span>
+        <h3 class="">
+            private
+            
+            
+            _initSounds( )
+        </h3>
+    </div>
+
+        <div class="inherited">
+          Inherited from <a href="../classes/Sampler.html#method__initSounds" class="crosslink">Sampler</a>
+        </div>
+
+
+    <div class="method-description">Sets <code>sounds</code> to <code>new Set()</code> if null on instantiation.</div>
+
+
+
+
+</div>
+<div class="method item private">
     <div id="method__setGainAndPan" class="title">
-        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l138"><code>addon&#x2F;classes&#x2F;sampler.js:138</code></a></span>
+        <span class="source-link"><a href="../files/addon_classes_sampler.js.html#l141"><code>addon&#x2F;classes&#x2F;sampler.js:141</code></a></span>
         <h3 class="">
             private
             

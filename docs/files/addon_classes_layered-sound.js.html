@@ -49,6 +49,7 @@
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Font.html">Font</a></li>
                             <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
                             <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
@@ -68,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5b0fc03d
+              Version: 0.0.0.9f71ed7a
             </div>
             
         </div>
@@ -107,6 +108,7 @@ const LayeredSound = EmberObject.extend({
   /**
    * Acts as a register for different types of sounds. Anything that uses
    * {{#crossLink &quot;Playable&quot;}}{{/crossLink}} can be added to this register.
+   * If not set on instantiation, set to &#x60;A()&#x60; via &#x60;_initSounds&#x60;.
    *
    * @public
    * @property sounds

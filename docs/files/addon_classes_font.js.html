@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>AudioService - ember-audio</title>
+    <title>addon/classes/font.js - ember-audio</title>
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
     <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
@@ -76,25 +76,90 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-  <span class="source-link"><a href="../files/addon_services_audio.js.html#l20"><code>addon&#x2F;services&#x2F;audio.js:20</code></a></span>
-  <h1 class="module-name">AudioService</h1>
+  <h1 class="file-name">addon/classes/font.js</h1>
 </div>
 
-<div class="intro"><p>Provides the Audio Service</p>
-</div>
+<pre class="code prettyprint linenums">
+import Ember from &#x27;ember&#x27;;
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-        <p>This module has the following classes:</p>
-        <ul>
-            <li><a href="../classes/AudioService.html">AudioService</a></li>
-        </ul>
-    </div>
-    <div class="yui3-u-1-2">
-    </div>
-    <div class="yui3-u-1-2">
-    </div>
-</div>
+/**
+ * Provides classes that are capable of interacting with the Web Audio API&#x27;s
+ * AudioContext.
+ *
+ * @public
+ * @module Audio
+ */
+
+const {
+  A,
+  on,
+  Object: EmberObject
+} = Ember;
+
+/**
+ * Allows multiple Note instances to be loaded up and played via their
+ * &#x60;identifier&#x60;.
+ *
+ * @public
+ * @class Font
+ */
+const Font = EmberObject.extend({
+
+  /**
+   * Acts as a register for all the notes in the font. If null on instantiation,
+   * set to &#x60;A()&#x60; via &#x60;_initNotes&#x60;.
+   *
+   * @public
+   * @property notes
+   * @type {Ember.MutableArray}
+   */
+  notes: null,
+
+  /**
+   * Plays a note from &#x60;notes&#x60;, given it&#x27;s &#x60;identifier&#x60;.
+   *
+   * @public
+   * @method play
+   *
+   * @param {string} identifier The identifier for the note that should be
+   * played.
+   */
+  play(identifier) {
+    this.getNote(identifier).play();
+  },
+
+  /**
+   * Gets a note from &#x60;notes&#x60;, given it&#x27;s identifier.
+   *
+   * @public
+   * @method getNote
+   *
+   * @param {string} identifier The identifier for the note that should be
+   * returned,
+   *
+   * @return {Note} The specified Note instance.
+   */
+  getNote(identifier) {
+    return this.get(&#x27;notes&#x27;).findBy(&#x27;identifier&#x27;, identifier);
+  },
+
+  /**
+   * Sets &#x60;notes&#x60; to &#x60;A()&#x60; if null on instantiation.
+   *
+   * @private
+   * @method _initNotes
+   */
+  _initNotes: on(&#x27;init&#x27;, function() {
+    if (!this.get(&#x27;notes&#x27;)) {
+      this.set(&#x27;notes&#x27;, A());
+    }
+  })
+});
+
+export default Font;
+
+</pre>
+
 </div>
         </div>
     </div>

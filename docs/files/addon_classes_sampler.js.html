@@ -49,6 +49,7 @@
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Font.html">Font</a></li>
                             <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
                             <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
@@ -68,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5b0fc03d
+              Version: 0.0.0.9f71ed7a
             </div>
             
         </div>
@@ -90,6 +91,7 @@ import Ember from &#x27;ember&#x27;;
  */
 
 const {
+  on,
   Object: EmberObject
 } = Ember;
 
@@ -128,7 +130,7 @@ const Sampler = EmberObject.extend({
   pan: 0,
 
   /**
-   * Temporary storage for the iterable that comes from the _sounds Set.
+   * Temporary storage for the iterable that comes from the sounds Set.
    * This iterable is meant to be replaced with a new copy every time it reaches
    * it&#x27;s end, resulting in an infinite stream of Sound instances.
    *
@@ -140,16 +142,18 @@ const Sampler = EmberObject.extend({
   _soundIterator: null,
 
   /**
-   * Acts as a register for loaded Sound instances. Set on instantiation.
+   * Acts as a register for loaded audio sources. Audio sources can be anything
+   * that uses {{#crossLink &quot;Playable&quot;}}{{/crossLink}}. If not set on
+   * instantiation, automatically set to &#x60;new Set()&#x60; via &#x60;_initSounds&#x60;.
    *
-   * @private
-   * @property _sounds
-   * @type {Set|Sound}
+   * @public
+   * @property sounds
+   * @type {set}
    */
-  _sounds: null,
+  sounds: null,
 
   /**
-   * Gets the next Sound and plays it immediately.
+   * Gets the next audio source and plays it immediately.
    *
    * @public
    * @method play
@@ -189,7 +193,7 @@ const Sampler = EmberObject.extend({
 
   /**
    * Gets _soundIterator and returns it&#x27;s next value. If _soundIterator has
-   * reached it&#x27;s end, replaces _soundIterator with a fresh copy from _sounds
+   * reached it&#x27;s end, replaces _soundIterator with a fresh copy from sounds
    * and returns the first value from that.
    *
    * @private
@@ -201,13 +205,13 @@ const Sampler = EmberObject.extend({
     let nextSound;
 
     if (!soundIterator) {
-      soundIterator = this.get(&#x27;_sounds&#x27;).values();
+      soundIterator = this.get(&#x27;sounds&#x27;).values();
     }
 
     nextSound = soundIterator.next();
 
     if (nextSound.done) {
-      soundIterator = this.get(&#x27;_sounds&#x27;).values();
+      soundIterator = this.get(&#x27;sounds&#x27;).values();
       nextSound = soundIterator.next();
     }
 
@@ -229,7 +233,19 @@ const Sampler = EmberObject.extend({
     sound.changePanTo(this.get(&#x27;pan&#x27;));
 
     return sound;
-  }
+  },
+
+  /**
+   * Sets &#x60;sounds&#x60; to &#x60;new Set()&#x60; if null on instantiation.
+   *
+   * @private
+   * @method _initSounds
+   */
+  _initSounds: on(&#x27;init&#x27;, function() {
+    if (!this.get(&#x27;sounds&#x27;)) {
+      this.set(&#x27;sounds&#x27;, new Set());
+    }
+  })
 });
 
 export default Sampler;

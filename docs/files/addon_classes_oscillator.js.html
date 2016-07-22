@@ -49,6 +49,7 @@
                             <li><a href="../classes/BeatTrack.html">BeatTrack</a></li>
                             <li><a href="../classes/Connectable.html">Connectable</a></li>
                             <li><a href="../classes/Connection.html">Connection</a></li>
+                            <li><a href="../classes/Font.html">Font</a></li>
                             <li><a href="../classes/LayeredSound.html">LayeredSound</a></li>
                             <li><a href="../classes/MusicalIdentity.html">MusicalIdentity</a></li>
                             <li><a href="../classes/Note.html">Note</a></li>
@@ -68,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0.5b0fc03d
+              Version: 0.0.0.9f71ed7a
             </div>
             
         </div>
@@ -213,6 +214,17 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
     this._wireConnections();
   }),
 
+  /**
+   * Creates a Connection instance with a filter of the specified type.
+   *
+   * @private
+   * @method _createFilter
+   *
+   * @param {string} type Determines what type of filter will be created.
+   *
+   * @return {Connection} A connection with a BiquadFilterNode of the specified
+   * type.
+   */
   _createFilter(type) {
     return Connection.create({
       name: type,
