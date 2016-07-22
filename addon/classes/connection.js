@@ -1,11 +1,5 @@
 import Ember from 'ember';
 
-const {
-  A,
-  Object: EmberObject,
-  on
-} = Ember;
-
 /**
  * Provides classes that interact with the Web Audio API indirectly by providing
  * data models for the classes in the Audio module to consume.
@@ -13,6 +7,12 @@ const {
  * @public
  * @module AudioHelpers
  */
+
+const {
+  A,
+  Object: EmberObject,
+  on
+} = Ember;
 
 /**
  * This class represents a single connection in a Sound instance's connections

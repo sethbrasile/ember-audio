@@ -6,6 +6,7 @@ export {
   SampledNote,
   Sampler,
   Sound,
+  Font,
   Track,
   Oscillator,
   LayeredSound

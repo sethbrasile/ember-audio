@@ -26,6 +26,7 @@ const LayeredSound = EmberObject.extend({
   /**
    * Acts as a register for different types of sounds. Anything that uses
    * {{#crossLink "Playable"}}{{/crossLink}} can be added to this register.
+   * If not set on instantiation, set to `A()` via `_initSounds`.
    *
    * @public
    * @property sounds

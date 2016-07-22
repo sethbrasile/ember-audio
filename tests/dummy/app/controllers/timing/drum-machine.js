@@ -23,7 +23,7 @@ export default Controller.extend({
       beatTracks.map((beatTrack) => {
         const name = beatTrack.get('name');
 
-        // default is 4 beats, but we're going to use 8
+        // default is 4 beats, but we're going to use 16
         beatTrack.set('numBeats', 8);
 
         // snare and hihat are a little louder than kick, so we'll turn down the gain

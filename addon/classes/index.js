@@ -6,6 +6,7 @@
  * @module Audio
  */
 import Sound from './sound';
+import Font from './font';
 import Track from './track';
 import BeatTrack from './beat-track';
 import Sampler from './sampler';
@@ -13,7 +14,7 @@ import Oscillator from './oscillator';
 import SampledNote from './sampled-note';
 import LayeredSound from './layered-sound';
 
-export { Sound, Track, BeatTrack, Sampler, Oscillator, SampledNote, LayeredSound };
+export { Sound, Track, BeatTrack, Sampler, Oscillator, SampledNote, LayeredSound, Font };
 
 /**
  * Provides helper classes that represent musical concepts meant to be used by
