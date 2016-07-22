@@ -27,7 +27,7 @@ const {
  *
  *     Ember.Something.extend({
  *       audio: Ember.inject.service(),
- * 
+ *
  *       loadSound() {
  *         return this.get('audio').load('some.mp3').asSound('some-sound');
  *       }
@@ -40,7 +40,10 @@ const {
  * @todo create class called something like EmberAudioLoadResponse to use in
  * place of current POJO returned from load(). Probably a real es6 class.
  *
- * @todo remove concept of "register" and let consuming app handle state
+ * @todo consider removing concept of "registers". They only exist at the moment
+ * for their caching behavior. Might want to let users decide what is cached
+ * for memory reasons? A long running app (like a game), might end up with lots
+ * of sounds.
  */
 export default Service.extend({
   /**
@@ -77,7 +80,8 @@ export default Service.extend({
 
   /**
    * This acts as a register for soundfonts. A font is just a `Map` of Note
-   * objects which is placed in this register by name.
+   * objects which is placed in this register by name, and can be played like:
+   * `audioService.getFont('some-font').play('Ab1');`
    *
    * @private
    * @property _fonts
