@@ -25,15 +25,14 @@ const {
  * the "entrypoint" to using ember-audio. An application using ember-audio
  * should use this service for all interactions with the Web Audio API.
  *
- *     // inject into an object
  *     Ember.Something.extend({
- *       audio: Ember.inject.service()
+ *       audio: Ember.inject.service(),
+ * 
+ *       loadSound() {
+ *         return this.get('audio').load('some.mp3').asSound('some-sound');
+ *       }
  *     });
  *
- *     // use
- *     loadSound() {
- *       return this.get('audio').load('some.mp3').asSound('some-sound');
- *     }
  *
  * @public
  * @class AudioService
@@ -237,14 +236,17 @@ export default Service.extend({
   },
 
   /**
+   * Creates an array of Note objects from a json object containing notes and
+   * frequency values.
    *
    * @public
    * @method createNoteArray
    *
-   * @param {object|null} Optionally provided json object. If not provided,
+   * @param {object|null} json Optionally provided json object. If not provided,
    * the object returned from utils/frequencyMap is used.
    *
    * @return {array|Note}
+   * @todo allow createNoteArray to accept array of note names with no frequencies
    */
   createNoteArray(json) {
     const notes = [];
