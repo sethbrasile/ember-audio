@@ -39,7 +39,7 @@ export function sortNotes(notes) {
   sortedNotes = octaveShift(sortedNotes);
 
   // Flatten array of arrays into a flat array
-  return flatten(sortedNotes);
+  return A(flatten(sortedNotes));
 }
 
 /**

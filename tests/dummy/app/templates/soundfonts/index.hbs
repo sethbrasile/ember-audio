@@ -13,8 +13,8 @@
       <ol>
         {{#each notes as |note|}}
           <li class={{if note.accidental 'black'}}
-            {{action 'playPianoNote' note.identifier on='touchStart'}}
-            {{action 'playPianoNote' note.identifier on='mouseDown'}}
+            {{action 'playPianoNote' note on='touchStart'}}
+            {{action 'playPianoNote' note on='mouseDown'}}
           >
             {{note.name}}
           </li>
@@ -47,8 +47,8 @@
         \{{#each notes as |note|}}
           &lt;li class=\{{if note.accidental 'black'}}
             \{{!-- Specify both action types so multitouch works on touch devices --}}
-            \{{action 'playPianoNote' note.identifier on='touchStart'}}
-            \{{action 'playPianoNote' note.identifier on='mouseDown'}}
+            \{{action 'playPianoNote' note on='touchStart'}}
+            \{{action 'playPianoNote' note on='mouseDown'}}
           >
             \{{note.name}}
           &lt;/li>
@@ -64,21 +64,19 @@
     isLoading: false,
     notes: null,
 
-    initSoundFont: Ember.on('init', function() {
+    initSoundFont: on('init', function() {
       // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
-      this.get('audio').load('piano.js').asFont('piano')
-        // The promise from asFont() resolves to an array of sorted
-        // note objects (sorted the way they would appear on a piano).
-        .then((notes) => {
-          // Slicing here, just so the whole keyboard doesn't show up on the screen
-          this.set('notes', notes.slice(39, 51));
+      this.get('audio').load('/ember-audio/piano.js').asFont('piano')
+        .then((font) => {
+          // Slicing just so the whole keyboard doesn't show up on the screen
+          this.set('notes', font.get('notes').slice(39, 51));
           this.set('isLoading', false);
         });
     }),
 
     actions: {
-      playPianoNote(noteIdentifier) {
-        this.get('audio').getFont('piano').play(noteIdentifier);
+      playPianoNote(note) {
+        note.play();
       }
     }
   });

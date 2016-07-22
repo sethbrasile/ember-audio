@@ -583,8 +583,6 @@ export default Service.extend({
       // Also sets the note on the corresponding font in the _fonts register.
       .then((keyValuePairs) => this._createNoteObjectsForFont(keyValuePairs, instrumentName))
 
-      .then(sortNotes)
-
       .catch((err) => console.error('ember-audio:', err));
   },
 
@@ -696,19 +694,19 @@ export default Service.extend({
   _createNoteObjectsForFont(audioData, instrumentName) {
     const audioContext = this.get('audioContext');
     const fontsRegister = this._getRegisterFor('font');
-    const instrumentSounds = fontsRegister.get(instrumentName).get('sounds');
+    const font = fontsRegister.get(instrumentName);
 
-    return audioData.map((note) => {
+    const notes = audioData.map((note) => {
       const [ identifier, audioBuffer ] = note;
-      const createdNote = SampledNote.create({
+      return SampledNote.create({
         identifier,
         audioBuffer,
         audioContext
       });
-
-      instrumentSounds.set(identifier, createdNote);
-
-      return createdNote;
     });
+
+    font.set('notes', sortNotes(notes));
+
+    return font;
   }
 });

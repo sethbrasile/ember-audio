@@ -9,12 +9,13 @@ import Ember from 'ember';
  */
 
 const {
+  A,
   on,
   Object: EmberObject
 } = Ember;
 
 /**
- * Allows multiple audio sources to be loaded up and played via their
+ * Allows multiple Note instances to be loaded up and played via their
  * `identifier`.
  *
  * @public
@@ -24,36 +25,51 @@ const Font = EmberObject.extend({
 
   /**
    * Acts as a register for all the notes in the font. If null on instantiation,
-   * set to `new Map()` via `_initSounds`.
+   * set to `A()` via `_initNotes`.
    *
    * @public
-   * @property sounds
-   * @type {map}
+   * @property notes
+   * @type {Ember.MutableArray}
    */
-  sounds: null,
+  notes: null,
 
   /**
-   * Gets a sound from `sounds` and plays it.
+   * Plays a note from `notes`, given it's `identifier`.
    *
    * @public
    * @method play
    *
-   * @param {string} identifier The identifier for the sound that should be
+   * @param {string} identifier The identifier for the note that should be
    * played.
    */
   play(identifier) {
-    this.get('sounds').get(identifier).play();
+    this.getNote(identifier).play();
   },
 
   /**
-   * Sets `sounds` to `new Map()` if null on instantiation.
+   * Gets a note from `notes`, given it's identifier.
+   *
+   * @public
+   * @method getNote
+   *
+   * @param {string} identifier The identifier for the note that should be
+   * returned,
+   *
+   * @return {Note} The specified Note instance.
+   */
+  getNote(identifier) {
+    return this.get('notes').findBy('identifier', identifier);
+  },
+
+  /**
+   * Sets `notes` to `A()` if null on instantiation.
    *
    * @private
-   * @method _initSounds
+   * @method _initNotes
    */
-  _initSounds: on('init', function() {
-    if (!this.get('sounds')) {
-      this.set('sounds', new Map());
+  _initNotes: on('init', function() {
+    if (!this.get('notes')) {
+      this.set('notes', A());
     }
   })
 });
