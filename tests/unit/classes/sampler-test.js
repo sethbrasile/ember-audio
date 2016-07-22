@@ -1,10 +1,10 @@
-import { Beat } from 'ember-audio';
+import { Sampler } from 'ember-audio';
 import { module, test } from 'qunit';
 
-module('Unit | Class | beat');
+module('Unit | Class | sampler');
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  let result = Beat.create();
+  let result = Sampler.create();
   assert.ok(result);
 });

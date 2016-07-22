@@ -132,6 +132,17 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
     this._wireConnections();
   }),
 
+  /**
+   * Creates a Connection instance with a filter of the specified type.
+   *
+   * @private
+   * @method _createFilter
+   *
+   * @param {string} type Determines what type of filter will be created.
+   *
+   * @return {Connection} A connection with a BiquadFilterNode of the specified
+   * type.
+   */
   _createFilter(type) {
     return Connection.create({
       name: type,

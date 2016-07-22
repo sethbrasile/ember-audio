@@ -1,10 +1,10 @@
-import { Beat } from 'ember-audio';
+import { LayeredSound } from 'ember-audio';
 import { module, test } from 'qunit';
 
-module('Unit | Class | beat');
+module('Unit | Class | layered sound');
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  let result = Beat.create();
+  let result = LayeredSound.create();
   assert.ok(result);
 });

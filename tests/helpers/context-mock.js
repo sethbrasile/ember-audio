@@ -27,6 +27,8 @@ const ContextMock = EmberObject.extend({
   createGainCalled: false,
   createAnalyserCalled: false,
   createStereoPannerCalled: false,
+  createBiqaudFilterCalled: false,
+  createOscillatorCalled: false,
 
   initDestination: on('init', function() {
     this.destination = {};
@@ -51,6 +53,16 @@ const ContextMock = EmberObject.extend({
 
   createAnalyser() {
     this.set('createAnalyserCalled', true);
+    return NodeObject.create();
+  },
+
+  createBiqaudFilter() {
+    this.set('createBiqaudFilterCalled', true);
+    return NodeObject.create();
+  },
+
+  createOscillator() {
+    this.set('createOscillatorCalled', true);
     return NodeObject.create();
   },
 
