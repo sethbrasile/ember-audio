@@ -13,8 +13,8 @@ community slack: `@sethbrasile`.
 
 #### [Interactive Demo/Documentation](http://sethbrasile.github.io/ember-audio)
 
-Ember Audio has no external dependencies and provides an `audio` service and
-various classes/mixins that make working with the Web Audio API super EZ.
+Ember Audio provides an `audio` service and various classes/mixins that make
+working with the Web Audio API super EZ.
 
 Ember Audio aims to simplify sampling, triggering, routing, scheduling,
 synthesizing, soundfonts, and working with audio in-general.
