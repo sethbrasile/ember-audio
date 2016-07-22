@@ -9,6 +9,7 @@ import Ember from 'ember';
  */
 
 const {
+  on,
   Object: EmberObject
 } = Ember;
 
@@ -47,7 +48,7 @@ const Sampler = EmberObject.extend({
   pan: 0,
 
   /**
-   * Temporary storage for the iterable that comes from the _sounds Set.
+   * Temporary storage for the iterable that comes from the sounds Set.
    * This iterable is meant to be replaced with a new copy every time it reaches
    * it's end, resulting in an infinite stream of Sound instances.
    *
@@ -59,16 +60,18 @@ const Sampler = EmberObject.extend({
   _soundIterator: null,
 
   /**
-   * Acts as a register for loaded Sound instances. Set on instantiation.
+   * Acts as a register for loaded audio sources. Audio sources can be anything
+   * that uses {{#crossLink "Playable"}}{{/crossLink}}. If not set on
+   * instantiation, automatically set to `new Set()` via `_initSounds`.
    *
-   * @private
-   * @property _sounds
-   * @type {Set|Sound}
+   * @public
+   * @property sounds
+   * @type {set}
    */
-  _sounds: null,
+  sounds: null,
 
   /**
-   * Gets the next Sound and plays it immediately.
+   * Gets the next audio source and plays it immediately.
    *
    * @public
    * @method play
@@ -108,7 +111,7 @@ const Sampler = EmberObject.extend({
 
   /**
    * Gets _soundIterator and returns it's next value. If _soundIterator has
-   * reached it's end, replaces _soundIterator with a fresh copy from _sounds
+   * reached it's end, replaces _soundIterator with a fresh copy from sounds
    * and returns the first value from that.
    *
    * @private
@@ -120,13 +123,13 @@ const Sampler = EmberObject.extend({
     let nextSound;
 
     if (!soundIterator) {
-      soundIterator = this.get('_sounds').values();
+      soundIterator = this.get('sounds').values();
     }
 
     nextSound = soundIterator.next();
 
     if (nextSound.done) {
-      soundIterator = this.get('_sounds').values();
+      soundIterator = this.get('sounds').values();
       nextSound = soundIterator.next();
     }
 
@@ -148,7 +151,19 @@ const Sampler = EmberObject.extend({
     sound.changePanTo(this.get('pan'));
 
     return sound;
-  }
+  },
+
+  /**
+   * Sets `sounds` to `new Set()` if null on instantiation.
+   *
+   * @private
+   * @method _initSounds
+   */
+  _initSounds: on('init', function() {
+    if (!this.get('sounds')) {
+      this.set('sounds', new Set());
+    }
+  })
 });
 
 export default Sampler;
