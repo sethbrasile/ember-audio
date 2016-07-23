@@ -7,7 +7,7 @@ const {
   Application
 } = Ember;
 
-window.AudioContext = window.AudioContext || window.webkitAudioContext;
+// window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 if (!window.AudioContext) {
   document.write(`Oh poo. Looks like this browser doesn't support the Web Audio API.<br><br>`);
