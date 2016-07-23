@@ -13,6 +13,8 @@ working with the Web Audio API super EZ.
 Ember Audio aims to simplify sampling, triggering, routing, scheduling,
 synthesizing, soundfonts, and working with audio in-general.
 
+___
+
 **Note**: Ember Audio will probably not fully respect semver until it is out of
 alpha!
 
