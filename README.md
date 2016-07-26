@@ -13,7 +13,7 @@ working with the Web Audio API super EZ.
 Ember Audio aims to simplify sampling, triggering, routing, scheduling,
 synthesizing, soundfonts, and working with audio in-general.
 
-##### Buy Seth Brasile a Beer!
+##### Buy me a Beer!
 With the paypal donation link above^ :D
 ___
 
