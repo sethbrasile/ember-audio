@@ -33,6 +33,11 @@ this would be best designed, so please give me feedback/suggestions if you have
 any. Pull requests and issues are welcome. You can also contact me on the Ember
 community slack: `@sethbrasile`.
 
+#### Using Ember Audio?
+Please let me know if you're building something with Ember Audio! It's a fairly
+large project, and I would love to know if it's working out for people! You can
+contact me via `@sethbrasile` on the ember community slack, or via email.
+
 # Contributing
 
 ## Installation
