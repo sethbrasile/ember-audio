@@ -18,6 +18,7 @@ synthesizing, soundfonts, and working with audio in-general.
   <h5>Buy Seth Brasile a Beer</h5>
 
   [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QDPUK852HN9U2)
+
 </div>
 ___
 
