@@ -30,14 +30,14 @@ before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - "npm config set spin false"
+  - npm install -g bower
 
 install:
-  - npm install -g bower
   - npm install
   - bower install
 
 script:
-  - ember try:one $EMBER_TRY_SCENARIO --skip-cleanup=true --- ember test
+  - ember try:one $EMBER_TRY_SCENARIO test --skip-cleanup
 
 after_script:
   - npm install -g codeclimate-test-reporter
