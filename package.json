@@ -46,7 +46,20 @@
     "yuidoc-ember-cli-theme": "^1.0.2"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "audio",
+    "sound",
+    "music",
+    "synthesis",
+    "soundfont",
+    "sampling",
+    "media",
+    "mp3",
+    "wav",
+    "ogg",
+    "web",
+    "audio",
+    "api"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.6",
