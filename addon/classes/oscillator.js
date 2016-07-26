@@ -52,7 +52,7 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
 
   /**
    * Determines the frequency of the wave output by the OscillatorNode instance.
-   * Corresponds directly to `frequency` from
+   * Corresponds directly to `frequency.value` from
    * {{#crossLink "OscillatorNode"}}{{/crossLink}}
    *
    * @public
@@ -60,6 +60,17 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
    * @type {number}
    */
   frequency: null,
+
+  /**
+   * Determines the `gain.value` of the GainNode instance in the `gain`
+   * connection instance. Corresponds directly to `gain.value` from
+   * {{#crossLink "GainNode"}}{{/crossLink}}
+   *
+   * @public
+   * @property gain
+   * @type {number}
+   */
+  gain: null,
 
   /**
    * Initializes default connections on Oscillator instantiation. Runs `on('init')`.
@@ -99,7 +110,13 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
     const gain = Connection.create({
       name: 'gain',
       source: 'audioContext',
-      createCommand: 'createGain'
+      createCommand: 'createGain',
+      onPlaySetAttrsOnNode: [
+        {
+          attrNameOnNode: 'gain.value',
+          relativePath: 'gain'
+        }
+      ]
     });
 
     const panner = Connection.create({

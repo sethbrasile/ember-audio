@@ -26,6 +26,7 @@ Router.map(function() {
   });
   this.route('synthesis', function() {
     this.route('drum-machine');
+    this.route('xy-pad');
   });
 });
 
