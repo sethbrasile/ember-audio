@@ -1,6 +1,6 @@
 # Ember-audio
 
-[![Build Status](https://travis-ci.org/sethbrasile/ember-audio.svg?branch=master)](https://travis-ci.org/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Dependencies](https://david-dm.org/sethbrasile/ember-audio.svg)](https://david-dm.org/sethbrasile/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QDPUK852HN9U2)
+[![Build Status](https://travis-ci.org/sethbrasile/ember-audio.svg?branch=master)](https://travis-ci.org/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Dependencies](https://david-dm.org/sethbrasile/ember-audio.svg)](https://david-dm.org/sethbrasile/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QDPUK852HN9U2)
 
 #### Installation
 `ember install ember-audio`
@@ -13,6 +13,8 @@ working with the Web Audio API super EZ.
 Ember Audio aims to simplify sampling, triggering, routing, scheduling,
 synthesizing, soundfonts, and working with audio in-general.
 
+##### Buy Seth Brasile a Beer!
+With the paypal donation link above^ :D
 ___
 
 **Note**: Ember Audio will probably not fully respect semver until it is out of
