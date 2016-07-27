@@ -8,3 +8,109 @@
     deactivate='stop'
   }}
 </div>
+
+<p>Template</p>
+
+{{#code-block language='handlebars'}}
+  \{{xy-pad
+    padSize=padSize
+    updateCoordinates='adjustSynthParams'
+    activate='play'
+    deactivate='stop'
+  }}
+{{/code-block}}
+
+<p>Controller</p>
+
+{{#code-block language='javascript'}}
+  export default Ember.Controller.extend({
+    audio: Ember.inject.service(),
+    oscillator: null,
+    padSize: 300,
+    range: { min: 100, max: 400 },
+
+    initOscillator: Ember.on('init', function() {
+      const oscillator = this.get('audio').createOscillator({ type: 'square' });
+      this.set('oscillator', oscillator);
+    }),
+
+    _getFrequency(x) {
+      const range = this.get('range');
+      const padSize = this.get('padSize');
+
+      return range.min + (range.max - range.min) * (x / padSize);
+    },
+
+    _getGain(y) {
+      const padSize = this.get('padSize');
+      return 1 + (y / padSize) * -1;
+    },
+
+    actions: {
+      play() {
+        this.get('oscillator').play();
+      },
+
+      stop() {
+        const oscillator = this.get('oscillator');
+
+        if (oscillator.get('isPlaying')) {
+          oscillator.stop();
+        }
+      },
+
+      adjustSynthParams(x, y) {
+        const oscillator = this.get('oscillator');
+        const frequency = this._getFrequency(x);
+        const gain = this._getGain(y);
+
+        oscillator.update('frequency', frequency);
+        oscillator.update('gain', gain);
+      }
+    }
+  });
+{{/code-block}}
+
+<p>
+  <code>xy-pad</code> component template
+</p>
+
+{{#code-block language='handlebars'}}
+  &lt;canvas
+    width=\{{padSize}}
+    height=\{{padSize}}
+    style="background-color: black;"
+    onmousedown=\{{action 'activate'}}
+    onmousemove=\{{action 'updateCoordinates'}}
+    onmouseleave=\{{action 'deactivate'}}
+    onmouseup=\{{action 'deactivate'}}
+  >&lt;/canvas>
+{{/code-block}}
+
+<p>
+  <code>xy-pad</code> component javascript
+</p>
+
+{{#code-block language='javascript'}}
+  // leaving out the code to draw the grid/text
+  export default Ember.Component.extend({
+    actions: {
+      activate() {
+        this.sendAction('activate');
+      },
+
+      deactivate() {
+        this.sendAction('deactivate');
+      },
+
+      updateCoordinates(e) {
+        const [ canvas ] = this.$('canvas');
+        const canvasLocation = canvas.getBoundingClientRect();
+        const x = e.x - canvasLocation.left;
+        const y = e.y - canvasLocation.top;
+
+        this.sendAction('updateCoordinates', x, y);
+      }
+    }
+  });
+{{/code-block}}
