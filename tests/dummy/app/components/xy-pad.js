@@ -1,7 +1,11 @@
 import Ember from 'ember';
 import layout from '../templates/components/xy-pad';
 
-export default Ember.Component.extend({
+const {
+  Component
+} = Ember;
+
+export default Component.extend({
   layout,
 
   actions: {
@@ -14,7 +18,7 @@ export default Ember.Component.extend({
     },
 
     updateCoordinates(e) {
-      const canvas = this.$('canvas')[0];
+      const [ canvas ] = this.$('canvas');
       const canvasLocation = canvas.getBoundingClientRect();
       const x = e.x - canvasLocation.left;
       const y = e.y - canvasLocation.top;
