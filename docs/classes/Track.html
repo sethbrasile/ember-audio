@@ -147,7 +147,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.1.53d0afab
+              Version: 0.0.0-alpha.2.e9a87a61
             </div>
             
         </div>
@@ -1845,7 +1845,7 @@ created.</span>
 </div>
 <div class="method item private">
     <div id="method__play" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l166"><code>addon&#x2F;mixins&#x2F;playable.js:166</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l170"><code>addon&#x2F;mixins&#x2F;playable.js:170</code></a></span>
         <h3 class="">
             private
             
@@ -1859,16 +1859,10 @@ created.</span>
         </div>
 
 
-    <div class="method-description">The underlying method that backs the
-{{#crossLink "Playable/play:method"}}{{/crossLink}},
-{{#crossLink "Playable/playAt:method"}}{{/crossLink}}, and
-{{#crossLink "Playable/playIn:method"}}{{/crossLink}} methods.
+    <div class="method-description">The underlying method that backs all of the <code>play</code> methods. Plays sound and
+sets <code>isPlaying</code> to true at specified time.
 
-Plays the audio source at the specified moment in time. A "moment in time"
-is measured in seconds from the moment that the
-{{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
-
-Functionally equivalent to {{#crossLink "Sound/playAt:method"}}{{/crossLink}}.</div>
+Functionally equivalent to <code>playAt</code>.</div>
 
       <div class="params">
         <h4>Parameters:</h4>
@@ -1980,7 +1974,8 @@ attrs set.</span>
         </div>
 
 
-    <div class="method-description">The underlying method that backs all of the <code>stop</code> methods.
+    <div class="method-description">The underlying method that backs all of the <code>stop</code> methods. Stops sound and
+set <code>isPlaying</code> to false at specified time.
 
 Functionally equivalent to the <code>stopAt</code> method.</div>
 
@@ -2006,7 +2001,9 @@ Functionally equivalent to the <code>stopAt</code> method.</div>
                   
                 </ul>
               </td>
-              <td>The time that the audio source should be stopped.</td>
+              <td>The moment in time (in seconds, relative to the
+{{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
+time") when the audio source should be stopped.</td>
             </tr>
 
           </tbody>

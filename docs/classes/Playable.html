@@ -117,7 +117,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.1.53d0afab
+              Version: 0.0.0-alpha.2.e9a87a61
             </div>
             
         </div>
@@ -322,7 +322,7 @@ not.</p>
               <a href="#method__play">_play</a>(time)
             </div>
             <div class="short-description">
-              <p>The underlying method that backs the <a href="../classes/Playable.html#method_play" class="crosslink">play</a>, <a href="../classes/Playable.html#method_playAt" class="crosslink">playAt</a>, and <a href="../classes/Playable.html#method_playIn" class="crosslink">playIn</a> methods.</p>
+              <p>The underlying method that backs all of the <code>play</code> methods. Plays sound and sets <code>isPlaying</code> to true at specified time.</p>
             </div>
           </td>
         </tr>
@@ -337,7 +337,7 @@ not.</p>
               <a href="#method__stop">_stop</a>(time)
             </div>
             <div class="short-description">
-              <p>The underlying method that backs all of the <code>stop</code> methods.</p>
+              <p>The underlying method that backs all of the <code>stop</code> methods. Stops sound and set <code>isPlaying</code> to false at specified time.</p>
             </div>
           </td>
         </tr>
@@ -746,7 +746,7 @@ should be stopped.</p>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__play" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l166"><code>addon&#x2F;mixins&#x2F;playable.js:166</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l170"><code>addon&#x2F;mixins&#x2F;playable.js:170</code></a></span>
         <h3 class="">
             private
             
@@ -757,14 +757,9 @@ should be stopped.</p>
 
 
 
-    <div class="method-description"><p>The underlying method that backs the
-<a href="../classes/Playable.html#method_play" class="crosslink">play</a>,
-<a href="../classes/Playable.html#method_playAt" class="crosslink">playAt</a>, and
-<a href="../classes/Playable.html#method_playIn" class="crosslink">playIn</a> methods.</p>
-<p>Plays the audio source at the specified moment in time. A "moment in time"
-is measured in seconds from the moment that the
-<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext</a> was instantiated.</p>
-<p>Functionally equivalent to Sound/playAt:method.</p>
+    <div class="method-description"><p>The underlying method that backs all of the <code>play</code> methods. Plays sound and
+sets <code>isPlaying</code> to true at specified time.</p>
+<p>Functionally equivalent to <code>playAt</code>.</p>
 </div>
 
       <div class="params">
@@ -815,7 +810,8 @@ time") when the audio source should be played.</p>
 
 
 
-    <div class="method-description"><p>The underlying method that backs all of the <code>stop</code> methods.</p>
+    <div class="method-description"><p>The underlying method that backs all of the <code>stop</code> methods. Stops sound and
+set <code>isPlaying</code> to false at specified time.</p>
 <p>Functionally equivalent to the <code>stopAt</code> method.</p>
 </div>
 
@@ -841,7 +837,9 @@ time") when the audio source should be played.</p>
                   
                 </ul>
               </td>
-              <td><p>The time that the audio source should be stopped.</p>
+              <td><p>The moment in time (in seconds, relative to the
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/AudioContext" class="crosslink external" target="_blank">AudioContext's</a> "beginning of
+time") when the audio source should be stopped.</p>
 </td>
             </tr>
 

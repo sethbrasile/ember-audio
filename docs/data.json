@@ -2,7 +2,7 @@
     "project": {
         "name": "ember-audio",
         "description": "An Ember addon that makes working with the Web Audio API super EZ",
-        "version": "0.0.0-alpha.1.53d0afab"
+        "version": "0.0.0-alpha.2.e9a87a61"
     },
     "files": {
         "addon/classes/beat-track.js": {
@@ -2261,7 +2261,7 @@
         {
             "file": "addon/mixins/playable.js",
             "line": 147,
-            "description": "The underlying method that backs all of the `stop` methods.\n\nFunctionally equivalent to the `stopAt` method.",
+            "description": "The underlying method that backs all of the `stop` methods. Stops sound and\nset `isPlaying` to false at specified time.\n\nFunctionally equivalent to the `stopAt` method.",
             "access": "private",
             "tagname": "",
             "itemtype": "method",
@@ -2269,7 +2269,7 @@
             "params": [
                 {
                     "name": "time",
-                    "description": "The time that the audio source should be stopped.",
+                    "description": "The moment in time (in seconds, relative to the\n{{#crossLink \"AudioContext\"}}AudioContext's{{/crossLink}} \"beginning of\ntime\") when the audio source should be stopped.",
                     "type": "Number"
                 }
             ],
@@ -2278,8 +2278,8 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 166,
-            "description": "The underlying method that backs the\n{{#crossLink \"Playable/play:method\"}}{{/crossLink}},\n{{#crossLink \"Playable/playAt:method\"}}{{/crossLink}}, and\n{{#crossLink \"Playable/playIn:method\"}}{{/crossLink}} methods.\n\nPlays the audio source at the specified moment in time. A \"moment in time\"\nis measured in seconds from the moment that the\n{{#crossLink \"AudioContext\"}}{{/crossLink}} was instantiated.\n\nFunctionally equivalent to {{#crossLink \"Sound/playAt:method\"}}{{/crossLink}}.",
+            "line": 170,
+            "description": "The underlying method that backs all of the `play` methods. Plays sound and\nsets `isPlaying` to true at specified time.\n\nFunctionally equivalent to `playAt`.",
             "params": [
                 {
                     "name": "time",

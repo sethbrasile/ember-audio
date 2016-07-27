@@ -69,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.1.53d0afab
+              Version: 0.0.0-alpha.2.e9a87a61
             </div>
             
         </div>
@@ -227,35 +227,33 @@ export default Mixin.create({
   },
 
   /**
-   * The underlying method that backs all of the &#x60;stop&#x60; methods.
+   * The underlying method that backs all of the &#x60;stop&#x60; methods. Stops sound and
+   * set &#x60;isPlaying&#x60; to false at specified time.
    *
    * Functionally equivalent to the &#x60;stopAt&#x60; method.
    *
    * @private
    * @method _stop
    *
-   * @param {number} time The time that the audio source should be stopped.
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
+   * time&quot;) when the audio source should be stopped.
    */
   _stop(time) {
     const node = this.getNodeFrom(&#x27;audioSource&#x27;);
+    const currentTime = this.get(&#x27;audioContext.currentTime&#x27;);
 
     if (node) {
       node.stop(time);
-      this.set(&#x27;isPlaying&#x27;, false);
+      later(() =&gt; this.set(&#x27;isPlaying&#x27;, false), (time - currentTime) * 1000);
     }
   },
 
   /**
-   * The underlying method that backs the
-   * {{#crossLink &quot;Playable/play:method&quot;}}{{/crossLink}},
-   * {{#crossLink &quot;Playable/playAt:method&quot;}}{{/crossLink}}, and
-   * {{#crossLink &quot;Playable/playIn:method&quot;}}{{/crossLink}} methods.
+   * The underlying method that backs all of the &#x60;play&#x60; methods. Plays sound and
+   * sets &#x60;isPlaying&#x60; to true at specified time.
    *
-   * Plays the audio source at the specified moment in time. A &quot;moment in time&quot;
-   * is measured in seconds from the moment that the
-   * {{#crossLink &quot;AudioContext&quot;}}{{/crossLink}} was instantiated.
-   *
-   * Functionally equivalent to {{#crossLink &quot;Sound/playAt:method&quot;}}{{/crossLink}}.
+   * Functionally equivalent to &#x60;playAt&#x60;.
    *
    * @param {number} time The moment in time (in seconds, relative to the
    * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
