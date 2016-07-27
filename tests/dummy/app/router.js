@@ -25,7 +25,7 @@ Router.map(function() {
     this.route('with-ember-audio');
   });
   this.route('synthesis', function() {
-    this.route('drum-machine');
+    this.route('drum-kit');
     this.route('xy-pad');
   });
 });
