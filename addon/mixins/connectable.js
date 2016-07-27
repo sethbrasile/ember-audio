@@ -32,8 +32,7 @@ export default Mixin.create({
    * An array of Connection instances. Determines which AudioNode instances are
    * connected to one-another and the order in which they are connected. Starts
    * as `null` but set to an array on `init` via the
-   * {{#crossLink "Connectable/initConnections:method"}} initConnections{{/crossLink}}
-   * method.
+   * {{#crossLink "Connectable/_initConnections:method"}}{{/crossLink}} method.
    *
    * @public
    * @property connections
@@ -84,6 +83,57 @@ export default Mixin.create({
    */
   removeConnection(name) {
     this.get('connections').removeObject(this.getConnection(name));
+  },
+
+  /**
+   * Updates an AudioNode's property in real time by setting the property on the
+   * connectable object (which affects the next play) and also sets it on it's
+   * corresponding `connection.node` (which affects the audio in real time).
+   *
+   * If a connection is pulling a property from a connectable object via
+   * `onPlaySetAttrsOnNode[index].relativePath`, this method will update that
+   * property directly on the Connection's `node` as well as on the connectable
+   * object.
+   *
+   * Important to note that this only works for properties that are set directly
+   * on a connectable object and then proxied/set on a node via
+   * `onPlaySetAttrsOnNode`.
+   *
+   * @example
+   *     // With `set`
+   *     const osc = audioService.createOscillator({ frequency: 440 });
+   *     osc.play(); // playing at 440Hz
+   *     osc.set('frequency', 1000); // still playing at 440Hz
+   *     osc.stop();
+   *     osc.play(); // now playing at 1000Hz
+   *
+   * @example
+   *     // With `update`
+   *     const osc = audioService.createOscillator({ frequency: 440 });
+   *     osc.play(); // playing at 440Hz
+   *     osc.update('frequency', 1000); // playing at 1000Hz
+   *
+   * @public
+   * @method update
+   *
+   * @param key {string} The name/path to a property on an Oscillator instance
+   * that should be updated.
+   *
+   * @param value {string} The value that the property should be set to.
+   */
+  update(key, value) {
+    this.get('connections').map((connection) => {
+      connection.get('onPlaySetAttrsOnNode').map((attr) => {
+        const path = get(attr, 'relativePath');
+
+        if (key === path) {
+          const pathChunks = path.split('.');
+          connection.get('node')[pathChunks.pop()].value = value;
+        }
+      });
+    });
+
+    this.set(key, value);
   },
 
   /**

@@ -47,10 +47,8 @@ export default Controller.extend({
       const frequency = this._getFrequency(x);
       const gain = this._getGain(y);
 
-      oscillator.set('frequency', frequency);
-      oscillator.set('gain', gain);
-      oscillator.getNodeFrom('audioSource').frequency.value = frequency;
-      oscillator.getNodeFrom('gain').gain.value = gain;
+      oscillator.update('frequency', frequency);
+      oscillator.update('gain', gain);
     }
   }
 });

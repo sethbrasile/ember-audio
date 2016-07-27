@@ -173,7 +173,7 @@ export default Mixin.create({
    * is measured in seconds from the moment that the
    * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
    *
-   * Functionally equivalent to {{#crossLink "Sound/playAt:method"}}{{/crossLink}}.
+   * Functionally equivalent to {{#crossLink "Playable/playAt:method"}}{{/crossLink}}.
    *
    * @param {number} time The moment in time (in seconds, relative to the
    * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
