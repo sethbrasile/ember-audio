@@ -22,7 +22,7 @@ const {
  * an audio source, provides various methods for interacting with the audio source,
  * creates {{#crossLink "AudioNode"}}AudioNodes{{/crossLink}} from the
  * connections array, sets up the necessary connections/routing between them,
- * and provides some methods to {{#crossLink "Sound/play:method"}}{{/crossLink}}
+ * and provides some methods to {{#crossLink "Playable/play:method"}}{{/crossLink}}
  * and {{#crossLink "Sound/stop:method"}}{{/crossLink}} the audio source.
  *
  * @public

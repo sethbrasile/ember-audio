@@ -182,14 +182,14 @@
     return LayeredSound.create({ name: 'hihat', sounds: oscillators });
   },
 
-  _createHihatOscillator(overtone) {
+  _createHihatOscillator(ratio) {
     const fundamental = 40;
 
     return this.get('audio').createOscillator({
       type: 'square',
-      highpassFrequency: 7000,
-      bandpassFrequency: 10000,
-      frequency: fundamental * overtone
+      highpass: { frequency: 7000 },
+      bandpass: { frequency: 10000 },
+      frequency: fundamental * ratio
     });
   },
 
@@ -295,8 +295,8 @@
 
       return this.get('audio').createOscillator({
         type: 'square',
-        highpassFrequency: 7000,
-        bandpassFrequency: 10000,
+        highpass: { frequency: 7000 },
+        bandpass: { frequency: 10000 },
         frequency: fundamental * ratio
       });
     },

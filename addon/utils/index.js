@@ -2,6 +2,7 @@ import zeroify from './zeroify';
 import { base64ToUint8, mungeSoundFont } from './decode-base64';
 import { arraySwap, flatten } from './array-methods';
 import frequencyMap from './frequency-map';
+import exponentialRatio from './exponential-ratio';
 
 import {
   sortNotes,
@@ -31,5 +32,6 @@ export {
   extractOctaves,
   stripDuplicateOctaves,
   createOctavesWithNotes,
-  frequencyMap
+  frequencyMap,
+  exponentialRatio
 };

@@ -76,8 +76,8 @@ export default Controller.extend({
 
     return this.get('audio').createOscillator({
       type: 'square',
-      highpassFrequency: 7000,
-      bandpassFrequency: 10000,
+      highpass: { frequency: 7000 },
+      bandpass: { frequency: 10000 },
       frequency: fundamental * ratio
     });
   },
