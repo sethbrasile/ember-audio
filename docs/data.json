@@ -2,7 +2,7 @@
     "project": {
         "name": "ember-audio",
         "description": "An Ember addon that makes working with the Web Audio API super EZ",
-        "version": "0.0.0-alpha.2.e9a87a61"
+        "version": "0.0.0-alpha.3.02e59bb3"
     },
     "files": {
         "addon/classes/beat-track.js": {
@@ -180,6 +180,13 @@
         },
         "addon/utils/note-methods.js": {
             "name": "addon/utils/note-methods.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "addon/utils/within-range.js": {
+            "name": "addon/utils/within-range.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -406,7 +413,7 @@
             "namespace": "",
             "file": "addon/classes/oscillator.js",
             "line": 19,
-            "description": "A class that represents an oscillator for a synthesizer. Capable of creating\nand starting a waveform of specified `type` at a specified `frequency`.\n\nAll filters from {{#crossLink \"BiquadFilterNode\"}}{{/crossLink}} are\navailable and can be enabled by providing a given filter's frequency.\n\n    // creates a sine wave oscillator with a highpass at 1000Hz\n    const audioContext = this.get('audio.audioContext');\n    const osc = Oscillator.create({\n      audioContext,\n      highpassFrequency: 1000\n    });",
+            "description": "A class that represents an oscillator for a synthesizer. Capable of creating\nand playing a waveform of specified `type` at a specified `frequency`.\n\nAll filters from {{#crossLink \"BiquadFilterNode\"}}{{/crossLink}} are\navailable and can be enabled by providing a pojo for a given filter.\n\n    // 200Hz sine wave w/highpass at 600Hz and lowpass created but not filtering\n    const osc = audioService.createOscillator({\n      frequency: 200,\n      highpass: { frequency: 600 },\n      lowpass: {}\n    });\n\n    // or\n    import { Oscillator } from 'ember-audio';\n    const audioContext = audioService.get('audioContext');\n    const osc = Oscillator.create({\n      audioContext,\n      frequency: 200,\n      highpass: { frequency: 600 },\n      lowpass: {}\n    });",
             "access": "public",
             "tagname": "",
             "uses": [
@@ -469,7 +476,7 @@
             "namespace": "",
             "file": "addon/classes/sound.js",
             "line": 18,
-            "description": "The Sound class provides the core functionality for\ninteracting with the Web Audio API's AudioContext, and is the base class for\nall other {{#crossLinkModule \"Audio\"}}{{/crossLinkModule}} types. It prepares\nan audio source, provides various methods for interacting with the audio source,\ncreates {{#crossLink \"AudioNode\"}}AudioNodes{{/crossLink}} from the\nconnections array, sets up the necessary connections/routing between them,\nand provides some methods to {{#crossLink \"Sound/play:method\"}}{{/crossLink}}\nand {{#crossLink \"Sound/stop:method\"}}{{/crossLink}} the audio source.",
+            "description": "The Sound class provides the core functionality for\ninteracting with the Web Audio API's AudioContext, and is the base class for\nall other {{#crossLinkModule \"Audio\"}}{{/crossLinkModule}} types. It prepares\nan audio source, provides various methods for interacting with the audio source,\ncreates {{#crossLink \"AudioNode\"}}AudioNodes{{/crossLink}} from the\nconnections array, sets up the necessary connections/routing between them,\nand provides some methods to {{#crossLink \"Playable/play:method\"}}{{/crossLink}}\nand {{#crossLink \"Sound/stop:method\"}}{{/crossLink}} the audio source.",
             "access": "public",
             "tagname": "",
             "uses": [
@@ -556,7 +563,7 @@
             "namespace": "",
             "file": "addon/mixins/playable.js",
             "line": 16,
-            "description": "A mixin that allows an object to start and stop an audio source, now or in\nthe future, as well as track whether the audio source is currently playing or\nnot.",
+            "description": "A mixin that allows an object to start and stop an audio source, now or in\nthe future, as well as track whether the audio source is currently playing or\nnot.\n\nConsuming object must implement `wireConnections` and `getNodeFrom` methods.\nThese methods are included in the {{#crossLink \"Connectable\"}}{{/crossLink}}\nmixin.",
             "access": "public",
             "tagname": ""
         },
@@ -1233,7 +1240,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 41,
+            "line": 51,
             "description": "Determines the type of wave output by the OscillatorNode instance.\nCorresponds directly to `type` from\n{{#crossLink \"OscillatorNode\"}}{{/crossLink}}",
             "access": "public",
             "tagname": "",
@@ -1246,8 +1253,8 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 53,
-            "description": "Determines the frequency of the wave output by the OscillatorNode instance.\nCorresponds directly to `frequency` from\n{{#crossLink \"OscillatorNode\"}}{{/crossLink}}",
+            "line": 63,
+            "description": "Determines the frequency of the wave output by the OscillatorNode instance.\nCorresponds directly to `frequency.value` from\n{{#crossLink \"OscillatorNode\"}}{{/crossLink}}",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
@@ -1258,7 +1265,31 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 64,
+            "line": 74,
+            "description": "Determines the `gain.value` of the GainNode instance in the `gain`\nconnection instance. Corresponds directly to `gain.value` from\n{{#crossLink \"GainNode\"}}{{/crossLink}}",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "property",
+            "name": "gain",
+            "type": "{number}",
+            "class": "Oscillator",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/oscillator.js",
+            "line": 85,
+            "description": "Lists available filter types.",
+            "access": "private",
+            "tagname": "",
+            "itemtype": "property",
+            "name": "_filters",
+            "type": "{array|string}",
+            "class": "Oscillator",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/classes/oscillator.js",
+            "line": 103,
             "description": "Initializes default connections on Oscillator instantiation. Runs `on('init')`.",
             "access": "protected",
             "tagname": "",
@@ -1269,7 +1300,7 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 135,
+            "line": 171,
             "description": "Creates a Connection instance with a filter of the specified type.",
             "access": "private",
             "tagname": "",
@@ -1291,205 +1322,97 @@
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 177,
-            "description": "Determines the Frequency for the lowpass filter. The lowpass filter is\ndisabled if this is not provided.",
+            "line": 208,
+            "description": "Settings object for the lowpass filter. The lowpass filter is disabled\nif this is not provided. Accepts `frequency` and `q`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "lowpassFrequency",
-            "type": "{number}",
+            "name": "lowpass",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 187,
-            "description": "Determines the Frequency for the highpass filter. The highpass filter is\ndisabled if this is not provided.",
+            "line": 219,
+            "description": "Settings object for the highpass filter. The highpass filter is disabled\nif this is not provided. Accepts `frequency` and `q`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "highpassFrequency",
-            "type": "{number}",
+            "name": "highpass",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 197,
-            "description": "Determines the Frequency for the bandpass filter. The bandpass filter is\ndisabled if this is not provided.",
+            "line": 230,
+            "description": "Settings object for the bandpass filter. The bandpass filter is disabled\nif this is not provided. Accepts `frequency` and `q`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "bandpassFrequency",
-            "type": "{number}",
+            "name": "bandpass",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 207,
-            "description": "Determines the Frequency for the lowshelf filter. The lowshelf filter is\ndisabled if this is not provided.",
+            "line": 241,
+            "description": "Settings object for the lowshelf filter. The lowshelf filter is disabled\nif this is not provided. Accepts `frequency` and `gain`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "lowshelfFrequency",
-            "type": "{number}",
+            "name": "lowshelf",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 217,
-            "description": "Determines the Frequency for the highshelf filter. The highshelf filter is\ndisabled if this is not provided.",
+            "line": 252,
+            "description": "Settings object for the highshelf filter. The highshelf filter is disabled\nif this is not provided. Accepts `frequency` and `gain`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "highshelfFrequency",
-            "type": "{number}",
+            "name": "highshelf",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 227,
-            "description": "Determines the Frequency for the peaking filter. The peaking filter is\ndisabled if this is not provided.",
+            "line": 263,
+            "description": "Settings object for the peaking filter. The peaking filter is disabled\nif this is not provided. Accepts `frequency`, `q`, and `gain`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "peakingFrequency",
-            "type": "{number}",
+            "name": "peaking",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 237,
-            "description": "Determines the Frequency for the notch filter. The notch filter is\ndisabled if this is not provided.",
+            "line": 274,
+            "description": "Settings object for the notch filter. The notch filter is disabled\nif this is not provided. Accepts `frequency` and `q`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "notchFrequency",
-            "type": "{number}",
+            "name": "notch",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
         {
             "file": "addon/classes/oscillator.js",
-            "line": 247,
-            "description": "Determines the Frequency for the allpass filter. The allpass filter is\ndisabled if this is not provided.",
+            "line": 285,
+            "description": "Settings object for the allpass filter. The allpass filter is disabled\nif this is not provided. Accepts `frequency`, and `q`.\nhttps://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
-            "name": "allpassFrequency",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 257,
-            "description": "Determines the Q for the lowpass filter. Has No effect if lowpassFrequency\nis not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "lowpassQ",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 267,
-            "description": "Determines the Q for the highpass filter. Has No effect if highpassFrequency\nis not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "highpassQ",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 277,
-            "description": "Determines the Q for the bandpass filter. Has No effect if bandpassFrequency\nis not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "bandpassQ",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 287,
-            "description": "Determines the Q for the peaking filter. Has No effect if peakingFrequency\nis not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "peakingQ",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 297,
-            "description": "Determines the Q for the notch filter. Has No effect if notchFrequency\nis not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "notchQ",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 307,
-            "description": "Determines the Q for the allpass filter. Has No effect if allpassFrequency\nis not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "allpassQ",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 317,
-            "description": "Determines the Gain for the lowshelf filter. Has no effect if\nlowshelfFrequency is not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "lowshelfGain",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 327,
-            "description": "Determines the Gain for the highshelf filter. Has no effect if\nhighshelfFrequency is not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "highshelfGain",
-            "type": "{number}",
-            "class": "Oscillator",
-            "module": "Audio"
-        },
-        {
-            "file": "addon/classes/oscillator.js",
-            "line": 337,
-            "description": "Determines the Gain for the peaking filter. Has no effect if\npeakingFrequency is not set.",
-            "access": "public",
-            "tagname": "",
-            "itemtype": "property",
-            "name": "peakingGain",
-            "type": "{number}",
+            "name": "allpass",
+            "type": "{object}",
             "class": "Oscillator",
             "module": "Audio"
         },
@@ -1735,7 +1658,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 156,
+            "line": 150,
             "description": "Gets the `gain` connection and changes it's gain value to the value passed in.\nreturns a pojo with the `from` method that `value` is curried to, allowing\none to specify which type of value is being provided.",
             "example": [
                 "\n    // these all result in gainNode.gain.value === 0.9\n    soundInstance.changeGainTo(0.9).from('ratio');\n    soundInstance.changeGainTo(0.1).from('inverseRatio')\n    soundInstance.changeGainTo(90).from('percent');"
@@ -1760,7 +1683,7 @@
         },
         {
             "file": "addon/classes/sound.js",
-            "line": 205,
+            "line": 193,
             "description": "Gets the bufferSource and stops the audio,\nchanges it's play position, and restarts the audio.\n\nreturns a pojo with the `from` method that `value` is curried to, allowing\none to specify which type of value is being provided.",
             "example": [
                 "\n    // for a Sound instance with a duration of 100 seconds, these will all\n    // move the play position to 90 seconds.\n    soundInstance.seek(0.9).from('ratio');\n    soundInstance.seek(0.1).from('inverseRatio')\n    soundInstance.seek(90).from('percent');\n    soundInstance.seek(90).from('seconds');"
@@ -1854,7 +1777,7 @@
         {
             "file": "addon/mixins/connectable.js",
             "line": 31,
-            "description": "An array of Connection instances. Determines which AudioNode instances are\nconnected to one-another and the order in which they are connected. Starts\nas `null` but set to an array on `init` via the\n{{#crossLink \"Connectable/initConnections:method\"}} initConnections{{/crossLink}}\nmethod.",
+            "description": "An array of Connection instances. Determines which AudioNode instances are\nconnected to one-another and the order in which they are connected. Starts\nas `null` but set to an array on `init` via the\n{{#crossLink \"Connectable/_initConnections:method\"}}{{/crossLink}} method.",
             "access": "public",
             "tagname": "",
             "itemtype": "property",
@@ -1865,7 +1788,7 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 44,
+            "line": 43,
             "description": "returns a connection's AudioNode from the connections array by the\nconnection's `name`.",
             "access": "public",
             "tagname": "",
@@ -1887,7 +1810,7 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 63,
+            "line": 62,
             "description": "returns a connection from the connections array by it's name",
             "access": "public",
             "tagname": "",
@@ -1909,7 +1832,7 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 77,
+            "line": 76,
             "description": "Find's a connection in the connections array by it's `name` and removes it.",
             "params": [
                 {
@@ -1927,7 +1850,34 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 89,
+            "line": 88,
+            "description": "Updates an AudioNode's property in real time by setting the property on the\nconnectable object (which affects the next play) and also sets it on it's\ncorresponding `connection.node` (which affects the audio in real time).\n\nIf a connection is pulling a property from a connectable object via\n`onPlaySetAttrsOnNode[index].relativePath`, this method will update that\nproperty directly on the Connection's `node` as well as on the connectable\nobject.\n\nImportant to note that this only works for properties that are set directly\non a connectable object and then proxied/set on a node via\n`onPlaySetAttrsOnNode`.",
+            "example": [
+                "\n    // With `set`\n    const osc = audioService.createOscillator({ frequency: 440 });\n    osc.play(); // playing at 440Hz\n    osc.set('frequency', 1000); // still playing at 440Hz\n    osc.stop();\n    osc.play(); // now playing at 1000Hz",
+                "\n    // With `update`\n    const osc = audioService.createOscillator({ frequency: 440 });\n    osc.play(); // playing at 440Hz\n    osc.update('frequency', 1000); // playing at 1000Hz"
+            ],
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "update",
+            "params": [
+                {
+                    "name": "key",
+                    "description": "The name/path to a property on an Oscillator instance\nthat should be updated.",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "The value that the property should be set to.",
+                    "type": "String"
+                }
+            ],
+            "class": "Connectable",
+            "module": "Audio"
+        },
+        {
+            "file": "addon/mixins/connectable.js",
+            "line": 139,
             "description": "Initializes default connections on Sound instantiation. Runs `on('init')`.",
             "access": "protected",
             "tagname": "",
@@ -1938,8 +1888,8 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 136,
-            "description": "Observes the connections array and runs _wireConnections each time it\nchanges.",
+            "line": 186,
+            "description": "Observes the connections array and runs wireConnections each time it\nchanges.",
             "access": "private",
             "tagname": "",
             "itemtype": "method",
@@ -1949,12 +1899,12 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 147,
+            "line": 197,
             "description": "Gets the array of Connection instances from the connections array and\nreturns the same array, having created any AudioNode instances that needed\nto be created, and having connected the AudioNode instances to one another\nin the order in which they were present in the connections array.",
-            "access": "private",
+            "access": "protected",
             "tagname": "",
             "itemtype": "method",
-            "name": "_wireConnections",
+            "name": "wireConnections",
             "return": {
                 "description": "Array of Connection instances collected from the\nconnections array, created, connected, and ready to play.",
                 "type": "Array|Connection"
@@ -1964,7 +1914,7 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 168,
+            "line": 218,
             "description": "Creates an AudioNode instance for a Connection instance and sets it on it's\n`node` property. Unless the Connection instance's `createdOnPlay` property\nis true, does nothing if the AudioNode instance has already been created.\n\nAlso sets any properties from a connection's `onPlaySetAttrsOnNode` array\non the node.",
             "access": "private",
             "tagname": "",
@@ -1986,7 +1936,7 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 203,
+            "line": 253,
             "description": "Gets a Connection instance's `onPlaySetAttrsOnNode` and sets them on it's\nnode.",
             "access": "private",
             "tagname": "",
@@ -2008,7 +1958,7 @@
         },
         {
             "file": "addon/mixins/connectable.js",
-            "line": 250,
+            "line": 300,
             "description": "Meant to be passed to a Array.prototype.map function. Connects a Connection\ninstance's node to the next Connection instance's node.",
             "access": "private",
             "tagname": "",
@@ -2112,7 +2062,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 25,
+            "line": 29,
             "description": "Whether an audio source is playing or not.",
             "access": "public",
             "tagname": "",
@@ -2125,7 +2075,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 35,
+            "line": 39,
             "description": "Plays the audio source immediately.",
             "access": "public",
             "tagname": "",
@@ -2136,7 +2086,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 45,
+            "line": 49,
             "description": "Plays the audio source at the specified moment in time. A \"moment in time\"\nis measured in seconds from the moment that the\n{{#crossLink \"AudioContext\"}}{{/crossLink}} was instantiated.\n\nFunctionally equivalent to {{#crossLink \"Playable/_play:method\"}}{{/crossLink}}.",
             "params": [
                 {
@@ -2154,7 +2104,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 63,
+            "line": 67,
             "description": "Plays the audio source in specified amount of seconds from \"now\".",
             "access": "public",
             "tagname": "",
@@ -2172,7 +2122,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 76,
+            "line": 80,
             "description": "Starts playing the audio source immediately, but stops after specified\nseconds have elapsed.",
             "access": "public",
             "tagname": "",
@@ -2190,7 +2140,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 91,
+            "line": 95,
             "description": "Starts playing the audio source after `playIn` seconds have elapsed, then\nstops the audio source `stopAfter` seconds after it started playing.",
             "access": "public",
             "tagname": "",
@@ -2213,7 +2163,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 109,
+            "line": 113,
             "description": "Stops the audio source immediately.",
             "access": "public",
             "tagname": "",
@@ -2224,7 +2174,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 119,
+            "line": 123,
             "description": "Stops the audio source after specified seconds have elapsed.",
             "access": "public",
             "tagname": "",
@@ -2242,7 +2192,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 132,
+            "line": 136,
             "description": "Stops the audio source at the specified \"moment in time\" relative to the\n\"beginning of time\" according to the `audioContext`.\n\nFunctionally equivalent to the `_stop` method.",
             "access": "public",
             "tagname": "",
@@ -2260,7 +2210,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 147,
+            "line": 151,
             "description": "The underlying method that backs all of the `stop` methods. Stops sound and\nset `isPlaying` to false at specified time.\n\nFunctionally equivalent to the `stopAt` method.",
             "access": "private",
             "tagname": "",
@@ -2268,7 +2218,7 @@
             "name": "_stop",
             "params": [
                 {
-                    "name": "time",
+                    "name": "stopAt",
                     "description": "The moment in time (in seconds, relative to the\n{{#crossLink \"AudioContext\"}}AudioContext's{{/crossLink}} \"beginning of\ntime\") when the audio source should be stopped.",
                     "type": "Number"
                 }
@@ -2278,7 +2228,7 @@
         },
         {
             "file": "addon/mixins/playable.js",
-            "line": 170,
+            "line": 179,
             "description": "The underlying method that backs all of the `play` methods. Plays sound and\nsets `isPlaying` to true at specified time.\n\nFunctionally equivalent to `playAt`.",
             "params": [
                 {
@@ -3102,6 +3052,34 @@
                 "description": "-1 or 1, depending on whether the current\n{{#crossLink \"Note\"}}{{/crossLink}} instance should be sorted left, or right.",
                 "type": "Number"
             },
+            "class": "utils",
+            "module": "utils"
+        },
+        {
+            "file": "addon/utils/within-range.js",
+            "line": 6,
+            "description": "Ensures that a number is not less than or greater than a given min and max.",
+            "access": "public",
+            "tagname": "",
+            "itemtype": "method",
+            "name": "withinRange",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "The value that should be checked/returned if within\ngiven range.",
+                    "type": "Number"
+                },
+                {
+                    "name": "min",
+                    "description": "The minimum allowed value of the `value` param. If `value`\nis less than this value, this value will be returned instead.",
+                    "type": "Number"
+                },
+                {
+                    "name": "max",
+                    "description": "The maximum allowed value of the `value` param. If `value`\nis greater than this value, this value will be returned instead.",
+                    "type": "Number"
+                }
+            ],
             "class": "utils",
             "module": "utils"
         },

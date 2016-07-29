@@ -69,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.2.e9a87a61
+              Version: 0.0.0-alpha.3.02e59bb3
             </div>
             
         </div>
@@ -114,8 +114,7 @@ export default Mixin.create({
    * An array of Connection instances. Determines which AudioNode instances are
    * connected to one-another and the order in which they are connected. Starts
    * as &#x60;null&#x60; but set to an array on &#x60;init&#x60; via the
-   * {{#crossLink &quot;Connectable/initConnections:method&quot;}} initConnections{{/crossLink}}
-   * method.
+   * {{#crossLink &quot;Connectable/_initConnections:method&quot;}}{{/crossLink}} method.
    *
    * @public
    * @property connections
@@ -169,6 +168,57 @@ export default Mixin.create({
   },
 
   /**
+   * Updates an AudioNode&#x27;s property in real time by setting the property on the
+   * connectable object (which affects the next play) and also sets it on it&#x27;s
+   * corresponding &#x60;connection.node&#x60; (which affects the audio in real time).
+   *
+   * If a connection is pulling a property from a connectable object via
+   * &#x60;onPlaySetAttrsOnNode[index].relativePath&#x60;, this method will update that
+   * property directly on the Connection&#x27;s &#x60;node&#x60; as well as on the connectable
+   * object.
+   *
+   * Important to note that this only works for properties that are set directly
+   * on a connectable object and then proxied/set on a node via
+   * &#x60;onPlaySetAttrsOnNode&#x60;.
+   *
+   * @example
+   *     // With &#x60;set&#x60;
+   *     const osc = audioService.createOscillator({ frequency: 440 });
+   *     osc.play(); // playing at 440Hz
+   *     osc.set(&#x27;frequency&#x27;, 1000); // still playing at 440Hz
+   *     osc.stop();
+   *     osc.play(); // now playing at 1000Hz
+   *
+   * @example
+   *     // With &#x60;update&#x60;
+   *     const osc = audioService.createOscillator({ frequency: 440 });
+   *     osc.play(); // playing at 440Hz
+   *     osc.update(&#x27;frequency&#x27;, 1000); // playing at 1000Hz
+   *
+   * @public
+   * @method update
+   *
+   * @param key {string} The name/path to a property on an Oscillator instance
+   * that should be updated.
+   *
+   * @param value {string} The value that the property should be set to.
+   */
+  update(key, value) {
+    this.get(&#x27;connections&#x27;).map((connection) =&gt; {
+      connection.get(&#x27;onPlaySetAttrsOnNode&#x27;).map((attr) =&gt; {
+        const path = get(attr, &#x27;relativePath&#x27;);
+
+        if (key === path) {
+          const pathChunks = path.split(&#x27;.&#x27;);
+          connection.get(&#x27;node&#x27;)[pathChunks.pop()].value = value;
+        }
+      });
+    });
+
+    this.set(key, value);
+  },
+
+  /**
    * Initializes default connections on Sound instantiation. Runs &#x60;on(&#x27;init&#x27;)&#x60;.
    *
    * @protected
@@ -216,14 +266,14 @@ export default Mixin.create({
   */
 
   /**
-   * Observes the connections array and runs _wireConnections each time it
+   * Observes the connections array and runs wireConnections each time it
    * changes.
    *
    * @private
    * @method _watchConnectionChanges
    */
   _watchConnectionChanges: observer(&#x27;connections.[]&#x27;, function() {
-    this._wireConnections();
+    this.wireConnections();
   }),
 
   /**
@@ -232,13 +282,13 @@ export default Mixin.create({
    * to be created, and having connected the AudioNode instances to one another
    * in the order in which they were present in the connections array.
    *
-   * @private
-   * @method _wireConnections
+   * @protected
+   * @method wireConnections
    *
    * @return {array|Connection} Array of Connection instances collected from the
    * connections array, created, connected, and ready to play.
    */
-  _wireConnections() {
+  wireConnections() {
     const createNode = this._createNode.bind(this);
     const setAttrsOnNode = this._setAttrsOnNode.bind(this);
     const wireConnection = this._wireConnection;

@@ -117,7 +117,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.2.e9a87a61
+              Version: 0.0.0-alpha.3.02e59bb3
             </div>
             
         </div>
@@ -134,6 +134,9 @@
 <div class="class-description"><p>A mixin that allows an object to start and stop an audio source, now or in
 the future, as well as track whether the audio source is currently playing or
 not.</p>
+<p>Consuming object must implement <code>wireConnections</code> and <code>getNodeFrom</code> methods.
+These methods are included in the <a href="../classes/Connectable.html" class="crosslink">Connectable</a>
+mixin.</p>
 </div>
 
 
@@ -334,7 +337,7 @@ not.</p>
           </td>
           <td>
             <div class="method-name ">
-              <a href="#method__stop">_stop</a>(time)
+              <a href="#method__stop">_stop</a>(stopAt)
             </div>
             <div class="short-description">
               <p>The underlying method that backs all of the <code>stop</code> methods. Stops sound and set <code>isPlaying</code> to false at specified time.</p>
@@ -357,7 +360,7 @@ not.</p>
         <h2 id="public-properties">Public Properties</h2>
 <div class="property item public">
   <div id="props_isPlaying" class="title">
-    <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l25"><code>addon&#x2F;mixins&#x2F;playable.js:25</code></a></span>
+    <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l29"><code>addon&#x2F;mixins&#x2F;playable.js:29</code></a></span>
     <h3 class="">
       public
       
@@ -379,7 +382,7 @@ not.</p>
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item public">
     <div id="method_play" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l35"><code>addon&#x2F;mixins&#x2F;playable.js:35</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l39"><code>addon&#x2F;mixins&#x2F;playable.js:39</code></a></span>
         <h3 class="">
             public
             
@@ -399,7 +402,7 @@ not.</p>
 </div>
 <div class="method item public">
     <div id="method_playAt" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l45"><code>addon&#x2F;mixins&#x2F;playable.js:45</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l49"><code>addon&#x2F;mixins&#x2F;playable.js:49</code></a></span>
         <h3 class="">
             public
             
@@ -453,7 +456,7 @@ time") when the audio source should be played.</p>
 </div>
 <div class="method item public">
     <div id="method_playFor" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l76"><code>addon&#x2F;mixins&#x2F;playable.js:76</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l80"><code>addon&#x2F;mixins&#x2F;playable.js:80</code></a></span>
         <h3 class="">
             public
             
@@ -504,7 +507,7 @@ stopped.</p>
 </div>
 <div class="method item public">
     <div id="method_playIn" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l63"><code>addon&#x2F;mixins&#x2F;playable.js:63</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l67"><code>addon&#x2F;mixins&#x2F;playable.js:67</code></a></span>
         <h3 class="">
             public
             
@@ -554,7 +557,7 @@ should be played.</p>
 </div>
 <div class="method item public">
     <div id="method_playInAndStopAfter" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l91"><code>addon&#x2F;mixins&#x2F;playable.js:91</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l95"><code>addon&#x2F;mixins&#x2F;playable.js:95</code></a></span>
         <h3 class="">
             public
             
@@ -620,7 +623,7 @@ started playing that the audio source should be stopped.</p>
 </div>
 <div class="method item public">
     <div id="method_stop" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l109"><code>addon&#x2F;mixins&#x2F;playable.js:109</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l113"><code>addon&#x2F;mixins&#x2F;playable.js:113</code></a></span>
         <h3 class="">
             public
             
@@ -640,7 +643,7 @@ started playing that the audio source should be stopped.</p>
 </div>
 <div class="method item public">
     <div id="method_stopAt" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l132"><code>addon&#x2F;mixins&#x2F;playable.js:132</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l136"><code>addon&#x2F;mixins&#x2F;playable.js:136</code></a></span>
         <h3 class="">
             public
             
@@ -691,7 +694,7 @@ started playing that the audio source should be stopped.</p>
 </div>
 <div class="method item public">
     <div id="method_stopIn" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l119"><code>addon&#x2F;mixins&#x2F;playable.js:119</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l123"><code>addon&#x2F;mixins&#x2F;playable.js:123</code></a></span>
         <h3 class="">
             public
             
@@ -746,7 +749,7 @@ should be stopped.</p>
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__play" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l170"><code>addon&#x2F;mixins&#x2F;playable.js:170</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l179"><code>addon&#x2F;mixins&#x2F;playable.js:179</code></a></span>
         <h3 class="">
             private
             
@@ -799,12 +802,12 @@ time") when the audio source should be played.</p>
 </div>
 <div class="method item private">
     <div id="method__stop" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l147"><code>addon&#x2F;mixins&#x2F;playable.js:147</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_playable.js.html#l151"><code>addon&#x2F;mixins&#x2F;playable.js:151</code></a></span>
         <h3 class="">
             private
             
             
-            _stop(time)
+            _stop(stopAt)
         </h3>
     </div>
 
@@ -828,7 +831,7 @@ set <code>isPlaying</code> to false at specified time.</p>
           </thead>
           <tbody>
             <tr>
-              <td>time</td>
+              <td>stopAt</td>
               <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
               <td>
                 <ul>

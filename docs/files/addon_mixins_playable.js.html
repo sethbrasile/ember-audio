@@ -69,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.2.e9a87a61
+              Version: 0.0.0-alpha.3.02e59bb3
             </div>
             
         </div>
@@ -99,6 +99,10 @@ const {
  * A mixin that allows an object to start and stop an audio source, now or in
  * the future, as well as track whether the audio source is currently playing or
  * not.
+ *
+ * Consuming object must implement &#x60;wireConnections&#x60; and &#x60;getNodeFrom&#x60; methods.
+ * These methods are included in the {{#crossLink &quot;Connectable&quot;}}{{/crossLink}}
+ * mixin.
  *
  * @public
  * @class Playable
@@ -235,17 +239,22 @@ export default Mixin.create({
    * @private
    * @method _stop
    *
-   * @param {number} time The moment in time (in seconds, relative to the
+   * @param {number} stopAt The moment in time (in seconds, relative to the
    * {{#crossLink &quot;AudioContext&quot;}}AudioContext&#x27;s{{/crossLink}} &quot;beginning of
    * time&quot;) when the audio source should be stopped.
    */
-  _stop(time) {
+  _stop(stopAt) {
     const node = this.getNodeFrom(&#x27;audioSource&#x27;);
     const currentTime = this.get(&#x27;audioContext.currentTime&#x27;);
 
     if (node) {
-      node.stop(time);
-      later(() =&gt; this.set(&#x27;isPlaying&#x27;, false), (time - currentTime) * 1000);
+      node.stop(stopAt);
+    }
+
+    if (stopAt === currentTime) {
+      this.set(&#x27;isPlaying&#x27;, false);
+    } else {
+      later(() =&gt; this.set(&#x27;isPlaying&#x27;, false), (stopAt - currentTime) * 1000);
     }
   },
 
@@ -265,7 +274,7 @@ export default Mixin.create({
   _play(playAt) {
     const currentTime = this.get(&#x27;audioContext.currentTime&#x27;);
 
-    this._wireConnections();
+    this.wireConnections();
 
     const node = this.getNodeFrom(&#x27;audioSource&#x27;);
 

@@ -69,7 +69,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.2.e9a87a61
+              Version: 0.0.0-alpha.3.02e59bb3
             </div>
             
         </div>
@@ -82,7 +82,7 @@
 <pre class="code prettyprint linenums">
 import Ember from &#x27;ember&#x27;;
 import { Connectable, Playable } from &#x27;ember-audio/mixins&#x27;;
-import { zeroify } from &#x27;ember-audio/utils&#x27;;
+import { zeroify, withinRange } from &#x27;ember-audio/utils&#x27;;
 
 /**
  * Provides classes that are capable of interacting with the Web Audio API&#x27;s
@@ -104,7 +104,7 @@ const {
  * an audio source, provides various methods for interacting with the audio source,
  * creates {{#crossLink &quot;AudioNode&quot;}}AudioNodes{{/crossLink}} from the
  * connections array, sets up the necessary connections/routing between them,
- * and provides some methods to {{#crossLink &quot;Sound/play:method&quot;}}{{/crossLink}}
+ * and provides some methods to {{#crossLink &quot;Playable/play:method&quot;}}{{/crossLink}}
  * and {{#crossLink &quot;Sound/stop:method&quot;}}{{/crossLink}} the audio source.
  *
  * @public
@@ -226,13 +226,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
    * @method changePanTo
    */
   changePanTo(value) {
-    if (value &gt; 1) {
-      value = 1;
-    } else if (value &lt; -1) {
-      value = -1;
-    }
-
-    this.getNodeFrom(&#x27;panner&#x27;).pan.value = value;
+    this.getNodeFrom(&#x27;panner&#x27;).pan.value = withinRange(value, 0, 1);
   },
 
   /**
@@ -261,13 +255,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
     const notify = () =&gt; this.notifyPropertyChange(&#x27;percentGain&#x27;);
 
     function adjustGain(newValue) {
-      if (newValue &gt; 1) {
-        newValue = 1;
-      } else if (newValue &lt; 0) {
-        newValue = 0;
-      }
-
-      gainNode.gain.value = newValue;
+      gainNode.gain.value = withinRange(newValue, 0, 1);
       notify();
     }
 
@@ -313,19 +301,14 @@ const Sound = EmberObject.extend(Connectable, Playable, {
 
     const moveToOffset = (offset) =&gt; {
       const isPlaying = this.get(&#x27;isPlaying&#x27;);
-
-      if (offset &gt; duration) {
-        offset = duration;
-      } else if (offset &lt; 0) {
-        offset = 0;
-      }
+      const adjustedOffset = withinRange(offset, 0, duration);
 
       if (isPlaying) {
         this.stop();
-        this.set(&#x27;startOffset&#x27;, offset);
+        this.set(&#x27;startOffset&#x27;, adjustedOffset);
         this.play();
       } else {
-        this.set(&#x27;startOffset&#x27;, offset);
+        this.set(&#x27;startOffset&#x27;, adjustedOffset);
       }
     };
 

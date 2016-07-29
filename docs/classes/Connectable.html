@@ -98,11 +98,13 @@
                       <li><a href="#method_getConnection">getConnection</a></li>
                       <li><a href="#method_getNodeFrom">getNodeFrom</a></li>
                       <li><a href="#method_removeConnection">removeConnection</a></li>
+                      <li><a href="#method_update">update</a></li>
                   </ul>
             
                   <div><a href="#protected-methods">Protected Methods</a></div>
                   <ul>
                       <li><a href="#method__initConnections">_initConnections</a></li>
+                      <li><a href="#method_wireConnections">wireConnections</a></li>
                   </ul>
             
                   <div><a href="#private-methods">Private Methods</a></div>
@@ -111,7 +113,6 @@
                       <li><a href="#method__setAttrsOnNode">_setAttrsOnNode</a></li>
                       <li><a href="#method__watchConnectionChanges">_watchConnectionChanges</a></li>
                       <li><a href="#method__wireConnection">_wireConnection</a></li>
-                      <li><a href="#method__wireConnections">_wireConnections</a></li>
                   </ul>
               </div>
             </div>
@@ -119,7 +120,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.2.e9a87a61
+              Version: 0.0.0-alpha.3.02e59bb3
             </div>
             
         </div>
@@ -163,7 +164,7 @@ Depends on <code>audioContext</code> being available on the consuming object.</p
               <a href="#props_connections">connections</a>: <a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/Ember.MutableArray.html" class="crosslink external" target="_blank">Ember.MutableArray</a>
             </div>
             <div class="short-description">
-              <p>An array of Connection instances. Determines which AudioNode instances are connected to one-another and the order in which they are connected. Starts as <code>null</code> but set to an array on <code>init</code> via the Connectable/initConnections:method method.</p>
+              <p>An array of Connection instances. Determines which AudioNode instances are connected to one-another and the order in which they are connected. Starts as <code>null</code> but set to an array on <code>init</code> via the <a href="../classes/Connectable.html#method__initConnections" class="crosslink">_initConnections</a> method.</p>
             </div>
           </td>
         </tr>
@@ -226,6 +227,21 @@ Depends on <code>audioContext</code> being available on the consuming object.</p
             </div>
           </td>
         </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_update">update</a>(key, value)
+            </div>
+            <div class="short-description">
+              <p>Updates an AudioNode's property in real time by setting the property on the connectable object (which affects the next play) and also sets it on it's corresponding <code>connection.node</code> (which affects the audio in real time).</p>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -248,6 +264,21 @@ Depends on <code>audioContext</code> being available on the consuming object.</p
             </div>
             <div class="short-description">
               <p>Initializes default connections on Sound instantiation. Runs <code>on('init')</code>.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            protected
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_wireConnections">wireConnections</a>( ): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a>
+            </div>
+            <div class="short-description">
+              <p>Gets the array of Connection instances from the connections array and returns the same array, having created any AudioNode instances that needed to be created, and having connected the AudioNode instances to one another in the order in which they were present in the connections array.</p>
             </div>
           </td>
         </tr>
@@ -302,7 +333,7 @@ Depends on <code>audioContext</code> being available on the consuming object.</p
               <a href="#method__watchConnectionChanges">_watchConnectionChanges</a>( )
             </div>
             <div class="short-description">
-              <p>Observes the connections array and runs _wireConnections each time it changes.</p>
+              <p>Observes the connections array and runs wireConnections each time it changes.</p>
             </div>
           </td>
         </tr>
@@ -318,21 +349,6 @@ Depends on <code>audioContext</code> being available on the consuming object.</p
             </div>
             <div class="short-description">
               <p>Meant to be passed to a Array.prototype.map function. Connects a Connection instance's node to the next Connection instance's node.</p>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            private
-            
-            
-          </td>
-          <td>
-            <div class="method-name ">
-              <a href="#method__wireConnections">_wireConnections</a>( ): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a>
-            </div>
-            <div class="short-description">
-              <p>Gets the array of Connection instances from the connections array and returns the same array, having created any AudioNode instances that needed to be created, and having connected the AudioNode instances to one another in the order in which they were present in the connections array.</p>
             </div>
           </td>
         </tr>
@@ -365,8 +381,7 @@ Depends on <code>audioContext</code> being available on the consuming object.</p
   <div class="property-description"><p>An array of Connection instances. Determines which AudioNode instances are
 connected to one-another and the order in which they are connected. Starts
 as <code>null</code> but set to an array on <code>init</code> via the
-Connectable/initConnections:method
-method.</p>
+<a href="../classes/Connectable.html#method__initConnections" class="crosslink">_initConnections</a> method.</p>
 </div>
 
 </div>
@@ -378,7 +393,7 @@ method.</p>
     <h2 id="public-methods">Public Methods</h2>
 <div class="method item public">
     <div id="method_getConnection" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l63"><code>addon&#x2F;mixins&#x2F;connectable.js:63</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l62"><code>addon&#x2F;mixins&#x2F;connectable.js:62</code></a></span>
         <h3 class="">
             public
             
@@ -435,7 +450,7 @@ method.</p>
 </div>
 <div class="method item public">
     <div id="method_getNodeFrom" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l44"><code>addon&#x2F;mixins&#x2F;connectable.js:44</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l43"><code>addon&#x2F;mixins&#x2F;connectable.js:43</code></a></span>
         <h3 class="">
             public
             
@@ -493,7 +508,7 @@ connection's <code>name</code>.</p>
 </div>
 <div class="method item public">
     <div id="method_removeConnection" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l77"><code>addon&#x2F;mixins&#x2F;connectable.js:77</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l76"><code>addon&#x2F;mixins&#x2F;connectable.js:76</code></a></span>
         <h3 class="">
             public
             
@@ -540,13 +555,98 @@ connection's <code>name</code>.</p>
 
 
 </div>
+<div class="method item public">
+    <div id="method_update" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l88"><code>addon&#x2F;mixins&#x2F;connectable.js:88</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            update(key, value)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Updates an AudioNode's property in real time by setting the property on the
+connectable object (which affects the next play) and also sets it on it's
+corresponding <code>connection.node</code> (which affects the audio in real time).</p>
+<p>If a connection is pulling a property from a connectable object via
+<code>onPlaySetAttrsOnNode[index].relativePath</code>, this method will update that
+property directly on the Connection's <code>node</code> as well as on the connectable
+object.</p>
+<p>Important to note that this only works for properties that are set directly
+on a connectable object and then proxied/set on a node via
+<code>onPlaySetAttrsOnNode</code>.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>key</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The name/path to a property on an Oscillator instance
+that should be updated.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>value</td>
+              <td><a href="http://builds.emberjs.com/release/ember-docs.jsonclasses/String.html" class="crosslink external" target="_blank">String</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The value that the property should be set to.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+
+
+        <h4>Example:</h4>
+        <pre class="code prettyprint"><code>// With <code>set</code>
+const osc = audioService.createOscillator({ frequency: 440 });
+osc.play(); // playing at 440Hz
+osc.set('frequency', 1000); // still playing at 440Hz
+osc.stop();
+osc.play(); // now playing at 1000Hz</code></pre>
+<pre class="code prettyprint"><code>// With <code>update</code>
+const osc = audioService.createOscillator({ frequency: 440 });
+osc.play(); // playing at 440Hz
+osc.update('frequency', 1000); // playing at 1000Hz</code></pre>
+
+</div>
   </div>
 
     <div id="methods protected">
         <h2 id="protected-methods">Protected Methods</h2>
 <div class="method item protected">
     <div id="method__initConnections" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l89"><code>addon&#x2F;mixins&#x2F;connectable.js:89</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l139"><code>addon&#x2F;mixins&#x2F;connectable.js:139</code></a></span>
         <h3 class="">
             protected
             
@@ -564,13 +664,45 @@ connection's <code>name</code>.</p>
 
 
 </div>
+<div class="method item protected">
+    <div id="method_wireConnections" class="title">
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l197"><code>addon&#x2F;mixins&#x2F;connectable.js:197</code></a></span>
+        <h3 class="">
+            protected
+            
+            
+            wireConnections( ): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a>
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Gets the array of Connection instances from the connections array and
+returns the same array, having created any AudioNode instances that needed
+to be created, and having connected the AudioNode instances to one another
+in the order in which they were present in the connections array.</p>
+</div>
+
+
+      <div class="return">
+        <h4>Return:</h4>
+        <div>
+          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a></span>
+          <span class="return-description"><p>Array of Connection instances collected from the
+connections array, created, connected, and ready to play.</p>
+</span>
+        </div>
+      </div>
+
+
+</div>
     </div>
 
     <div id="methods private">
         <h2 id="private-methods">Private Methods</h2>
 <div class="method item private">
     <div id="method__createNode" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l168"><code>addon&#x2F;mixins&#x2F;connectable.js:168</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l218"><code>addon&#x2F;mixins&#x2F;connectable.js:218</code></a></span>
         <h3 class="">
             private
             
@@ -633,7 +765,7 @@ created.</p>
 </div>
 <div class="method item private">
     <div id="method__setAttrsOnNode" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l203"><code>addon&#x2F;mixins&#x2F;connectable.js:203</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l253"><code>addon&#x2F;mixins&#x2F;connectable.js:253</code></a></span>
         <h3 class="">
             private
             
@@ -693,7 +825,7 @@ attrs set.</p>
 </div>
 <div class="method item private">
     <div id="method__watchConnectionChanges" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l136"><code>addon&#x2F;mixins&#x2F;connectable.js:136</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l186"><code>addon&#x2F;mixins&#x2F;connectable.js:186</code></a></span>
         <h3 class="">
             private
             
@@ -704,7 +836,7 @@ attrs set.</p>
 
 
 
-    <div class="method-description"><p>Observes the connections array and runs _wireConnections each time it
+    <div class="method-description"><p>Observes the connections array and runs wireConnections each time it
 changes.</p>
 </div>
 
@@ -714,7 +846,7 @@ changes.</p>
 </div>
 <div class="method item private">
     <div id="method__wireConnection" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l250"><code>addon&#x2F;mixins&#x2F;connectable.js:250</code></a></span>
+        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l300"><code>addon&#x2F;mixins&#x2F;connectable.js:300</code></a></span>
         <h3 class="">
             private
             
@@ -794,38 +926,6 @@ iteration.</p>
           <span class="return-type"><a href="../classes/Connection.html" class="crosslink">Connection</a></span>
           <span class="return-description"><p>The input Connection instance after having it's node
 connected to the next Connection instance's node.</p>
-</span>
-        </div>
-      </div>
-
-
-</div>
-<div class="method item private">
-    <div id="method__wireConnections" class="title">
-        <span class="source-link"><a href="../files/addon_mixins_connectable.js.html#l147"><code>addon&#x2F;mixins&#x2F;connectable.js:147</code></a></span>
-        <h3 class="">
-            private
-            
-            
-            _wireConnections( ): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a>
-        </h3>
-    </div>
-
-
-
-    <div class="method-description"><p>Gets the array of Connection instances from the connections array and
-returns the same array, having created any AudioNode instances that needed
-to be created, and having connected the AudioNode instances to one another
-in the order in which they were present in the connections array.</p>
-</div>
-
-
-      <div class="return">
-        <h4>Return:</h4>
-        <div>
-          <span class="return-type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="crosslink external" target="_blank">Array</a> | <a href="../classes/Connection.html" class="crosslink">Connection</a></span>
-          <span class="return-description"><p>Array of Connection instances collected from the
-connections array, created, connected, and ready to play.</p>
 </span>
         </div>
       </div>

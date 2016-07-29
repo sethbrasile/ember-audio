@@ -91,6 +91,7 @@
                   <div><a href="#public-methods">Public Methods</a></div>
                   <ul>
                       <li><a href="#method_sortNotes">sortNotes</a></li>
+                      <li><a href="#method_withinRange">withinRange</a></li>
                       <li><a href="#method_zeroify">zeroify</a></li>
                   </ul>
             
@@ -114,7 +115,7 @@
             
             
             <div class="version-info">
-              Version: 0.0.0-alpha.2.e9a87a61
+              Version: 0.0.0-alpha.3.02e59bb3
             </div>
             
         </div>
@@ -158,6 +159,21 @@
             </div>
             <div class="short-description">
               <p>Sorts an array of <a href="../classes/Note.html" class="crosslink">Notes</a> so that they are in the same order that they would appear on a piano.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            public
+            
+            
+          </td>
+          <td>
+            <div class="method-name ">
+              <a href="#method_withinRange">withinRange</a>(value, min, max)
+            </div>
+            <div class="short-description">
+              <p>Ensures that a number is not less than or greater than a given min and max.</p>
             </div>
           </td>
         </tr>
@@ -409,6 +425,86 @@ appear on a piano.</p>
 </span>
         </div>
       </div>
+
+
+</div>
+<div class="method item public">
+    <div id="method_withinRange" class="title">
+        <span class="source-link"><a href="../files/addon_utils_within-range.js.html#l6"><code>addon&#x2F;utils&#x2F;within-range.js:6</code></a></span>
+        <h3 class="">
+            public
+            
+            
+            withinRange(value, min, max)
+        </h3>
+    </div>
+
+
+
+    <div class="method-description"><p>Ensures that a number is not less than or greater than a given min and max.</p>
+</div>
+
+      <div class="params">
+        <h4>Parameters:</h4>
+        <table>
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Attribute</th>
+            <th>Description</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>value</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The value that should be checked/returned if within
+given range.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>min</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The minimum allowed value of the <code>value</code> param. If <code>value</code>
+is less than this value, this value will be returned instead.</p>
+</td>
+            </tr>
+
+            <tr>
+              <td>max</td>
+              <td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></td>
+              <td>
+                <ul>
+                  
+                  
+                  
+                </ul>
+              </td>
+              <td><p>The maximum allowed value of the <code>value</code> param. If <code>value</code>
+is greater than this value, this value will be returned instead.</p>
+</td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
 
 
 </div>

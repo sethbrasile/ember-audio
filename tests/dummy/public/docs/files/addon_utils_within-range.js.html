@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>addon/classes/note.js - ember-audio</title>
-    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min-ecd4a5d6c0cbee10b168f6aa000c64ea.css" integrity="sha256-HS1ihgXZ6qfUcS5BTehJhV81EZR+I5Q6zx5yGdEqbp0= sha512-T23C9FH3sSw+W00kbZbvWt8h/P1h8Euj3cklmPSZNeyGekNivnCvp7KKIFju5D3blaYVmVaD0oAjbS2c+J+huQ==" >
-    <link rel="stylesheet" href="../assets/css/main-81a744c27cc7449efcd5a4308805a56f.css" id="site_styles" integrity="sha256-lmgfQjoLLIO5EO5HRKPt2FejDbtTPO0BGKxn1tqReMI= sha512-55xJjT5gmMB4vtNd+yN+XbPJaSBciawgt9pR/SJDaGxAkJBdaMIazBHi7qKjfs+3F5ZmI6yXztfpcTPyujc6Hg==" >
+    <title>addon/utils/within-range.js - ember-audio</title>
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
     <script src="http://yui.yahooapis.com/combo?3.8.0pr2/build/yui/yui-min.js"></script>
 </head>
 <body class="yui3-skin-sam">
@@ -76,38 +76,39 @@
 
         <div id="main" class="yui3-u">
             <div class="content"><div class="title">
-  <h1 class="file-name">addon/classes/note.js</h1>
+  <h1 class="file-name">addon/utils/within-range.js</h1>
 </div>
 
 <pre class="code prettyprint linenums">
-import Ember from &#x27;ember&#x27;;
-import { MusicalIdentity } from &#x27;ember-audio/mixins&#x27;;
-
 /**
- * Provides helper classes that represent musical concepts meant to be used by
- * classes from the Audio module.
- *
  * @public
- * @module MusicalConcepts
+ * @class utils
  */
 
-const {
-  Object: EmberObject
-} = Ember;
-
 /**
- * A class that represents a musical note, but does not carry any audio data.
- *
- * This class only makes sense when used in the context of a collection, as the
- * only functionality it provides serves to facilitate identification.
+ * Ensures that a number is not less than or greater than a given min and max.
  *
  * @public
- * @class Note
- * @uses MusicalIdentity
+ * @method withinRange
+ *
+ * @param {number} value The value that should be checked/returned if within
+ * given range.
+ *
+ * @param {number} min The minimum allowed value of the &#x60;value&#x60; param. If &#x60;value&#x60;
+ * is less than this value, this value will be returned instead.
+ *
+ * @param {number} max The maximum allowed value of the &#x60;value&#x60; param. If &#x60;value&#x60;
+ * is greater than this value, this value will be returned instead.
  */
-const Note = EmberObject.extend(MusicalIdentity);
-
-export default Note;
+export default function withinRange(value, min, max) {
+  if (value &lt; min) {
+    return min;
+  } else if (value &gt; max) {
+    return max;
+  } else {
+    return value;
+  }
+}
 
 </pre>
 
@@ -115,8 +116,8 @@ export default Note;
         </div>
     </div>
 </div>
-<script src="../assets/vendor/prettify/prettify-min-8dcb0650a8bd6a247abff6765e43040d.js" integrity="sha256-diihLR0asHHxFN+NqoV4qpSvexH85SSJukuSkTxrcEA= sha512-zTGRkp/yAiVPNmxPJ7k2NnZe7aR2xXeAGDNaQnFTbvTARElf+UXMiDydPtR3n7LVZkqioLtxhkY9funHfhIp5A==" ></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
 <script>prettyPrint();</script>
-<script src="../assets/js/yui-prettify-da760a61cb717e2aa0032f496f9d95d0.js" integrity="sha256-OceGphJyxBL0QHqDhUPIAqInTT4yDCdKiwPM5cM2Di8= sha512-mHOjxDVAmJtGveeZiOlcpSIj62TLFkwhtokv51d+96obX359cFYd+xdbC3Q6bCSid1EkfbzQIORLCe3MIqT/+Q==" ></script>
+<script src="../assets/js/yui-prettify.js"></script>
 </body>
 </html>
