@@ -145,35 +145,33 @@ export default Mixin.create({
   },
 
   /**
-   * The underlying method that backs all of the `stop` methods.
+   * The underlying method that backs all of the `stop` methods. Stops sound and
+   * set `isPlaying` to false at specified time.
    *
    * Functionally equivalent to the `stopAt` method.
    *
    * @private
    * @method _stop
    *
-   * @param {number} time The time that the audio source should be stopped.
+   * @param {number} time The moment in time (in seconds, relative to the
+   * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
+   * time") when the audio source should be stopped.
    */
   _stop(time) {
     const node = this.getNodeFrom('audioSource');
+    const currentTime = this.get('audioContext.currentTime');
 
     if (node) {
       node.stop(time);
-      this.set('isPlaying', false);
+      later(() => this.set('isPlaying', false), (time - currentTime) * 1000);
     }
   },
 
   /**
-   * The underlying method that backs the
-   * {{#crossLink "Playable/play:method"}}{{/crossLink}},
-   * {{#crossLink "Playable/playAt:method"}}{{/crossLink}}, and
-   * {{#crossLink "Playable/playIn:method"}}{{/crossLink}} methods.
+   * The underlying method that backs all of the `play` methods. Plays sound and
+   * sets `isPlaying` to true at specified time.
    *
-   * Plays the audio source at the specified moment in time. A "moment in time"
-   * is measured in seconds from the moment that the
-   * {{#crossLink "AudioContext"}}{{/crossLink}} was instantiated.
-   *
-   * Functionally equivalent to {{#crossLink "Playable/playAt:method"}}{{/crossLink}}.
+   * Functionally equivalent to `playAt`.
    *
    * @param {number} time The moment in time (in seconds, relative to the
    * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of

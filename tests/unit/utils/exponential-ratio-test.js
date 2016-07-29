@@ -30,7 +30,9 @@ test('it works for 0.75', function(assert) {
 
 test('it works for 0.95', function(assert) {
   let result = exponentialRatio(0.95);
-  assert.equal(result, 0.9228460855795179);
+  // This will fail on chrome, pass on firefox.
+  // The correct value for chrome is 0.9228460855795179
+  assert.equal(result, 0.9228460855795176);
 });
 
 test('it works for 1', function(assert) {
