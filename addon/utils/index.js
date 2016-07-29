@@ -3,6 +3,7 @@ import { base64ToUint8, mungeSoundFont } from './decode-base64';
 import { arraySwap, flatten } from './array-methods';
 import frequencyMap from './frequency-map';
 import exponentialRatio from './exponential-ratio';
+import withinRange from './within-range';
 
 import {
   sortNotes,
@@ -33,5 +34,6 @@ export {
   stripDuplicateOctaves,
   createOctavesWithNotes,
   frequencyMap,
-  exponentialRatio
+  exponentialRatio,
+  withinRange
 };
