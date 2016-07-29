@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import { Connectable, Playable } from 'ember-audio/mixins';
-import { zeroify } from 'ember-audio/utils';
+import { zeroify, withinRange } from 'ember-audio/utils';
 
 /**
  * Provides classes that are capable of interacting with the Web Audio API's
@@ -144,13 +144,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
    * @method changePanTo
    */
   changePanTo(value) {
-    if (value > 1) {
-      value = 1;
-    } else if (value < -1) {
-      value = -1;
-    }
-
-    this.getNodeFrom('panner').pan.value = value;
+    this.getNodeFrom('panner').pan.value = withinRange(value, 0, 1);
   },
 
   /**
@@ -179,13 +173,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
     const notify = () => this.notifyPropertyChange('percentGain');
 
     function adjustGain(newValue) {
-      if (newValue > 1) {
-        newValue = 1;
-      } else if (newValue < 0) {
-        newValue = 0;
-      }
-
-      gainNode.gain.value = newValue;
+      gainNode.gain.value = withinRange(newValue, 0, 1);
       notify();
     }
 
@@ -231,19 +219,14 @@ const Sound = EmberObject.extend(Connectable, Playable, {
 
     const moveToOffset = (offset) => {
       const isPlaying = this.get('isPlaying');
-
-      if (offset > duration) {
-        offset = duration;
-      } else if (offset < 0) {
-        offset = 0;
-      }
+      const adjustedOffset = withinRange(offset, 0, duration);
 
       if (isPlaying) {
         this.stop();
-        this.set('startOffset', offset);
+        this.set('startOffset', adjustedOffset);
         this.play();
       } else {
-        this.set('startOffset', offset);
+        this.set('startOffset', adjustedOffset);
       }
     };
 

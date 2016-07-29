@@ -112,3 +112,71 @@ test('play() connects gain', function(assert) {
   result.play();
   assert.ok(result.getNodeFrom('gain').connectCalled);
 });
+
+test(`changePanTo() gets the panner connection and changes it's node's pan value`, function(assert) {
+  let audioContext = ContextMock.create();
+  let result = Sound.create({ audioContext });
+  let panner = result.getNodeFrom('panner');
+
+  result.changePanTo(0.6);
+  assert.equal(panner.pan.value, 0.6);
+
+  result.changePanTo(0.4);
+  assert.equal(panner.pan.value, 0.4);
+});
+
+test(`changeGainTo() gets the gain connection and changes it's node's gain value`, function(assert) {
+  let audioContext = ContextMock.create();
+  let result = Sound.create({ audioContext });
+  let gain = result.getNodeFrom('gain');
+
+  result.changeGainTo(0.6).from('ratio');
+  assert.equal(gain.gain.value, 0.6);
+
+  result.changeGainTo(0.3).from('inverseRatio');
+  assert.equal(gain.gain.value, 0.7);
+
+  result.changeGainTo(20).from('percent');
+  assert.equal(gain.gain.value, 0.2);
+});
+
+test('startOffset starts at 0', function(assert) {
+  let audioContext = ContextMock.create();
+  let result = Sound.create({ audioContext });
+  assert.equal(result.get('startOffset'), 0);
+});
+
+test('seek() sets startOffset', function(assert) {
+  let audioContext = ContextMock.create();
+  let audioBuffer = AudioBufferMock.create();
+  let result = Sound.create({ audioContext, audioBuffer });
+
+  result.seek(2).from('seconds');
+  assert.equal(result.get('startOffset'), 2);
+
+  result.seek(30).from('percent');
+  assert.equal(result.get('startOffset'), 19.5);
+
+  result.seek(0.2).from('ratio');
+  assert.equal(result.get('startOffset'), 13);
+
+  result.seek(0.2).from('inverseRatio');
+  assert.equal(result.get('startOffset'), 52);
+});
+
+test('seek() calls stop then play when `isPlaying` is true', function(assert) {
+  let audioContext = ContextMock.create();
+  let audioBuffer = AudioBufferMock.create();
+  let result = Sound.create({ audioContext, audioBuffer, isPlaying: true });
+
+  result.set('stop', () => result.set('stopCalled', true));
+  result.set('play', () => result.set('playCalled', true));
+
+  assert.notOk(result.get('stopCalled'));
+  assert.notOk(result.get('playCalled'));
+
+  result.seek(2).from('seconds');
+
+  assert.ok(result.get('stopCalled'));
+  assert.ok(result.get('playCalled'));
+});

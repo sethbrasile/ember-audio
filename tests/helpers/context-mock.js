@@ -9,6 +9,10 @@ const {
 const NodeObject = EmberObject.extend({
   connectCalled: false,
   startCalled: false,
+
+  startTime: null,
+  stopTime: null,
+
   pan: { value: null },
   gain: { value: null },
 
@@ -17,12 +21,19 @@ const NodeObject = EmberObject.extend({
     this.set('connectedObject', obj);
   },
 
-  start() {
+  start(time) {
+    this.set('startTime', time);
     this.set('startCalled', true);
+  },
+
+  stop(time) {
+    this.set('stopTime', time);
+    this.set('stopCalled', true);
   }
 });
 
 const ContextMock = EmberObject.extend({
+  currentTime: 110,
   createBufferSourceCalled: false,
   createGainCalled: false,
   createAnalyserCalled: false,

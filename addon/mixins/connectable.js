@@ -184,14 +184,14 @@ export default Mixin.create({
   */
 
   /**
-   * Observes the connections array and runs _wireConnections each time it
+   * Observes the connections array and runs wireConnections each time it
    * changes.
    *
    * @private
    * @method _watchConnectionChanges
    */
   _watchConnectionChanges: observer('connections.[]', function() {
-    this._wireConnections();
+    this.wireConnections();
   }),
 
   /**
@@ -200,13 +200,13 @@ export default Mixin.create({
    * to be created, and having connected the AudioNode instances to one another
    * in the order in which they were present in the connections array.
    *
-   * @private
-   * @method _wireConnections
+   * @protected
+   * @method wireConnections
    *
    * @return {array|Connection} Array of Connection instances collected from the
    * connections array, created, connected, and ready to play.
    */
-  _wireConnections() {
+  wireConnections() {
     const createNode = this._createNode.bind(this);
     const setAttrsOnNode = this._setAttrsOnNode.bind(this);
     const wireConnection = this._wireConnection;
