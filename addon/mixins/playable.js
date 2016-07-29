@@ -18,6 +18,10 @@ const {
  * the future, as well as track whether the audio source is currently playing or
  * not.
  *
+ * Consuming object must implement `wireConnections` and `getNodeFrom` methods.
+ * These methods are included in the {{#crossLink "Connectable"}}{{/crossLink}}
+ * mixin.
+ *
  * @public
  * @class Playable
  */
@@ -153,17 +157,22 @@ export default Mixin.create({
    * @private
    * @method _stop
    *
-   * @param {number} time The moment in time (in seconds, relative to the
+   * @param {number} stopAt The moment in time (in seconds, relative to the
    * {{#crossLink "AudioContext"}}AudioContext's{{/crossLink}} "beginning of
    * time") when the audio source should be stopped.
    */
-  _stop(time) {
+  _stop(stopAt) {
     const node = this.getNodeFrom('audioSource');
     const currentTime = this.get('audioContext.currentTime');
 
     if (node) {
-      node.stop(time);
-      later(() => this.set('isPlaying', false), (time - currentTime) * 1000);
+      node.stop(stopAt);
+    }
+
+    if (stopAt === currentTime) {
+      this.set('isPlaying', false);
+    } else {
+      later(() => this.set('isPlaying', false), (stopAt - currentTime) * 1000);
     }
   },
 
@@ -183,7 +192,7 @@ export default Mixin.create({
   _play(playAt) {
     const currentTime = this.get('audioContext.currentTime');
 
-    this._wireConnections();
+    this.wireConnections();
 
     const node = this.getNodeFrom('audioSource');
 

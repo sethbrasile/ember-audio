@@ -165,7 +165,7 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
     connections.pushObjects([ gain, panner, destination ]);
 
     this.set('connections', connections);
-    this._wireConnections();
+    this.wireConnections();
   }),
 
   /**
