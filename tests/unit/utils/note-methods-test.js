@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import { module, test } from 'qunit';
 import noteFactory from '../../helpers/note-factory';
 import {
@@ -9,6 +10,10 @@ import {
   stripDuplicateOctaves,
   createOctavesWithNotes
 } from 'ember-audio/utils';
+
+const {
+  A
+} = Ember;
 
 module('Unit | Utility | note methods');
 
@@ -22,7 +27,7 @@ const B1  = noteFactory('B', null, 1);
 const C1  = noteFactory('C', null, 1);
 const Db1 = noteFactory('D', 'b', 1);
 
-const correctOctaves      = [[A0, Bb0, B0], [C1, Db1, Ab1, A1, Bb1, B1]];
+const correctOctaves = [[A0, Bb0, B0], [C1, Db1, Ab1, A1, Bb1, B1]];
 
 test('sortNotes exists', function(assert) {
   assert.ok(sortNotes);
@@ -52,16 +57,24 @@ test('createOctavesWithNotes exists', function(assert) {
   assert.ok(createOctavesWithNotes);
 });
 
-// test('octaveShift works', function(assert) {
-//   assert.expect(1);
-//
-//   let arr1      = [A0, Bb0, B0];
-//   let arr2      = [Ab1, A1, Bb1, B1, C1, Db1];
-//   let octaves   = [arr1, arr2];
-//   let result    = octaveShift(octaves);
-//
-//   assert.deepEqual(result, correctOctaves);
-// });
+test('sortNotes works', function(assert) {
+  assert.expect(1);
+
+  let result = sortNotes([A0, Ab1, A1, Bb1, B1, C1, Db1, Bb0, B0]);
+
+  assert.deepEqual(result, A([A0, Bb0, B0, C1, Db1, Ab1, A1, Bb1, B1]));
+});
+
+test('octaveShift works', function(assert) {
+  assert.expect(1);
+
+  let arr1      = [A0, Bb0, B0];
+  let arr2      = [Ab1, A1, Bb1, B1, C1, Db1];
+  let octaves   = [arr1, arr2];
+  let result    = octaveShift(octaves);
+
+  assert.deepEqual(result, correctOctaves);
+});
 
 test('octaveSort works', function(assert) {
   const alphabeticalOctaves = [[A0, Bb0, B0], [Ab1, A1, Bb1, B1, C1, Db1]];
