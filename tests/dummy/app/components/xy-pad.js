@@ -20,31 +20,30 @@ export default Component.extend({
     const pad = 10;
 
     ctx.fillStyle = 'white';
-    ctx.font = "24px serif";
-    ctx.textAlign = "left";
+    ctx.font = '24px serif';
+    ctx.textAlign = 'left';
 
     // save orientation
     ctx.save();
 
     // rotate canvas
     ctx.translate(0, 0);
-    ctx.rotate( Math.PI / 2 );
+    ctx.rotate(Math.PI / 2);
 
     // draw 'Gain'
-    ctx.fillText('Gain', pad, - pad);
+    ctx.fillText('Gain', pad, -pad);
 
     // restore orientation
     ctx.restore();
 
-    // draw "Frequency"
+    // draw 'Frequency'
     ctx.fillText('Frequency', pad, canvas.height - pad);
   },
 
   _drawGrid() {
     const [ canvas ] = this.$('canvas');
     const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
+    const { width, height } = canvas;
     const gridSize = 30;
 
     ctx.strokeStyle = 'gray';
@@ -70,7 +69,9 @@ export default Component.extend({
   },
 
   actions: {
-    activate() {
+    activate(e) {
+      e.preventDefault();
+      this.send('updateCoordinates', e);
       this.sendAction('activate');
     },
 
@@ -79,10 +80,16 @@ export default Component.extend({
     },
 
     updateCoordinates(e) {
+      e.preventDefault();
+
       const [ canvas ] = this.$('canvas');
       const canvasLocation = canvas.getBoundingClientRect();
-      const x = e.x - canvasLocation.left;
-      const y = e.y - canvasLocation.top;
+      const xRelToScreen = e.x || e.touches[0].screenX;
+      const yRelToScreen = e.y || e.touches[0].screenY;
+      const x = xRelToScreen - canvasLocation.left;
+
+      // 'y' is measured from top, so invert for value from bottom
+      const y = this.get('padSize') + (yRelToScreen - canvasLocation.top) * -1;
 
       this.sendAction('updateCoordinates', x, y);
     }

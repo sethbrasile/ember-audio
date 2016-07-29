@@ -1,6 +1,8 @@
 import Ember from 'ember';
+import { exponentialRatio } from 'ember-audio/utils';
 
 const {
+  computed,
   inject: { service },
   on,
   Controller
@@ -17,6 +19,24 @@ export default Controller.extend({
     this.set('oscillator', oscillator);
   }),
 
+  frequency: computed('oscillator.frequency', function() {
+    const frequency = this.get('oscillator.frequency');
+
+    if (frequency) {
+      return frequency.toFixed();
+    }
+  }),
+
+  gain: computed('oscillator.gain', function() {
+    const gain = this.get('oscillator.gain');
+
+    if (gain) {
+      return gain.toFixed(2);
+    } else {
+      return 0;
+    }
+  }),
+
   _getFrequency(x) {
     const range = this.get('range');
     const padSize = this.get('padSize');
@@ -25,8 +45,9 @@ export default Controller.extend({
   },
 
   _getGain(y) {
-    const padSize = this.get('padSize');
-    return 1 + (y / padSize) * -1;
+    // Human senses are not linear.
+    // http://stackoverflow.com/questions/1165026/what-algorithms-could-i-use-for-audio-volume-level
+    return exponentialRatio(y / this.get('padSize'));
   },
 
   actions: {

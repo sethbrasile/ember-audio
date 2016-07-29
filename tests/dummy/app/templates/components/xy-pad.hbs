@@ -2,8 +2,14 @@
   width={{padSize}}
   height={{padSize}}
   style="background-color: black;"
+
   onmousedown={{action 'activate'}}
   onmousemove={{action 'updateCoordinates'}}
   onmouseleave={{action 'deactivate'}}
   onmouseup={{action 'deactivate'}}
+
+  ontouchstart={{action 'activate'}}
+  ontouchmove={{action 'updateCoordinates'}}
+  ontouchend={{action 'deactivate'}}
+  ontouchcancel={{action 'deactivate'}}
 ></canvas>
