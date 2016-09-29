@@ -165,7 +165,8 @@ export default Mixin.create({
     const panner = Connection.create({
       name: 'panner',
       source: 'audioContext',
-      createCommand: 'createStereoPanner'
+      // On safari, 'createStereoPanner' is 'createPanner'
+      createCommand: 'createPanner'
     });
 
     const destination = Connection.create({

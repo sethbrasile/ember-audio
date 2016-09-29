@@ -515,11 +515,13 @@ export default Service.extend({
 
     return fetch(src)
       .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
-      .then((audioBuffer) => {
-        const sound = this._createSoundFor(type, { audioBuffer, audioContext, name });
-        register.set(name, sound);
-        return sound;
+      .then((arrayBuffer) => {
+        // On safari, the promise-based decodeAudioData syntax doesn't work
+        // Must use callback instead
+        audioContext.decodeAudioData(arrayBuffer, (audioBuffer) => {
+          const sound = this._createSoundFor(type, { audioBuffer, audioContext, name });
+          register.set(name, sound);
+        })
       })
       .catch((err) => {
         console.error('ember-audio:', err);
