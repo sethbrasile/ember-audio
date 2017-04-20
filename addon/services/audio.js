@@ -430,7 +430,7 @@ export default Service.extend({
    */
   removeFromRegister(type, name) {
     const register = this._getRegisterFor(type);
-    register.set(name, null);
+    register.delete(name);
   },
 
   /**
