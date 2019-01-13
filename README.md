@@ -38,31 +38,35 @@ Please let me know if you're building something with Ember Audio! It's a fairly
 large project, and I would love to know if it's working out for people! You can
 contact me via `@sethbrasile` on the ember community slack, or via email.
 
-# Contributing
 
-## Installation
+Compatibility
+------------------------------------------------------------------------------
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
-
-## Running
+* Ember.js v2.18 or above
+* Ember CLI v2.13 or above
 
 * `ember serve`
 * Visit your app at http://localhost:4200/ember-audio/.
 
-## Running Tests
 
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
+Usage
+------------------------------------------------------------------------------
 
 ## Building yuidoc Documentation
 
 * `ember ember-cli-yuidoc`
 
 For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+[Longer description of how to use the addon in apps.]
+
+
+Contributing
+------------------------------------------------------------------------------
+
+See the [Contributing](CONTRIBUTING.md) guide for details.
+
+
+License
+------------------------------------------------------------------------------
+
+This project is licensed under the [MIT License](LICENSE.md).
