@@ -1,18 +1,17 @@
+import { module, test } from 'qunit';
 // import Ember from 'ember';
-import { moduleFor, test } from 'ember-qunit';
-// import ContextMock from '../../helpers/context-mock';
+import { setupTest } from 'ember-qunit';
 
-moduleFor('service:audio', 'Unit | Service | audio', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
-});
+module('Unit | Service | audio', function(hooks) {
+  setupTest(hooks);
 
-test('it exists', function(assert) {
-  let service = this.subject();
-  assert.ok(service);
-});
+  test('it exists', function(assert) {
+    let service = this.owner.lookup('service:audio');
+    assert.ok(service);
+  });
 
-test('"_soundNotLoadedError" throws an error', function(assert) {
-  let service = this.subject();
-  assert.throws(() => service._soundNotLoadedError('test-sound'));
+  test('"_soundNotLoadedError" throws an error', function(assert) {
+    let service = this.owner.lookup('service:audio');
+    assert.throws(() => service._soundNotLoadedError('test-sound'));
+  });
 });

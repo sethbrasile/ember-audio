@@ -3,180 +3,180 @@ import ContextMock from '../../helpers/context-mock';
 import AudioBufferMock from '../../helpers/audio-buffer-mock';
 import { module, test } from 'qunit';
 
-module('Unit | Class | sound');
-
-test('it exists', function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
-  assert.ok(result);
-});
-
-test('on init, a gain, and panner are created', function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
-  let ctx = result.get('audioContext');
-
-  assert.ok(ctx.get('createGainCalled'));
-  assert.ok(ctx.get('createStereoPannerCalled'));
-});
-
-test('duration.raw works', function(assert) {
-  let audioContext = ContextMock.create();
-  let audioBuffer = AudioBufferMock.create();
-
-  let result = Sound.create({ audioContext, audioBuffer });
-  assert.equal(result.get('duration.raw'), 65);
-});
-
-test('duration.string works', function(assert) {
-  let audioContext = ContextMock.create();
-  let audioBuffer = AudioBufferMock.create();
-
-  let result = Sound.create({ audioContext, audioBuffer });
-  assert.equal(result.get('duration.string'), '01:05');
-
-  result.set('audioBuffer.duration', 40);
-  assert.equal(result.get('duration.string'), '00:40');
-
-  result.set('audioBuffer.duration', 60);
-  assert.equal(result.get('duration.string'), '01:00');
-
-  result.set('audioBuffer.duration', 600);
-  assert.equal(result.get('duration.string'), '10:00');
-
-  result.set('audioBuffer.duration', 6001);
-  assert.equal(result.get('duration.string'), '100:01');
-
-  result.set('audioBuffer.duration', 6012);
-  assert.equal(result.get('duration.string'), '100:12');
-});
-
-test('duration.pojo works', function(assert) {
-  let audioContext = ContextMock.create();
-  let audioBuffer = AudioBufferMock.create();
-
-  let result = Sound.create({ audioContext, audioBuffer });
-  assert.deepEqual(result.get('duration.pojo'), {
-    minutes: 1,
-    seconds: 5
+module('Unit | Class | sound', function() {
+  test('it exists', function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
+    assert.ok(result);
   });
 
-  result.set('audioBuffer.duration', 40);
-  assert.deepEqual(result.get('duration.pojo'), {
-    minutes: 0,
-    seconds: 40
+  test('on init, a gain, and panner are created', function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
+    let ctx = result.get('audioContext');
+
+    assert.ok(ctx.get('createGainCalled'));
+    assert.ok(ctx.get('createStereoPannerCalled'));
   });
 
-  result.set('audioBuffer.duration', 60);
-  assert.deepEqual(result.get('duration.pojo'), {
-    minutes: 1,
-    seconds: 0
+  test('duration.raw works', function(assert) {
+    let audioContext = ContextMock.create();
+    let audioBuffer = AudioBufferMock.create();
+
+    let result = Sound.create({ audioContext, audioBuffer });
+    assert.equal(result.get('duration.raw'), 65);
   });
-});
 
-test('percentGain works', function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
-  assert.equal(result.get('percentGain'), 40);
-});
+  test('duration.string works', function(assert) {
+    let audioContext = ContextMock.create();
+    let audioBuffer = AudioBufferMock.create();
 
-test('play() calls node.connect(ctx.destination)', function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
+    let result = Sound.create({ audioContext, audioBuffer });
+    assert.equal(result.get('duration.string'), '01:05');
 
-  result.getNodeFrom('audioSource').connectCalled = false;
+    result.set('audioBuffer.duration', 40);
+    assert.equal(result.get('duration.string'), '00:40');
 
-  assert.notOk(result.getNodeFrom('audioSource').connectCalled);
-  result.play();
-  assert.ok(result.getNodeFrom('audioSource').connectCalled);
-});
+    result.set('audioBuffer.duration', 60);
+    assert.equal(result.get('duration.string'), '01:00');
 
-test('play() connects panner', function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
+    result.set('audioBuffer.duration', 600);
+    assert.equal(result.get('duration.string'), '10:00');
 
-  result.getNodeFrom('panner').connectCalled = false;
+    result.set('audioBuffer.duration', 6001);
+    assert.equal(result.get('duration.string'), '100:01');
 
-  assert.notOk(result.getNodeFrom('panner').connectCalled);
-  result.play();
-  assert.ok(result.getNodeFrom('panner').connectCalled);
-});
+    result.set('audioBuffer.duration', 6012);
+    assert.equal(result.get('duration.string'), '100:12');
+  });
 
-test('play() connects gain', function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
+  test('duration.pojo works', function(assert) {
+    let audioContext = ContextMock.create();
+    let audioBuffer = AudioBufferMock.create();
 
-  result.getNodeFrom('gain').connectCalled = false;
+    let result = Sound.create({ audioContext, audioBuffer });
+    assert.deepEqual(result.get('duration.pojo'), {
+      minutes: 1,
+      seconds: 5
+    });
 
-  assert.notOk(result.getNodeFrom('gain').connectCalled);
-  result.play();
-  assert.ok(result.getNodeFrom('gain').connectCalled);
-});
+    result.set('audioBuffer.duration', 40);
+    assert.deepEqual(result.get('duration.pojo'), {
+      minutes: 0,
+      seconds: 40
+    });
 
-test(`changePanTo() gets the panner connection and changes it's node's pan value`, function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
-  let panner = result.getNodeFrom('panner');
+    result.set('audioBuffer.duration', 60);
+    assert.deepEqual(result.get('duration.pojo'), {
+      minutes: 1,
+      seconds: 0
+    });
+  });
 
-  result.changePanTo(0.6);
-  assert.equal(panner.pan.value, 0.6);
+  test('percentGain works', function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
+    assert.equal(result.get('percentGain'), 40);
+  });
 
-  result.changePanTo(0.4);
-  assert.equal(panner.pan.value, 0.4);
-});
+  test('play() calls node.connect(ctx.destination)', function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
 
-test(`changeGainTo() gets the gain connection and changes it's node's gain value`, function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
-  let gain = result.getNodeFrom('gain');
+    result.getNodeFrom('audioSource').connectCalled = false;
 
-  result.changeGainTo(0.6).from('ratio');
-  assert.equal(gain.gain.value, 0.6);
+    assert.notOk(result.getNodeFrom('audioSource').connectCalled);
+    result.play();
+    assert.ok(result.getNodeFrom('audioSource').connectCalled);
+  });
 
-  result.changeGainTo(0.3).from('inverseRatio');
-  assert.equal(gain.gain.value, 0.7);
+  test('play() connects panner', function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
 
-  result.changeGainTo(20).from('percent');
-  assert.equal(gain.gain.value, 0.2);
-});
+    result.getNodeFrom('panner').connectCalled = false;
 
-test('startOffset starts at 0', function(assert) {
-  let audioContext = ContextMock.create();
-  let result = Sound.create({ audioContext });
-  assert.equal(result.get('startOffset'), 0);
-});
+    assert.notOk(result.getNodeFrom('panner').connectCalled);
+    result.play();
+    assert.ok(result.getNodeFrom('panner').connectCalled);
+  });
 
-test('seek() sets startOffset', function(assert) {
-  let audioContext = ContextMock.create();
-  let audioBuffer = AudioBufferMock.create();
-  let result = Sound.create({ audioContext, audioBuffer });
+  test('play() connects gain', function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
 
-  result.seek(2).from('seconds');
-  assert.equal(result.get('startOffset'), 2);
+    result.getNodeFrom('gain').connectCalled = false;
 
-  result.seek(30).from('percent');
-  assert.equal(result.get('startOffset'), 19.5);
+    assert.notOk(result.getNodeFrom('gain').connectCalled);
+    result.play();
+    assert.ok(result.getNodeFrom('gain').connectCalled);
+  });
 
-  result.seek(0.2).from('ratio');
-  assert.equal(result.get('startOffset'), 13);
+  test(`changePanTo() gets the panner connection and changes it's node's pan value`, function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
+    let panner = result.getNodeFrom('panner');
 
-  result.seek(0.2).from('inverseRatio');
-  assert.equal(result.get('startOffset'), 52);
-});
+    result.changePanTo(0.6);
+    assert.equal(panner.pan.value, 0.6);
 
-test('seek() calls stop then play when `isPlaying` is true', function(assert) {
-  let audioContext = ContextMock.create();
-  let audioBuffer = AudioBufferMock.create();
-  let result = Sound.create({ audioContext, audioBuffer, isPlaying: true });
+    result.changePanTo(0.4);
+    assert.equal(panner.pan.value, 0.4);
+  });
 
-  result.set('stop', () => result.set('stopCalled', true));
-  result.set('play', () => result.set('playCalled', true));
+  test(`changeGainTo() gets the gain connection and changes it's node's gain value`, function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
+    let gain = result.getNodeFrom('gain');
 
-  assert.notOk(result.get('stopCalled'));
-  assert.notOk(result.get('playCalled'));
+    result.changeGainTo(0.6).from('ratio');
+    assert.equal(gain.gain.value, 0.6);
 
-  result.seek(2).from('seconds');
+    result.changeGainTo(0.3).from('inverseRatio');
+    assert.equal(gain.gain.value, 0.7);
 
-  assert.ok(result.get('stopCalled'));
-  assert.ok(result.get('playCalled'));
+    result.changeGainTo(20).from('percent');
+    assert.equal(gain.gain.value, 0.2);
+  });
+
+  test('startOffset starts at 0', function(assert) {
+    let audioContext = ContextMock.create();
+    let result = Sound.create({ audioContext });
+    assert.equal(result.get('startOffset'), 0);
+  });
+
+  test('seek() sets startOffset', function(assert) {
+    let audioContext = ContextMock.create();
+    let audioBuffer = AudioBufferMock.create();
+    let result = Sound.create({ audioContext, audioBuffer });
+
+    result.seek(2).from('seconds');
+    assert.equal(result.get('startOffset'), 2);
+
+    result.seek(30).from('percent');
+    assert.equal(result.get('startOffset'), 19.5);
+
+    result.seek(0.2).from('ratio');
+    assert.equal(result.get('startOffset'), 13);
+
+    result.seek(0.2).from('inverseRatio');
+    assert.equal(result.get('startOffset'), 52);
+  });
+
+  test('seek() calls stop then play when `isPlaying` is true', function(assert) {
+    let audioContext = ContextMock.create();
+    let audioBuffer = AudioBufferMock.create();
+    let result = Sound.create({ audioContext, audioBuffer, isPlaying: true });
+
+    result.set('stop', () => result.set('stopCalled', true));
+    result.set('play', () => result.set('playCalled', true));
+
+    assert.notOk(result.get('stopCalled'));
+    assert.notOk(result.get('playCalled'));
+
+    result.seek(2).from('seconds');
+
+    assert.ok(result.get('stopCalled'));
+    assert.ok(result.get('playCalled'));
+  });
 });
