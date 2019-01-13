@@ -21,12 +21,6 @@ module.exports = function(defaults) {
 
     fingerprint: {
       exclude: ['piano.js']
-    },
-
-    'ember-bootstrap': {
-      'bootstrapVersion': 4,
-      'importBootstrapFont': false,
-      'importBootstrapCSS': true
     }
   });
 
@@ -38,6 +32,7 @@ module.exports = function(defaults) {
   */
 
   app.import('vendor/piano.css');
+  app.import('node_modules/bootstrap/dist/css/bootstrap.css');
 
   return app.toTree();
 };
