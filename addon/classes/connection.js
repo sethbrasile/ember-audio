@@ -1,18 +1,6 @@
-import Ember from 'ember';
-
-/**
- * Provides classes that interact with the Web Audio API indirectly by providing
- * data models for the classes in the Audio module to consume.
- *
- * @public
- * @module AudioHelpers
- */
-
-const {
-  A,
-  Object: EmberObject,
-  on
-} = Ember;
+import { A } from '@ember/array';
+import EmberObject from '@ember/object';
+import { on } from '@ember/object/evented';
 
 /**
  * This class represents a single connection in a Sound instance's connections

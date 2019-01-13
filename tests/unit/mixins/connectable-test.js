@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import ContextMock from '../../helpers/context-mock';
 import ConnectableMixin from 'ember-audio/mixins/connectable';
 import { module, test } from 'qunit';
-
-const {
-  Object: EmberObject
-} = Ember;
 
 module('Unit | Mixin | connectable');
 

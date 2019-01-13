@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  Helper
-} = Ember;
+import Helper from '@ember/component/helper';
 
 export function eq(params) {
   return params[0] === params[1];

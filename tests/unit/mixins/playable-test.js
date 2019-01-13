@@ -1,15 +1,11 @@
-import Ember from 'ember';
+import { later } from '@ember/runloop';
+import { Promise } from 'rsvp';
+import EmberObject from '@ember/object';
 import ContextMock from '../../helpers/context-mock';
 import PlayableMixin from 'ember-audio/mixins/playable';
 import ConnectableMixin from 'ember-audio/mixins/connectable';
 import AudioBufferMock from '../../helpers/audio-buffer-mock';
 import { module, test } from 'qunit';
-
-const {
-  run: { later },
-  RSVP: { Promise },
-  Object: EmberObject
-} = Ember;
 
 const audioContext = ContextMock.create();
 const audioBuffer = AudioBufferMock.create();

@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  Object: EmberObject
-} = Ember;
+import EmberObject from '@ember/object';
 
 const AudioBufferMock = EmberObject.extend({
   duration: 65

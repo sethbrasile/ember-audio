@@ -1,16 +1,12 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import { on } from '@ember/object/evented';
+import Controller from '@ember/controller';
 import { Oscillator } from 'ember-audio';
 import { MusicalIdentity } from 'ember-audio/mixins';
 // TODO: xy pad with filters and plugins
 // By mixing the MusicalIdentity mixin into the Oscillator class, we get an
 // oscillator that is aware of it's frequency, letter, accidental, octave, etc...
 const MusicallyAwareOscillator = Oscillator.extend(MusicalIdentity);
-
-const {
-  inject: { service },
-  on,
-  Controller
-} = Ember;
 
 export default Controller.extend({
   audio: service(),

@@ -1,11 +1,5 @@
-import Ember from 'ember';
-
-// TODO: move code examples to underneath mp3 player
-
-const {
-  inject: { service },
-  Controller
-} = Ember;
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
 export default Controller.extend({
   audio: service(),

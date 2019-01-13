@@ -1,7 +1,24 @@
+import { resolve, all } from 'rsvp';
+import EmberError from '@ember/error';
+import Service from '@ember/service';
 import Ember from 'ember';
 import fetch from 'fetch';
-import { Sound, Note, SampledNote, Track, BeatTrack, Sampler, Oscillator, Font } from 'ember-audio';
-import { sortNotes, base64ToUint8, mungeSoundFont, frequencyMap } from 'ember-audio/utils';
+import {
+  Sound,
+  Note,
+  SampledNote,
+  Track,
+  BeatTrack,
+  Sampler,
+  Oscillator,
+  Font
+} from 'ember-audio';
+import {
+  sortNotes,
+  base64ToUint8,
+  mungeSoundFont,
+  frequencyMap
+} from 'ember-audio/utils';
 
 /**
  * Provides the Audio Service
@@ -11,10 +28,7 @@ import { sortNotes, base64ToUint8, mungeSoundFont, frequencyMap } from 'ember-au
  */
 
 const {
-  RSVP: { all, resolve },
-  Error: EmberError,
-  Logger,
-  Service
+  Logger
 } = Ember;
 
 /**

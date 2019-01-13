@@ -1,12 +1,8 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
+import { on } from '@ember/object/evented';
+import Controller from '@ember/controller';
 import { exponentialRatio } from 'ember-audio/utils';
-
-const {
-  computed,
-  inject: { service },
-  on,
-  Controller
-} = Ember;
 
 export default Controller.extend({
   audio: service(),

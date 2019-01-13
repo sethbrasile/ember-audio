@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import { on } from '@ember/object/evented';
+import Controller from '@ember/controller';
 import { LayeredSound } from 'ember-audio';
-
-const {
-  inject: { service },
-  on,
-  Controller
-} = Ember;
 
 export default Controller.extend({
   audio: service(),

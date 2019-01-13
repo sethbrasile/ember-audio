@@ -1,10 +1,6 @@
-import Ember from 'ember';
-
-const {
-  inject: { service },
-  on,
-  Controller
-} = Ember;
+import { inject as service } from '@ember/service';
+import { on } from '@ember/object/evented';
+import Controller from '@ember/controller';
 
 export default Controller.extend({
   audio: service(),

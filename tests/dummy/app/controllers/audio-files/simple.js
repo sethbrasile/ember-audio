@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import { on } from '@ember/object/evented';
+import Controller from '@ember/controller';
 const URL = 'https://raw.githubusercontent.com/mudcube/MIDI.js/master/examples/soundfont/acoustic_grand_piano-mp3/B5.mp3';
-
-const {
-  inject: { service },
-  on,
-  Controller
-} = Ember;
 
 export default Controller.extend({
   audio: service(),

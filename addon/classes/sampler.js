@@ -1,17 +1,5 @@
-import Ember from 'ember';
-
-/**
- * Provides classes that are capable of interacting with the Web Audio API's
- * AudioContext.
- *
- * @public
- * @module Audio
- */
-
-const {
-  on,
-  Object: EmberObject
-} = Ember;
+import { on } from '@ember/object/evented';
+import EmberObject from '@ember/object';
 
 /**
  * An instance of the Sampler class behaves just like a Sound, but allows

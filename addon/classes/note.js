@@ -1,17 +1,5 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import { MusicalIdentity } from 'ember-audio/mixins';
-
-/**
- * Provides helper classes that represent musical concepts meant to be used by
- * classes from the Audio module.
- *
- * @public
- * @module MusicalConcepts
- */
-
-const {
-  Object: EmberObject
-} = Ember;
 
 /**
  * A class that represents a musical note, but does not carry any audio data.

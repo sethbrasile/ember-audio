@@ -1,9 +1,5 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
 import { arraySwap, flatten } from './array-methods';
-
-const {
-  A
-} = Ember;
 
 /**
  * @public

@@ -1,10 +1,6 @@
-import Ember from 'ember';
-
-const {
-  Object: EmberObject,
-  on,
-  RSVP: { Promise }
-} = Ember;
+import EmberObject from '@ember/object';
+import { on } from '@ember/object/evented';
+import { Promise } from 'rsvp';
 
 const NodeObject = EmberObject.extend({
   connectCalled: false,

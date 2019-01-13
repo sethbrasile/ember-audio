@@ -1,20 +1,8 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
 import Beat from './beat';
 import Sampler from './sampler';
 
 const beatBank = new WeakMap();
-
-/**
- * Provides classes that are capable of interacting with the Web Audio API's
- * AudioContext.
- *
- * @public
- * @module Audio
- */
-
-const {
-  computed
-} = Ember;
 
 /**
  * An instance of this class has a single "sound" (comprised of one or multiple

@@ -1,10 +1,6 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import MusicalIdentityMixin from 'ember-audio/mixins/musical-identity';
 import { module, test } from 'qunit';
-
-const {
-  Object: EmberObject
-} = Ember;
 
 const Note = EmberObject.extend(MusicalIdentityMixin);
 

@@ -1,17 +1,5 @@
-import Ember from 'ember';
-
-/**
- * Provides helper classes that represent musical concepts meant to be used by
- * classes from the Audio module.
- *
- * @public
- * @module MusicalConcepts
- */
-
-const {
-  Object: EmberObject,
-  run: { later }
-} = Ember;
+import EmberObject from '@ember/object';
+import { later } from '@ember/runloop';
 
 /**
  * This class represents a single "beat" for a rhythmic instrument. An instance of this

@@ -1,22 +1,8 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { on } from '@ember/object/evented';
+import { observer, set, get } from '@ember/object';
+import Mixin from '@ember/object/mixin';
 import { Connection } from 'ember-audio';
-
-/**
- * Provides classes that are capable of interacting with the Web Audio API's
- * AudioContext.
- *
- * @public
- * @module Audio
- */
-
-const {
-  A,
-  on,
-  get,
-  set,
-  observer,
-  Mixin
-} = Ember;
 
 /**
  * A mixin that allows an object to create AudioNodes and connect them together.

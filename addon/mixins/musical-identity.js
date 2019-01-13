@@ -1,18 +1,6 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import Mixin from '@ember/object/mixin';
 import { frequencyMap } from 'ember-audio/utils';
-
-/**
- * Provides helper classes that represent musical concepts meant to be used by
- * classes from the Audio module.
- *
- * @public
- * @module MusicalConcepts
- */
-
-const {
-  computed,
-  Mixin
-} = Ember;
 
 /**
  * This mixin allows an object to have an awareness of it's "musical identity"

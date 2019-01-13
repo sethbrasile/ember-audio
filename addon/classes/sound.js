@@ -1,19 +1,6 @@
-import Ember from 'ember';
+import EmberObject, { computed } from '@ember/object';
 import { Connectable, Playable } from 'ember-audio/mixins';
 import { zeroify, withinRange } from 'ember-audio/utils';
-
-/**
- * Provides classes that are capable of interacting with the Web Audio API's
- * AudioContext.
- *
- * @public
- * @module Audio
- */
-
-const {
-  computed,
-  Object: EmberObject
-} = Ember;
 
 /**
  * The Sound class provides the core functionality for

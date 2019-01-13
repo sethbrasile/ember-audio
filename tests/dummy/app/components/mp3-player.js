@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
+import { htmlSafe } from '@ember/template';
+import Component from '@ember/component';
 import layout from '../templates/components/mp3-player';
-
-const {
-  computed,
-  String: { htmlSafe },
-  Component
-} = Ember;
 
 export default Component.extend({
   layout,

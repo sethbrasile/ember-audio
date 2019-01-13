@@ -1,20 +1,8 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
+import { on } from '@ember/object/evented';
+import EmberObject from '@ember/object';
 import { Connectable, Playable } from 'ember-audio/mixins';
 import { Connection } from 'ember-audio';
-
-/**
- * Provides classes that are capable of interacting with the Web Audio API's
- * AudioContext.
- *
- * @public
- * @module Audio
- */
-
-const {
-  A,
-  on,
-  Object: EmberObject
-} = Ember;
 
 /**
  * A class that represents an oscillator for a synthesizer. Capable of creating

@@ -1,18 +1,6 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
 import Sound from './sound';
 import { zeroify } from 'ember-audio/utils';
-
-/**
- * Provides classes that are capable of interacting with the Web Audio API's
- * AudioContext.
- *
- * @public
- * @module Audio
- */
-
-const {
-  computed
-} = Ember;
 
 /**
  * A class that represents a "track" of music, similar in concept to a track on

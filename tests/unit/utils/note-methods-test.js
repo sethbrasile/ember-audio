@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import noteFactory from '../../helpers/note-factory';
 import {
@@ -10,10 +10,6 @@ import {
   stripDuplicateOctaves,
   createOctavesWithNotes
 } from 'ember-audio/utils';
-
-const {
-  A
-} = Ember;
 
 module('Unit | Utility | note methods');
 
