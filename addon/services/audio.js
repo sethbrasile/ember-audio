@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import fetch from 'ember-network/fetch';
+import fetch from 'fetch';
 import { Sound, Note, SampledNote, Track, BeatTrack, Sampler, Oscillator, Font } from 'ember-audio';
 import { sortNotes, base64ToUint8, mungeSoundFont, frequencyMap } from 'ember-audio/utils';
 

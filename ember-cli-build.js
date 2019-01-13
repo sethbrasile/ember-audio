@@ -10,7 +10,7 @@ module.exports = function(defaults) {
 
     'ember-prism': {
       theme: 'okaidia',
-      components: ['javascript', 'handlebars']
+      components: ['javascript', 'handlebars', 'markup-templating']
     },
 
     minifyJS: {
@@ -21,6 +21,12 @@ module.exports = function(defaults) {
 
     fingerprint: {
       exclude: ['piano.js']
+    },
+
+    'ember-bootstrap': {
+      'bootstrapVersion': 4,
+      'importBootstrapFont': false,
+      'importBootstrapCSS': true
     }
   });
 
@@ -31,8 +37,6 @@ module.exports = function(defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
 
-  app.import('bower_components/bootstrap/dist/css/bootstrap.css');
-  app.import('bower_components/bootstrap/dist/js/bootstrap.js');
   app.import('vendor/piano.css');
 
   return app.toTree();

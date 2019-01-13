@@ -3,10 +3,6 @@ import Resolver from './resolver';
 import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
 
-const {
-  Application
-} = Ember;
-
 if (!window.AudioContext) {
   document.write(`Oh poo. Looks like this browser doesn't support the Web Audio API.<br><br>`);
   document.write('<a href="http://caniuse.com/#feat=audio-api">See supported browsers.</a><br><br>');
