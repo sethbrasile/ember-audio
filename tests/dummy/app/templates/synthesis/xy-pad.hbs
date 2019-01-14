@@ -3,9 +3,9 @@
 
   {{xy-pad
     padSize=padSize
-    updateCoordinates="adjustSynthParams"
-    activate="play"
-    deactivate="stop"
+    updateCoordinates=(action "adjustSynthParams")
+    activate=(action "play")
+    deactivate=(action "stop")
   }}
 
   <p>Frequency: {{frequency}}</p>

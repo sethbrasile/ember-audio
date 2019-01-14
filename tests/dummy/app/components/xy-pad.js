@@ -68,11 +68,11 @@ export default Component.extend({
     activate(e) {
       e.preventDefault();
       this.send('updateCoordinates', e);
-      this.sendAction('activate');
+      this.activate();
     },
 
     deactivate() {
-      this.sendAction('deactivate');
+      this.deactivate();
     },
 
     updateCoordinates(e) {
@@ -87,7 +87,7 @@ export default Component.extend({
       // 'y' is measured from top, so invert for value from bottom
       const y = this.get('padSize') + (yRelToScreen - canvasLocation.top) * -1;
 
-      this.sendAction('updateCoordinates', x, y);
+      this.updateCoordinates(x, y);
     }
   }
 });
