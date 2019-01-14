@@ -17,7 +17,7 @@
     </div>
   {{else}}
     <div class="controls">
-      <button class="btn btn-primary" {{action 'play'}}>PLAY</button>
+      <button class="btn btn-primary" {{action "play"}}>PLAY</button>
 
       <div>
         <label>Tempo {{input value=bpm}}</label>
@@ -30,8 +30,8 @@
           <p class="text">{{beatTrack.name}}</p>
 
           {{#each beatTrack.beats as |beat|}}
-            <div role="button" class="beat-pad" {{action 'toggleActive' beat}}>
-              <span class="pad {{if beat.active 'active'}} {{if beat.isPlaying 'playing'}} {{if beat.currentTimeIsPlaying 'highlighted'}}"></span>
+            <div role="button" class="beat-pad" {{action "toggleActive" beat}}>
+              <span class="pad {{if beat.active "active"}} {{if beat.isPlaying "playing"}} {{if beat.currentTimeIsPlaying "highlighted"}}"></span>
             </div>
           {{/each}}
         </div>
@@ -56,7 +56,7 @@
 
     <br>
 
-    <button {{action 'engageLudicrousMode'}} class='btn btn-danger'>
+    <button {{action "engageLudicrousMode"}} class="btn btn-danger">
       Engage Ludicrous Mode
     </button>
   </p>
@@ -70,12 +70,12 @@
 </div>
 
 <div class="content">
-  {{#code-block language='handlebars'}}
+  {{#code-block language="handlebars"}}
   \{{#if isLoading}}
     \{{!-- Some loading indicator... --}}
   \{{else}}
     &lt;div class="controls">
-      &lt;button class="btn btn-primary" \{{action 'play'}}>PLAY&lt;/button>
+      &lt;button class="btn btn-primary" \{{action "play"}}>PLAY&lt;/button>
 
       &lt;div>
         &lt;label>Tempo \{{input value=bpm}}&lt;/label>
@@ -88,8 +88,8 @@
           &lt;p class="text">\{{beatTrack.name}}&lt;/p>
 
           \{{#each beatTrack.beats as |beat|}}
-            &lt;div class="beat-pad" \{{action 'toggleActive' beat}}>
-              &lt;span class="pad \{{if beat.active 'active'}} \{{if beat.isPlaying 'playing'}} \{{if beat.currentTimeIsPlaying 'highlighted'}}">&lt;/span>
+            &lt;div class="beat-pad" \{{action "toggleActive" beat}}>
+              &lt;span class="pad \{{if beat.active "active"}} \{{if beat.isPlaying "playing"}} \{{if beat.currentTimeIsPlaying "highlighted"}}">&lt;/span>
             &lt;/div>
           \{{/each}}
         &lt;/div>
@@ -98,7 +98,7 @@
   \{{/if}}
   {{/code-block}}
 
-  {{#code-block language='javascript'}}
+  {{#code-block language="javascript"}}
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
     beatTracks: null,

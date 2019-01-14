@@ -12,9 +12,9 @@
     <div id="piano">
       <ol>
         {{#each notes as |note|}}
-          <li role="button" class={{if note.accidental 'black'}}
-            {{action 'playPianoNote' note on='touchStart'}}
-            {{action 'playPianoNote' note on='mouseDown'}}
+          <li role="button" class={{if note.accidental "black"}}
+            {{action "playPianoNote" note on="touchStart"}}
+            {{action "playPianoNote" note on="mouseDown"}}
           >
             {{note.name}}
           </li>
@@ -38,17 +38,17 @@
 </div>
 
 <div class="content">
-  {{#code-block language='handlebars'}}
+  {{#code-block language="handlebars"}}
   \{{#if isLoading}}
     \{{!-- Some loading indicator... --}}
   \{{else}}
     &lt;div id="piano">
       &lt;ol>
         \{{#each notes as |note|}}
-          &lt;li class=\{{if note.accidental 'black'}}
+          &lt;li class=\{{if note.accidental "black"}}
             \{{!-- Specify both action types so multitouch works on touch devices --}}
-            \{{action 'playPianoNote' note on='touchStart'}}
-            \{{action 'playPianoNote' note on='mouseDown'}}
+            \{{action "playPianoNote" note on="touchStart"}}
+            \{{action "playPianoNote" note on="mouseDown"}}
           >
             \{{note.name}}
           &lt;/li>
@@ -58,7 +58,7 @@
   \{{/if}}
   {{/code-block}}
 
-  {{#code-block language='javascript'}}
+  {{#code-block language="javascript"}}
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
     isLoading: false,

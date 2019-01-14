@@ -3,9 +3,9 @@
 
   {{xy-pad
     padSize=padSize
-    updateCoordinates='adjustSynthParams'
-    activate='play'
-    deactivate='stop'
+    updateCoordinates="adjustSynthParams"
+    activate="play"
+    deactivate="stop"
   }}
 
   <p>Frequency: {{frequency}}</p>
@@ -14,12 +14,12 @@
 
 <p>Template</p>
 
-{{#code-block language='handlebars'}}
+{{#code-block language="handlebars"}}
   \{{xy-pad
     padSize=padSize
-    updateCoordinates='adjustSynthParams'
-    activate='play'
-    deactivate='stop'
+    updateCoordinates="adjustSynthParams"
+    activate="play"
+    deactivate="stop"
   }}
 
   &lt;p>Frequency: \{{frequency}}&lt;/p>
@@ -28,7 +28,7 @@
 
 <p>Controller</p>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   import Ember from 'ember';
   import { exponentialRatio } from 'ember-audio/utils';
 
@@ -103,21 +103,21 @@
   <code>xy-pad</code> component template
 </p>
 
-{{#code-block language='handlebars'}}
+{{#code-block language="handlebars"}}
   &lt;canvas
     width=\{{padSize}}
     height=\{{padSize}}
     style="background-color: black;"
 
-    onmousedown=\{{action 'activate'}}
-    onmousemove=\{{action 'updateCoordinates'}}
-    onmouseleave=\{{action 'deactivate'}}
-    onmouseup=\{{action 'deactivate'}}
+    onmousedown=\{{action "activate"}}
+    onmousemove=\{{action "updateCoordinates"}}
+    onmouseleave=\{{action "deactivate"}}
+    onmouseup=\{{action "deactivate"}}
 
-    ontouchstart=\{{action 'activate'}}
-    ontouchmove=\{{action 'updateCoordinates'}}
-    ontouchend=\{{action 'deactivate'}}
-    ontouchcancel=\{{action 'deactivate'}}
+    ontouchstart=\{{action "activate"}}
+    ontouchmove=\{{action "updateCoordinates"}}
+    ontouchend=\{{action "deactivate"}}
+    ontouchcancel=\{{action "deactivate"}}
   >&lt;/canvas>
 {{/code-block}}
 
@@ -125,7 +125,7 @@
   <code>xy-pad</code> component javascript
 </p>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   // leaving out the code to draw the grid/text
   export default Ember.Component.extend({
     actions: {

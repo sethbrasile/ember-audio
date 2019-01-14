@@ -6,7 +6,7 @@
       <table class="table table-bordered">
         <tbody>
           {{#each tracks as |track|}}
-            <tr role="button" class="{{if (eq track selectedTrack) 'info'}} item" {{action 'selectTrack' track}}>
+            <tr role="button" class="{{if (eq track selectedTrack) "info"}} item" {{action "selectTrack" track}}>
               <td>{{undasherize track.name}}</td>
             </tr>
           {{/each}}
@@ -33,13 +33,13 @@
 
   <h4>Template</h4>
 
-  {{#code-block language='handlebars'}}
+  {{#code-block language="handlebars"}}
   &lt;div class="track-list">
     &lt;div class="select">
       &lt;table>
         \{{#each tracks as |track|}}
           &lt;tbody>
-            &lt;tr \{{action 'selectTrack' track}}>
+            &lt;tr \{{action "selectTrack" track}}>
               &lt;td>\{{track.name}}&lt;/td>
             &lt;/tr>
           &lt;/tbody>
@@ -64,7 +64,7 @@
 <div class="content">
   <h4>Controller</h4>
 
-  {{#code-block language='javascript'}}
+  {{#code-block language="javascript"}}
   audio: Ember.inject.service(),
   trackIsLoading: false,
   selectedTrack: null,
@@ -106,26 +106,26 @@
 <div class="content">
   <h4><code>mp3-player</code> Component Template</h4>
 
-  {{#code-block language='handlebars'}}
+  {{#code-block language="handlebars"}}
   \{{#if loading}}
     \{{!-- some loading display --}}
   \{{else if track}}
     &lt;div class="audioplayer">
-      &lt;div class="play-pause \{{if track.isPlaying 'playing'}}" \{{action 'togglePlay'}}>&lt;a>&lt;/a>&lt;/div>
+      &lt;div class="play-pause \{{if track.isPlaying "playing"}}" \{{action "togglePlay"}}>&lt;a>&lt;/a>&lt;/div>
 
       \{{!-- track.position and track.duration output a few different formats
         as a POJO. We are interested in the "string" variant --}}
       &lt;div class="time current">\{{track.position.string}}&lt;/div>
 
       \{{!-- An action bound to "onclick" is passed a javascript native "MouseEvent" object --}}
-      &lt;div class="bar" onclick=\{{action 'seek'}}>
+      &lt;div class="bar" onclick=\{{action "seek"}}>
         &lt;div style="width: 100%;">&lt;/div>
         &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
       &lt;/div>
 
       &lt;div class="time duration">\{{track.duration.string}}&lt;/div>
 
-      &lt;div class="volume" onclick=\{{action 'changeVolume'}}>
+      &lt;div class="volume" onclick=\{{action "changeVolume"}}>
         &lt;div class="button">&lt;a>&lt;/a>&lt;/div>
 
         &lt;div class="adjust">
@@ -149,7 +149,7 @@
     more easily using <code>range</code> inputs.
   </p>
 
-  {{#code-block language='javascript'}}
+  {{#code-block language="javascript"}}
   percentPlayed: Ember.computed('track.percentPlayed', function() {
     const percentPlayed = this.get('track.percentPlayed');
     return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);

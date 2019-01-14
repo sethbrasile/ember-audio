@@ -7,8 +7,8 @@
     <div class="beat-pad">
       <span class="text">{{drum.name}}</span>
       <span role="button" class="pad"
-        {{action 'playDrum' drum on='touchStart'}}
-        {{action 'playDrum' drum on='mouseDown'}}></span>
+        {{action "playDrum" drum on="touchStart"}}
+        {{action "playDrum" drum on="mouseDown"}}></span>
     </div>
   {{/each}}
 </div>
@@ -33,7 +33,7 @@
   </p>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   _createKick() {
     const audio = this.get('audio');
     const kick = audio.createOscillator({ name: 'kick' });
@@ -61,7 +61,7 @@
   </p>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   osc.onPlayRamp('frequency').from(150).to(0.01).in(0.1);
 {{/code-block}}
 
@@ -78,10 +78,10 @@
     you probably can't even hear this if you're on a laptop :D)
   </p>
 
-  <button {{action 'playBassDrop'}} class="btn btn-danger">Play Bass Drop</button>
+  <button {{action "playBassDrop"}} class="btn btn-danger">Play Bass Drop</button>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   playBassDrop() {
     const audio = this.get('audio');
     const bassDrop = audio.createOscillator();
@@ -116,16 +116,16 @@
     In case you're curious, here are both sounds individually.
   </p>
 
-  <button {{action 'playSnareMeat'}} class="btn btn-primary">
+  <button {{action "playSnareMeat"}} class="btn btn-primary">
     Play Snare Meat
   </button>
 
-  <button {{action 'playSnareCrack'}} class="btn btn-primary">
+  <button {{action "playSnareCrack"}} class="btn btn-primary">
     Play Snare Crack
   </button>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   _createSnare() {
     const oscillator = this._createSnareOscillator();
     const noise = this._createSnareNoise();
@@ -166,7 +166,7 @@
   </p>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   _createHihat() {
     // http://joesul.li/van/synthesizing-hi-hats/
     const overtones = [ 2, 3, 4.16, 5.43, 6.79, 8.21 ];
@@ -211,18 +211,18 @@
   </p>
 </div>
 
-{{#code-block language='handlebars'}}
+{{#code-block language="handlebars"}}
   \{{#each drums as |drum|}}
     &lt;div class="beat-pad">
       &lt;span class="text">\{{drum.name}}&lt;/span>
       &lt;span class="pad"
-        \{{action 'playDrum' drum on='touchStart'}}
-        \{{action 'playDrum' drum on='mouseDown'}}>&lt;/span>
+        \{{action "playDrum" drum on="touchStart"}}
+        \{{action "playDrum" drum on="mouseDown"}}>&lt;/span>
     &lt;/div>
   \{{/each}}
 {{/code-block}}
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   import Ember from 'ember';
   import { LayeredSound } from 'ember-audio';
 

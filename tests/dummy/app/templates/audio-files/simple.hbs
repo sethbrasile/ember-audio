@@ -1,12 +1,12 @@
 <div class="content">
   <h2>A Simple Example</h2>
 
-  <button class="btn btn-primary" {{action 'playNoteLeft'}}>Play Note Panned Left</button>
-  <button class="btn btn-primary" {{action 'playNoteRight'}}>Play Note Panned Right</button>
-  <button class="btn btn-success" {{action 'playBothNotes'}}>Play Both Notes</button>
+  <button class="btn btn-primary" {{action "playNoteLeft"}}>Play Note Panned Left</button>
+  <button class="btn btn-primary" {{action "playNoteRight"}}>Play Note Panned Right</button>
+  <button class="btn btn-success" {{action "playBothNotes"}}>Play Both Notes</button>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   import Ember from 'ember';
 
   const URL = 'https://raw.githubusercontent.com/mudcube/MIDI.js/master/examples/soundfont/acoustic_grand_piano-mp3/B5.mp3';

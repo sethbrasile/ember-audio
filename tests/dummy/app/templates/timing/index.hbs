@@ -26,7 +26,7 @@
   </p>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   // This is pseudo-code. The goal at this point is to get the concept across,
   // not to potentially confuse you with framework-specific stuff.
 
@@ -53,7 +53,7 @@
   </p>
 </div>
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   // Again, I want to mention that this code will not work as-is. It's ignoring
   // some other quirks of the Web Audio API. We're only focused on understanding
   // timing at the moment.
@@ -87,9 +87,9 @@
   <p class="note well">
     Again, this is an important concept to understand, but in many cases (even
     more complex cases, such as
-    {{link-to 'building a rhythmically-based instrument' timing.drum-machine}})
+    {{link-to "building a rhythmically-based instrument" timing.drum-machine}})
     this is
-    already handled for you. Check out {{link-to 'Beats' 'timing.with-ember-audio'}},
+    already handled for you. Check out {{link-to "Beats" "timing.with-ember-audio"}},
     or the very last example on this page.
   </p>
 </div>
@@ -104,13 +104,13 @@
   </p>
 </div>
 
-<button class="btn" {{action 'playInOneSecond1'}}>Play in One Second</button>
+<button class="btn" {{action "playInOneSecond1"}}>Play in One Second</button>
 
-{{#code-block language='handlebars'}}
-  &lt;button \{{action 'playInOneSecond'}}>Play in One Second&lt;/button>
+{{#code-block language="handlebars"}}
+  &lt;button \{{action "playInOneSecond"}}>Play in One Second&lt;/button>
 {{/code-block}}
 
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
 
@@ -135,10 +135,9 @@
   </p>
 </div>
 
-<button class="btn" {{action 'playInOneSecond2'}}>Play in One Second</button>
+<button class="btn" {{action "playInOneSecond2"}}>Play in One Second</button>
 
-
-{{#code-block language='javascript'}}
+{{#code-block language="javascript"}}
   playInOneSecond() {
     this.get('audio').getSound('delayed-note').playIn(1);
   }
