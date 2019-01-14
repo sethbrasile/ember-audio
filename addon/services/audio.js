@@ -1,5 +1,4 @@
 import { resolve, all } from 'rsvp';
-import EmberError from '@ember/error';
 import Service from '@ember/service';
 import Ember from 'ember';
 import fetch from 'fetch';
@@ -28,7 +27,7 @@ import {
  */
 
 const {
-  Logger
+  Logger: { error, warn }
 } = Ember;
 
 /**
@@ -536,8 +535,7 @@ export default Service.extend({
         return sound;
       })
       .catch((err) => {
-        console.error('ember-audio:', err);
-        console.error('ember-audio:', 'This error was probably caused by a 404 or an incompatible audio file type');
+        error('ember-audio:', err, 'This error was probably caused by a 404 or an incompatible audio file type');
       });
   },
 
@@ -573,10 +571,7 @@ export default Service.extend({
 
     // If the font already exists, no need to load it up again.
     if (fontsRegister.has(instrumentName)) {
-      const err = new EmberError(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you explicitly remove it with "audioService.removeFromRegister('font', '${instrumentName}')"`);
-
-      Logger.error(err);
-
+      warn(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you explicitly remove it with "audioService.removeFromRegister('font', '${instrumentName}')"`);
       return resolve(fontsRegister.get(instrumentName));
     }
 
@@ -597,7 +592,7 @@ export default Service.extend({
       // Also sets the note on the corresponding font in the _fonts register.
       .then((keyValuePairs) => this._createNoteObjectsForFont(keyValuePairs, instrumentName))
 
-      .catch((err) => console.error('ember-audio:', err));
+      .catch((err) => error('ember-audio:', err));
   },
 
   /**

@@ -12,7 +12,7 @@
  * @return {Uint8Array} A Uint8Array of converted "binary" audio data.
  */
 export function base64ToUint8(base64String) {
-  const sB64Enc = base64String.replace(/[^A-Za-z0-9\+\/]/g, '');
+  const sB64Enc = base64String.replace(/[^A-Za-z0-9+/]/g, '');
   const nInLen = sB64Enc.length;
   const nOutLen = nInLen * 3 + 1 >> 2;
   const taBytes = new Uint8Array(nOutLen);
