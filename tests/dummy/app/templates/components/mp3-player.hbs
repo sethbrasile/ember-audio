@@ -8,17 +8,17 @@
   </div>
 {{else if track}}
   <div class="audioplayer">
-    <div class="play-pause {{if track.isPlaying 'playing'}}" {{action 'togglePlay'}}><a></a></div>
+    <div role="button" class="play-pause {{if track.isPlaying 'playing'}}" {{action 'togglePlay'}}><a></a></div>
     <div class="time current">{{track.position.string}}</div>
 
-    <div class="bar" onclick={{action 'seek'}}>
+    <div role="button" class="bar" onclick={{action 'seek'}}>
       <div style="width: 100%;"></div>
       <div class="played" style={{percentPlayed}}></div>
     </div>
 
     <div class="time duration">{{track.duration.string}}</div>
 
-    <div class="volume" onclick={{action 'changeVolume'}}>
+    <div role="button" class="volume" onclick={{action 'changeVolume'}}>
       <div class="button"><a></a></div>
 
       <div class="adjust">

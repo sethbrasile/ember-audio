@@ -6,7 +6,7 @@
   {{#each drums as |drum|}}
     <div class="beat-pad">
       <span class="text">{{drum.name}}</span>
-      <span class="pad"
+      <span role="button" class="pad"
         {{action 'playDrum' drum on='touchStart'}}
         {{action 'playDrum' drum on='mouseDown'}}></span>
     </div>

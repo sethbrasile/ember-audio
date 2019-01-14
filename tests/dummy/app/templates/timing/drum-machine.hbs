@@ -30,7 +30,7 @@
           <p class="text">{{beatTrack.name}}</p>
 
           {{#each beatTrack.beats as |beat|}}
-            <div class="beat-pad" {{action 'toggleActive' beat}}>
+            <div role="button" class="beat-pad" {{action 'toggleActive' beat}}>
               <span class="pad {{if beat.active 'active'}} {{if beat.isPlaying 'playing'}} {{if beat.currentTimeIsPlaying 'highlighted'}}"></span>
             </div>
           {{/each}}

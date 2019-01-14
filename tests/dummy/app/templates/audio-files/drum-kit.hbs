@@ -21,58 +21,58 @@
   {{else}}
     {{#each drums as |drum|}}
       <div class="beat-pad">
-        <span class="text">{{drum.name}}</span>
-        <span class="pad" {{action 'playDrum' drum}}></span>
+        <span role="button" class="text">{{drum.name}}</span>
+        <span role="button" class="pad" {{action "playDrum" drum}}></span>
       </div>
     {{/each}}
   {{/if}}
 </div>
 
 <div class="content">
-  {{#code-block language='handlebars'}}
-  \{{#if isLoading}}
-    \{{!-- some loading indicator... --}}
-  \{{else}}
-    \{{#each drums as |drum|}}
-      &lt;div class="beat-pad">
-        &lt;span class="text">\{{drum.name}}&lt;/span>
-        &lt;span class="pad" \{{action 'playDrum' drum}}>&lt;/span>
-      &lt;/div>
-    \{{/each}}
-  \{{/if}}
+  {{#code-block language="handlebars"}}
+    \{{#if isLoading}}
+      \{{!-- some loading indicator... --}}
+    \{{else}}
+      \{{#each drums as |drum|}}
+        &lt;div class="beat-pad">
+          &lt;span class="text">\{{drum.name}}&lt;/span>
+          &lt;span class="pad" \{{action "playDrum" drum}}>&lt;/span>
+        &lt;/div>
+      \{{/each}}
+    \{{/if}}
   {{/code-block}}
 
-  {{#code-block language='javascript'}}
-  export default Ember.Whatever.extend({
-    audio: Ember.inject.service(),
-    drums: Ember.A(),
-    isLoading: true,
+  {{#code-block language="javascript"}}
+    export default Ember.Whatever.extend({
+      audio: Ember.inject.service(),
+      drums: Ember.A(),
+      isLoading: true,
 
-    initBeats: Ember.on('init', function() {
-      Ember.RSVP.all([
-        this._loadSamplerFor('kick'),
-        this._loadSamplerFor('snare'),
-        this._loadSamplerFor('hihat')
-      ])
-      .then(() => this.set('isLoading', false));
-    }),
+      initBeats: Ember.on('init', function() {
+        Ember.RSVP.all([
+          this._loadSamplerFor('kick'),
+          this._loadSamplerFor('snare'),
+          this._loadSamplerFor('hihat')
+        ])
+        .then(() => this.set('isLoading', false));
+      }),
 
-    _loadSamplerFor(name) {
-      // 'snare1.wav', 'kick2.wav', etc..., from this project's public folder
-      const drums = [`${name}1.wav`, `${name}2.wav`, `${name}3.wav`];
+      _loadSamplerFor(name) {
+        // 'snare1.wav', 'kick2.wav', etc..., from this project's public folder
+        const drums = [`${name}1.wav`, `${name}2.wav`, `${name}3.wav`];
 
-      // If name === 'kick', this creates a Sampler instance called
-      // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
-      return this.get('audio').load(drums).asSampler(name).then((drum) => {
-        this.get('drums').pushObject(drum);
-      });
-    },
+        // If name === 'kick', this creates a Sampler instance called
+        // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
+        return this.get('audio').load(drums).asSampler(name).then((drum) => {
+          this.get('drums').pushObject(drum);
+        });
+      },
 
-    actions: {
-      playDrum(drum) {
-        drum.play();
+      actions: {
+        playDrum(drum) {
+          drum.play();
+        }
       }
-    }
-  });
+    });
   {{/code-block}}
 </div>

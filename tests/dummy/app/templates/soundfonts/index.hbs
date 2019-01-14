@@ -12,7 +12,7 @@
     <div id="piano">
       <ol>
         {{#each notes as |note|}}
-          <li class={{if note.accidental 'black'}}
+          <li role="button" class={{if note.accidental 'black'}}
             {{action 'playPianoNote' note on='touchStart'}}
             {{action 'playPianoNote' note on='mouseDown'}}
           >

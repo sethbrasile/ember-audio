@@ -4,7 +4,7 @@
   <div id="piano">
     <ol>
       {{#each oscillators as |note|}}
-        <li class={{if note.accidental 'black'}}
+        <li role="button" class={{if note.accidental 'black'}}
           {{action 'startNote' note on='touchStart'}}
           {{action 'startNote' note on='mouseDown'}}
           {{action 'stopNote' note on='touchEnd'}}

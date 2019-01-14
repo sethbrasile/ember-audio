@@ -4,19 +4,19 @@
   <div class="track-list well clearfix">
     <div class="col-sm-3">
       <table class="table table-bordered">
-        {{#each tracks as |track|}}
-          <tbody>
-            <tr class="{{if (eq track selectedTrack) 'info'}} item" {{action 'selectTrack' track}}>
+        <tbody>
+          {{#each tracks as |track|}}
+            <tr role="button" class="{{if (eq track selectedTrack) 'info'}} item" {{action 'selectTrack' track}}>
               <td>{{undasherize track.name}}</td>
             </tr>
-          </tbody>
-        {{/each}}
+          {{/each}}
+        </tbody>
       </table>
     </div>
 
     <div class="description col-sm-9">
       {{#if selectedTrack}}
-        <p>{{{selectedTrack.description}}}</p>
+        <p>{{selectedTrack.description}}</p>
       {{else}}
         <p>Select a Track...</p>
       {{/if}}
