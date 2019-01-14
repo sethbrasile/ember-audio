@@ -3438,12 +3438,13 @@ ember-cli-string-utils@^1.1.0:
   resolved "https://registry.yarnpkg.com/ember-cli-string-utils/-/ember-cli-string-utils-1.1.0.tgz#39b677fc2805f55173735376fcef278eaa4452a1"
   integrity sha1-ObZ3/CgF9VFzc1N2/O8njqpEUqE=
 
-ember-cli-stylus@1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/ember-cli-stylus/-/ember-cli-stylus-1.0.6.tgz#a33f1eb55dc27f326db039dca932fe3ef3765cbe"
-  integrity sha1-oz8etV3CfzJtsDncqTL+PvN2XL4=
+ember-cli-stylus@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/ember-cli-stylus/-/ember-cli-stylus-1.0.7.tgz#9b8296779686e590c0d01536d4cfb76a434d5392"
+  integrity sha1-m4KWd5aG5ZDA0BU21M+3akNNU5I=
   dependencies:
     broccoli-stylus-single "^1.0.0"
+    ember-cli-version-checker "^1.1.7"
     stylus "0.x"
 
 ember-cli-template-lint@^1.0.0-beta.1:
@@ -3478,6 +3479,13 @@ ember-cli-uglify@^2.1.0:
     broccoli-uglify-sourcemap "^2.1.1"
     lodash.defaultsdeep "^4.6.0"
 
+ember-cli-version-checker@^1.1.7:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/ember-cli-version-checker/-/ember-cli-version-checker-1.3.1.tgz#0bc2d134c830142da64bf9627a0eded10b61ae72"
+  integrity sha1-C8LRNMgwFC2mS/lieg7e0QthrnI=
+  dependencies:
+    semver "^5.3.0"
+
 ember-cli-version-checker@^2.0.0, ember-cli-version-checker@^2.1.0, ember-cli-version-checker@^2.1.1, ember-cli-version-checker@^2.1.2:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/ember-cli-version-checker/-/ember-cli-version-checker-2.2.0.tgz#47771b731fe0962705e27c8199a9e3825709f3b3"
@@ -3486,10 +3494,10 @@ ember-cli-version-checker@^2.0.0, ember-cli-version-checker@^2.1.0, ember-cli-ve
     resolve "^1.3.3"
     semver "^5.3.0"
 
-ember-cli-yuidoc@0.8.7:
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/ember-cli-yuidoc/-/ember-cli-yuidoc-0.8.7.tgz#37230a4321c1ce439815ead64f9a60bfaeaace27"
-  integrity sha1-NyMKQyHBzkOYFerWT5pgv66qzic=
+ember-cli-yuidoc@^0.8.8:
+  version "0.8.8"
+  resolved "https://registry.yarnpkg.com/ember-cli-yuidoc/-/ember-cli-yuidoc-0.8.8.tgz#3858baaf85388a976024f9de40f1075fea58f606"
+  integrity sha1-OFi6r4U4ipdgJPneQPEHX+pY9gY=
   dependencies:
     broccoli-caching-writer "~2.0.4"
     broccoli-merge-trees "^1.1.1"
@@ -3773,7 +3781,7 @@ ember-try-config@^3.0.0:
     rsvp "^4.8.1"
     semver "^5.5.0"
 
-ember-try@^1.0.0:
+ember-try@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/ember-try/-/ember-try-1.1.0.tgz#194d5843a79b5a9fc0e4c07445ebc18c08a91e78"
   integrity sha512-NL1rKPz2LuyVEqwoNV+SQD4c2w1/A0rrdeT6jqTYqlt/P7y3+SWcsxyReBnImebaIu7Drtz6p9yiAsrJq5Chyg==
@@ -8883,7 +8891,7 @@ yui@^3.18.1:
   dependencies:
     request "~2.40.0"
 
-yuidoc-ember-cli-theme@^1.0.2:
+yuidoc-ember-cli-theme@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/yuidoc-ember-cli-theme/-/yuidoc-ember-cli-theme-1.0.4.tgz#d43623aa2e7682e738ded6058daeb45b8e8dffdc"
   integrity sha1-1DYjqi52guc43tYFja60W46N/9w=
