@@ -44,7 +44,7 @@ jobs:
       EMBER_TRY_SCENARIO: ember-lts-2.18
     steps: *teststeps
 
-  lts.3.4:
+  lts3.4:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-lts-3.4
@@ -85,3 +85,16 @@ jobs:
     environment:
       LINT_TYPE: js
     steps: *lintsteps
+
+workflows:
+  version: 2
+  test_and_lint:
+    jobs:
+      - lts2.18
+      - lts3.4
+      - release
+      - beta
+      - canary
+      - jquery
+      - linthbs
+      - lintjs
