@@ -8,7 +8,7 @@ setupcontainer: &setupcontainer
     - image: circleci/node:6-browsers
   working_directory: ~/repo
 
-steps: &steps
+teststeps: &teststeps
   - checkout
   - restore_cache:
       keys:
@@ -22,46 +22,66 @@ steps: &steps
       key: v1-dependencies-{{ checksum "package.json" }}
   - run: node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO
 
+lintsteps: &lintsteps
+  - checkout
+  - restore_cache:
+      keys:
+      - v1-dependencies-{{ checksum "package.json" }}
+      # fallback to using the latest cache if no exact match is found
+      - v1-dependencies-
+  - run: yarn install --frozen-lockfile --non-interactive
+  - save_cache:
+      paths:
+        - node_modules
+      key: v1-dependencies-{{ checksum "package.json" }}
+  - run: yarn lint:$LINT_TYPE
+
 version: 2
 jobs:
   lts2.18:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-lts-2.18
-    steps: *steps
+    steps: *teststeps
 
   lts.3.4:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-lts-3.4
-    steps: *steps
+    steps: *teststeps
 
   release:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-release
-    steps: *steps
+    steps: *teststeps
 
   beta:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-beta
-    steps: *steps
+    steps: *teststeps
 
   canary:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-canary
-    steps: *steps
+    steps: *teststeps
 
   jquery:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-default-with-jquery
-    steps: *steps
+    steps: *teststeps
 
   linthbs:
     <<: *setupcontainer
     environment:
-      EMBER_TRY_SCENARIO: ember-lts-2.18
-    steps: *steps
+      LINT_TYPE: hbs
+    steps: *lintsteps
+
+  lintjs:
+    <<: *setupcontainer
+    environment:
+      LINT_TYPE: js
+    steps: *lintsteps
