@@ -31,7 +31,7 @@ tested this.
 Ember Audio is currently in `alpha` and I'm still feeling out how the API for
 this would be best designed, so please give me feedback/suggestions if you have
 any. Pull requests and issues are welcome. You can also contact me on the Ember
-community slack: `@sethbrasile`.
+community discord: `@sethbrasile`.
 
 #### Using Ember Audio?
 Please let me know if you're building something with Ember Audio! It's a fairly
