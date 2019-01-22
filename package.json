@@ -34,7 +34,7 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
-    "bootstrap": "3.4.x",
+    "bootstrap": "^3.4.0",
     "ember-cli-babel": "^7.1.2",
     "ember-fetch": "^6.4.0"
   },
