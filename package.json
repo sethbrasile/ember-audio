@@ -41,7 +41,7 @@
     "@babel/core": "^7.2.2",
     "@ember/jquery": "^0.5.2",
     "@ember/optional-features": "^0.7.0",
-    "bootstrap": "^3.4.0",
+    "bootstrap": "^4.2.1",
     "broccoli-asset-rev": "^3.0.0",
     "ember-cli": "~3.8.0-beta.1",
     "ember-cli-code-coverage": "^0.4.2",
