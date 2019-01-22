@@ -50,12 +50,6 @@ jobs:
       EMBER_TRY_SCENARIO: ember-lts-3.4
     steps: *teststeps
 
-  release:
-    <<: *setupcontainer
-    environment:
-      EMBER_TRY_SCENARIO: ember-release
-    steps: *teststeps
-
   beta:
     <<: *setupcontainer
     environment:
@@ -86,13 +80,30 @@ jobs:
       LINT_TYPE: js
     steps: *lintsteps
 
+  # Use release build to generate coverage
+  release_and_coverage:
+    <<: *setupcontainer
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        # fallback to using the latest cache if no exact match is found
+        - v1-dependencies-
+    - run: yarn install --frozen-lockfile --non-interactive
+    - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+    - run: COVERAGE=true node_modules/.bin/ember try:one ember-release
+    - run: bash <(curl -s https://codecov.io/bash)
+
 workflows:
   version: 2
   test_and_lint:
     jobs:
       - lts2.18
       - lts3.4
-      - release
+      - release_and_coverage
       - beta
       - canary
       - jquery
