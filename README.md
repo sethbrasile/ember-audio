@@ -1,6 +1,7 @@
 # Ember-audio
 
-[![Build Status](https://travis-ci.org/sethbrasile/ember-audio.svg?branch=master)](https://travis-ci.org/sethbrasile/ember-audio) [![Dependencies](https://david-dm.org/sethbrasile/ember-audio.svg)](https://david-dm.org/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Ember Observer Score](http://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QDPUK852HN9U2)
+[![CircleCI](https://circleci.com/gh/sethbrasile/ember-audio.svg?style=svg)](https://circleci.com/gh/sethbrasile/ember-audio)
+[![codecov](https://codecov.io/gh/sethbrasile/ember-audio/branch/master/graph/badge.svg)](https://codecov.io/gh/sethbrasile/ember-audio) [![Dependencies](https://david-dm.org/sethbrasile/ember-audio.svg)](https://david-dm.org/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Ember Observer Score](http://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QDPUK852HN9U2)
 
 #### Installation
 `ember install ember-audio`
@@ -31,7 +32,7 @@ tested this.
 Ember Audio is currently in `alpha` and I'm still feeling out how the API for
 this would be best designed, so please give me feedback/suggestions if you have
 any. Pull requests and issues are welcome. You can also contact me on the Ember
-community slack: `@sethbrasile`.
+community discord: `@sethbrasile`.
 
 #### Using Ember Audio?
 Please let me know if you're building something with Ember Audio! It's a fairly
