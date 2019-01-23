@@ -1,4 +1,6 @@
-import { BeatTrack } from 'ember-audio';
+import { BeatTrack, Sound } from 'ember-audio';
+import ContextMock from '../../helpers/context-mock';
+import AudioBufferMock from '../../helpers/audio-buffer-mock';
 import { module, test } from 'qunit';
 
 module('Unit | Class | beat track', function() {
@@ -43,24 +45,25 @@ module('Unit | Class | beat track', function() {
     result.playActiveBeats(0,0);
   });
 
-  // test('_callPlayMethodOnBeats method calls "method" arg on all beats in beats array', function(assert) {
-  //   let result = BeatTrack.create(opts);
-  //   let sounds = result.get('sounds');
+  test('_callPlayMethodOnBeats method calls "method" arg on all beats in beats array', function(assert) {
+    let audioContext = ContextMock.create();
+    let audioBuffer = AudioBufferMock.create();
+    let counter = 0;
+    let sound = Sound.create({
+      audioContext,
+      audioBuffer,
 
-  //   let opts = {
-  //     _initConnections() {
-  //       // noop
-  //     },
-  //     wireConnections() {
-  //       // noop
-  //     }
-  //   };
+      playIn() {
+        counter++;
+      }
+    });
 
-  //   sounds.add(Oscillator.create({ frequency: 440, opts }));
-  //   sounds.add(Oscillator.create({ frequency: 440, opts }));
+    let result = BeatTrack.create();
+    let sounds = result.get('sounds');
 
-  //   result._callPlayMethodOnBeats('playIn', 120);
+    sounds.add(sound);
 
-  //   assert.ok(true)
-  // });
+    result._callPlayMethodOnBeats('playIn', 120);
+    assert.equal(counter, 4);
+  });
 });
