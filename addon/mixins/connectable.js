@@ -1,7 +1,7 @@
+import EmberError from '@ember/error';
 import { A } from '@ember/array';
 import { on } from '@ember/object/evented';
 import { observer, set, get } from '@ember/object';
-import { warn } from '@ember/debug';
 import Mixin from '@ember/object/mixin';
 import { Connection } from 'ember-audio';
 
@@ -230,8 +230,7 @@ export default Mixin.create({
     } else if (createCommand && source) {
       connection.node = this.get(source)[createCommand]();
     } else if (!connection.node) {
-      warn(`ember-audio: The ${name} connection is not configured correctly. Please fix this connection.`);
-      return;
+      throw new EmberError(`ember-audio: The ${name} connection is not configured correctly. Please fix this connection.`);
     }
 
     return connection;

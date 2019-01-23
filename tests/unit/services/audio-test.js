@@ -10,8 +10,12 @@ module('Unit | Service | audio', function(hooks) {
     assert.ok(service);
   });
 
-  test('"_soundNotLoadedError" throws an error', function(assert) {
+  test('Oscillator instance update() method sets Oscillator instance frequency to new value', function(assert) {
     let service = this.owner.lookup('service:audio');
-    assert.throws(() => service._soundNotLoadedError('test-sound'));
+
+    let osc = service.createOscillator({ frequency: 440 });
+    assert.equal(osc.get('frequency'), 440);
+    osc.update('frequency', 220);
+    assert.equal(osc.get('frequency'), 220);
   });
 });

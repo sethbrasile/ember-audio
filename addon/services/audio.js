@@ -1,6 +1,5 @@
 import { resolve, all } from 'rsvp';
 import Service from '@ember/service';
-import Ember from 'ember';
 import fetch from 'fetch';
 import {
   Sound,
@@ -27,8 +26,8 @@ import {
  */
 
 const {
-  Logger: { error, warn }
-} = Ember;
+  error, warn
+} = console;
 
 /**
  * A {{#crossLink "Ember.Service"}}Service{{/crossLink}} that provides methods
