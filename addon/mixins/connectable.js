@@ -254,7 +254,7 @@ export default Mixin.create({
 
     connection.get('onPlaySetAttrsOnNode').map((attr) => {
       const { attrNameOnNode, relativePath, value } = attr;
-      const attrValue = relativePath ? this.get(relativePath) || value : value;
+      const attrValue = relativePath && this.get(relativePath) ? this.get(relativePath) : value;
 
       if (connection.node && attrNameOnNode && attrValue) {
         set(connection.node, attrNameOnNode, attrValue);
