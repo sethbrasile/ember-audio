@@ -1,6 +1,5 @@
 import { resolve, all } from 'rsvp';
 import Service from '@ember/service';
-import Ember from 'ember';
 import fetch from 'fetch';
 import {
   Sound,
@@ -27,8 +26,8 @@ import {
  */
 
 const {
-  Logger: { error, warn }
-} = Ember;
+  error, warn
+} = console;
 
 /**
  * A {{#crossLink "Ember.Service"}}Service{{/crossLink}} that provides methods
@@ -246,10 +245,10 @@ export default Service.extend({
        * @return {promise|array|Note} Returns a promise that resolves to an array
        * of Note instances.
        */
-      asNoteArray() {
-        return fetch(src)
-          .then((response) => response.json())
-          .then(createNoteArray);
+      async asNoteArray() {
+        const response = await fetch(src);
+        const json = await response.json();
+        return createNoteArray(json);
       }
     };
   },
@@ -655,12 +654,10 @@ export default Service.extend({
     const ctx = this.get('audioContext');
     const promises = [];
 
-    function decodeNote(noteName, buffer) {
+    async function decodeNote(noteName, buffer) {
       // Get web audio api audio data from array buffer
-      return ctx.decodeAudioData(buffer)
-
-      // Set promise value to array with note name and decoded note data
-      .then((decodedNote) => [noteName, decodedNote]);
+      const decodedNote = await ctx.decodeAudioData(buffer);
+      return [noteName, decodedNote];
     }
 
     for (let noteName in notes) {

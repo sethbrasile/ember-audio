@@ -71,11 +71,22 @@ module('Unit | Mixin | musical identity', function() {
   });
 
   test('still works if manually set letter, accidental and octave', function(assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     const note = Note.create({ letter: 'A', accidental: 'b', octave: 4 });
 
     assert.equal(note.get('frequency'), 415.3);
     assert.equal(note.get('name'), 'Ab');
+    assert.equal(note.get('identifier'), 'Ab4');
+  });
+
+  test('still works if manually set letter and octave (no accidental)', function(assert) {
+    assert.expect(3);
+
+    const note = Note.create({ letter: 'A', octave: 4 });
+
+    assert.equal(note.get('frequency'), 440);
+    assert.equal(note.get('name'), 'A');
+    assert.equal(note.get('identifier'), 'A4');
   });
 });
