@@ -34,7 +34,7 @@
     "test:all": "ember try:each"
   },
   "dependencies": {
-    "ember-cli-babel": "^7.1.2",
+    "ember-cli-babel": "^7.4.3",
     "ember-fetch": "^6.4.0"
   },
   "devDependencies": {
