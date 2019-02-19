@@ -8,31 +8,15 @@
  *
  * @private
  * @method base64ToUint8
- * @param  {string} base64String The base64 string that you'd like to be converted.
+ * @param  {string} base64String The base64 string that you'd like to be converted into a Uint8Array.
  * @return {Uint8Array} A Uint8Array of converted "binary" audio data.
  */
 export function base64ToUint8(base64String) {
-  const sB64Enc = base64String.replace(/[^A-Za-z0-9+/]/g, '');
-  const nInLen = sB64Enc.length;
-  const nOutLen = nInLen * 3 + 1 >> 2;
-  const taBytes = new Uint8Array(nOutLen);
-
-  for (let nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
-    nMod4 = nInIdx & 3;
-
-    nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
-
-    if (nMod4 === 3 || nInLen - nInIdx === 1) {
-
-      for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
-        taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
-      }
-
-      nUint24 = 0;
-    }
-  }
-
-  return taBytes;
+  return new Uint8Array(
+    atob(base64String)
+      .split('')
+      .map((char) => char.charCodeAt(0))
+  );
 }
 
 /**
@@ -53,25 +37,4 @@ export function mungeSoundFont(soundfont) {
     .replace(new RegExp('data:audio/ogg;base64,', 'g'), '');
 
   return JSON.parse(string);
-}
-
-function withinRange(val, min, max) {
-  return val > min && val < max;
-}
-
-function b64ToUint6(nChr) {
-  switch(nChr) {
-    case withinRange(nChr, 64, 91):
-      return nChr - 65;
-    case withinRange(nChr, 96, 123):
-      return nChr - 71;
-    case withinRange(nChr, 47, 58):
-      return nChr + 4;
-    case 43:
-      return 62;
-    case 47:
-      return 63;
-    default:
-      return 0;
-  }
 }
