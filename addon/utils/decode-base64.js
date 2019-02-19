@@ -55,17 +55,23 @@ export function mungeSoundFont(soundfont) {
   return JSON.parse(string);
 }
 
+function withinRange(val, min, max) {
+  return val > min && val < max;
+}
+
 function b64ToUint6(nChr) {
-  return nChr > 64 && nChr < 91 ?
-     nChr - 65
-   : nChr > 96 && nChr < 123 ?
-     nChr - 71
-   : nChr > 47 && nChr < 58 ?
-     nChr + 4
-   : nChr === 43 ?
-     62
-   : nChr === 47 ?
-     63
-   :
-     0;
+  switch(nChr) {
+    case withinRange(nChr, 64, 91):
+      return nChr - 65;
+    case withinRange(nChr, 96, 123):
+      return nChr - 71;
+    case withinRange(nChr, 47, 58):
+      return nChr + 4;
+    case 43:
+      return 62;
+    case 47:
+      return 63;
+    default:
+      return 0;
+  }
 }
