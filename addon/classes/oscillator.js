@@ -96,46 +96,10 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
    */
   _initConnections: on('init', function() {
     const filters = this.get('_filters');
-
-    const bufferSource = Connection.create({
-      name: 'audioSource',
-      createdOnPlay: true,
-      source: 'audioContext',
-      createCommand: 'createOscillator',
-      onPlaySetAttrsOnNode: [
-        {
-          attrNameOnNode: 'frequency.value',
-          relativePath: 'frequency'
-        },
-        {
-          attrNameOnNode: 'type',
-          relativePath: 'type'
-        }
-      ]
-    });
-
-    const gain = Connection.create({
-      name: 'gain',
-      source: 'audioContext',
-      createCommand: 'createGain',
-      onPlaySetAttrsOnNode: [
-        {
-          attrNameOnNode: 'gain.value',
-          relativePath: 'gain'
-        }
-      ]
-    });
-
-    const panner = Connection.create({
-      name: 'panner',
-      source: 'audioContext',
-      createCommand: 'createStereoPanner'
-    });
-
-    const destination = Connection.create({
-      name: 'destination',
-      path: 'audioContext.destination'
-    });
+    const bufferSource = this._createBufferSource();
+    const gain = this._createGainNode();
+    const panner = this._createPannerNode();
+    const destination = this._createDestinationNode();
 
     // always start with source
     const connections = A([ bufferSource ]);
@@ -155,6 +119,86 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
     this.set('connections', connections);
     this.wireConnections();
   }),
+
+  /**
+   * Creates a Connection instance backed with an `Oscillator` node.
+   *
+   * @private
+   * @method _createBufferSource
+   *
+   * @return {Connection} A connection backed with an `Oscillator` node.
+   */
+  _createBufferSource() {
+    return Connection.create({
+      name: 'audioSource',
+      createdOnPlay: true,
+      source: 'audioContext',
+      createCommand: 'createOscillator',
+      onPlaySetAttrsOnNode: [
+        {
+          attrNameOnNode: 'frequency.value',
+          relativePath: 'frequency'
+        },
+        {
+          attrNameOnNode: 'type',
+          relativePath: 'type'
+        }
+      ]
+    });
+  },
+
+  /**
+   * Creates a Connection instance backed with a `Gain` node.
+   *
+   * @private
+   * @method _createGainNode
+   *
+   * @return {Connection} A connection backed with a `Gain` node.
+   */
+  _createGainNode() {
+    return Connection.create({
+      name: 'gain',
+      source: 'audioContext',
+      createCommand: 'createGain',
+      onPlaySetAttrsOnNode: [
+        {
+          attrNameOnNode: 'gain.value',
+          relativePath: 'gain'
+        }
+      ]
+    });
+  },
+
+  /**
+   * Creates a Connection instance backed with a `Panner` node.
+   *
+   * @private
+   * @method _createPannerNode
+   *
+   * @return {Connection} A connection backed with a `Panner` node.
+   */
+  _createPannerNode() {
+    return Connection.create({
+      name: 'panner',
+      source: 'audioContext',
+      createCommand: 'createStereoPanner'
+    });
+  },
+
+  /**
+   * Creates a Connection instance backed with a `Destination` node.
+   *
+   * @private
+   * @method _createDestinationNode
+   *
+   * @return {Connection} A connection backed with a `Destination` node.
+   */
+  _createDestinationNode() {
+    return Connection.create({
+      name: 'destination',
+      path: 'audioContext.destination'
+    });
+  },
 
   /**
    * Creates a Connection instance with a filter of the specified type.
