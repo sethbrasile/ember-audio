@@ -32,7 +32,7 @@
     "start": "ember serve",
     "test": "ember test",
     "test:all": "ember try:each",
-    "deploy": "ember build --environment production && ember github-pages:commit --message \"Deploy gh-pages from commit $(git rev-parse HEAD)\" && git push origin gh-pages:gh-pages"
+    "deploy": "ember build && ember github-pages:commit --message \"Deploy gh-pages from commit $(git rev-parse HEAD)\" && git push origin gh-pages:gh-pages"
   },
   "dependencies": {
     "ember-auto-import": "^1.2.20",
