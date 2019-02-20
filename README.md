@@ -15,21 +15,12 @@ Ember Audio aims to simplify sampling, triggering, routing, scheduling,
 synthesizing, soundfonts, and working with audio in-general.
 ___
 
-**Note**: Ember Audio will probably not fully respect semver until it is out of
-alpha!
-
 **Note**: Target browsers must be modern! The list of supported browsers at
 the moment is pretty small. Please check http://caniuse.com/#feat=audio-api.
-Also note that Safari claims compatibility with a prefix, but it's not really
-compatible, as it's implementation of `AudioContext` does not meet current
-specifications. You *may* be able to make it work with a polyfill. I have not
-tested this.
 
 #### Need your help!
-Ember Audio is currently in `alpha` and I'm still feeling out how the API for
-this would be best designed, so please give me feedback/suggestions if you have
-any. Pull requests and issues are welcome. You can also contact me on the Ember
-community discord: `@sethbrasile`.
+Please give me feedback/suggestions if you have any. Pull requests and issues
+are welcome. You can also contact me on the Ember community discord: `@sethbrasile`.
 
 #### Using Ember Audio?
 Please let me know if you're building something with Ember Audio! It's a fairly
