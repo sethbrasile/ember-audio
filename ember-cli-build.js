@@ -13,10 +13,8 @@ module.exports = function(defaults) {
       components: ['javascript', 'handlebars', 'markup-templating']
     },
 
-    minifyJS: {
-      options: {
-        exclude: ['piano.js']
-      }
+    'ember-cli-uglify': {
+      exclude: ['piano.js']
     },
 
     fingerprint: {
