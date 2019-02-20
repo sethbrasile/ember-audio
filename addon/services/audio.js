@@ -1,6 +1,7 @@
 import { resolve, all, Promise } from 'rsvp';
 import Service from '@ember/service';
 import fetch from 'fetch';
+import StereoPannerNode from 'stereo-panner-node';
 import {
   Sound,
   Note,
@@ -28,6 +29,8 @@ if (!window.AudioContext && window.webkitAudioContext) {
   AudioContext.prototype.decodeAudioData = function(arraybuffer) {
     return new Promise((resolve, reject) => oldFunction.call(this, arraybuffer, resolve, reject));
   }
+
+  StereoPannerNode.polyfill();
 }
 
 /**
