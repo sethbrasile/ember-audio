@@ -58,8 +58,8 @@ export default Controller.extend({
     // raise note's gain because clean signal has much less apparent volume
     note.changeGainTo(1).from('ratio');
 
-    // Set distortionNode's curve to null to disable distortion
-    note.getNodeFrom('distortionNode').curve = null;
+    // Set distortionNode's curve to an empty Float32Array to disable distortion
+    note.getNodeFrom('distortionNode').curve = new Float32Array();
   },
 
   actions: {
