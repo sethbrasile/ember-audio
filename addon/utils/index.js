@@ -4,6 +4,7 @@ import { arraySwap, flatten } from './array-methods';
 import frequencyMap from './frequency-map';
 import exponentialRatio from './exponential-ratio';
 import withinRange from './within-range';
+import createTimeObject from './create-time-object';
 
 import {
   sortNotes,
@@ -35,5 +36,6 @@ export {
   createOctavesWithNotes,
   frequencyMap,
   exponentialRatio,
-  withinRange
+  withinRange,
+  createTimeObject
 };

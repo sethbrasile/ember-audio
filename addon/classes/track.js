@@ -1,6 +1,6 @@
 import { computed } from '@ember/object';
 import Sound from './sound';
-import { zeroify } from 'ember-audio/utils';
+import { createTimeObject } from 'ember-audio/utils';
 
 /**
  * A class that represents a "track" of music, similar in concept to a track on
@@ -35,15 +35,10 @@ const Track = Sound.extend({
    * @type {object}
    */
   position: computed('startOffset', function() {
-    const startOffset = this.get('startOffset');
-    const minutes = Math.floor(startOffset / 60);
-    const seconds = startOffset - (minutes * 60);
-
-    return {
-      raw: startOffset,
-      string: `${zeroify(minutes)}:${zeroify(seconds)}`,
-      pojo: { minutes, seconds }
-    };
+    const offset = this.get('startOffset');
+    const min = Math.floor(offset / 60);
+    const sec = offset - (min * 60);
+    return createTimeObject(offset, min, sec)
   }),
 
   /**

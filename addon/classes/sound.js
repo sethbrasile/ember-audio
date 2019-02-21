@@ -1,6 +1,6 @@
 import EmberObject, { computed } from '@ember/object';
 import { Connectable, Playable } from 'ember-audio/mixins';
-import { zeroify, withinRange } from 'ember-audio/utils';
+import { createTimeObject, withinRange } from 'ember-audio/utils';
 
 /**
  * The Sound class provides the core functionality for
@@ -99,14 +99,9 @@ const Sound = EmberObject.extend(Connectable, Playable, {
    */
   duration: computed('audioBuffer.duration', function() {
     const duration = this.get('audioBuffer.duration');
-    const minutes = Math.floor(duration / 60);
-    const seconds = duration % 60;
-
-    return {
-      raw: duration,
-      string: `${zeroify(minutes)}:${zeroify(seconds)}`,
-      pojo: { minutes, seconds }
-    };
+    const min = Math.floor(duration / 60);
+    const sec = duration % 60;
+    return createTimeObject(duration, min, sec);
   }),
 
   /**
