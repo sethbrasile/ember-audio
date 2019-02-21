@@ -250,7 +250,6 @@ export default Mixin.create({
    * attrs set.
    */
   _setAttrsOnNode(connection) {
-    const currentTime = this.get('audioContext.currentTime');
 
     connection.get('onPlaySetAttrsOnNode').map((attr) => {
       const { attrNameOnNode, relativePath, value } = attr;
@@ -261,26 +260,47 @@ export default Mixin.create({
       }
     });
 
-    connection.get('exponentialRampToValuesAtTime').map((opts) => {
-      const time = currentTime + opts.endTime;
-      connection.node[opts.key].exponentialRampToValueAtTime(opts.value, time);
-    });
-
-    connection.get('linearRampToValuesAtTime').map((opts) => {
-      const time = currentTime + opts.endTime;
-      connection.node[opts.key].linearRampToValueAtTime(opts.value, time);
-    });
-
-    connection.get('setValuesAtTime').map((opts) => {
-      const time = currentTime + opts.startTime;
-      connection.node[opts.key].setValueAtTime(opts.value, time);
-    });
-
-    connection.get('startingValues').map((opts) => {
-      connection.node[opts.key].setValueAtTime(opts.value, currentTime);
-    });
+    this._setConnectionValues(connection, 'exponentialRampToValuesAtTime');
+    this._setConnectionValues(connection, 'linearRampToValuesAtTime');
+    this._setConnectionValues(connection, 'setValuesAtTime');
+    this._setConnectionValues(connection, 'startingValues', 'setValueAtTime');
 
     return connection;
+  },
+
+  /**
+  * Gets a Connection instance's `onPlaySetAttrsOnNode` and sets them on it's
+  * node.
+  *
+  * @private
+  * @method _setConnectionValues
+  *
+  * @param {Connection} connection The Connection instance that needs it's
+  * node's attrs set.
+  *
+  * @param {string} attr The attr that needs it's values set. By default, the
+  * method called to set this attr's value is identical in name, but the word
+  * "Values" is singularized. In the example, `someKey` is a key that
+  * comes from `onPlaySetAttrsOnNode`.
+  *
+  * @example
+  *   // this
+  *   this._setConnectionValues(connection, 'setValuesAtTime');
+  *   // ends up like
+  *   connection.node.someKey.setValueAtTime(value, time);
+  *
+  * @param {string} optionalMethodKey Optionally specifies the method which
+  * should be called to set the attr. This would override the `setValueAtTime
+  * method in the example.
+  */
+  _setConnectionValues(connection, attr, optionalMethodKey) {
+    const currentTime = this.get('audioContext.currentTime');
+
+    connection.get(attr).map((opts) => {
+      const time = currentTime + (opts.endTime || 0);
+      attr = optionalMethodKey || attr.replace('Values', 'Value');
+      connection.node[opts.key][attr](opts.value, time);
+    });
   },
 
   /**
