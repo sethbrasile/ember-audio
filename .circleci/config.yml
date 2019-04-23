@@ -15,7 +15,7 @@ teststeps: &teststeps
       - v1-dependencies-{{ checksum "package.json" }}
       # fallback to using the latest cache if no exact match is found
       - v1-dependencies-
-  - run: yarn install --frozen-lockfile --non-interactive
+  - run: yarn install --non-interactive
   - save_cache:
       paths:
         - node_modules
@@ -29,7 +29,7 @@ lintsteps: &lintsteps
       - v1-dependencies-{{ checksum "package.json" }}
       # fallback to using the latest cache if no exact match is found
       - v1-dependencies-
-  - run: yarn install --frozen-lockfile --non-interactive
+  - run: yarn install --non-interactive
   - save_cache:
       paths:
         - node_modules
@@ -90,7 +90,7 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run: yarn install --frozen-lockfile --non-interactive
+      - run: yarn install --non-interactive
       - save_cache:
           paths:
             - node_modules
