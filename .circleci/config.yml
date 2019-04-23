@@ -5,7 +5,7 @@
 
 setupcontainer: &setupcontainer
   docker:
-    - image: circleci/node:6-browsers
+    - image: circleci/node:10-browsers
   working_directory: ~/repo
 
 teststeps: &teststeps
