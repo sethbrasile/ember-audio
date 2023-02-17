@@ -14,21 +14,21 @@
 
 <p>Template</p>
 
-{{#code-block language="handlebars"}}
-  \{{xy-pad
+<CodeBlock @language="handlebars">
+  &#123;{xy-pad
     padSize=padSize
     updateCoordinates="adjustSynthParams"
     activate="play"
     deactivate="stop"
   }}
 
-  &lt;p>Frequency: \{{frequency}}&lt;/p>
-  &lt;p>Gain: \{{gain}}&lt;/p>
-{{/code-block}}
+  &lt;p>Frequency: &#123;{frequency}}&lt;/p>
+  &lt;p>Gain: &#123;{gain}}&lt;/p>
+</CodeBlock>
 
 <p>Controller</p>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   import Ember from 'ember';
   import { exponentialRatio } from 'ember-audio/utils';
 
@@ -97,35 +97,35 @@
       }
     }
   });
-{{/code-block}}
+</CodeBlock>
 
 <p>
   <code>xy-pad</code> component template
 </p>
 
-{{#code-block language="handlebars"}}
+<CodeBlock @language="handlebars">
   &lt;canvas
-    width=\{{padSize}}
-    height=\{{padSize}}
+    width=&#123;{padSize}}
+    height=&#123;{padSize}}
     style="background-color: black;"
 
-    onmousedown=\{{action "activate"}}
-    onmousemove=\{{action "updateCoordinates"}}
-    onmouseleave=\{{action "deactivate"}}
-    onmouseup=\{{action "deactivate"}}
+    onmousedown=&#123;{action "activate"}}
+    onmousemove=&#123;{action "updateCoordinates"}}
+    onmouseleave=&#123;{action "deactivate"}}
+    onmouseup=&#123;{action "deactivate"}}
 
-    ontouchstart=\{{action "activate"}}
-    ontouchmove=\{{action "updateCoordinates"}}
-    ontouchend=\{{action "deactivate"}}
-    ontouchcancel=\{{action "deactivate"}}
+    ontouchstart=&#123;{action "activate"}}
+    ontouchmove=&#123;{action "updateCoordinates"}}
+    ontouchend=&#123;{action "deactivate"}}
+    ontouchcancel=&#123;{action "deactivate"}}
   >&lt;/canvas>
-{{/code-block}}
+</CodeBlock>
 
 <p>
   <code>xy-pad</code> component javascript
 </p>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   // leaving out the code to draw the grid/text
   export default Ember.Component.extend({
     actions: {
@@ -142,7 +142,7 @@
       updateCoordinates(e) {
         e.preventDefault();
 
-        const [ canvas ] = this.$('canvas');
+        const [ canvas ] = this.element.childNodes;
         const canvasLocation = canvas.getBoundingClientRect();
         const xRelToScreen = e.x || e.touches[0].screenX;
         const yRelToScreen = e.y || e.touches[0].screenY;
@@ -155,4 +155,4 @@
       }
     }
   });
-{{/code-block}}
+</CodeBlock>

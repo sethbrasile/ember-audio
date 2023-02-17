@@ -17,9 +17,9 @@
 
 <div class="content">
 
-  <button class="btn btn-primary" {{action "playSound"}}>Play Sound</button>
+  <button class="btn btn-primary" type="button" {{action "playSound"}}>Play Sound</button>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
 
@@ -34,8 +34,7 @@
       }
     }
   });
-{{/code-block}}
-
+</CodeBlock>
 </div>
 
 <hr>

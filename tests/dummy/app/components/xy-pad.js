@@ -11,7 +11,7 @@ export default Component.extend({
   },
 
   _drawText() {
-    const [ canvas ] = this.$('canvas');
+    const [ canvas ] = this.element.childNodes;
     const ctx = canvas.getContext('2d');
     const pad = 10;
 
@@ -37,7 +37,7 @@ export default Component.extend({
   },
 
   _drawGrid() {
-    const [ canvas ] = this.$('canvas');
+    const [ canvas ] = this.element.childNodes;
     const ctx = canvas.getContext('2d');
     const { width, height } = canvas;
     const gridSize = 30;
@@ -78,7 +78,7 @@ export default Component.extend({
     updateCoordinates(e) {
       e.preventDefault();
 
-      const [ canvas ] = this.$('canvas');
+      const [ canvas ] = this.element.childNodes;
       const canvasLocation = canvas.getBoundingClientRect();
       const xRelToScreen = e.x || e.touches[0].screenX;
       const yRelToScreen = e.y || e.touches[0].screenY;

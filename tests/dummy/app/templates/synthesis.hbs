@@ -1,17 +1,17 @@
 <h1>Synthesis</h1>
 
 <ul class="nav nav-tabs">
-  {{#link-to "synthesis.index" tagName="li" classNames="link"}}
+  <LinkTo @route="synthesis.index" tagName="li" classNames="link">
     <a>Simple</a>
-  {{/link-to}}
+  </LinkTo>
 
-  {{#link-to "synthesis.drum-kit" tagName="li" classNames="link"}}
+  <LinkTo @route="synthesis.drum-kit" tagName="li" classNames="link">
     <a>Drum Kit</a>
-  {{/link-to}}
+  </LinkTo>
 
-  {{#link-to "synthesis.xy-pad" tagName="li" classNames="link"}}
+  <LinkTo @route="synthesis.xy-pad" tagName="li" classNames="link">
     <a>XY Pad</a>
-  {{/link-to}}
+  </LinkTo>
 </ul>
 
 {{outlet}}

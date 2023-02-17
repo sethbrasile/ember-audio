@@ -38,27 +38,27 @@
 </div>
 
 <div class="content">
-  {{#code-block language="handlebars"}}
-  \{{#if isLoading}}
-    \{{!-- Some loading indicator... --}}
-  \{{else}}
+  <CodeBlock @language="handlebars">
+  &#123;{#if isLoading}}
+    &#123;{!-- Some loading indicator... --}}
+  &#123;{else}}
     &lt;div id="piano">
       &lt;ol>
-        \{{#each notes as |note|}}
-          &lt;li class=\{{if note.accidental "black"}}
-            \{{!-- Specify both action types so multitouch works on touch devices --}}
-            \{{action "playPianoNote" note on="touchStart"}}
-            \{{action "playPianoNote" note on="mouseDown"}}
+        &#123;{#each notes as |note|}}
+          &lt;li class={{if note.accidental "black"}}
+            &#123;{!-- Specify both action types so multitouch works on touch devices --}}
+            &#123;{action "playPianoNote" note on="touchStart"}}
+            &#123;{action "playPianoNote" note on="mouseDown"}}
           >
-            \{{note.name}}
+            &#123;{note.name}}
           &lt;/li>
-        \{{/each}}
+        &#123;{/each}}
       &lt;/ol>
     &lt;/div>
-  \{{/if}}
-  {{/code-block}}
+  &#123;{/if}}
+  </CodeBlock>
 
-  {{#code-block language="javascript"}}
+  <CodeBlock @language="javascript">
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
     isLoading: false,
@@ -80,5 +80,5 @@
       }
     }
   });
-  {{/code-block}}
+  </CodeBlock>
 </div>

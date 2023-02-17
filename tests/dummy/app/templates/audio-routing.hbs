@@ -1,8 +1,8 @@
 <div class="content">
   <h1>Audio Routing</h1>
 
-  <button class="btn btn-primary" {{action "playSound"}}>Play Sound</button>
-  <button class="btn {{if distortionEnabled "" "btn-success"}}" {{action "toggleDistortion"}}>
+  <button class="btn btn-primary" type="button" {{action "playSound"}}>Play Sound</button>
+  <button class="btn {{if distortionEnabled "" "btn-success"}}" type="button" {{action "toggleDistortion"}}>
     Turn {{if distortionEnabled "Off" "On"}} Distortion
   </button>
 </div>
@@ -86,14 +86,14 @@
 </div>
 
 <div class="content">
-  {{#code-block language="handlebars"}}
-    &lt;button class="btn btn-primary" \{{action "playSound"}}>Play Sound&lt;/button>
-    &lt;button class="btn \{{if distortionEnabled "btn-warning" "btn-success"}}" \{{action "toggleDistortion"}}>
-      Turn \{{if distortionEnabled "Off" "On"}} Distortion
+  <CodeBlock @language="handlebars">
+    &lt;button class="btn btn-primary" &#123;{action "playSound"}}>Play Sound&lt;/button>
+    &lt;button class="btn &#123;{if distortionEnabled "btn-warning" "btn-success"}}" &#123;{action "toggleDistortion"}}>
+      Turn &#123;{if distortionEnabled "Off" "On"}} Distortion
     &lt;/button>
-  {{/code-block}}
+  </CodeBlock>
 
-  {{#code-block language="javascript"}}
+  <CodeBlock @language="javascript">
     import Ember from 'ember';
     import { Connection } from 'ember-audio';
 
@@ -170,5 +170,5 @@
         }
       }
     });
-  {{/code-block}}
+  </CodeBlock>
 </div>

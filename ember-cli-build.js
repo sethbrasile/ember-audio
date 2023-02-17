@@ -4,18 +4,22 @@ const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 
 module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
+    babel: {
+      plugins: [
+        [require('babel-plugin-prismjs').default,
+          {
+            "languages": ["javascript", "handlebars"],
+            "theme": "okaidia",
+            "css": true,
+            "plugins": ["line-numbers"],
+          }
+        ]
+      ]
+    },
+
     stylusOptions: {
       outputFile: 'dummy.css'
     },
-
-    'ember-prism': {
-      theme: 'okaidia',
-      components: ['javascript', 'handlebars', 'markup-templating']
-    },
-
-    // 'ember-cli-uglify': {
-    //   exclude: ['piano.js']
-    // },
 
     fingerprint: {
       exclude: ['piano.js']
@@ -31,6 +35,9 @@ module.exports = function(defaults) {
 
   app.import('vendor/piano.css');
   app.import('node_modules/bootstrap/dist/css/bootstrap.css');
+  app.import('node_modules/bootstrap/dist/css/bootstrap.css.map');
+  app.import('node_modules/@fortawesome/fontawesome-free/js/brands.js');
+  app.import('node_modules/@fortawesome/fontawesome-free/js/fontawesome.js');
 
   return app.toTree();
 };
