@@ -13,9 +13,9 @@ module.exports = function(defaults) {
       components: ['javascript', 'handlebars', 'markup-templating']
     },
 
-    'ember-cli-uglify': {
-      exclude: ['piano.js']
-    },
+    // 'ember-cli-uglify': {
+    //   exclude: ['piano.js']
+    // },
 
     fingerprint: {
       exclude: ['piano.js']

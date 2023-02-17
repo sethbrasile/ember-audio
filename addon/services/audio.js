@@ -1,7 +1,5 @@
 import { resolve, all, Promise } from 'rsvp';
 import Service from '@ember/service';
-import fetch from 'fetch';
-import StereoPannerNode from 'stereo-panner-node';
 import {
   Sound,
   Note,
