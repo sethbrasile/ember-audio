@@ -12,16 +12,10 @@
 /.env*
 /.pnp*
 /.sass-cache
+/.eslintcache
 /connect.lock
 /coverage/
 /libpeerconnection.log
-/tests/dummy/public/docs
-npm-debug.log
-testem.log
-
-coverage.json
-
-lcov.dat
 /npm-debug.log*
 /testem.log
 /yarn-error.log
@@ -29,4 +23,10 @@ lcov.dat
 # ember-try
 /.node_modules.ember-try/
 /bower.json.ember-try
+/npm-shrinkwrap.json.ember-try
 /package.json.ember-try
+/package-lock.json.ember-try
+/yarn.lock.ember-try
+
+# broccoli-debug
+/DEBUG/
