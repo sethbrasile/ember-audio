@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 // import Ember from 'ember';
-import { setupTest } from 'ember-qunit';
+import { setupTest } from 'dummy/tests/helpers';
 
 module('Unit | Service | audio', function(hooks) {
   setupTest(hooks);

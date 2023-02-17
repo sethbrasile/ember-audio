@@ -3,7 +3,7 @@
 
   <div id="piano">
     <ol>
-      {{#each oscillators as |note|}}
+      {{#each this.oscillators as |note|}}
         <li role="button" class={{if note.accidental "black"}}
           {{action "startNote" note on="touchStart"}}
           {{action "startNote" note on="mouseDown"}}
@@ -79,8 +79,8 @@
 <CodeBlock @language="handlebars">
   &lt;div id="piano">
     &lt;ol>
-      &#123;{#each oscillators as |note|}}
-        &lt;li class={{if note.accidental "black"}}
+      &#123;{#each this.oscillators as |note|}}
+        &lt;li class=&#123;{if note.accidental "black"}}
           &#123;{!-- These are to make it play like a "keyboard" on touch devices
             and I'm sure there's a more elegant way to handle it ¯\_(ツ)_/¯ --}}
           &#123;{action "startNote" note on="touchStart"}}
