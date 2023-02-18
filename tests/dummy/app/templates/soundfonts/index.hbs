@@ -1,6 +1,6 @@
 <div class="content">
   <h2>Play a Soundfont</h2>
-  {{#if isLoading}}
+  {{#if this.isLoading}}
     <div class="spinner">
       <div class="rect1"></div>
       <div class="rect2"></div>
@@ -11,7 +11,7 @@
   {{else}}
     <div id="piano">
       <ol>
-        {{#each notes as |note|}}
+        {{#each this.notes as |note|}}
           <li role="button" class={{if note.accidental "black"}}
             {{action "playPianoNote" note on="touchStart"}}
             {{action "playPianoNote" note on="mouseDown"}}
@@ -45,7 +45,7 @@
     &lt;div id="piano">
       &lt;ol>
         &#123;{#each notes as |note|}}
-          &lt;li class={{if note.accidental "black"}}
+          &lt;li class=&#123;{if note.accidental "black"}}
             &#123;{!-- Specify both action types so multitouch works on touch devices --}}
             &#123;{action "playPianoNote" note on="touchStart"}}
             &#123;{action "playPianoNote" note on="mouseDown"}}

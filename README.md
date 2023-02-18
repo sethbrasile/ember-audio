@@ -12,7 +12,7 @@ Ember Audio provides an `audio` service and various classes/mixins that make
 working with the Web Audio API super EZ.
 
 Ember Audio aims to simplify sampling, triggering, routing, scheduling,
-synthesizing, soundfonts, and working with audio in-general.
+synthesizing, soundfonts, and working with audio in general.
 ___
 
 **Note**: Target browsers must be modern! The list of supported browsers at
@@ -25,7 +25,7 @@ are welcome. You can also contact me on the Ember community discord: `@sethbrasi
 #### Using Ember Audio?
 Please let me know if you're building something with Ember Audio! It's a fairly
 large project, and I would love to know if it's working out for people! You can
-contact me via `@sethbrasile` on the ember community slack, or via email.
+contact me via `@sethbrasile` on the ember community discord, or via email.
 
 
 Compatibility

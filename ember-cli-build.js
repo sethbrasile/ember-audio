@@ -11,7 +11,7 @@ module.exports = function(defaults) {
             "languages": ["javascript", "handlebars"],
             "theme": "okaidia",
             "css": true,
-            "plugins": ["line-numbers"],
+            "plugins": ["normalize-whitespace"],
           }
         ]
       ]
@@ -35,7 +35,6 @@ module.exports = function(defaults) {
 
   app.import('vendor/piano.css');
   app.import('node_modules/bootstrap/dist/css/bootstrap.css');
-  app.import('node_modules/bootstrap/dist/css/bootstrap.css.map');
   app.import('node_modules/@fortawesome/fontawesome-free/js/brands.js');
   app.import('node_modules/@fortawesome/fontawesome-free/js/fontawesome.js');
 

@@ -38,16 +38,22 @@ lintsteps: &lintsteps
 
 version: 2
 jobs:
-  lts2.18:
+  lts3.28:
     <<: *setupcontainer
     environment:
-      EMBER_TRY_SCENARIO: ember-lts-2.18
+      EMBER_TRY_SCENARIO: ember-lts-3.28
     steps: *teststeps
 
-  lts3.4:
+  lts4.4:
     <<: *setupcontainer
     environment:
-      EMBER_TRY_SCENARIO: ember-lts-3.4
+      EMBER_TRY_SCENARIO: ember-lts-4.4
+    steps: *teststeps
+
+  lts4.8:
+    <<: *setupcontainer
+    environment:
+      EMBER_TRY_SCENARIO: ember-lts-4.8
     steps: *teststeps
 
   beta:
@@ -102,8 +108,9 @@ workflows:
   version: 2
   test_and_lint:
     jobs:
-      - lts2.18
-      - lts3.4
+      - lts3.28
+      - lts4.4
+      - lts4.8
       - release_and_coverage
       - beta
       - canary

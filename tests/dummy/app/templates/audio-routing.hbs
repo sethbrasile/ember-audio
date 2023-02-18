@@ -2,8 +2,8 @@
   <h1>Audio Routing</h1>
 
   <button class="btn btn-primary" type="button" {{action "playSound"}}>Play Sound</button>
-  <button class="btn {{if distortionEnabled "" "btn-success"}}" type="button" {{action "toggleDistortion"}}>
-    Turn {{if distortionEnabled "Off" "On"}} Distortion
+  <button class="btn {{if this.distortionEnabled "" "btn-success"}}" type="button" {{action "toggleDistortion"}}>
+    Turn {{if this.distortionEnabled "Off" "On"}} Distortion
   </button>
 </div>
 
