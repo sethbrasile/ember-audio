@@ -1,14 +1,11 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
-
 setupcontainer: &setupcontainer
   docker:
-    - image: circleci/node:14-browsers
+    - image: 'cimg/node:14.21.3-browsers'
   working_directory: ~/repo
 
 teststeps: &teststeps
+  - browser-tools/install-chrome
+  - browser-tools/install-chromedriver
   - checkout
   - restore_cache:
       keys:
@@ -25,6 +22,8 @@ teststeps: &teststeps
   - run: node_modules/.bin/ember try:one $EMBER_TRY_SCENARIO
 
 lintsteps: &lintsteps
+  - browser-tools/install-chrome
+  - browser-tools/install-chromedriver
   - checkout
   - restore_cache:
       keys:
@@ -38,21 +37,23 @@ lintsteps: &lintsteps
       key: v1-dependencies-{{ checksum "package.json" }}
   - run: yarn lint:$LINT_TYPE
 
-version: 2
+version: '2.1'
+orbs:
+  browser-tools: circleci/browser-tools@1.1.0
 jobs:
-  lts3.28:
+  lts328:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-lts-3.28
     steps: *teststeps
 
-  lts4.4:
+  lts44:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-lts-4.4
     steps: *teststeps
 
-  lts4.8:
+  lts48:
     <<: *setupcontainer
     environment:
       EMBER_TRY_SCENARIO: ember-lts-4.8
@@ -92,6 +93,8 @@ jobs:
   release_and_coverage:
     <<: *setupcontainer
     steps:
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - checkout
       - restore_cache:
           keys:
@@ -107,12 +110,12 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash)
 
 workflows:
-  version: 2
+  version: '2.1'
   test_and_lint:
     jobs:
-      - lts3.28
-      - lts4.4
-      - lts4.8
+      - lts328
+      - lts44
+      - lts48
       - release_and_coverage
       - beta
       - canary
