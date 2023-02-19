@@ -11,7 +11,7 @@ export default Controller.extend({
   range: { min: 100, max: 400 },
 
   initOscillator: on('init', function() {
-    const oscillator = this.get('audio').createOscillator({ type: 'square' });
+    const oscillator = this.audio.createOscillator({ type: 'square' });
     this.set('oscillator', oscillator);
   }),
 
@@ -34,8 +34,8 @@ export default Controller.extend({
   }),
 
   _getFrequency(x) {
-    const range = this.get('range');
-    const padSize = this.get('padSize');
+    const range = this.range;
+    const padSize = this.padSize;
 
     return range.min + (range.max - range.min) * (x / padSize);
   },
@@ -43,16 +43,16 @@ export default Controller.extend({
   _getGain(y) {
     // Human senses are not linear.
     // http://stackoverflow.com/questions/1165026/what-algorithms-could-i-use-for-audio-volume-level
-    return exponentialRatio(y / this.get('padSize'));
+    return exponentialRatio(y / this.padSize);
   },
 
   actions: {
     play() {
-      this.get('oscillator').play();
+      this.oscillator.play();
     },
 
     stop() {
-      const oscillator = this.get('oscillator');
+      const oscillator = this.oscillator;
 
       if (oscillator.get('isPlaying')) {
         oscillator.stop();
@@ -60,7 +60,7 @@ export default Controller.extend({
     },
 
     adjustSynthParams(x, y) {
-      const oscillator = this.get('oscillator');
+      const oscillator = this.oscillator;
       const frequency = this._getFrequency(x);
       const gain = this._getGain(y);
 

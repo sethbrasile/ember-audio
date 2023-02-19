@@ -35,7 +35,7 @@ const Track = Sound.extend({
    * @type {object}
    */
   position: computed('startOffset', function() {
-    const offset = this.get('startOffset');
+    const offset = this.startOffset;
     const min = Math.floor(offset / 60);
     const sec = offset - (min * 60);
     return createTimeObject(offset, min, sec)
@@ -50,7 +50,7 @@ const Track = Sound.extend({
    * @type {number}
    */
   percentPlayed: computed('duration', 'startOffset', function() {
-    const ratio = this.get('startOffset') / this.get('duration.raw');
+    const ratio = this.startOffset / this.get('duration.raw');
     return ratio * 100;
   }),
 
@@ -74,7 +74,7 @@ const Track = Sound.extend({
    * @method pause
    */
   pause() {
-    if (this.get('isPlaying')) {
+    if (this.isPlaying) {
       const node = this.getNodeFrom('audioSource');
 
       node.onended = function() {};
@@ -93,7 +93,7 @@ const Track = Sound.extend({
   stop() {
     this.set('startOffset', 0);
 
-    if (this.get('isPlaying')) {
+    if (this.isPlaying) {
       this.getNodeFrom('audioSource').onended = function() {};
       this._super();
     }
@@ -108,12 +108,12 @@ const Track = Sound.extend({
    * @private
    */
   _trackPlayPosition() {
-    const ctx = this.get('audioContext');
-    const startOffset = this.get('startOffset');
-    const startedPlayingAt = this.get('_startedPlayingAt');
+    const ctx = this.audioContext;
+    const startOffset = this.startOffset;
+    const startedPlayingAt = this._startedPlayingAt;
 
     const animate = () => {
-      if (this.get('isPlaying')) {
+      if (this.isPlaying) {
         this.set('startOffset', startOffset + ctx.currentTime - startedPlayingAt);
         requestAnimationFrame(animate);
       }

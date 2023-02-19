@@ -56,8 +56,8 @@ export default Mixin.create({
    * @type {string}
    */
   name: computed('letter', 'accidental', function() {
-    const accidental = this.get('accidental');
-    const letter = this.get('letter');
+    const accidental = this.accidental;
+    const letter = this.letter;
 
     if (accidental) {
       return `${letter}${accidental}`;
@@ -78,7 +78,7 @@ export default Mixin.create({
    */
   frequency: computed('identifier', {
     get() {
-      const identifier = this.get('identifier');
+      const identifier = this.identifier;
 
       if (identifier) {
         return frequencyMap[identifier];
@@ -107,9 +107,9 @@ export default Mixin.create({
    */
   identifier: computed('letter', 'octave', 'accidental', {
     get() {
-      const accidental = this.get('accidental');
-      const letter = this.get('letter');
-      const octave = this.get('octave');
+      const accidental = this.accidental;
+      const letter = this.letter;
+      const octave = this.octave;
       let output;
 
       if (accidental) {

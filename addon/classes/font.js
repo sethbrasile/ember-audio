@@ -46,7 +46,7 @@ const Font = EmberObject.extend({
    * @return {Note} The specified Note instance.
    */
   getNote(identifier) {
-    return this.get('notes').findBy('identifier', identifier);
+    return this.notes.findBy('identifier', identifier);
   },
 
   /**
@@ -56,7 +56,7 @@ const Font = EmberObject.extend({
    * @method _initNotes
    */
   _initNotes: on('init', function() {
-    if (!this.get('notes')) {
+    if (!this.notes) {
       this.set('notes', A());
     }
   })

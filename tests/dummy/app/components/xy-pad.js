@@ -85,7 +85,7 @@ export default Component.extend({
       const x = xRelToScreen - canvasLocation.left;
 
       // 'y' is measured from top, so invert for value from bottom
-      const y = this.get('padSize') + (yRelToScreen - canvasLocation.top) * -1;
+      const y = this.padSize + (yRelToScreen - canvasLocation.top) * -1;
 
       this.updateCoordinates(x, y);
     }

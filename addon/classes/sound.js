@@ -200,7 +200,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
     const duration = this.get('duration.raw');
 
     const moveToOffset = (offset) => {
-      const isPlaying = this.get('isPlaying');
+      const isPlaying = this.isPlaying;
       const adjustedOffset = withinRange(offset, 0, duration);
 
       if (isPlaying) {

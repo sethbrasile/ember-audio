@@ -57,7 +57,7 @@ export default Mixin.create({
    * @return {Connection} The requested Connection.
    */
   getConnection(name) {
-    return this.get('connections').findBy('name', name);
+    return this.connections.findBy('name', name);
   },
 
   /**
@@ -69,7 +69,7 @@ export default Mixin.create({
    * @method removeConnection
    */
   removeConnection(name) {
-    this.get('connections').removeObject(this.getConnection(name));
+    this.connections.removeObject(this.getConnection(name));
   },
 
   /**
@@ -109,7 +109,7 @@ export default Mixin.create({
    * @param value {string} The value that the property should be set to.
    */
   update(key, value) {
-    this.get('connections').map((connection) => {
+    this.connections.map((connection) => {
       connection.get('onPlaySetAttrsOnNode').map((attr) => {
         const path = get(attr, 'relativePath');
 
@@ -197,7 +197,7 @@ export default Mixin.create({
     const createNode = this._createNode.bind(this);
     const setAttrsOnNode = this._setAttrsOnNode.bind(this);
     const wireConnection = this._wireConnection;
-    const connections = this.get('connections');
+    const connections = this.connections;
 
     connections.map(createNode).map(setAttrsOnNode).map(wireConnection);
   },

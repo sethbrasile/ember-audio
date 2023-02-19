@@ -54,7 +54,7 @@ const BeatTrack = Sampler.extend({
    */
   beats: computed('numBeats', 'duration', function() {
     let beats = [];
-    let numBeats = this.get('numBeats');
+    let numBeats = this.numBeats;
     let existingBeats;
 
     if (beatBank.has(this)) {
@@ -64,7 +64,7 @@ const BeatTrack = Sampler.extend({
 
     for (let i = 0; i < numBeats; i++) {
       const beat = Beat.create({
-        duration: this.get('duration'),
+        duration: this.duration,
         _parentPlayIn: this.playIn.bind(this),
         _parentPlay: this.play.bind(this)
       });
@@ -131,7 +131,7 @@ const BeatTrack = Sampler.extend({
   _callPlayMethodOnBeats(method, bpm, noteType=1 / 4) {
     // http://bradthemad.org/guitar/tempo_explanation.php
     const duration = (240 * noteType) / bpm;
-    this.get('beats').map((beat, idx) => beat[method](idx * duration));
+    this.beats.map((beat, idx) => beat[method](idx * duration));
   }
 });
 

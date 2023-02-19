@@ -95,7 +95,7 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
    * @method _initConnections
    */
   _initConnections: on('init', function() {
-    const filters = this.get('_filters');
+    const filters = this._filters;
     const bufferSource = this._createBufferSource();
     const gain = this._createGainNode();
     const panner = this._createPannerNode();

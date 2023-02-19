@@ -99,7 +99,7 @@ const Beat = EmberObject.extend({
   playIn(offset=0) {
     const msOffset = offset * 1000;
 
-    this.get('_parentPlayIn')(offset);
+    this._parentPlayIn(offset);
 
     later(() => this._markPlaying(), msOffset);
     later(() => this._markCurrentTimePlaying(), msOffset);
@@ -123,8 +123,8 @@ const Beat = EmberObject.extend({
   ifActivePlayIn(offset=0) {
     const msOffset = offset * 1000;
 
-    if (this.get('active')) {
-      this.get('_parentPlayIn')(offset);
+    if (this.active) {
+      this._parentPlayIn(offset);
       later(() => this._markPlaying(), msOffset);
     }
 
@@ -140,7 +140,7 @@ const Beat = EmberObject.extend({
    * @method play
    */
   play() {
-    this.get('_parentPlay')();
+    this._parentPlay();
     this._markPlaying();
     this._markCurrentTimePlaying();
   },
@@ -157,8 +157,8 @@ const Beat = EmberObject.extend({
    * @method playIfActive
    */
   playIfActive() {
-    if (this.get('active')) {
-      this.get('_parentPlay')();
+    if (this.active) {
+      this._parentPlay();
       this._markPlaying();
     }
 
@@ -174,7 +174,7 @@ const Beat = EmberObject.extend({
    */
   _markPlaying() {
     this.set('isPlaying', true);
-    later(() => this.set('isPlaying', false), this.get('duration'));
+    later(() => this.set('isPlaying', false), this.duration);
   },
 
   /**
@@ -186,7 +186,7 @@ const Beat = EmberObject.extend({
    */
   _markCurrentTimePlaying() {
     this.set('currentTimeIsPlaying', true);
-    later(() => this.set('currentTimeIsPlaying', false), this.get('duration'));
+    later(() => this.set('currentTimeIsPlaying', false), this.duration);
   }
 });
 

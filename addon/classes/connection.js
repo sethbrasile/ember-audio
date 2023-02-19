@@ -280,10 +280,10 @@ const Connection = EmberObject.extend({
    * @todo document 'exponential' and 'linear' options
    */
   onPlaySet(key) {
-    const startingValues = this.get('startingValues');
-    const exponentialValues = this.get('exponentialRampToValuesAtTime');
-    const linearValues = this.get('linearRampToValuesAtTime');
-    const valuesAtTime = this.get('setValuesAtTime');
+    const startingValues = this.startingValues;
+    const exponentialValues = this.exponentialRampToValuesAtTime;
+    const linearValues = this.linearRampToValuesAtTime;
+    const valuesAtTime = this.setValuesAtTime;
 
     return {
       to(value) {

@@ -29,7 +29,7 @@ const LayeredSound = EmberObject.extend({
    * @method play
    */
   play() {
-    this.get('sounds').map((sound) => sound.play());
+    this.sounds.map((sound) => sound.play());
   },
 
   /**
@@ -42,7 +42,7 @@ const LayeredSound = EmberObject.extend({
    * @param {number} time The time to pass to each object's `playAt` method.
    */
   playAt(time) {
-    this.get('sounds').map((sound) => sound.playAt(time));
+    this.sounds.map((sound) => sound.playAt(time));
   },
 
   /**
@@ -55,7 +55,7 @@ const LayeredSound = EmberObject.extend({
    * @param {number} seconds The seconds to pass to each object's `playIn` method.
    */
   playIn(seconds) {
-    this.get('sounds').map((sound) => sound.playIn(seconds));
+    this.sounds.map((sound) => sound.playIn(seconds));
   },
 
   /**
@@ -68,7 +68,7 @@ const LayeredSound = EmberObject.extend({
    * @param {number} seconds The seconds to pass to each object's `playFor` method.
    */
   playFor(seconds) {
-    this.get('sounds').map((sound) => sound.playFor(seconds));
+    this.sounds.map((sound) => sound.playFor(seconds));
   },
 
   /**
@@ -85,7 +85,7 @@ const LayeredSound = EmberObject.extend({
    * `playInAndStopAfter` method.
    */
   playInAndStopAfter(playIn, stopAfter) {
-    this.get('sounds').map((sound) => sound.playInAndStopAfter(playIn, stopAfter));
+    this.sounds.map((sound) => sound.playInAndStopAfter(playIn, stopAfter));
   },
 
   /**
@@ -95,7 +95,7 @@ const LayeredSound = EmberObject.extend({
    * @method _initSounds
    */
   _initSounds: on('init', function() {
-    if (!this.get('sounds')) {
+    if (!this.sounds) {
       this.set('sounds', A());
     }
   })

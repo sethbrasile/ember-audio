@@ -9,7 +9,7 @@ export default Controller.extend({
 
   initAudioFile: on('init', function() {
     // Eb5.mp3 is an mp3 file located in the "public" folder
-    this.get('audio').load('/ember-audio/Eb5.mp3').asSound('distorted-piano-note').then((note) => {
+    this.audio.load('/ember-audio/Eb5.mp3').asSound('distorted-piano-note').then((note) => {
 
       // Create the connection and insert it into the note's connections array
       note.get('connections').insertAt(1, Connection.create({
@@ -39,7 +39,7 @@ export default Controller.extend({
 
   _addDistortion() {
     const curve = this._makeDistortionCurve(400);
-    const note = this.get('note');
+    const note = this.note;
 
     this.set('distortionEnabled', true);
 
@@ -51,7 +51,7 @@ export default Controller.extend({
   },
 
   _removeDistortion() {
-    const note = this.get('note');
+    const note = this.note;
 
     this.set('distortionEnabled', false);
 
@@ -64,11 +64,11 @@ export default Controller.extend({
 
   actions: {
     playSound() {
-      this.get('note').play();
+      this.note.play();
     },
 
     toggleDistortion() {
-      if (this.get('distortionEnabled')) {
+      if (this.distortionEnabled) {
         this._removeDistortion();
       } else {
         this._addDistortion();

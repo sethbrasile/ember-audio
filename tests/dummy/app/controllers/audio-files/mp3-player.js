@@ -31,7 +31,7 @@ export default Controller.extend({
 
   actions: {
     selectTrack(track) {
-      const audio = this.get('audio');
+      const audio = this.audio;
 
       this.set('selectedTrack', track);
       this.set('trackIsLoading', true);

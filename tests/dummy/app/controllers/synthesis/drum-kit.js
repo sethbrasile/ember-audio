@@ -16,7 +16,7 @@ export default Controller.extend({
   }),
 
   _createKick() {
-    const audio = this.get('audio');
+    const audio = this.audio;
     const kick = audio.createOscillator({ name: 'kick' });
     const osc = kick.getConnection('audioSource');
     const gain = kick.getConnection('gain');
@@ -35,7 +35,7 @@ export default Controller.extend({
   },
 
   _createSnareOscillator() {
-    const audio = this.get('audio');
+    const audio = this.audio;
     const snare = audio.createOscillator({ type: 'triangle' });
     const oscillator = snare.getConnection('audioSource');
     const gain = snare.getConnection('gain');
@@ -47,7 +47,7 @@ export default Controller.extend({
   },
 
   _createSnareNoise() {
-    const audio = this.get('audio');
+    const audio = this.audio;
     const noise = audio.createWhiteNoise({ name: 'snare', highpassFrequency: 1000 });
     const gain = noise.getConnection('gain');
 
@@ -70,7 +70,7 @@ export default Controller.extend({
   _createHihatOscillator(ratio) {
     const fundamental = 40;
 
-    return this.get('audio').createOscillator({
+    return this.audio.createOscillator({
       type: 'square',
       highpass: { frequency: 7000 },
       bandpass: { frequency: 10000 },
@@ -97,7 +97,7 @@ export default Controller.extend({
     },
 
     playBassDrop() {
-      const audio = this.get('audio');
+      const audio = this.audio;
       const bassDrop = audio.createOscillator();
       const osc = bassDrop.getConnection('audioSource');
       const gain = bassDrop.getConnection('gain');

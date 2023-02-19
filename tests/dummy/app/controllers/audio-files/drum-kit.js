@@ -28,8 +28,8 @@ export default Controller.extend({
 
     // If name === 'kick', this creates a Sampler instance called
     // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
-    return this.get('audio').load(drums).asSampler(name).then((drum) => {
-      this.get('drums').pushObject(drum);
+    return this.audio.load(drums).asSampler(name).then((drum) => {
+      this.drums.pushObject(drum);
     });
   },
 

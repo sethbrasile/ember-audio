@@ -13,7 +13,7 @@ export default Controller.extend({
   oscillators: null, // Put oscillators here after they're created
 
   initSynth: on('init', function() {
-    const audio = this.get('audio');
+    const audio = this.audio;
 
     // Outputs an array of all the notes on a standard "western" piano
     // Could also do `audio.createNoteArray(notes)` where notes is a POJO,

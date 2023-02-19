@@ -19,7 +19,7 @@ export default Component.extend({
 
   actions: {
     togglePlay() {
-      const track = this.get('track');
+      const track = this.track;
 
       if (track.get('isPlaying')) {
         track.pause();
@@ -31,7 +31,7 @@ export default Component.extend({
     seek(e) {
       const width = e.target.offsetParent.offsetWidth;
       const newPosition = e.offsetX / width;
-      this.get('track').seek(newPosition).from('ratio');
+      this.track.seek(newPosition).from('ratio');
     },
 
     changeVolume(e) {
@@ -42,7 +42,7 @@ export default Component.extend({
       const adjustedOffset = offset - ((height - adjustedHeight) / 2);
       const newGain = adjustedOffset / adjustedHeight;
 
-      this.get('track').changeGainTo(newGain).from('inverseRatio');
+      this.track.changeGainTo(newGain).from('inverseRatio');
     }
   }
 });

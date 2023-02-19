@@ -39,7 +39,7 @@ export default Controller.extend({
   }),
 
   _loadBeatTrackFor(name) {
-    return this.get('audio').load([
+    return this.audio.load([
       `/ember-audio/drum-samples/${name}1.wav`,
       `/ember-audio/drum-samples/${name}2.wav`,
       `/ember-audio/drum-samples/${name}3.wav`
@@ -48,10 +48,10 @@ export default Controller.extend({
 
   actions: {
     play() {
-      this.get('beatTracks').map((beatTrack) => {
+      this.beatTracks.map((beatTrack) => {
         // playActiveBeats() optionally accepts "noteType" which defaults to "1/4"
         // notes, but we want to use eighth notes
-        beatTrack.playActiveBeats(this.get('bpm'), 1 / 8);
+        beatTrack.playActiveBeats(this.bpm, 1 / 8);
 
         // /* playActiveBeats() is a convenience method. For more control, you could do:
         // http://bradthemad.org/guitar/tempo_explanation.php */
@@ -75,7 +75,7 @@ export default Controller.extend({
     engageLudicrousMode() {
       this.set('bpm', 1000000);
 
-      this.get('beatTracks').map((beatTrack) => {
+      this.beatTracks.map((beatTrack) => {
         beatTrack.get('beats').map((beat) => {
           beat.set('active', true);
         });
