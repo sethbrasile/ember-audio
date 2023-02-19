@@ -76,16 +76,7 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
    * @property _filters
    * @type {array|string}
    */
-  _filters: [
-    'lowpass',
-    'highpass',
-    'bandpass',
-    'lowshelf',
-    'highshelf',
-    'peaking',
-    'notch',
-    'allpass',
-  ],
+  _filters: null,
 
   /**
    * Initializes default connections on Oscillator instantiation. Runs `on('init')`.
@@ -94,7 +85,6 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
    * @method _initConnections
    */
   _initConnections: on('init', function () {
-    const filters = this._filters;
     const bufferSource = this._createBufferSource();
     const gain = this._createGainNode();
     const panner = this._createPannerNode();
@@ -103,8 +93,21 @@ const Oscillator = EmberObject.extend(Connectable, Playable, {
     // always start with source
     const connections = A([bufferSource]);
 
+    if (!this._filters) {
+      this._filters = [
+        'lowpass',
+        'highpass',
+        'bandpass',
+        'lowshelf',
+        'highshelf',
+        'peaking',
+        'notch',
+        'allpass',
+      ];
+    }
+
     // Add filters if they have been defined
-    filters.map((filterName) => {
+    this._filters.map((filterName) => {
       const filterIsDefined = this.get(filterName) !== null;
 
       if (filterIsDefined) {

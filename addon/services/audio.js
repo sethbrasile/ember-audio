@@ -689,7 +689,7 @@ export default Service.extend({
     }
 
     for (let noteName in notes) {
-      if (notes.hasOwnProperty(noteName)) {
+      if (Object.prototype.hasOwnProperty.call(notes, noteName)) {
         // Transform base64 note value to Uint8Array
         const noteValue = base64ToUint8(notes[noteName]);
 

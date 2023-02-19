@@ -1,10 +1,9 @@
 import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/template';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import layout from '../templates/components/mp3-player';
 
 export default Component.extend({
-  tagName: '',
   layout,
 
   percentPlayed: computed('track.percentPlayed', function () {

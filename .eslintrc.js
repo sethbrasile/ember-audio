@@ -25,6 +25,19 @@ module.exports = {
     'ember/no-mixins': 0,
     'ember/no-get': 0,
     'ember/no-observers': 0,
+    'ember/no-actions-hash': 0,
+    'ember/avoid-leaking-state-in-ember-objects': [
+      'error',
+      [
+        // The audio service is a singleton. This will be cleaned up via proper classes.
+        'audioContext',
+        '_sounds',
+        '_samplers',
+        '_fonts',
+        '_tracks',
+        '_beatTracks',
+      ],
+    ],
   },
   overrides: [
     // node files

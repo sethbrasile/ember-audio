@@ -8,11 +8,15 @@ export default Controller.extend({
   audio: service(),
   oscillator: null,
   padSize: 300,
-  range: { min: 100, max: 400 },
+  range: null,
 
   initOscillator: on('init', function () {
     const oscillator = this.audio.createOscillator({ type: 'square' });
     this.set('oscillator', oscillator);
+
+    if (!this.range) {
+      this.range = { min: 100, max: 400 };
+    }
   }),
 
   frequency: computed('oscillator.frequency', function () {
@@ -21,6 +25,8 @@ export default Controller.extend({
     if (frequency) {
       return frequency.toFixed();
     }
+
+    return null;
   }),
 
   gain: computed('oscillator.gain', function () {
