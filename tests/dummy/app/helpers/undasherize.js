@@ -1,7 +1,7 @@
-import Helper from '@ember/component/helper';
+import { helper } from '@ember/component/helper';
 
-export function undasherize(params) {
-  return params[0].split('-').join(' ');
+function undasherize([input]) {
+  return input.split('-').join(' ');
 }
 
-export default Helper.helper(undasherize);
+export default helper(undasherize);
