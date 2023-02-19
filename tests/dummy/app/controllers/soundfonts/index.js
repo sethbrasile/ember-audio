@@ -7,9 +7,11 @@ export default Controller.extend({
   isLoading: true,
   notes: null,
 
-  initSoundFont: on('init', function() {
+  initSoundFont: on('init', function () {
     // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
-    this.audio.load('/ember-audio/piano.js').asFont('piano')
+    this.audio
+      .load('/ember-audio/piano.js')
+      .asFont('piano')
       .then((font) => {
         // Slicing just so the whole keyboard doesn't show up on the screen
         this.set('notes', font.get('notes').slice(39, 51));
@@ -20,6 +22,6 @@ export default Controller.extend({
   actions: {
     playPianoNote(note) {
       note.play();
-    }
-  }
+    },
+  },
 });

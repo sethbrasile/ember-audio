@@ -14,7 +14,7 @@ export default Controller.extend({
         band called "Bringing Down Broadway" and this is one of our songs.
         This is from around 2005 (I'm sooooo oooooollldddd).
         The album is titled, "It's all Gone South", I recorded and produced it, and it
-        was a commercial failure. I think it's awesome.`
+        was a commercial failure. I think it's awesome.`,
     },
     {
       name: 'do-wah-diddy',
@@ -25,8 +25,8 @@ export default Controller.extend({
         being old). David is "rapping" and I'm singing. Please
         keep in mind that this is from a time when "autotune" was in it's
         infancy so the suckiness was par for the course. Also, "autotune" is for assholes.
-        When you can't sing, you should just suck it up and sound bad.`
-    }
+        When you can't sing, you should just suck it up and sound bad.`,
+    },
   ],
 
   actions: {
@@ -37,11 +37,13 @@ export default Controller.extend({
       this.set('trackIsLoading', true);
       audio.pauseAll();
 
-      audio.load(`/ember-audio/${track.name}.mp3`).asTrack(track.name)
+      audio
+        .load(`/ember-audio/${track.name}.mp3`)
+        .asTrack(track.name)
         .then((trackInstance) => {
           this.set('selectedTrack.trackInstance', trackInstance);
           this.set('trackIsLoading', false);
         });
-    }
-  }
+    },
+  },
 });

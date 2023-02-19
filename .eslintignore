@@ -15,6 +15,7 @@
 !.*
 .*/
 .eslintcache
+/tests/dummy/public/piano.js
 
 # ember-try
 /.node_modules.ember-try/

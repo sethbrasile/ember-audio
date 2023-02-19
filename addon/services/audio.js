@@ -8,13 +8,13 @@ import {
   BeatTrack,
   Sampler,
   Oscillator,
-  Font
+  Font,
 } from 'ember-audio';
 import {
   sortNotes,
   base64ToUint8,
   mungeSoundFont,
-  frequencyMap
+  frequencyMap,
 } from 'ember-audio/utils';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -24,9 +24,11 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 if (!window.AudioContext && window.webkitAudioContext) {
   const oldFunction = AudioContext.prototype.decodeAudioData;
 
-  AudioContext.prototype.decodeAudioData = function(arraybuffer) {
-    return new Promise((resolve, reject) => oldFunction.call(this, arraybuffer, resolve, reject));
-  }
+  AudioContext.prototype.decodeAudioData = function (arraybuffer) {
+    return new Promise((resolve, reject) =>
+      oldFunction.call(this, arraybuffer, resolve, reject)
+    );
+  };
 
   StereoPannerNode.polyfill();
 }
@@ -38,9 +40,7 @@ if (!window.AudioContext && window.webkitAudioContext) {
  * @module AudioService
  */
 
-const {
-  error, warn
-} = console;
+const { error, warn } = console;
 
 /**
  * A {{#crossLink "Ember.Service"}}Service{{/crossLink}} that provides methods
@@ -262,7 +262,7 @@ export default Service.extend({
         const response = await fetch(src);
         const json = await response.json();
         return createNoteArray(json);
-      }
+      },
     };
   },
 
@@ -304,7 +304,7 @@ export default Service.extend({
    *
    * @return {Sound} The created white noise Sound instance.
    */
-  createWhiteNoise(opts={}) {
+  createWhiteNoise(opts = {}) {
     const audioContext = this.audioContext;
     const bufferSize = audioContext.sampleRate;
     const audioBuffer = audioContext.createBuffer(1, bufferSize, bufferSize);
@@ -327,7 +327,7 @@ export default Service.extend({
    *
    * @return {Oscillator} The created Oscillator instance.
    */
-  createOscillator(opts={}) {
+  createOscillator(opts = {}) {
     const audioContext = this.audioContext;
     return Oscillator.create(Object.assign(opts, { audioContext }));
   },
@@ -413,8 +413,8 @@ export default Service.extend({
   },
 
   /**
-  * Gets all instances of requested type and calls
-  * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each.
+   * Gets all instances of requested type and calls
+   * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each.
    *
    * @public
    * @method stopAll
@@ -422,7 +422,7 @@ export default Service.extend({
    * @param {string} type='tracks' The type of the register that you wish
    * to stop all instances of. Can be `'tracks'`, or `'sounds'`.
    */
-  stopAll(type='tracks') {
+  stopAll(type = 'tracks') {
     for (let sound of this.get(`_${type}`).values()) {
       sound.stop();
     }
@@ -542,12 +542,20 @@ export default Service.extend({
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        const sound = this._createSoundFor(type, { audioBuffer, audioContext, name });
+        const sound = this._createSoundFor(type, {
+          audioBuffer,
+          audioContext,
+          name,
+        });
         register.set(name, sound);
         return sound;
       })
       .catch((err) => {
-        error('ember-audio:', err, 'This error was probably caused by a 404 or an incompatible audio file type');
+        error(
+          'ember-audio:',
+          err,
+          'This error was probably caused by a 404 or an incompatible audio file type'
+        );
       });
   },
 
@@ -583,28 +591,35 @@ export default Service.extend({
 
     // If the font already exists, no need to load it up again.
     if (fontsRegister.has(instrumentName)) {
-      warn(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you explicitly remove it with "audioService.removeFromRegister('font', '${instrumentName}')"`);
+      warn(
+        `ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you explicitly remove it with "audioService.removeFromRegister('font', '${instrumentName}')"`
+      );
       return resolve(fontsRegister.get(instrumentName));
     }
 
     // Create a Font instance and place it in the _fonts register
     fontsRegister.set(instrumentName, Font.create());
 
-    return fetch(src).then((response) => response.text())
+    return (
+      fetch(src)
+        .then((response) => response.text())
 
-      // Strip extraneous stuff from soundfont (which is currently a long string)
-      // and split by line into an array
-      .then(mungeSoundFont)
+        // Strip extraneous stuff from soundfont (which is currently a long string)
+        // and split by line into an array
+        .then(mungeSoundFont)
 
-      // Decode base64 to audio data, splitting each line from the sound font
-      // into a key and value like, [noteName, decodedAudio]
-      .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
+        // Decode base64 to audio data, splitting each line from the sound font
+        // into a key and value like, [noteName, decodedAudio]
+        .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
 
-      // Create a Note instance for each note from the decoded audio data.
-      // Also sets the note on the corresponding font in the _fonts register.
-      .then((keyValuePairs) => this._createNoteObjectsForFont(keyValuePairs, instrumentName))
+        // Create a Note instance for each note from the decoded audio data.
+        // Also sets the note on the corresponding font in the _fonts register.
+        .then((keyValuePairs) =>
+          this._createNoteObjectsForFont(keyValuePairs, instrumentName)
+        )
 
-      .catch((err) => error('ember-audio:', err));
+        .catch((err) => error('ember-audio:', err))
+    );
   },
 
   /**
@@ -675,7 +690,6 @@ export default Service.extend({
 
     for (let noteName in notes) {
       if (notes.hasOwnProperty(noteName)) {
-
         // Transform base64 note value to Uint8Array
         const noteValue = base64ToUint8(notes[noteName]);
 
@@ -716,16 +730,16 @@ export default Service.extend({
     const font = fontsRegister.get(instrumentName);
 
     const notes = audioData.map((note) => {
-      const [ identifier, audioBuffer ] = note;
+      const [identifier, audioBuffer] = note;
       return SampledNote.create({
         identifier,
         audioBuffer,
-        audioContext
+        audioContext,
       });
     });
 
     font.set('notes', sortNotes(notes));
 
     return font;
-  }
+  },
 });

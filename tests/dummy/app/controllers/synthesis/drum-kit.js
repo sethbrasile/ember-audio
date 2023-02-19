@@ -7,11 +7,11 @@ export default Controller.extend({
   audio: service(),
   drums: null,
 
-  initDrums: on('init', function() {
+  initDrums: on('init', function () {
     this.set('drums', [
       this._createKick(),
       this._createSnare(),
-      this._createHihat()
+      this._createHihat(),
     ]);
   }),
 
@@ -31,7 +31,7 @@ export default Controller.extend({
     const noise = this._createSnareNoise();
     const oscillator = this._createSnareOscillator();
 
-    return LayeredSound.create({ name: 'snare', sounds: [ noise, oscillator ] });
+    return LayeredSound.create({ name: 'snare', sounds: [noise, oscillator] });
   },
 
   _createSnareOscillator() {
@@ -48,7 +48,10 @@ export default Controller.extend({
 
   _createSnareNoise() {
     const audio = this.audio;
-    const noise = audio.createWhiteNoise({ name: 'snare', highpassFrequency: 1000 });
+    const noise = audio.createWhiteNoise({
+      name: 'snare',
+      highpassFrequency: 1000,
+    });
     const gain = noise.getConnection('gain');
 
     gain.onPlayRamp('gain').from(1).to(0.001).in(0.1);
@@ -58,7 +61,7 @@ export default Controller.extend({
 
   _createHihat() {
     // http://joesul.li/van/synthesizing-hi-hats/
-    const ratios = [ 2, 3, 4.16, 5.43, 6.79, 8.21 ];
+    const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
 
     const oscillators = ratios
       .map(this._createHihatOscillator.bind(this))
@@ -74,7 +77,7 @@ export default Controller.extend({
       type: 'square',
       highpass: { frequency: 7000 },
       bandpass: { frequency: 10000 },
-      frequency: fundamental * ratio
+      frequency: fundamental * ratio,
     });
   },
 
@@ -117,6 +120,6 @@ export default Controller.extend({
 
     playSnareCrack() {
       this._createSnareNoise().playFor(0.1);
-    }
-  }
+    },
+  },
 });

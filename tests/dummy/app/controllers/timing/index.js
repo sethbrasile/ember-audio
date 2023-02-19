@@ -5,7 +5,7 @@ import Controller from '@ember/controller';
 export default Controller.extend({
   audio: service(),
 
-  initSound: on('init', function() {
+  initSound: on('init', function () {
     this.audio.load('/ember-audio/Db5.mp3').asSound('delayed-note');
   }),
 
@@ -18,6 +18,6 @@ export default Controller.extend({
 
     playInOneSecond2() {
       this.audio.getSound('delayed-note').playIn(1);
-    }
-  }
+    },
+  },
 });

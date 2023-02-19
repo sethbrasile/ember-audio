@@ -129,7 +129,7 @@ export default Mixin.create({
    * @protected
    * @method _initConnections
    */
-  _initConnections: on('init', function() {
+  _initConnections: on('init', function () {
     const bufferSource = Connection.create({
       name: 'audioSource',
       createdOnPlay: true,
@@ -138,37 +138,37 @@ export default Mixin.create({
       onPlaySetAttrsOnNode: [
         {
           attrNameOnNode: 'buffer',
-          relativePath: 'audioBuffer'
-        }
-      ]
+          relativePath: 'audioBuffer',
+        },
+      ],
     });
 
     const gain = Connection.create({
       name: 'gain',
       source: 'audioContext',
-      createCommand: 'createGain'
+      createCommand: 'createGain',
     });
 
     const panner = Connection.create({
       name: 'panner',
       source: 'audioContext',
-      createCommand: 'createStereoPanner'
+      createCommand: 'createStereoPanner',
     });
 
     const destination = Connection.create({
       name: 'destination',
-      path: 'audioContext.destination'
+      path: 'audioContext.destination',
     });
 
-    this.set('connections', A([ bufferSource, gain, panner, destination ]));
+    this.set('connections', A([bufferSource, gain, panner, destination]));
   }),
 
   /*
-  * Note about _watchConnectionChanges:
-  * Yeah yeah yeah.. observers are bad. Making the connections array a computed
-  * property doesn't work very well because complete control over when it
-  * recalculates is needed.
-  */
+   * Note about _watchConnectionChanges:
+   * Yeah yeah yeah.. observers are bad. Making the connections array a computed
+   * property doesn't work very well because complete control over when it
+   * recalculates is needed.
+   */
 
   /**
    * Observes the connections array and runs wireConnections each time it
@@ -177,7 +177,7 @@ export default Mixin.create({
    * @private
    * @method _watchConnectionChanges
    */
-  _watchConnectionChanges: observer('connections.[]', function() {
+  _watchConnectionChanges: observer('connections.[]', function () {
     this.wireConnections();
   }),
 
@@ -220,7 +220,8 @@ export default Mixin.create({
    * created.
    */
   _createNode(connection) {
-    const { path, name, createdOnPlay, source, createCommand, node } = connection;
+    const { path, name, createdOnPlay, source, createCommand, node } =
+      connection;
 
     if (node && !createdOnPlay) {
       // The node is already created and doesn't need to be created again
@@ -230,7 +231,9 @@ export default Mixin.create({
     } else if (createCommand && source) {
       connection.node = this.get(source)[createCommand]();
     } else if (!connection.node) {
-      throw new EmberError(`ember-audio: The ${name} connection is not configured correctly. Please fix this connection.`);
+      throw new EmberError(
+        `ember-audio: The ${name} connection is not configured correctly. Please fix this connection.`
+      );
     }
 
     return connection;
@@ -250,10 +253,10 @@ export default Mixin.create({
    * attrs set.
    */
   _setAttrsOnNode(connection) {
-
     connection.get('onPlaySetAttrsOnNode').map((attr) => {
       const { attrNameOnNode, relativePath, value } = attr;
-      const attrValue = relativePath && this.get(relativePath) ? this.get(relativePath) : value;
+      const attrValue =
+        relativePath && this.get(relativePath) ? this.get(relativePath) : value;
 
       if (connection.node && attrNameOnNode && attrValue) {
         set(connection.node, attrNameOnNode, attrValue);
@@ -269,30 +272,30 @@ export default Mixin.create({
   },
 
   /**
-  * Gets a Connection instance's `onPlaySetAttrsOnNode` and sets them on it's
-  * node.
-  *
-  * @private
-  * @method _setConnectionValues
-  *
-  * @param {Connection} connection The Connection instance that needs it's
-  * node's attrs set.
-  *
-  * @param {string} attr The attr that needs it's values set. By default, the
-  * method called to set this attr's value is identical in name, but the word
-  * "Values" is singularized. In the example, `someKey` is a key that
-  * comes from `onPlaySetAttrsOnNode`.
-  *
-  * @example
-  *   // this
-  *   this._setConnectionValues(connection, 'setValuesAtTime');
-  *   // ends up like
-  *   connection.node.someKey.setValueAtTime(value, time);
-  *
-  * @param {string} optionalMethodKey Optionally specifies the method which
-  * should be called to set the attr. This would override the `setValueAtTime
-  * method in the example.
-  */
+   * Gets a Connection instance's `onPlaySetAttrsOnNode` and sets them on it's
+   * node.
+   *
+   * @private
+   * @method _setConnectionValues
+   *
+   * @param {Connection} connection The Connection instance that needs it's
+   * node's attrs set.
+   *
+   * @param {string} attr The attr that needs it's values set. By default, the
+   * method called to set this attr's value is identical in name, but the word
+   * "Values" is singularized. In the example, `someKey` is a key that
+   * comes from `onPlaySetAttrsOnNode`.
+   *
+   * @example
+   *   // this
+   *   this._setConnectionValues(connection, 'setValuesAtTime');
+   *   // ends up like
+   *   connection.node.someKey.setValueAtTime(value, time);
+   *
+   * @param {string} optionalMethodKey Optionally specifies the method which
+   * should be called to set the attr. This would override the `setValueAtTime
+   * method in the example.
+   */
   _setConnectionValues(connection, attr, optionalMethodKey) {
     const currentTime = this.get('audioContext.currentTime');
 
@@ -337,5 +340,5 @@ export default Mixin.create({
     }
 
     return currentNode;
-  }
+  },
 });

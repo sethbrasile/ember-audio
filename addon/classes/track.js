@@ -13,7 +13,6 @@ import { createTimeObject } from 'ember-audio/utils';
  * @todo move play override to _play so that all super.play methods work
  */
 const Track = Sound.extend({
-
   /**
    * Computed property. Value is an object containing the current play position
    * of the audioBuffer in three formats. The three
@@ -34,11 +33,11 @@ const Track = Sound.extend({
    * @property position
    * @type {object}
    */
-  position: computed('startOffset', function() {
+  position: computed('startOffset', function () {
     const offset = this.startOffset;
     const min = Math.floor(offset / 60);
-    const sec = offset - (min * 60);
-    return createTimeObject(offset, min, sec)
+    const sec = offset - min * 60;
+    return createTimeObject(offset, min, sec);
   }),
 
   /**
@@ -49,7 +48,7 @@ const Track = Sound.extend({
    * @property percentPlayed
    * @type {number}
    */
-  percentPlayed: computed('duration', 'startOffset', function() {
+  percentPlayed: computed('duration.raw', 'startOffset', function () {
     const ratio = this.startOffset / this.get('duration.raw');
     return ratio * 100;
   }),
@@ -77,7 +76,7 @@ const Track = Sound.extend({
     if (this.isPlaying) {
       const node = this.getNodeFrom('audioSource');
 
-      node.onended = function() {};
+      node.onended = function () {};
       node.stop();
       this.set('isPlaying', false);
     }
@@ -94,7 +93,7 @@ const Track = Sound.extend({
     this.set('startOffset', 0);
 
     if (this.isPlaying) {
-      this.getNodeFrom('audioSource').onended = function() {};
+      this.getNodeFrom('audioSource').onended = function () {};
       this._super();
     }
   },
@@ -114,13 +113,16 @@ const Track = Sound.extend({
 
     const animate = () => {
       if (this.isPlaying) {
-        this.set('startOffset', startOffset + ctx.currentTime - startedPlayingAt);
+        this.set(
+          'startOffset',
+          startOffset + ctx.currentTime - startedPlayingAt
+        );
         requestAnimationFrame(animate);
       }
     };
 
     requestAnimationFrame(animate);
-  }
+  },
 });
 
 export default Track;

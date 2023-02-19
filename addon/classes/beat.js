@@ -25,7 +25,6 @@ import { later } from '@ember/runloop';
  * @todo add playAt
  */
 const Beat = EmberObject.extend({
-
   /**
    * If `active` is `true`, all methods of play will cause this instance to play.
    * If `active` is `false`, the `playIfActive()` and `ifActivePlayIn()`
@@ -96,7 +95,7 @@ const Beat = EmberObject.extend({
    * @param {number} offset Number of seconds from "now" that the audio should
    * play.
    */
-  playIn(offset=0) {
+  playIn(offset = 0) {
     const msOffset = offset * 1000;
 
     this._parentPlayIn(offset);
@@ -120,7 +119,7 @@ const Beat = EmberObject.extend({
    * @param {number} offset Number of seconds from "now" that the audio should
    * play.
    */
-  ifActivePlayIn(offset=0) {
+  ifActivePlayIn(offset = 0) {
     const msOffset = offset * 1000;
 
     if (this.active) {
@@ -187,7 +186,7 @@ const Beat = EmberObject.extend({
   _markCurrentTimePlaying() {
     this.set('currentTimeIsPlaying', true);
     later(() => this.set('currentTimeIsPlaying', false), this.duration);
-  }
+  },
 });
 
 export default Beat;

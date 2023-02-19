@@ -9,13 +9,12 @@ export default Controller.extend({
   drums: A(),
   isLoading: true,
 
-  initBeats: on('init', function() {
+  initBeats: on('init', function () {
     all([
       this._loadSamplerFor('kick'),
       this._loadSamplerFor('snare'),
-      this._loadSamplerFor('hihat')
-    ])
-    .then(() => this.set('isLoading', false));
+      this._loadSamplerFor('hihat'),
+    ]).then(() => this.set('isLoading', false));
   }),
 
   _loadSamplerFor(name) {
@@ -23,19 +22,22 @@ export default Controller.extend({
     const drums = [
       `/ember-audio/drum-samples/${name}1.wav`,
       `/ember-audio/drum-samples/${name}2.wav`,
-      `/ember-audio/drum-samples/${name}3.wav`
+      `/ember-audio/drum-samples/${name}3.wav`,
     ];
 
     // If name === 'kick', this creates a Sampler instance called
     // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
-    return this.audio.load(drums).asSampler(name).then((drum) => {
-      this.drums.pushObject(drum);
-    });
+    return this.audio
+      .load(drums)
+      .asSampler(name)
+      .then((drum) => {
+        this.drums.pushObject(drum);
+      });
   },
 
   actions: {
     playDrum(drum) {
       drum.play();
-    }
-  }
+    },
+  },
 });

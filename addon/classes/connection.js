@@ -18,7 +18,6 @@ import { on } from '@ember/object/evented';
  * @class Connection
  */
 const Connection = EmberObject.extend({
-
   /**
    * The name of the connection. This is the name that can be used to
    * get an AudioNode instance via the
@@ -72,22 +71,22 @@ const Connection = EmberObject.extend({
   source: null,
 
   /**
-  * If `source` is specified, this method will be called on the object that was
-  * retrieved from `source`. The value returned from this method is set on the
-  * `node` property.
-  *
-  * @example
-  *     // results in the `node` property being created like:
-  *     // this.get('audioContext').createGain();
-  *     {
-  *       source: 'audioContext'
-  *       createCommand: 'createGain'
-  *     }
-  *
-  * @public
-  * @property createCommand
-  * @type {string}
-  */
+   * If `source` is specified, this method will be called on the object that was
+   * retrieved from `source`. The value returned from this method is set on the
+   * `node` property.
+   *
+   * @example
+   *     // results in the `node` property being created like:
+   *     // this.get('audioContext').createGain();
+   *     {
+   *       source: 'audioContext'
+   *       createCommand: 'createGain'
+   *     }
+   *
+   * @public
+   * @property createCommand
+   * @type {string}
+   */
   createCommand: null,
 
   /**
@@ -296,7 +295,7 @@ const Connection = EmberObject.extend({
             startingValues.removeObject(startValue);
             valuesAtTime.pushObject({ key, value, startTime });
           },
-          endingAt(endTime, type='exponential') {
+          endingAt(endTime, type = 'exponential') {
             startingValues.removeObject(startValue);
 
             switch (type) {
@@ -307,9 +306,9 @@ const Connection = EmberObject.extend({
                 linearValues.pushObject({ key, value, endTime });
                 break;
             }
-          }
+          },
         };
-      }
+      },
     };
   },
 
@@ -342,11 +341,11 @@ const Connection = EmberObject.extend({
               in(endTime) {
                 onPlaySet(key).to(startValue);
                 onPlaySet(key).to(endValue).endingAt(endTime);
-              }
+              },
             };
-          }
+          },
         };
-      }
+      },
     };
   },
 
@@ -357,13 +356,13 @@ const Connection = EmberObject.extend({
    * @private
    * @method _initArrays
    */
-  _initArrays: on('init', function() {
+  _initArrays: on('init', function () {
     const arrays = [
       'onPlaySetAttrsOnNode',
       'exponentialRampToValuesAtTime',
       'linearRampToValuesAtTime',
       'setValuesAtTime',
-      'startingValues'
+      'startingValues',
     ];
 
     arrays.map((name) => {
@@ -371,7 +370,7 @@ const Connection = EmberObject.extend({
         this.set(name, A());
       }
     });
-  })
+  }),
 });
 
 export default Connection;

@@ -12,7 +12,7 @@ export default Controller.extend({
   audio: service(),
   oscillators: null, // Put oscillators here after they're created
 
-  initSynth: on('init', function() {
+  initSynth: on('init', function () {
     const audio = this.audio;
 
     // Outputs an array of all the notes on a standard "western" piano
@@ -31,7 +31,7 @@ export default Controller.extend({
         // Default type is 'sine'
         type: 'square',
         // Oscillator instances need `audioContext` in order to make sound
-        audioContext: audio.get('audioContext')
+        audioContext: audio.get('audioContext'),
       });
     });
 
@@ -47,6 +47,6 @@ export default Controller.extend({
       if (note.get('isPlaying')) {
         note.stop();
       }
-    }
-  }
+    },
+  },
 });

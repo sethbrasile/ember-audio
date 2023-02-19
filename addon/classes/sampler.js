@@ -14,7 +14,6 @@ import EmberObject from '@ember/object';
  * @todo loop
  */
 const Sampler = EmberObject.extend({
-
   /**
    * Determines the gain applied to each sample.
    *
@@ -147,11 +146,11 @@ const Sampler = EmberObject.extend({
    * @private
    * @method _initSounds
    */
-  _initSounds: on('init', function() {
+  _initSounds: on('init', function () {
     if (!this.sounds) {
       this.set('sounds', new Set());
     }
-  })
+  }),
 });
 
 export default Sampler;

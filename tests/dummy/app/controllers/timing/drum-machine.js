@@ -9,13 +9,12 @@ export default Controller.extend({
   isLoading: true,
   bpm: 120,
 
-  initBeats: on('init', function() {
+  initBeats: on('init', function () {
     all([
       this._loadBeatTrackFor('kick'),
       this._loadBeatTrackFor('snare'),
-      this._loadBeatTrackFor('hihat')
-    ])
-    .then((beatTracks) => {
+      this._loadBeatTrackFor('hihat'),
+    ]).then((beatTracks) => {
       beatTracks.map((beatTrack) => {
         const name = beatTrack.get('name');
 
@@ -39,11 +38,13 @@ export default Controller.extend({
   }),
 
   _loadBeatTrackFor(name) {
-    return this.audio.load([
-      `/ember-audio/drum-samples/${name}1.wav`,
-      `/ember-audio/drum-samples/${name}2.wav`,
-      `/ember-audio/drum-samples/${name}3.wav`
-    ]).asBeatTrack(name);
+    return this.audio
+      .load([
+        `/ember-audio/drum-samples/${name}1.wav`,
+        `/ember-audio/drum-samples/${name}2.wav`,
+        `/ember-audio/drum-samples/${name}3.wav`,
+      ])
+      .asBeatTrack(name);
   },
 
   actions: {
@@ -80,6 +81,6 @@ export default Controller.extend({
           beat.set('active', true);
         });
       });
-    }
-  }
+    },
+  },
 });

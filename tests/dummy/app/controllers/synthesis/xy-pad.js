@@ -10,12 +10,12 @@ export default Controller.extend({
   padSize: 300,
   range: { min: 100, max: 400 },
 
-  initOscillator: on('init', function() {
+  initOscillator: on('init', function () {
     const oscillator = this.audio.createOscillator({ type: 'square' });
     this.set('oscillator', oscillator);
   }),
 
-  frequency: computed('oscillator.frequency', function() {
+  frequency: computed('oscillator.frequency', function () {
     const frequency = this.get('oscillator.frequency');
 
     if (frequency) {
@@ -23,7 +23,7 @@ export default Controller.extend({
     }
   }),
 
-  gain: computed('oscillator.gain', function() {
+  gain: computed('oscillator.gain', function () {
     const gain = this.get('oscillator.gain');
 
     if (gain) {
@@ -66,6 +66,6 @@ export default Controller.extend({
 
       oscillator.update('frequency', frequency);
       oscillator.update('gain', gain);
-    }
-  }
+    },
+  },
 });

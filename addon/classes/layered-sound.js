@@ -94,11 +94,11 @@ const LayeredSound = EmberObject.extend({
    * @private
    * @method _initSounds
    */
-  _initSounds: on('init', function() {
+  _initSounds: on('init', function () {
     if (!this.sounds) {
       this.set('sounds', A());
     }
-  })
+  }),
 });
 
 export default LayeredSound;

@@ -10,7 +10,6 @@ import EmberObject from '@ember/object';
  * @class Font
  */
 const Font = EmberObject.extend({
-
   /**
    * Acts as a register for all the notes in the font. If null on instantiation,
    * set to `A()` via `_initNotes`.
@@ -55,11 +54,11 @@ const Font = EmberObject.extend({
    * @private
    * @method _initNotes
    */
-  _initNotes: on('init', function() {
+  _initNotes: on('init', function () {
     if (!this.notes) {
       this.set('notes', A());
     }
-  })
+  }),
 });
 
 export default Font;

@@ -19,7 +19,6 @@ import { frequencyMap } from 'ember-audio/utils';
  * @class MusicalIdentity
  */
 export default Mixin.create({
-
   /**
    * For note `Ab5`, this would be `A`.
    *
@@ -55,7 +54,7 @@ export default Mixin.create({
    * @property name
    * @type {string}
    */
-  name: computed('letter', 'accidental', function() {
+  name: computed('letter', 'accidental', function () {
     const accidental = this.accidental;
     const letter = this.letter;
 
@@ -92,7 +91,7 @@ export default Mixin.create({
           return value;
         }
       }
-    }
+    },
   }),
 
   /**
@@ -122,7 +121,7 @@ export default Mixin.create({
     },
 
     set(key, value) {
-      const [ letter ] = value;
+      const [letter] = value;
       const octave = value[2] || value[1];
       let accidental;
 
@@ -133,6 +132,6 @@ export default Mixin.create({
       this.setProperties({ letter, octave, accidental });
 
       return value;
-    }
-  })
+    },
+  }),
 });

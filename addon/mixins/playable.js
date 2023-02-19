@@ -193,5 +193,5 @@ export default Mixin.create({
     } else {
       later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);
     }
-  }
+  },
 });
