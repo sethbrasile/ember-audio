@@ -5,7 +5,7 @@
 
 setupcontainer: &setupcontainer
   docker:
-    - image: circleci/node:6-browsers
+    - image: circleci/node:14-browsers
   working_directory: ~/repo
 
 teststeps: &teststeps
@@ -15,7 +15,8 @@ teststeps: &teststeps
       - v1-dependencies-{{ checksum "package.json" }}
       # fallback to using the latest cache if no exact match is found
       - v1-dependencies-
-  - run: yarn install --frozen-lockfile --non-interactive
+  - run: npm ci
+  - run: cat /home/circleci/.npm/_logs/*
   - save_cache:
       paths:
         - node_modules
@@ -29,7 +30,7 @@ lintsteps: &lintsteps
       - v1-dependencies-{{ checksum "package.json" }}
       # fallback to using the latest cache if no exact match is found
       - v1-dependencies-
-  - run: yarn install --frozen-lockfile --non-interactive
+  - run: npm ci
   - save_cache:
       paths:
         - node_modules
@@ -96,7 +97,7 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - run: yarn install --frozen-lockfile --non-interactive
+      - run: npm ci
       - save_cache:
           paths:
             - node_modules
