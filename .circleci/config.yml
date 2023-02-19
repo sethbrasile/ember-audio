@@ -16,7 +16,8 @@ teststeps: &teststeps
       # fallback to using the latest cache if no exact match is found
       - v1-dependencies-
   - run: npm ci
-  - run: cat /home/circleci/.npm/_logs/*
+  - store_artifacts:
+      path: /home/circleci/.npm/_logs
   - save_cache:
       paths:
         - node_modules
