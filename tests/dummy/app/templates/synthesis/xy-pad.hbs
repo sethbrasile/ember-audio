@@ -1,12 +1,7 @@
 <div class="content">
   <h2>XY Pad</h2>
 
-  {{xy-pad
-    padSize=padSize
-    updateCoordinates=(action "adjustSynthParams")
-    activate=(action "play")
-    deactivate=(action "stop")
-  }}
+  <XyPad @padSize={{padSize}} @updateCoordinates={{action "adjustSynthParams"}} @activate={{action "play"}} @deactivate={{action "stop"}} />
 
   <p>Frequency: {{frequency}}</p>
   <p>Gain: {{gain}}</p>

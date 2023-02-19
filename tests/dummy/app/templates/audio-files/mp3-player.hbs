@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  {{mp3-player track=selectedTrack.trackInstance loading=trackIsLoading}}
+  <Mp3Player @track={{selectedTrack.trackInstance}} @loading={{trackIsLoading}} />
 </div>
 
 <div class="content">
