@@ -31,6 +31,6 @@ export default function createTimeObject(raw, minutes, seconds) {
   return {
     raw,
     string: `${zeroify(minutes)}:${zeroify(seconds)}`,
-    pojo: { minutes, seconds }
-  }
+    pojo: { minutes, seconds },
+  };
 }

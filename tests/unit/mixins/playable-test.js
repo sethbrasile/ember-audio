@@ -25,85 +25,100 @@ const PlayableObject = EmberObject.extend(PlayableMixin, {
   _stop(time) {
     this.set('stopCalled', true);
     this.set('stopTime', time);
-  }
+  },
 });
 
-module('Unit | Mixin | playable', function() {
-  test('it exists', function(assert) {
+module('Unit | Mixin | playable', function () {
+  test('it exists', function (assert) {
     let subject = PlayableObject.create({ audioContext });
     assert.ok(subject);
   });
 
-  test('isPlaying exists and is false by default', function(assert) {
+  test('isPlaying exists and is false by default', function (assert) {
     let subject = PlayableObject.create({ audioContext });
-    assert.equal(subject.get('isPlaying'), false);
+    assert.false(subject.get('isPlaying'));
   });
 
-  test('play() calls _play with audioContext.currentTime', function(assert) {
+  test('play() calls _play with audioContext.currentTime', function (assert) {
     let subject = PlayableObject.create({ audioContext });
     subject.play();
-    assert.equal(subject.get('playTime'), audioContext.get('currentTime'));
+    assert.strictEqual(
+      subject.get('playTime'),
+      audioContext.get('currentTime')
+    );
   });
 
-  test('playAt() calls _play, directly passing time param', function(assert) {
+  test('playAt() calls _play, directly passing time param', function (assert) {
     let subject = PlayableObject.create({ audioContext });
     subject.playAt(120);
-    assert.equal(subject.get('playTime'), 120);
+    assert.strictEqual(subject.get('playTime'), 120);
   });
 
-  test('playIn() calls _play with seconds added to currentTime', function(assert) {
+  test('playIn() calls _play with seconds added to currentTime', function (assert) {
     let subject = PlayableObject.create({ audioContext });
     subject.playIn(5);
-    assert.equal(subject.get('playTime'), audioContext.get('currentTime') + 5);
+    assert.strictEqual(
+      subject.get('playTime'),
+      audioContext.get('currentTime') + 5
+    );
   });
 
-  test('playFor() calls play, and calls stopIn with seconds added to currentTime', function(assert) {
+  test('playFor() calls play, and calls stopIn with seconds added to currentTime', function (assert) {
     let subject = PlayableObject.create({ audioContext });
     subject.playFor(5);
-    assert.equal(subject.get('playTime'), audioContext.get('currentTime'));
-    assert.equal(subject.get('stopTime'), 115);
+    assert.strictEqual(
+      subject.get('playTime'),
+      audioContext.get('currentTime')
+    );
+    assert.strictEqual(subject.get('stopTime'), 115);
   });
 
-  test('playInAndStopAfter() calls playIn, and calls stopIn with seconds added to playIn time', function(assert) {
+  test('playInAndStopAfter() calls playIn, and calls stopIn with seconds added to playIn time', function (assert) {
     let subject = PlayableObject.create({ audioContext });
     let currentTime = audioContext.get('currentTime');
 
     subject.playInAndStopAfter(5, 10);
 
-    assert.equal(subject.get('playTime'), currentTime + 5);
-    assert.equal(subject.get('stopTime'), currentTime + 15);
+    assert.strictEqual(subject.get('playTime'), currentTime + 5);
+    assert.strictEqual(subject.get('stopTime'), currentTime + 15);
   });
 
-  test('stop() calls _stop with audioContext.currentTime', function(assert) {
+  test('stop() calls _stop with audioContext.currentTime', function (assert) {
     let subject = PlayableObject.create({ audioContext });
 
     subject.stop();
-    assert.equal(subject.get('stopTime'), audioContext.get('currentTime'));
+    assert.strictEqual(
+      subject.get('stopTime'),
+      audioContext.get('currentTime')
+    );
   });
 
-  test('stopIn() calls _stop with seconds added to currentTime', function(assert) {
+  test('stopIn() calls _stop with seconds added to currentTime', function (assert) {
     let subject = PlayableObject.create({ audioContext });
 
     subject.stopIn(5);
-    assert.equal(subject.get('stopTime'), audioContext.get('currentTime') + 5);
+    assert.strictEqual(
+      subject.get('stopTime'),
+      audioContext.get('currentTime') + 5
+    );
   });
 
-  test('stopAt() calls _stop, directly passing time param', function(assert) {
+  test('stopAt() calls _stop, directly passing time param', function (assert) {
     let subject = PlayableObject.create({ audioContext });
 
     subject.stopAt(120);
-    assert.equal(subject.get('stopTime'), 120);
+    assert.strictEqual(subject.get('stopTime'), 120);
   });
 
-  test('_stop calls stop() on audioSource, passing through time', function(assert) {
+  test('_stop calls stop() on audioSource, passing through time', function (assert) {
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin);
     let subject = Playable.create({ audioContext, audioBuffer });
 
     subject._stop(120);
-    assert.equal(subject.getNodeFrom('audioSource').get('stopTime'), 120);
+    assert.strictEqual(subject.getNodeFrom('audioSource').get('stopTime'), 120);
   });
 
-  test('_stop does not error if no audioSourceConnection.node', function(assert) {
+  test('_stop does not error if no audioSourceConnection.node', function (assert) {
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin);
     let subject = Playable.create({ audioContext, audioBuffer });
     subject.getConnection('audioSource').set('node', null);
@@ -112,7 +127,7 @@ module('Unit | Mixin | playable', function() {
     assert.ok(true);
   });
 
-  test('_stop sets isPlaying to false immediately if stopAt is equal to currentTime', function(assert) {
+  test('_stop sets isPlaying to false immediately if stopAt is equal to currentTime', function (assert) {
     assert.expect(1);
 
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin);
@@ -124,7 +139,7 @@ module('Unit | Mixin | playable', function() {
     assert.notOk(subject.get('isPlaying'));
   });
 
-  test('_stop sets isPlaying to false later if stopAt is in the future', function(assert) {
+  test('_stop sets isPlaying to false later if stopAt is in the future', function (assert) {
     assert.expect(2);
 
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin);
@@ -140,22 +155,25 @@ module('Unit | Mixin | playable', function() {
     });
   });
 
-  test('_play calls start() on audioSource, passing through time', function(assert) {
+  test('_play calls start() on audioSource, passing through time', function (assert) {
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin);
     let subject = Playable.create({ audioContext, audioBuffer });
 
     subject._play(120);
-    assert.equal(subject.getNodeFrom('audioSource').get('startTime'), 120);
+    assert.strictEqual(
+      subject.getNodeFrom('audioSource').get('startTime'),
+      120
+    );
   });
 
-  test('_play calls wireConnections()', function(assert) {
+  test('_play calls wireConnections()', function (assert) {
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin, {
       wireConnectionsCalled: false,
 
       wireConnections() {
         this._super();
         this.set('wireConnectionsCalled', true);
-      }
+      },
     });
 
     let subject = Playable.create({ audioContext, audioBuffer });
@@ -164,7 +182,7 @@ module('Unit | Mixin | playable', function() {
     assert.ok(subject.get('wireConnectionsCalled'));
   });
 
-  test('_play sets isPlaying to true immediately if playAt is equal to currentTime', function(assert) {
+  test('_play sets isPlaying to true immediately if playAt is equal to currentTime', function (assert) {
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin);
     let subject = Playable.create({ audioContext, audioBuffer });
 
@@ -172,7 +190,7 @@ module('Unit | Mixin | playable', function() {
     assert.ok(subject.get('isPlaying'));
   });
 
-  test('_play sets isPlaying to true if playAt is in the future', function(assert) {
+  test('_play sets isPlaying to true if playAt is in the future', function (assert) {
     assert.expect(2);
 
     let Playable = EmberObject.extend(PlayableMixin, ConnectableMixin);

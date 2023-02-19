@@ -73,7 +73,7 @@ export default Mixin.create({
    * properties are updated to reflect the provided frequency.
    *
    * @public
-   * @property
+   * @property frequency
    * @type {number}
    */
   frequency: computed('identifier', {

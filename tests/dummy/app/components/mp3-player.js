@@ -1,10 +1,10 @@
 import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/template';
-import $ from 'jquery';
 import Component from '@ember/component';
 import layout from '../templates/components/mp3-player';
 
 export default Component.extend({
+  tagName: '',
   layout,
 
   percentPlayed: computed('track.percentPlayed', function() {
@@ -36,7 +36,8 @@ export default Component.extend({
 
     changeVolume(e) {
       const height = e.target.offsetParent.offsetHeight;
-      const offset = e.pageY - $(e.target).parent().offset().top;
+      const parentOffset = e.target.parentNode.getBoundingClientRect().top + window.pageYOffset;
+      const offset = e.pageY - parentOffset - document.documentElement.clientTop
       const adjustedHeight = height * 0.8;
       const adjustedOffset = offset - ((height - adjustedHeight) / 2);
       const newGain = adjustedOffset / adjustedHeight;

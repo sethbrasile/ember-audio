@@ -14,7 +14,16 @@ import Oscillator from './oscillator';
 import SampledNote from './sampled-note';
 import LayeredSound from './layered-sound';
 
-export { Sound, Track, BeatTrack, Sampler, Oscillator, SampledNote, LayeredSound, Font };
+export {
+  Sound,
+  Track,
+  BeatTrack,
+  Sampler,
+  Oscillator,
+  SampledNote,
+  LayeredSound,
+  Font,
+};
 
 /**
  * Provides helper classes that represent musical concepts meant to be used by

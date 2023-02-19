@@ -13,7 +13,7 @@ import {
   octaveSort,
   extractOctaves,
   stripDuplicateOctaves,
-  createOctavesWithNotes
+  createOctavesWithNotes,
 } from './note-methods';
 
 /**
@@ -37,5 +37,5 @@ export {
   frequencyMap,
   exponentialRatio,
   withinRange,
-  createTimeObject
+  createTimeObject,
 };

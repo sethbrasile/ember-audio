@@ -9,5 +9,5 @@ export {
   Font,
   Track,
   Oscillator,
-  LayeredSound
+  LayeredSound,
 } from './classes';

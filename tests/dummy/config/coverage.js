@@ -1,3 +1,3 @@
 module.exports = {
-  useBabelInstrumenter: true
+  useBabelInstrumenter: true,
 };

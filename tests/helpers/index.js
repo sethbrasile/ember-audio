@@ -8,11 +8,6 @@ import {
 // test setup functions. This way, you can easily extend the setup that is
 // needed per test type.
 
-class MockAudioContext {
-  createBuffer(){}
-  decodeAudioData(){}
-}
-
 function setupApplicationTest(hooks, options) {
   upstreamSetupApplicationTest(hooks, options);
 

@@ -6,6 +6,6 @@ export default function noteFactory(letter, accidental, octave) {
     letter,
     accidental,
     octave,
-    audioContext: ContextMock.create()
+    audioContext: ContextMock.create(),
   });
 }

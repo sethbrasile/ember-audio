@@ -9,8 +9,18 @@ const NodeObject = EmberObject.extend({
   startTime: null,
   stopTime: null,
 
-  pan: { value: null },
-  gain: { value: null },
+  pan: null,
+  gain: null,
+
+  _init: on('init', function () {
+    if (!this.pan) {
+      this.pan = { value: null };
+    }
+
+    if (!this.gain) {
+      this.gain = { value: null };
+    }
+  }),
 
   connect(obj) {
     this.set('connectCalled', true);
@@ -25,7 +35,7 @@ const NodeObject = EmberObject.extend({
   stop(time) {
     this.set('stopTime', time);
     this.set('stopCalled', true);
-  }
+  },
 });
 
 const ContextMock = EmberObject.extend({
@@ -37,7 +47,7 @@ const ContextMock = EmberObject.extend({
   createBiqaudFilterCalled: false,
   createOscillatorCalled: false,
 
-  initDestination: on('init', function() {
+  initDestination: on('init', function () {
     this.destination = {};
   }),
 
@@ -54,7 +64,7 @@ const ContextMock = EmberObject.extend({
   createGain() {
     this.set('createGainCalled', true);
     return NodeObject.create({
-      gain: { value: 0.4 }
+      gain: { value: 0.4 },
     });
   },
 
@@ -75,7 +85,7 @@ const ContextMock = EmberObject.extend({
 
   decodeAudioData(data) {
     return new Promise((resolve) => resolve(data));
-  }
+  },
 });
 
 export default ContextMock;
