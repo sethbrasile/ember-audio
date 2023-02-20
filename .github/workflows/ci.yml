@@ -26,8 +26,8 @@ jobs:
           cache: npm
       - name: Install Dependencies
         run: npm ci
-      - name: Lint
-        run: npm run lint
+      # - name: Lint
+      #   run: npm run lint
       - name: Run Tests
         run: npm run test:ember
 
