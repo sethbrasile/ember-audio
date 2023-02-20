@@ -1,18 +1,26 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
 import Controller from '@ember/controller';
 import { Oscillator } from 'ember-audio';
 import { MusicalIdentity } from 'ember-audio/mixins';
+
 // TODO: xy pad with filters and plugins
 // By mixing the MusicalIdentity mixin into the Oscillator class, we get an
 // oscillator that is aware of it's frequency, letter, accidental, octave, etc...
-const MusicallyAwareOscillator = Oscillator.extend(MusicalIdentity);
+@classic
+class MusicallyAwareOscillator extends Oscillator.extend(MusicalIdentity) {}
 
-export default Controller.extend({
-  audio: service(),
-  oscillators: null, // Put oscillators here after they're created
+@classic
+export default class IndexController extends Controller {
+  @service
+  audio;
 
-  initSynth: on('init', function () {
+  oscillators = null; // Put oscillators here after they're created
+
+  @on('init')
+  initSynth() {
     const audio = this.audio;
 
     // Outputs an array of all the notes on a standard "western" piano
@@ -36,17 +44,17 @@ export default Controller.extend({
     });
 
     this.set('oscillators', oscillators);
-  }),
+  }
 
-  actions: {
-    startNote(note) {
-      note.play();
-    },
+  @action
+  startNote(note) {
+    note.play();
+  }
 
-    stopNote(note) {
-      if (note.get('isPlaying')) {
-        note.stop();
-      }
-    },
-  },
-});
+  @action
+  stopNote(note) {
+    if (note.get('isPlaying')) {
+      note.stop();
+    }
+  }
+}

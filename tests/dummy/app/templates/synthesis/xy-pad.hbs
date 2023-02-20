@@ -1,24 +1,26 @@
 <div class="content">
   <h2>XY Pad</h2>
 
-  <XyPad @padSize={{this.padSize}} @updateCoordinates={{action "adjustSynthParams"}} @activate={{action "play"}} @deactivate={{action "stop"}} />
+  <XyPad @padSize={{this.padSize}} @updateCoordinates={{this.adjustSynthParams}} @activate={{this.play}} @deactivate={{this.stop}} />
 
   <p>Frequency: {{this.frequency}}</p>
   <p>Gain: {{this.gain}}</p>
+  <p>padsize: {{this.padSize}}</p>
 </div>
 
 <p>Template</p>
 
 <CodeBlock @language="handlebars">
-  &#123;{xy-pad
-    padSize=padSize
-    updateCoordinates="adjustSynthParams"
-    activate="play"
-    deactivate="stop"
-  }}
+  {{'
+    <XyPad
+      @padSize={{this.padSize}}
+      @updateCoordinates={{action "adjustSynthParams" }}
+      @activate={{action "play" }}
+      @deactivate={{action "stop" }} />
 
-  &lt;p>Frequency: &#123;{frequency}}&lt;/p>
-  &lt;p>Gain: &#123;{gain}}&lt;/p>
+    <p>Frequency: {{frequency}}</p>
+    <p>Gain: {{gain}}</p>
+  '}}
 </CodeBlock>
 
 <p>Controller</p>
@@ -99,21 +101,23 @@
 </p>
 
 <CodeBlock @language="handlebars">
-  &lt;canvas
-    width=&#123;{padSize}}
-    height=&#123;{padSize}}
-    style="background-color: black;"
+  {{'
+    <canvas
+      width={{padSize}}
+      height={{padSize}}
+      style="background-color: black;"
 
-    onmousedown=&#123;{action "activate"}}
-    onmousemove=&#123;{action "updateCoordinates"}}
-    onmouseleave=&#123;{action "deactivate"}}
-    onmouseup=&#123;{action "deactivate"}}
+      onmousedown={{action "activate"}}
+      onmousemove={{action "updateCoordinates"}}
+      onmouseleave={{action "deactivate"}}
+      onmouseup={{action "deactivate"}}
 
-    ontouchstart=&#123;{action "activate"}}
-    ontouchmove=&#123;{action "updateCoordinates"}}
-    ontouchend=&#123;{action "deactivate"}}
-    ontouchcancel=&#123;{action "deactivate"}}
-  >&lt;/canvas>
+      ontouchstart={{action "activate"}}
+      ontouchmove={{action "updateCoordinates"}}
+      ontouchend={{action "deactivate"}}
+      ontouchcancel={{action "deactivate"}}
+    ></canvas>
+  '}}
 </CodeBlock>
 
 <p>

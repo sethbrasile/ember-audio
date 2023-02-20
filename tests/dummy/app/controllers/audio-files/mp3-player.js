@@ -1,12 +1,17 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 
-export default Controller.extend({
-  audio: service(),
-  selectedTrack: null,
-  trackIsLoading: false,
+@classic
+export default class Mp3PlayerController extends Controller {
+  @service
+  audio;
 
-  tracks: [
+  selectedTrack = null;
+  trackIsLoading = false;
+
+  tracks = [
     {
       name: 'barely-there',
       trackInstance: null,
@@ -27,23 +32,22 @@ export default Controller.extend({
         infancy so the suckiness was par for the course. Also, "autotune" is for assholes.
         When you can't sing, you should just suck it up and sound bad.`,
     },
-  ],
+  ];
 
-  actions: {
-    selectTrack(track) {
-      const audio = this.audio;
+  @action
+  selectTrack(track) {
+    const audio = this.audio;
 
-      this.set('selectedTrack', track);
-      this.set('trackIsLoading', true);
-      audio.pauseAll();
+    this.set('selectedTrack', track);
+    this.set('trackIsLoading', true);
+    audio.pauseAll();
 
-      audio
-        .load(`/ember-audio/${track.name}.mp3`)
-        .asTrack(track.name)
-        .then((trackInstance) => {
-          this.set('selectedTrack.trackInstance', trackInstance);
-          this.set('trackIsLoading', false);
-        });
-    },
-  },
-});
+    audio
+      .load(`/ember-audio/${track.name}.mp3`)
+      .asTrack(track.name)
+      .then((trackInstance) => {
+        this.set('selectedTrack.trackInstance', trackInstance);
+        this.set('trackIsLoading', false);
+      });
+  }
+}

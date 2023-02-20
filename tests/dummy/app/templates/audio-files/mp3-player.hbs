@@ -6,7 +6,7 @@
       <table class="table table-bordered">
         <tbody>
           {{#each this.tracks as |track|}}
-            <tr role="button" class="{{if (eq track this.selectedTrack) "info"}} item" {{action "selectTrack" track}}>
+            <tr role="button" class="{{if (eq track this.selectedTrack) "info"}} item" {{on "click" (fn this.selectTrack track)}}>
               <td>{{undasherize track.name}}</td>
             </tr>
           {{/each}}
@@ -34,30 +34,32 @@
   <h4>Template</h4>
 
   <CodeBlock @language="handlebars">
-  &lt;div class="track-list">
-    &lt;div class="select">
-      &lt;table>
-        &#123;{#each tracks as |track|}}
-          &lt;tbody>
-            &lt;tr &#123;{action "selectTrack" track}}>
-              &lt;td>&#123;{track.name}}&lt;/td>
-            &lt;/tr>
-          &lt;/tbody>
-        &#123;{/each}}
-      &lt;/table>
-    &lt;/div>
+  {{'
+    <div class="track-list">
+      <div class="select">
+        <table>
+          {{#each tracks as |track|}}
+            <tbody>
+              <tr {{action "selectTrack" track}}>
+                <td>{{track.name}}</td>
+              </tr>
+            </tbody>
+          {{/each}}
+        </table>
+      </div>
 
-    &lt;div class="description">
-      &#123;{#if selectedTrack}}
-        &lt;p>&#123;{selectedTrack.description}}&lt;/p>
-      &#123;{else}}
-        &lt;p>Select a Track...&lt;/p>
-      &#123;{/if}}
-    &lt;/div>
-  &lt;/div>
+      <div class="description">
+        {{#if selectedTrack}}
+          <p>{{selectedTrack.description}}</p>
+        {{else}}
+          <p>Select a Track...</p>
+        {{/if}}
+      </div>
+    </div>
 
-  &#123;{!-- mp3-player accepts a Track instance, and a loading boolean --}}
-  &#123;{mp3-player track=selectedTrack.trackInstance loading=trackIsLoading}}
+    {{!-- mp3-player accepts a Track instance, and a loading boolean --}}
+    {{mp3-player track=selectedTrack.trackInstance loading=trackIsLoading}}
+  '}}
   </CodeBlock>
 </div>
 
@@ -107,35 +109,37 @@
   <h4><code>mp3-player</code> Component Template</h4>
 
   <CodeBlock @language="handlebars">
-  &#123;{#if loading}}
-    &#123;{!-- some loading display --}}
-  &#123;{else if track}}
-    &lt;div class="audioplayer">
-      &lt;div class="play-pause &#123;{if track.isPlaying "playing"}}" &#123;{action "togglePlay"}}>&lt;a>&lt;/a>&lt;/div>
+  {{'
+    {{#if loading}}
+      {{!-- some loading display --}}
+    {{else if track}}
+      <div class="audioplayer">
+        <div class="play-pause {{if track.isPlaying "playing"}}" {{action "togglePlay"}}><a></a></div>
 
-      &#123;{!-- track.position and track.duration output a few different formats
-        as a POJO. We are interested in the "string" variant --}}
-      &lt;div class="time current">&#123;{track.position.string}}&lt;/div>
+        {{!-- track.position and track.duration output a few different formats
+          as a POJO. We are interested in the "string" variant --}}
+        <div class="time current">{{track.position.string}}</div>
 
-      &#123;{!-- An action bound to "onclick" is passed a javascript native "MouseEvent" object --}}
-      &lt;div class="bar" onclick=&#123;{action "seek"}}>
-        &lt;div style="width: 100%;">&lt;/div>
-        &lt;div class="played" style=&#123;{percentPlayed}}>&lt;/div>
-      &lt;/div>
+        {{!-- An action bound to "onclick" is passed a javascript native "MouseEvent" object --}}
+        <div class="bar" onclick={{action "seek"}}>
+          <div style="width: 100%;"></div>
+          <div class="played" style={{percentPlayed}}></div>
+        </div>
 
-      &lt;div class="time duration">&#123;{track.duration.string}}&lt;/div>
+        <div class="time duration">{{track.duration.string}}</div>
 
-      &lt;div class="volume" onclick=&#123;{action "changeVolume"}}>
-        &lt;div class="button">&lt;a>&lt;/a>&lt;/div>
+        <div class="volume" onclick={{action "changeVolume"}}>
+          <div class="button"><a></a></div>
 
-        &lt;div class="adjust">
-          &lt;div>
-            &lt;div style=&#123;{percentGain}}>&lt;/div>
-          &lt;/div>
-        &lt;/div>
-      &lt;/div>
-    &lt;/div>
-  &#123;{/if}}
+          <div class="adjust">
+            <div>
+              <div style={{percentGain}}></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  '}}
   </CodeBlock>
 </div>
 

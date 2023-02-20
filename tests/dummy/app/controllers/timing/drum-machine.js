@@ -1,15 +1,21 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
 import { all } from 'rsvp';
 import Controller from '@ember/controller';
 
-export default Controller.extend({
-  audio: service(),
-  beatTracks: null,
-  isLoading: true,
-  bpm: 120,
+@classic
+export default class DrumMachineController extends Controller {
+  @service
+  audio;
 
-  initBeats: on('init', function () {
+  beatTracks = null;
+  isLoading = true;
+  bpm = 120;
+
+  @on('init')
+  initBeats() {
     all([
       this._loadBeatTrackFor('kick'),
       this._loadBeatTrackFor('snare'),
@@ -35,7 +41,7 @@ export default Controller.extend({
       this.set('isLoading', false);
       this.set('beatTracks', beatTracks);
     });
-  }),
+  }
 
   _loadBeatTrackFor(name) {
     return this.audio
@@ -45,42 +51,43 @@ export default Controller.extend({
         `/ember-audio/drum-samples/${name}3.wav`,
       ])
       .asBeatTrack(name);
-  },
+  }
 
-  actions: {
-    play() {
-      this.beatTracks.map((beatTrack) => {
-        // playActiveBeats() optionally accepts "noteType" which defaults to "1/4"
-        // notes, but we want to use eighth notes
-        beatTrack.playActiveBeats(this.bpm, 1 / 8);
+  @action
+  play() {
+    this.beatTracks.map((beatTrack) => {
+      // playActiveBeats() optionally accepts "noteType" which defaults to "1/4"
+      // notes, but we want to use eighth notes
+      beatTrack.playActiveBeats(this.bpm, 1 / 8);
 
-        // /* playActiveBeats() is a convenience method. For more control, you could do:
-        // http://bradthemad.org/guitar/tempo_explanation.php */
-        // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
-        // beatTrack.get('beats').map((beat, beatIndex) => {
-        //   /* whatever else you need to do */
-        //   beat.ifActivePlayIn(beatIndex * eighthNoteDuration);
-        // });
-      });
-    },
+      // /* playActiveBeats() is a convenience method. For more control, you could do:
+      // http://bradthemad.org/guitar/tempo_explanation.php */
+      // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
+      // beatTrack.get('beats').map((beat, beatIndex) => {
+      //   /* whatever else you need to do */
+      //   beat.ifActivePlayIn(beatIndex * eighthNoteDuration);
+      // });
+    });
+  }
 
-    toggleActive(beat) {
-      if (beat.get('active')) {
-        beat.set('active', false);
-      } else {
-        beat.play();
+  @action
+  toggleActive(beat) {
+    if (beat.get('active')) {
+      beat.set('active', false);
+    } else {
+      beat.play();
+      beat.set('active', true);
+    }
+  }
+
+  @action
+  engageLudicrousMode() {
+    this.set('bpm', 1000000);
+
+    this.beatTracks.map((beatTrack) => {
+      beatTrack.get('beats').map((beat) => {
         beat.set('active', true);
-      }
-    },
-
-    engageLudicrousMode() {
-      this.set('bpm', 1000000);
-
-      this.beatTracks.map((beatTrack) => {
-        beatTrack.get('beats').map((beat) => {
-          beat.set('active', true);
-        });
       });
-    },
-  },
-});
+    });
+  }
+}

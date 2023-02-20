@@ -1,19 +1,25 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
 import Controller from '@ember/controller';
 import { LayeredSound } from 'ember-audio';
 
-export default Controller.extend({
-  audio: service(),
-  drums: null,
+@classic
+export default class DrumKitController extends Controller {
+  @service
+  audio;
 
-  initDrums: on('init', function () {
+  drums = null;
+
+  @on('init')
+  initDrums() {
     this.set('drums', [
       this._createKick(),
       this._createSnare(),
       this._createHihat(),
     ]);
-  }),
+  }
 
   _createKick() {
     const audio = this.audio;
@@ -25,14 +31,14 @@ export default Controller.extend({
     gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
 
     return kick;
-  },
+  }
 
   _createSnare() {
     const noise = this._createSnareNoise();
     const oscillator = this._createSnareOscillator();
 
     return LayeredSound.create({ name: 'snare', sounds: [noise, oscillator] });
-  },
+  }
 
   _createSnareOscillator() {
     const audio = this.audio;
@@ -44,7 +50,7 @@ export default Controller.extend({
     gain.onPlayRamp('gain').from(1).to(0.01).in(0.1);
 
     return snare;
-  },
+  }
 
   _createSnareNoise() {
     const audio = this.audio;
@@ -57,7 +63,7 @@ export default Controller.extend({
     gain.onPlayRamp('gain').from(1).to(0.001).in(0.1);
 
     return noise;
-  },
+  }
 
   _createHihat() {
     // http://joesul.li/van/synthesizing-hi-hats/
@@ -68,7 +74,7 @@ export default Controller.extend({
       .map(this._createHihatEnvelope);
 
     return LayeredSound.create({ name: 'hihat', sounds: oscillators });
-  },
+  }
 
   _createHihatOscillator(ratio) {
     const fundamental = 40;
@@ -79,7 +85,7 @@ export default Controller.extend({
       bandpass: { frequency: 10000 },
       frequency: fundamental * ratio,
     });
-  },
+  }
 
   _createHihatEnvelope(oscillator) {
     const gain = oscillator.getConnection('gain');
@@ -90,36 +96,38 @@ export default Controller.extend({
     gain.onPlaySet('gain').to(0.00001).endingAt(0.3);
 
     return oscillator;
-  },
+  }
 
-  actions: {
-    playDrum(drum) {
-      // Only play for 0.1 seconds so that playing in quick succession doesn't
-      // result in distortion
-      drum.playFor(0.1);
-    },
+  @action
+  playDrum(drum) {
+    // Only play for 0.1 seconds so that playing in quick succession doesn't
+    // result in distortion
+    drum.playFor(0.1);
+  }
 
-    playBassDrop() {
-      const audio = this.audio;
-      const bassDrop = audio.createOscillator();
-      const osc = bassDrop.getConnection('audioSource');
-      const gain = bassDrop.getConnection('gain');
+  @action
+  playBassDrop() {
+    const audio = this.audio;
+    const bassDrop = audio.createOscillator();
+    const osc = bassDrop.getConnection('audioSource');
+    const gain = bassDrop.getConnection('gain');
 
-      // We can specify 'linear' to get a linear ramp instead of an exponential one
-      osc.onPlayRamp('frequency', 'linear').from(100).to(0.01).in(10);
+    // We can specify 'linear' to get a linear ramp instead of an exponential one
+    osc.onPlayRamp('frequency', 'linear').from(100).to(0.01).in(10);
 
-      // We automate gain as well, so we don't end up with a loud click when the audio stops
-      gain.onPlayRamp('gain').from(1).to(0.01).in(10);
+    // We automate gain as well, so we don't end up with a loud click when the audio stops
+    gain.onPlayRamp('gain').from(1).to(0.01).in(10);
 
-      bassDrop.playFor(10);
-    },
+    bassDrop.playFor(10);
+  }
 
-    playSnareMeat() {
-      this._createSnareOscillator().playFor(0.1);
-    },
+  @action
+  playSnareMeat() {
+    this._createSnareOscillator().playFor(0.1);
+  }
 
-    playSnareCrack() {
-      this._createSnareNoise().playFor(0.1);
-    },
-  },
-});
+  @action
+  playSnareCrack() {
+    this._createSnareNoise().playFor(0.1);
+  }
+}

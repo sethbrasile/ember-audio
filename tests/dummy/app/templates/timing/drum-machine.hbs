@@ -17,7 +17,7 @@
     </div>
   {{else}}
     <div class="controls">
-      <button class="btn btn-primary" type="button" {{action "play"}}>PLAY</button>
+      <button class="btn btn-primary" type="button" {{on "click" this.play}}>PLAY</button>
 
       <div>
         <label>Tempo <Input @value={{this.bpm}} /></label>
@@ -30,7 +30,7 @@
           <p class="text">{{beatTrack.name}}</p>
 
           {{#each beatTrack.beats as |beat|}}
-            <div role="button" class="beat-pad" {{action "toggleActive" beat}}>
+            <div role="button" class="beat-pad" {{on "click" (fn this.toggleActive beat)}}>
               <span class="pad {{if beat.active "active"}} {{if beat.isPlaying "playing"}} {{if beat.currentTimeIsPlaying "highlighted"}}"></span>
             </div>
           {{/each}}
@@ -56,7 +56,7 @@
 
     <br>
 
-    <button class="btn btn-danger" type="button" {{action "engageLudicrousMode"}}>
+    <button class="btn btn-danger" type="button" {{on "click" this.engageLudicrousMode}}>
       Engage Ludicrous Mode
     </button>
   </p>
@@ -71,105 +71,107 @@
 
 <div class="content">
   <CodeBlock @language="handlebars">
-  &#123;{#if isLoading}}
-    &#123;{!-- Some loading indicator... --}}
-  &#123;{else}}
-    &lt;div class="controls">
-      &lt;button class="btn btn-primary" &#123;{action "play"}}>PLAY&lt;/button>
+  {{'
+    {{#if isLoading}}
+      {{!-- Some loading indicator... --}}
+    {{else}}
+      <div class="controls">
+        <button class="btn btn-primary" {{action "play"}}>PLAY</button>
+        <div>
+          <label>Tempo {{input value=bpm}}</label>
+        </div>
+      </div>
 
-      &lt;div>
-        &lt;label>Tempo &#123;{input value=bpm}}&lt;/label>
-      &lt;/div>
-    &lt;/div>
-
-    &lt;div class="beat-machine">
-      &#123;{#each beatTracks as |beatTrack|}}
-        &lt;div class="beat-lane">
-          &lt;p class="text">&#123;{beatTrack.name}}&lt;/p>
-
-          &#123;{#each beatTrack.beats as |beat|}}
-            &lt;div class="beat-pad" &#123;{action "toggleActive" beat}}>
-              &lt;span class="pad &#123;{if beat.active "active"}} &#123;{if beat.isPlaying "playing"}} &#123;{if beat.currentTimeIsPlaying "highlighted"}}">&lt;/span>
-            &lt;/div>
-          &#123;{/each}}
-        &lt;/div>
-      &#123;{/each}}
-    &lt;/div>
-  &#123;{/if}}
+      <div class="beat-machine">
+        {{#each beatTracks as |beatTrack|}}
+          <div class="beat-lane">
+            <p class="text">{{beatTrack.name}}</p>
+            {{#each beatTrack.beats as |beat|}}
+              <div class="beat-pad" {{action "toggleActive" beat}}>
+                <span class="pad {{if beat.active "active"}} {{if beat.isPlaying "playing"}} {{if beat.currentTimeIsPlaying "highlighted"}}"></span>
+              </div>
+            {{/each}}
+          </div>
+        {{/each}}
+      </div>
+    {{/if}}
+  '}}
   </CodeBlock>
 
   <CodeBlock @language="javascript">
-  export default Ember.Whatever.extend({
-    audio: Ember.inject.service(),
-    beatTracks: null,
-    isLoading: true,
-    bpm: 120,
+  {{"
+    export default Ember.Whatever.extend({
+      audio: Ember.inject.service(),
+      beatTracks: null,
+      isLoading: true,
+      bpm: 120,
 
-    initBeats: Ember.on('init', function() {
-      Ember.RSVP.all([
-        this._loadBeatTrackFor('kick'),
-        this._loadBeatTrackFor('snare'),
-        this._loadBeatTrackFor('hihat')
-      ])
-      .then((beatTracks) => {
-        beatTracks.map((beatTrack) => {
-          const name = beatTrack.get('name');
+      initBeats: Ember.on('init', function() {
+        Ember.RSVP.all([
+          this._loadBeatTrackFor('kick'),
+          this._loadBeatTrackFor('snare'),
+          this._loadBeatTrackFor('hihat')
+        ])
+        .then((beatTracks) => {
+          beatTracks.map((beatTrack) => {
+            const name = beatTrack.get('name');
 
-          // default is 4 beats, but we're going to use 16
-          beatTrack.set('numBeats', 16);
+            // default is 4 beats, but we're going to use 16
+            beatTrack.set('numBeats', 16);
 
-          // snare and hihat are a little louder than kick, so we'll turn down the gain
-          if (name === 'snare' || name === 'hihat') {
-            beatTrack.set('gain', 0.5);
-          }
+            // snare and hihat are a little louder than kick, so we'll turn down the gain
+            if (name === 'snare' || name === 'hihat') {
+              beatTrack.set('gain', 0.5);
+            }
 
-          // and let's pan the hihat a little to the left
-          if (name === 'hihat') {
-            beatTrack.set('pan', -0.4);
-          }
+            // and let's pan the hihat a little to the left
+            if (name === 'hihat') {
+              beatTrack.set('pan', -0.4);
+            }
+          });
+
+          this.set('isLoading', false);
+          this.set('beatTracks', beatTracks);
         });
+      }),
 
-        this.set('isLoading', false);
-        this.set('beatTracks', beatTracks);
-      });
-    }),
+      _loadBeatTrackFor(name) {
+        // 'snare1.wav', 'kick2.wav', etc..., from this project's public folder
+        const sounds = [`${name}1.wav`, `${name}2.wav`, `${name}3.wav`];
 
-    _loadBeatTrackFor(name) {
-      // 'snare1.wav', 'kick2.wav', etc..., from this project's public folder
-      const sounds = [`${name}1.wav`, `${name}2.wav`, `${name}3.wav`];
-
-      // If name === 'kick', this creates a BeatTrack instance called
-      // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
-      return this.get('audio').load(sounds).asBeatTrack(name);
-    },
-
-    actions: {
-      play() {
-        this.get('beatTracks').map((beatTrack) => {
-          // playActiveBeats() optionally accepts "noteType" which defaults to "1/4"
-          // notes, but we want to use eighth notes
-          beatTrack.playActiveBeats(this.get('bpm'), 1/8);
-
-          // /* playActiveBeats() is a convenience method. For more control, you could do:
-          // http://bradthemad.org/guitar/tempo_explanation.php */
-          // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
-          // beatTrack.get('beats').map((beat, beatIndex) => {
-          //   /* whatever else you need to do */
-          //   beat.ifActivePlayIn(beatIndex * eighthNoteDuration);
-          // });
-        });
+        // If name === 'kick', this creates a BeatTrack instance called
+        // 'kick' that contains the sounds 'kick1', 'kick2', and 'kick3'
+        return this.get('audio').load(sounds).asBeatTrack(name);
       },
 
-      toggleActive(beat) {
-        if (beat.get('active')) {
-          beat.set('active', false);
-        } else {
-          beat.play();
-          beat.set('active', true);
+      actions: {
+        play() {
+          this.get('beatTracks').map((beatTrack) => {
+            // playActiveBeats() optionally accepts noteType which defaults to 1/4
+            // notes, but we want to use eighth notes
+            beatTrack.playActiveBeats(this.get('bpm'), 1/8);
+
+            // /* playActiveBeats() is a convenience method. For more control, you could do:
+            // http://bradthemad.org/guitar/tempo_explanation.php */
+            // const eighthNoteDuration = (240 * 1/8) / this.get('bpm');
+            // beatTrack.get('beats').map((beat, beatIndex) => {
+            //   /* whatever else you need to do */
+            //   beat.ifActivePlayIn(beatIndex * eighthNoteDuration);
+            // });
+          });
+        },
+
+        toggleActive(beat) {
+          if (beat.get('active')) {
+            beat.set('active', false);
+          } else {
+            beat.play();
+            beat.set('active', true);
+          }
         }
       }
-    }
-  });
+    });
+  "}}
   </CodeBlock>
 </div>
 

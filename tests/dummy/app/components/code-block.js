@@ -1,11 +1,14 @@
+import classic from 'ember-classic-decorator';
+import { layout as templateLayout } from '@ember-decorators/component';
 import Component from '@ember/component';
 import layout from '../templates/components/mp3-player';
 import Prism from 'prismjs';
 
-export default Component.extend({
-  layout,
+@classic
+@templateLayout(layout)
+export default class CodeBlock extends Component {
   didRender() {
-    this._super(...arguments);
+    super.didRender(...arguments);
     Prism.highlightAll();
-  },
-});
+  }
+}

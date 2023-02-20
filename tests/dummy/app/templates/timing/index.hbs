@@ -104,10 +104,10 @@
   </p>
 </div>
 
-<button class="btn" type="button" {{action "playInOneSecond1"}}>Play in One Second</button>
+<button class="btn btn-primary" type="button" {{on "click" this.playInOneSecond1}}>Play in One Second</button>
 
 <CodeBlock @language="handlebars">
-  &lt;button &#123;{action "playInOneSecond"}}>Play in One Second&lt;/button>
+  {{ '<button {{on "click" this.playInOneSecond}}>Play in One Second</button>' }}
 </CodeBlock>
 
 <CodeBlock @language="javascript">
@@ -135,7 +135,7 @@
   </p>
 </div>
 
-<button class="btn" type="button" {{action "playInOneSecond2"}}>Play in One Second</button>
+<button class="btn" type="button" {{on "click" this.playInOneSecond2}}>Play in One Second</button>
 
 <CodeBlock @language="javascript">
   playInOneSecond() {

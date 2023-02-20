@@ -49,12 +49,13 @@
     "@fortawesome/fontawesome-free": "^6.3.0",
     "@glimmer/component": "^1.1.2",
     "@glimmer/tracking": "^1.1.2",
-    "babel-eslint": "^10.1.0",
+    "babel-eslint": "^8.2.6",
     "babel-plugin-prismjs": "^2.1.0",
     "bootstrap": "^3.4.0",
     "broccoli-asset-rev": "^3.0.0",
     "concurrently": "^7.6.0",
     "ember-auto-import": "^2.5.0",
+    "ember-classic-decorator": "^3.0.1",
     "ember-cli": "~4.10.0",
     "ember-cli-dependency-checker": "^3.3.1",
     "ember-cli-github-pages": "^0.2.2",
@@ -63,6 +64,7 @@
     "ember-cli-sri": "^2.1.1",
     "ember-cli-stylus": "^1.0.7",
     "ember-cli-terser": "^4.0.2",
+    "ember-decorators": "^6.1.1",
     "ember-load-initializers": "^2.1.2",
     "ember-page-title": "^7.0.0",
     "ember-qunit": "^6.1.1",
@@ -98,7 +100,7 @@
   "ember-addon": {
     "configPath": "tests/dummy/config",
     "versionCompatibility": {
-       "ember": ">=2.18.0 < 4.0.0"
+      "ember": ">=2.18.0 < 4.0.0"
     }
   }
 }

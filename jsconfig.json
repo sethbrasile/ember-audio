@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+  },
+  "exclude": [
+    "coverage",
+    "dist",
+    "node_modules",
+    "recordings",
+    "temp",
+    "tmp",
+    "translations",
+    "vendor"
+  ],
+  "typeAcquisition": {
+    "enable": true,
+    "include": ["ember", "ember-data", "qunit", "ember-qunit"]
+  }
+}

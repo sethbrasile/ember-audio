@@ -1,17 +1,21 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
 import Controller from '@ember/controller';
 
-export default Controller.extend({
-  audio: service(),
+@classic
+export default class IndexController extends Controller {
+  @service
+  audio;
 
-  initAudioFile: on('init', function () {
+  @on('init')
+  initAudioFile() {
     this.audio.load('Eb5.mp3').asSound('piano-note');
-  }),
+  }
 
-  actions: {
-    playSound() {
-      this.audio.getSound('piano-note').play();
-    },
-  },
-});
+  @action
+  playSound() {
+    this.audio.getSound('piano-note').play();
+  }
+}

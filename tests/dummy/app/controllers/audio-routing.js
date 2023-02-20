@@ -1,13 +1,19 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
+import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
 import Controller from '@ember/controller';
 import { Connection } from 'ember-audio';
 
-export default Controller.extend({
-  audio: service(),
-  distortionEnabled: false,
+@classic
+export default class AudioRoutingController extends Controller {
+  @service
+  audio;
 
-  initAudioFile: on('init', function () {
+  distortionEnabled = false;
+
+  @on('init')
+  initAudioFile() {
     // Eb5.mp3 is an mp3 file located in the "public" folder
     this.audio
       .load('/ember-audio/Eb5.mp3')
@@ -25,7 +31,7 @@ export default Controller.extend({
 
         this.set('note', note);
       });
-  }),
+  }
 
   _makeDistortionCurve(amount) {
     // I stole this straight from the Mozilla Web Audio API docs site
@@ -40,7 +46,7 @@ export default Controller.extend({
     }
 
     return curve;
-  },
+  }
 
   _addDistortion() {
     const curve = this._makeDistortionCurve(400);
@@ -53,7 +59,7 @@ export default Controller.extend({
 
     // Set distortionNode's curve to enable distortion
     note.getNodeFrom('distortionNode').curve = curve;
-  },
+  }
 
   _removeDistortion() {
     const note = this.note;
@@ -65,19 +71,19 @@ export default Controller.extend({
 
     // Set distortionNode's curve to an empty Float32Array to disable distortion
     note.getNodeFrom('distortionNode').curve = new Float32Array();
-  },
+  }
 
-  actions: {
-    playSound() {
-      this.note.play();
-    },
+  @action
+  playSound() {
+    this.note.play();
+  }
 
-    toggleDistortion() {
-      if (this.distortionEnabled) {
-        this._removeDistortion();
-      } else {
-        this._addDistortion();
-      }
-    },
-  },
-});
+  @action
+  toggleDistortion() {
+    if (this.distortionEnabled) {
+      this._removeDistortion();
+    } else {
+      this._addDistortion();
+    }
+  }
+}
