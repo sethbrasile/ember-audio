@@ -3,7 +3,7 @@
 module.exports = function () {
   return {
     useVersionCompatibility: true,
-    useYarn: false,
+    useYarn: true,
     npmOptions: ['--loglevel=silent', '--no-shrinkwrap=true'],
   };
 };
