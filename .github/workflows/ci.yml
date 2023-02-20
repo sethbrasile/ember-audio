@@ -23,9 +23,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14.x
-          cache: npm
+          cache: yarn
       - name: Install Dependencies
-        run: npm ci
+        run: yarn
       # - name: Lint
       #   run: npm run lint
       - name: Run Tests
@@ -41,9 +41,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 14.x
-          cache: npm
+          cache: yarn
       - name: Install Dependencies
-        run: npm install --no-shrinkwrap
+        run: yarn
       - name: Run Tests
         run: npm run test:ember
 
@@ -72,8 +72,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14.x
-          cache: npm
+          cache: yarn
       - name: Install Dependencies
-        run: npm ci
+        run: yarn
       - name: Run Tests
         run: ./node_modules/.bin/ember try:one ${{ matrix.try-scenario }}
