@@ -1,27 +1,24 @@
-import classic from 'ember-classic-decorator';
 import { action } from '@ember/object';
-import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import Controller from '@ember/controller';
 
-@classic
 export default class IndexController extends Controller {
-  @service
-  audio;
-
-  isLoading = true;
+  @service audio;
+  @tracked isLoading = true;
   notes = null;
 
-  @on('init')
-  initSoundFont() {
+  constructor() {
+    super(...arguments);
+
     // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
     this.audio
       .load('/ember-audio/piano.js')
       .asFont('piano')
       .then((font) => {
         // Slicing just so the whole keyboard doesn't show up on the screen
-        this.set('notes', font.get('notes').slice(39, 51));
-        this.set('isLoading', false);
+        this.notes = font.notes.slice(39, 51);
+        this.isLoading = false;
       });
   }
 

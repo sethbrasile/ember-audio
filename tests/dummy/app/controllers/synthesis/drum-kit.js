@@ -1,28 +1,20 @@
-import classic from 'ember-classic-decorator';
 import { action } from '@ember/object';
-import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import Controller from '@ember/controller';
 import { LayeredSound } from 'ember-audio';
 
-@classic
 export default class DrumKitController extends Controller {
-  @service
-  audio;
+  @service audio;
+  @tracked drums = null;
 
-  drums = null;
-
-  @on('init')
-  initDrums() {
-    this.set('drums', [
-      this._createKick(),
-      this._createSnare(),
-      this._createHihat(),
-    ]);
+  constructor() {
+    super(...arguments);
+    this.drums = [this._createKick(), this._createSnare(), this._createHihat()];
   }
 
   _createKick() {
-    const audio = this.audio;
+    const { audio } = this;
     const kick = audio.createOscillator({ name: 'kick' });
     const osc = kick.getConnection('audioSource');
     const gain = kick.getConnection('gain');
@@ -41,7 +33,7 @@ export default class DrumKitController extends Controller {
   }
 
   _createSnareOscillator() {
-    const audio = this.audio;
+    const { audio } = this;
     const snare = audio.createOscillator({ type: 'triangle' });
     const oscillator = snare.getConnection('audioSource');
     const gain = snare.getConnection('gain');
@@ -53,7 +45,7 @@ export default class DrumKitController extends Controller {
   }
 
   _createSnareNoise() {
-    const audio = this.audio;
+    const { audio } = this;
     const noise = audio.createWhiteNoise({
       name: 'snare',
       highpassFrequency: 1000,
@@ -107,7 +99,7 @@ export default class DrumKitController extends Controller {
 
   @action
   playBassDrop() {
-    const audio = this.audio;
+    const { audio } = this;
     const bassDrop = audio.createOscillator();
     const osc = bassDrop.getConnection('audioSource');
     const gain = bassDrop.getConnection('gain');

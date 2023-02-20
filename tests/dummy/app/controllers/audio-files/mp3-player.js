@@ -1,15 +1,12 @@
-import classic from 'ember-classic-decorator';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import Controller from '@ember/controller';
 
-@classic
 export default class Mp3PlayerController extends Controller {
-  @service
-  audio;
-
-  selectedTrack = null;
-  trackIsLoading = false;
+  @service audio;
+  @tracked selectedTrack;
+  @tracked trackIsLoading = false;
 
   tracks = [
     {
@@ -36,18 +33,23 @@ export default class Mp3PlayerController extends Controller {
 
   @action
   selectTrack(track) {
-    const audio = this.audio;
+    const { audio } = this;
 
-    this.set('selectedTrack', track);
-    this.set('trackIsLoading', true);
+    this.selectedTrack = track;
+    this.trackIsLoading = true;
+
     audio.pauseAll();
 
     audio
       .load(`/ember-audio/${track.name}.mp3`)
       .asTrack(track.name)
       .then((trackInstance) => {
-        this.set('selectedTrack.trackInstance', trackInstance);
-        this.set('trackIsLoading', false);
+        const track = this.selectedTrack;
+
+        track.trackInstance = trackInstance;
+        this.trackIsLoading = false;
+
+        this.selectedTrack = track;
       });
   }
 }

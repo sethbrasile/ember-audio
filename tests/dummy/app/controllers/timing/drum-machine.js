@@ -1,21 +1,18 @@
-import classic from 'ember-classic-decorator';
 import { action } from '@ember/object';
-import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
 import { all } from 'rsvp';
 import Controller from '@ember/controller';
 
-@classic
 export default class DrumMachineController extends Controller {
-  @service
-  audio;
+  @service audio;
+  @tracked beatTracks;
+  @tracked isLoading = true;
+  @tracked bpm = 120;
 
-  beatTracks = null;
-  isLoading = true;
-  bpm = 120;
+  constructor() {
+    super(...arguments);
 
-  @on('init')
-  initBeats() {
     all([
       this._loadBeatTrackFor('kick'),
       this._loadBeatTrackFor('snare'),
@@ -38,8 +35,8 @@ export default class DrumMachineController extends Controller {
         }
       });
 
-      this.set('isLoading', false);
-      this.set('beatTracks', beatTracks);
+      this.isLoading = false;
+      this.beatTracks = beatTracks;
     });
   }
 
@@ -72,7 +69,7 @@ export default class DrumMachineController extends Controller {
 
   @action
   toggleActive(beat) {
-    if (beat.get('active')) {
+    if (beat.active) {
       beat.set('active', false);
     } else {
       beat.play();
@@ -82,10 +79,10 @@ export default class DrumMachineController extends Controller {
 
   @action
   engageLudicrousMode() {
-    this.set('bpm', 1000000);
+    this.bpm = 1000000;
 
     this.beatTracks.map((beatTrack) => {
-      beatTrack.get('beats').map((beat) => {
+      beatTrack.beats.map((beat) => {
         beat.set('active', true);
       });
     });

@@ -1,8 +1,8 @@
 import classic from 'ember-classic-decorator';
 import { action } from '@ember/object';
-import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
+import { tracked } from '@glimmer/tracking';
 import { Oscillator } from 'ember-audio';
 import { MusicalIdentity } from 'ember-audio/mixins';
 
@@ -12,16 +12,14 @@ import { MusicalIdentity } from 'ember-audio/mixins';
 @classic
 class MusicallyAwareOscillator extends Oscillator.extend(MusicalIdentity) {}
 
-@classic
 export default class IndexController extends Controller {
-  @service
-  audio;
+  @service audio;
+  @tracked oscillators; // Put oscillators here after they're created
 
-  oscillators = null; // Put oscillators here after they're created
+  constructor() {
+    super(...arguments);
 
-  @on('init')
-  initSynth() {
-    const audio = this.audio;
+    const { audio } = this;
 
     // Outputs an array of all the notes on a standard "western" piano
     // Could also do `audio.createNoteArray(notes)` where notes is a POJO,
@@ -43,7 +41,7 @@ export default class IndexController extends Controller {
       });
     });
 
-    this.set('oscillators', oscillators);
+    this.oscillators = oscillators;
   }
 
   @action

@@ -1,19 +1,15 @@
-import classic from 'ember-classic-decorator';
 import { action } from '@ember/object';
-import { on } from '@ember-decorators/object';
 import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
+import { tracked } from '@glimmer/tracking';
 import { Connection } from 'ember-audio';
 
-@classic
 export default class AudioRoutingController extends Controller {
-  @service
-  audio;
+  @service audio;
+  @tracked distortionEnabled = false;
 
-  distortionEnabled = false;
-
-  @on('init')
-  initAudioFile() {
+  constructor() {
+    super(...arguments);
     // Eb5.mp3 is an mp3 file located in the "public" folder
     this.audio
       .load('/ember-audio/Eb5.mp3')
@@ -29,7 +25,7 @@ export default class AudioRoutingController extends Controller {
           })
         );
 
-        this.set('note', note);
+        this.note = note;
       });
   }
 
@@ -50,9 +46,9 @@ export default class AudioRoutingController extends Controller {
 
   _addDistortion() {
     const curve = this._makeDistortionCurve(400);
-    const note = this.note;
+    const { note } = this;
 
-    this.set('distortionEnabled', true);
+    this.distortionEnabled = true;
 
     // lower note's gain because distorted signal has much more apparent volume
     note.changeGainTo(0.1).from('ratio');
@@ -62,9 +58,9 @@ export default class AudioRoutingController extends Controller {
   }
 
   _removeDistortion() {
-    const note = this.note;
+    const { note } = this;
 
-    this.set('distortionEnabled', false);
+    this.distortionEnabled = false;
 
     // raise note's gain because clean signal has much less apparent volume
     note.changeGainTo(1).from('ratio');
