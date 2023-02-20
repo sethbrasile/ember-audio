@@ -8,6 +8,7 @@
     "coverage",
     "dist",
     "node_modules",
+    ".node_modules.ember-try",
     "recordings",
     "temp",
     "tmp",
@@ -16,6 +17,6 @@
   ],
   "typeAcquisition": {
     "enable": true,
-    "include": ["ember", "ember-data", "qunit", "ember-qunit"]
+    "include": ["ember", "ember-data", "qunit", "ember-qunit"],
   }
 }
