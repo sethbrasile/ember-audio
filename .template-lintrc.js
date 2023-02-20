@@ -3,6 +3,6 @@
 module.exports = {
   extends: 'recommended',
   rules: {
-    'block-indentation': false
-  }
+    'no-pointer-down-event-binding': false,
+  },
 };

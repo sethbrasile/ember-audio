@@ -26,7 +26,7 @@
   </p>
 </div>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   // This is pseudo-code. The goal at this point is to get the concept across,
   // not to potentially confuse you with framework-specific stuff.
 
@@ -45,7 +45,7 @@
     // The Web Audio API deals in seconds, not milliseconds
     sound.start(now + 1);
   }
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <p>
@@ -53,7 +53,7 @@
   </p>
 </div>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   // Again, I want to mention that this code will not work as-is. It's ignoring
   // some other quirks of the Web Audio API. We're only focused on understanding
   // timing at the moment.
@@ -68,7 +68,7 @@
       sound.start(now + i);
     }
   }
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <p>
@@ -87,9 +87,9 @@
   <p class="note well">
     Again, this is an important concept to understand, but in many cases (even
     more complex cases, such as
-    {{link-to "building a rhythmically-based instrument" timing.drum-machine}})
+    <LinkTo @route="timing.drum-machine">building a rhythmically-based instrument</LinkTo>)
     this is
-    already handled for you. Check out {{link-to "Beats" "timing.with-ember-audio"}},
+    already handled for you. Check out <LinkTo @route="timing.with-ember-audio">Beats</LinkTo>,
     or the very last example on this page.
   </p>
 </div>
@@ -104,13 +104,13 @@
   </p>
 </div>
 
-<button class="btn" {{action "playInOneSecond1"}}>Play in One Second</button>
+<button class="btn btn-primary" type="button" {{on "click" this.playInOneSecond1}}>Play in One Second</button>
 
-{{#code-block language="handlebars"}}
-  &lt;button \{{action "playInOneSecond"}}>Play in One Second&lt;/button>
-{{/code-block}}
+<CodeBlock @language="handlebars">
+  {{ '<button {{on "click" this.playInOneSecond}}>Play in One Second</button>' }}
+</CodeBlock>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   export default Ember.Whatever.extend({
     audio: Ember.inject.service(),
 
@@ -126,7 +126,7 @@
       }
     }
   });
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <p>
@@ -135,10 +135,10 @@
   </p>
 </div>
 
-<button class="btn" {{action "playInOneSecond2"}}>Play in One Second</button>
+<button class="btn btn-primary" type="button" {{on "click" this.playInOneSecond2}}>Play in One Second</button>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   playInOneSecond() {
     this.get('audio').getSound('delayed-note').playIn(1);
   }
-{{/code-block}}
+</CodeBlock>

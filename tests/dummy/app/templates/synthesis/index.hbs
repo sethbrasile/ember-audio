@@ -3,7 +3,7 @@
 
   <div id="piano">
     <ol>
-      {{#each oscillators as |note|}}
+      {{#each this.oscillators as |note|}}
         <li role="button" class={{if note.accidental "black"}}
           {{action "startNote" note on="touchStart"}}
           {{action "startNote" note on="mouseDown"}}
@@ -30,7 +30,7 @@
   </p>
 </div>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   import { Oscillator } from 'ember-audio';
   import { MusicalIdentity } from 'ember-audio/mixins';
 
@@ -48,7 +48,7 @@
       console.log(oscillator.get('identifier')); // logs 'Ab4'
     }
   });
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <p>
@@ -61,14 +61,14 @@
   </p>
 </div>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   const oscillator = MusicallyAwareOscillator.create({
     audioContext,
     identifier: 'Ab4'
   });
 
   console.log(oscillator.get('frequency')); // logs '415.3'
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <p>
@@ -76,26 +76,26 @@
   </p>
 </div>
 
-{{#code-block language="handlebars"}}
+<CodeBlock @language="handlebars">
   &lt;div id="piano">
     &lt;ol>
-      \{{#each oscillators as |note|}}
-        &lt;li class=\{{if note.accidental "black"}}
-          \{{!-- These are to make it play like a "keyboard" on touch devices
+      &#123;{#each this.oscillators as |note|}}
+        &lt;li class=&#123;{if note.accidental "black"}}
+          &#123;{!-- These are to make it play like a "keyboard" on touch devices
             and I'm sure there's a more elegant way to handle it ¯\_(ツ)_/¯ --}}
-          \{{action "startNote" note on="touchStart"}}
-          \{{action "startNote" note on="mouseDown"}}
-          \{{action "stopNote" note on="touchEnd"}}
-          \{{action "stopNote" note on="mouseUp"}}
-          \{{action "stopNote" note on="mouseLeave"}}>
-          \{{note.name}}
+          &#123;{action "startNote" note on="touchStart"}}
+          &#123;{action "startNote" note on="mouseDown"}}
+          &#123;{action "stopNote" note on="touchEnd"}}
+          &#123;{action "stopNote" note on="mouseUp"}}
+          &#123;{action "stopNote" note on="mouseLeave"}}>
+          &#123;{note.name}}
         &lt;/li>
-      \{{/each}}
+      &#123;{/each}}
     &lt;/ol>
   &lt;/div>
-{{/code-block}}
+</CodeBlock>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   import Ember from 'ember';
   import { Oscillator } from 'ember-audio';
   import { MusicalIdentity } from 'ember-audio/mixins';
@@ -144,4 +144,4 @@
       }
     }
   });
-{{/code-block}}
+</CodeBlock>

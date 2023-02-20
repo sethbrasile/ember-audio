@@ -14,7 +14,7 @@
   </p>
 </div>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   this.get('audio').load('some.mp3').asSound('some-sound');
 
   // some time later...
@@ -23,21 +23,21 @@
   const now = audio.get('audioContext.currentTime');
 
   audio.getSound('some-sound').playAt(now + 1); // plays in 1 second
-{{/code-block}}
+</CodeBlock>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   this.get('audio').load('some.mp3').asSound('some-sound');
 
   // some time later...
 
   this.get('audio').getSound('some-sound').playIn(1); // plays in 1 second
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <h3>2: By using a <code>BeatTrack</code></h3>
 </div>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   this.get('audio').load('some.mp3').asBeatTrack('some-sound');
 
   // some time later...
@@ -47,7 +47,7 @@
 
   // playBeats() accepts BPM and will play all the beatTrack's beats at that BPM,
   beatTrack.playBeats(BPM);
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <p>
@@ -57,7 +57,7 @@
   </p>
 </div>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   // http://bradthemad.org/guitar/tempo_explanation.php
   const eighthNoteDuration = (240 * 1/8) / BPM;
 
@@ -65,7 +65,7 @@
     // Each "beat" is a "Beat" instance
     beat.playIn(beatIndex * eighthNoteDuration);
   });
-{{/code-block}}
+</CodeBlock>
 
 <div class="content">
   <p>
@@ -77,7 +77,7 @@
   </p>
 
   <p>
-    Take a look at the {{link-to "Drum Machine" "timing.drum-machine"}} for
+    Take a look at the <LinkTo @route="timing.drum-machine">Drum Machine</LinkTo> for
     examples.
   </p>
 </div>

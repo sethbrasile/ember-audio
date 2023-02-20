@@ -8,28 +8,28 @@
         <span class="icon-bar"></span>
       </button>
 
-      {{#link-to "index" class="navbar-brand"}}
+      <LinkTo @route="index" class="navbar-brand">
         <img src="/ember-audio/ember-logo.png" alt="Ember Logo">
         <span>audio</span>
-      {{/link-to}}
+      </LinkTo>
     </div>
 
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="nav navbar-nav">
         <li>
-          {{link-to "Audio Files" "audio-files"}}
+          <LinkTo @route="audio-files">Audio Files</LinkTo>
         </li>
         <li>
-          {{link-to "Sound Fonts" "soundfonts"}}
+          <LinkTo @route="soundfonts">Sound Fonts</LinkTo>
         </li>
         <li>
-          {{link-to "Audio Routing" "audio-routing"}}
+          <LinkTo @route="audio-routing">Audio Routing</LinkTo>
         </li>
         <li>
-          {{link-to "Timing/Scheduling" "timing"}}
+          <LinkTo @route="timing">Timing/Scheduling</LinkTo>
         </li>
         <li>
-          {{link-to "Synthesis" "synthesis"}}
+          <LinkTo @route="synthesis">Synthesis</LinkTo>
         </li>
       </ul>
 
@@ -39,7 +39,7 @@
         </li>
         <li>
           <a href="https://github.com/sethbrasile/ember-audio">
-            {{fa-icon "github"}}
+            <i class="fa-brands fa-github"></i>
           </a>
         </li>
       </ul>

@@ -14,12 +14,12 @@ var options = {
       outputFile: 'lcov.dat',
       excludeMissingFiles: true,
 
-      renamer: function(moduleName) {
+      renamer: function (moduleName) {
         var app = /^ember-audio/;
         return moduleName.replace(app, 'addon') + '.js';
-      }
-    }
-  }
+      },
+    },
+  },
 };
 if (typeof exports === 'undefined') {
   blanket.options(options);

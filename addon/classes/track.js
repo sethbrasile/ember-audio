@@ -13,7 +13,6 @@ import { createTimeObject } from 'ember-audio/utils';
  * @todo move play override to _play so that all super.play methods work
  */
 const Track = Sound.extend({
-
   /**
    * Computed property. Value is an object containing the current play position
    * of the audioBuffer in three formats. The three
@@ -34,11 +33,11 @@ const Track = Sound.extend({
    * @property position
    * @type {object}
    */
-  position: computed('startOffset', function() {
-    const offset = this.get('startOffset');
+  position: computed('startOffset', function () {
+    const offset = this.startOffset;
     const min = Math.floor(offset / 60);
-    const sec = offset - (min * 60);
-    return createTimeObject(offset, min, sec)
+    const sec = offset - min * 60;
+    return createTimeObject(offset, min, sec);
   }),
 
   /**
@@ -49,8 +48,8 @@ const Track = Sound.extend({
    * @property percentPlayed
    * @type {number}
    */
-  percentPlayed: computed('duration', 'startOffset', function() {
-    const ratio = this.get('startOffset') / this.get('duration.raw');
+  percentPlayed: computed('duration.raw', 'startOffset', function () {
+    const ratio = this.startOffset / this.get('duration.raw');
     return ratio * 100;
   }),
 
@@ -74,10 +73,10 @@ const Track = Sound.extend({
    * @method pause
    */
   pause() {
-    if (this.get('isPlaying')) {
+    if (this.isPlaying) {
       const node = this.getNodeFrom('audioSource');
 
-      node.onended = function() {};
+      node.onended = function () {};
       node.stop();
       this.set('isPlaying', false);
     }
@@ -93,8 +92,8 @@ const Track = Sound.extend({
   stop() {
     this.set('startOffset', 0);
 
-    if (this.get('isPlaying')) {
-      this.getNodeFrom('audioSource').onended = function() {};
+    if (this.isPlaying) {
+      this.getNodeFrom('audioSource').onended = function () {};
       this._super();
     }
   },
@@ -108,19 +107,22 @@ const Track = Sound.extend({
    * @private
    */
   _trackPlayPosition() {
-    const ctx = this.get('audioContext');
-    const startOffset = this.get('startOffset');
-    const startedPlayingAt = this.get('_startedPlayingAt');
+    const ctx = this.audioContext;
+    const startOffset = this.startOffset;
+    const startedPlayingAt = this._startedPlayingAt;
 
     const animate = () => {
-      if (this.get('isPlaying')) {
-        this.set('startOffset', startOffset + ctx.currentTime - startedPlayingAt);
+      if (this.isPlaying) {
+        this.set(
+          'startOffset',
+          startOffset + ctx.currentTime - startedPlayingAt
+        );
         requestAnimationFrame(animate);
       }
     };
 
     requestAnimationFrame(animate);
-  }
+  },
 });
 
 export default Track;

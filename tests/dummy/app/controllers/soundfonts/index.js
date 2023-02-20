@@ -1,25 +1,29 @@
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
+import { tracked } from '@glimmer/tracking';
 import Controller from '@ember/controller';
 
-export default Controller.extend({
-  audio: service(),
-  isLoading: true,
-  notes: null,
+export default class IndexController extends Controller {
+  @service audio;
+  @tracked isLoading = true;
+  notes = null;
 
-  initSoundFont: on('init', function() {
+  constructor() {
+    super(...arguments);
+
     // piano.js is a soundfont created with MIDI.js' Ruby-based soundfont converter
-    this.get('audio').load('/ember-audio/piano.js').asFont('piano')
+    this.audio
+      .load('/ember-audio/piano.js')
+      .asFont('piano')
       .then((font) => {
         // Slicing just so the whole keyboard doesn't show up on the screen
-        this.set('notes', font.get('notes').slice(39, 51));
-        this.set('isLoading', false);
+        this.notes = font.notes.slice(39, 51);
+        this.isLoading = false;
       });
-  }),
-
-  actions: {
-    playPianoNote(note) {
-      note.play();
-    }
   }
-});
+
+  @action
+  playPianoNote(note) {
+    note.play();
+  }
+}

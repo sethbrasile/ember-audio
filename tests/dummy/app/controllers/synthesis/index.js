@@ -1,19 +1,25 @@
+import classic from 'ember-classic-decorator';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
 import Controller from '@ember/controller';
+import { tracked } from '@glimmer/tracking';
 import { Oscillator } from 'ember-audio';
 import { MusicalIdentity } from 'ember-audio/mixins';
+
 // TODO: xy pad with filters and plugins
 // By mixing the MusicalIdentity mixin into the Oscillator class, we get an
 // oscillator that is aware of it's frequency, letter, accidental, octave, etc...
-const MusicallyAwareOscillator = Oscillator.extend(MusicalIdentity);
+@classic
+class MusicallyAwareOscillator extends Oscillator.extend(MusicalIdentity) {}
 
-export default Controller.extend({
-  audio: service(),
-  oscillators: null, // Put oscillators here after they're created
+export default class IndexController extends Controller {
+  @service audio;
+  @tracked oscillators; // Put oscillators here after they're created
 
-  initSynth: on('init', function() {
-    const audio = this.get('audio');
+  constructor() {
+    super(...arguments);
+
+    const { audio } = this;
 
     // Outputs an array of all the notes on a standard "western" piano
     // Could also do `audio.createNoteArray(notes)` where notes is a POJO,
@@ -31,22 +37,22 @@ export default Controller.extend({
         // Default type is 'sine'
         type: 'square',
         // Oscillator instances need `audioContext` in order to make sound
-        audioContext: audio.get('audioContext')
+        audioContext: audio.get('audioContext'),
       });
     });
 
-    this.set('oscillators', oscillators);
-  }),
+    this.oscillators = oscillators;
+  }
 
-  actions: {
-    startNote(note) {
-      note.play();
-    },
+  @action
+  startNote(note) {
+    note.play();
+  }
 
-    stopNote(note) {
-      if (note.get('isPlaying')) {
-        note.stop();
-      }
+  @action
+  stopNote(note) {
+    if (note.get('isPlaying')) {
+      note.stop();
     }
   }
-});
+}

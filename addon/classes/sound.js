@@ -18,7 +18,6 @@ import { createTimeObject, withinRange } from 'ember-audio/utils';
  * @uses Playable
  */
 const Sound = EmberObject.extend(Connectable, Playable, {
-
   /**
    * When using the {{#crossLink "Audio-Service"}}{{/crossLink}}, The name that
    * this Sound instance is registered as on it's parent register.
@@ -97,7 +96,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
    * @property duration
    * @type {object}
    */
-  duration: computed('audioBuffer.duration', function() {
+  duration: computed('audioBuffer.duration', function () {
     const duration = this.get('audioBuffer.duration');
     const min = Math.floor(duration / 60);
     const sec = duration % 60;
@@ -112,7 +111,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
    * @property percentGain
    * @type {number}
    */
-  percentGain: computed(function() {
+  percentGain: computed(function () {
     return this.getNodeFrom('gain').gain.value * 100;
   }),
 
@@ -168,7 +167,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
         } else if (type === 'percent') {
           adjustGain(value / 100);
         }
-      }
+      },
     };
   },
 
@@ -200,7 +199,7 @@ const Sound = EmberObject.extend(Connectable, Playable, {
     const duration = this.get('duration.raw');
 
     const moveToOffset = (offset) => {
-      const isPlaying = this.get('isPlaying');
+      const isPlaying = this.isPlaying;
       const adjustedOffset = withinRange(offset, 0, duration);
 
       if (isPlaying) {
@@ -219,13 +218,13 @@ const Sound = EmberObject.extend(Connectable, Playable, {
         } else if (type === 'percent') {
           moveToOffset(amount * duration * 0.01);
         } else if (type === 'inverseRatio') {
-          moveToOffset(duration - (amount * duration));
+          moveToOffset(duration - amount * duration);
         } else if (type === 'seconds') {
           moveToOffset(amount);
         }
-      }
+      },
     };
-  }
+  },
 });
 
 export default Sound;

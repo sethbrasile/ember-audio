@@ -19,7 +19,6 @@ const beatBank = new WeakMap();
  * queue?
  */
 const BeatTrack = Sampler.extend({
-
   /**
    * Determines the number of beats in a BeatTrack instance.
    *
@@ -52,9 +51,9 @@ const BeatTrack = Sampler.extend({
    * @property beats
    * @type {array|Beat}
    */
-  beats: computed('numBeats', 'duration', function() {
+  beats: computed('duration', 'numBeats', 'play', 'playIn', function () {
     let beats = [];
-    let numBeats = this.get('numBeats');
+    let numBeats = this.numBeats;
     let existingBeats;
 
     if (beatBank.has(this)) {
@@ -64,9 +63,9 @@ const BeatTrack = Sampler.extend({
 
     for (let i = 0; i < numBeats; i++) {
       const beat = Beat.create({
-        duration: this.get('duration'),
+        duration: this.duration,
         _parentPlayIn: this.playIn.bind(this),
-        _parentPlay: this.play.bind(this)
+        _parentPlay: this.play.bind(this),
       });
 
       beats.push(beat);
@@ -128,11 +127,11 @@ const BeatTrack = Sampler.extend({
    * @param noteType {number} The (rhythmic) length of each beat/rest that should
    * be used to calculate the length of a beat/rest in seconds.
    */
-  _callPlayMethodOnBeats(method, bpm, noteType=1 / 4) {
+  _callPlayMethodOnBeats(method, bpm, noteType = 1 / 4) {
     // http://bradthemad.org/guitar/tempo_explanation.php
     const duration = (240 * noteType) / bpm;
-    this.get('beats').map((beat, idx) => beat[method](idx * duration));
-  }
+    this.beats.map((beat, idx) => beat[method](idx * duration));
+  },
 });
 
 export default BeatTrack;

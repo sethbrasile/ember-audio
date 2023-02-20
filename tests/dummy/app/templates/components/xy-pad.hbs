@@ -1,16 +1,17 @@
-{{! template-lint-disable no-invalid-interactive no-inline-styles }}
 <canvas
-  width={{padSize}}
-  height={{padSize}}
-  style="background-color: black;"
+  id="xy-canvas"
 
-  onmousedown={{action "activate"}}
-  onmousemove={{action "updateCoordinates"}}
-  onmouseleave={{action "deactivate"}}
-  onmouseup={{action "deactivate"}}
+  width={{@padSize}}
+  height={{@padSize}}
 
-  ontouchstart={{action "activate"}}
-  ontouchmove={{action "updateCoordinates"}}
-  ontouchend={{action "deactivate"}}
-  ontouchcancel={{action "deactivate"}}
+  {{on "mousedown" this.activate}}
+  {{on "touchstart" this.activate}}
+
+  {{on "mouseup" @deactivate}}
+  {{on "mouseleave" @deactivate}}
+  {{on "touchend" @deactivate}}
+  {{on "touchcancel" @deactivate}}
+
+  {{on "mousemove" this.updateCoordinates}}
+  {{on "touchmove" this.updateCoordinates}}
 ></canvas>

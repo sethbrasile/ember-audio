@@ -1,17 +1,17 @@
 import { schedule } from '@ember/runloop';
-import Component from '@ember/component';
-import layout from '../templates/components/xy-pad';
+import { action } from '@ember/object';
+import Component from '@glimmer/component';
 
-export default Component.extend({
-  layout,
+export default class XyPad extends Component {
+  constructor() {
+    super(...arguments);
 
-  didInsertElement() {
     schedule('afterRender', this, '_drawGrid');
     schedule('afterRender', this, '_drawText');
-  },
+  }
 
   _drawText() {
-    const [ canvas ] = this.$('canvas');
+    const canvas = document.getElementById('xy-canvas');
     const ctx = canvas.getContext('2d');
     const pad = 10;
 
@@ -34,10 +34,10 @@ export default Component.extend({
 
     // draw 'Frequency'
     ctx.fillText('Frequency', pad, canvas.height - pad);
-  },
+  }
 
   _drawGrid() {
-    const [ canvas ] = this.$('canvas');
+    const canvas = document.getElementById('xy-canvas');
     const ctx = canvas.getContext('2d');
     const { width, height } = canvas;
     const gridSize = 30;
@@ -48,46 +48,37 @@ export default Component.extend({
     ctx.beginPath();
 
     for (let i = 1; i <= width / gridSize; i++) {
-      const x = (i * gridSize);
+      const x = i * gridSize;
       ctx.moveTo(x, 0);
       ctx.lineTo(x, height);
       ctx.stroke();
     }
 
     for (let i = 1; i <= height / gridSize; i++) {
-      const y = (i * gridSize);
+      const y = i * gridSize;
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);
       ctx.stroke();
     }
 
     ctx.closePath();
-  },
-
-  actions: {
-    activate(e) {
-      e.preventDefault();
-      this.send('updateCoordinates', e);
-      this.activate();
-    },
-
-    deactivate() {
-      this.deactivate();
-    },
-
-    updateCoordinates(e) {
-      e.preventDefault();
-
-      const [ canvas ] = this.$('canvas');
-      const canvasLocation = canvas.getBoundingClientRect();
-      const xRelToScreen = e.x || e.touches[0].screenX;
-      const yRelToScreen = e.y || e.touches[0].screenY;
-      const x = xRelToScreen - canvasLocation.left;
-
-      // 'y' is measured from top, so invert for value from bottom
-      const y = this.get('padSize') + (yRelToScreen - canvasLocation.top) * -1;
-
-      this.updateCoordinates(x, y);
-    }
   }
-});
+
+  @action
+  activate(e) {
+    this.updateCoordinates(e);
+    this.args.activate();
+  }
+
+  @action
+  updateCoordinates(e) {
+    const canvasLocation = e.target.getBoundingClientRect();
+    const xRelToScreen = e.x || e.touches[0].screenX;
+    const yRelToScreen = e.y || e.touches[0].screenY;
+    const x = xRelToScreen - canvasLocation.left;
+
+    // 'y' is measured from top, so invert for value from bottom
+    const y = this.args.padSize + (yRelToScreen - canvasLocation.top) * -1;
+    this.args.updateCoordinates(x, y);
+  }
+}

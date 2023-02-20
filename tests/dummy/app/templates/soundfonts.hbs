@@ -1,13 +1,13 @@
 <h1>Soundfonts</h1>
 
 <ul class="nav nav-tabs">
-  {{#link-to "soundfonts.index" tagName="li" classNames="link"}}
+  <LinkTo @route="soundfonts.index" tagName="li" classNames="link">
     <a>Example</a>
-  {{/link-to}}
+  </LinkTo>
 
-  {{#link-to "soundfonts.notes" tagName="li" classNames="link"}}
+  <LinkTo @route="soundfonts.notes" tagName="li" classNames="link">
     <a>Note Objects</a>
-  {{/link-to}}
+  </LinkTo>
 </ul>
 
 {{outlet}}

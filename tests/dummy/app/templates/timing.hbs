@@ -1,17 +1,17 @@
 <h1>Timing</h1>
 
 <ul class="nav nav-tabs">
-  {{#link-to "timing.index" tagName="li" classNames="link"}}
+  <LinkTo @route="timing.index" tagName="li" classNames="link">
     <a>Understanding Timing</a>
-  {{/link-to}}
+  </LinkTo>
 
-  {{#link-to "timing.with-ember-audio" tagName="li" classNames="link"}}
+  <LinkTo @route="timing.with-ember-audio" tagName="li" classNames="link">
     <a>Timing with Ember Audio</a>
-  {{/link-to}}
+  </LinkTo>
 
-  {{#link-to "timing.drum-machine" tagName="li" classNames="link"}}
+  <LinkTo @route="timing.drum-machine" tagName="li" classNames="link">
     <a>Multisampled Drum Machine</a>
-  {{/link-to}}
+  </LinkTo>
 </ul>
 
 {{outlet}}

@@ -184,7 +184,7 @@ export default Mixin.create({
 
     const node = this.getNodeFrom('audioSource');
 
-    node.start(playAt, this.get('startOffset'));
+    node.start(playAt, this.startOffset);
 
     this.set('_startedPlayingAt', playAt);
 
@@ -193,5 +193,5 @@ export default Mixin.create({
     } else {
       later(() => this.set('isPlaying', true), (playAt - currentTime) * 1000);
     }
-  }
+  },
 });

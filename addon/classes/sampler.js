@@ -14,7 +14,6 @@ import EmberObject from '@ember/object';
  * @todo loop
  */
 const Sampler = EmberObject.extend({
-
   /**
    * Determines the gain applied to each sample.
    *
@@ -107,17 +106,17 @@ const Sampler = EmberObject.extend({
    * @return {Sound}
    */
   _getNextSound() {
-    let soundIterator = this.get('_soundIterator');
+    let soundIterator = this._soundIterator;
     let nextSound;
 
     if (!soundIterator) {
-      soundIterator = this.get('sounds').values();
+      soundIterator = this.sounds.values();
     }
 
     nextSound = soundIterator.next();
 
     if (nextSound.done) {
-      soundIterator = this.get('sounds').values();
+      soundIterator = this.sounds.values();
       nextSound = soundIterator.next();
     }
 
@@ -135,8 +134,8 @@ const Sampler = EmberObject.extend({
    * @return {Sound} The input sound after having it's gain and pan set
    */
   _setGainAndPan(sound) {
-    sound.changeGainTo(this.get('gain')).from('ratio');
-    sound.changePanTo(this.get('pan'));
+    sound.changeGainTo(this.gain).from('ratio');
+    sound.changePanTo(this.pan);
 
     return sound;
   },
@@ -147,11 +146,11 @@ const Sampler = EmberObject.extend({
    * @private
    * @method _initSounds
    */
-  _initSounds: on('init', function() {
-    if (!this.get('sounds')) {
+  _initSounds: on('init', function () {
+    if (!this.sounds) {
       this.set('sounds', new Set());
     }
-  })
+  }),
 });
 
 export default Sampler;

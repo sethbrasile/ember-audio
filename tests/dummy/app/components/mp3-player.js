@@ -1,47 +1,46 @@
-import { computed } from '@ember/object';
 import { htmlSafe } from '@ember/template';
-import $ from 'jquery';
-import Component from '@ember/component';
-import layout from '../templates/components/mp3-player';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
 
-export default Component.extend({
-  layout,
-
-  percentPlayed: computed('track.percentPlayed', function() {
-    const percentPlayed = this.get('track.percentPlayed');
+export default class Mp3Player extends Component {
+  get percentPlayed() {
+    const percentPlayed = this.args.track.percentPlayed;
     return htmlSafe(`width: ${percentPlayed}%;`);
-  }),
+  }
 
-  percentGain: computed('track.percentGain', function() {
-    const percentGain = this.get('track.percentGain');
+  get percentGain() {
+    const percentGain = this.args.track.percentGain;
     return htmlSafe(`height: ${percentGain}%;`);
-  }),
+  }
 
-  actions: {
-    togglePlay() {
-      const track = this.get('track');
+  @action
+  togglePlay() {
+    const { track } = this.args;
 
-      if (track.get('isPlaying')) {
-        track.pause();
-      } else {
-        track.play();
-      }
-    },
-
-    seek(e) {
-      const width = e.target.offsetParent.offsetWidth;
-      const newPosition = e.offsetX / width;
-      this.get('track').seek(newPosition).from('ratio');
-    },
-
-    changeVolume(e) {
-      const height = e.target.offsetParent.offsetHeight;
-      const offset = e.pageY - $(e.target).parent().offset().top;
-      const adjustedHeight = height * 0.8;
-      const adjustedOffset = offset - ((height - adjustedHeight) / 2);
-      const newGain = adjustedOffset / adjustedHeight;
-
-      this.get('track').changeGainTo(newGain).from('inverseRatio');
+    if (track.isPlaying) {
+      track.pause();
+    } else {
+      track.play();
     }
   }
-});
+
+  @action
+  seek(e) {
+    const width = e.target.offsetParent.offsetWidth;
+    const newPosition = e.offsetX / width;
+    this.args.track.seek(newPosition).from('ratio');
+  }
+
+  @action
+  changeVolume(e) {
+    const height = e.target.offsetParent.offsetHeight;
+    const parentOffset =
+      e.target.parentNode.getBoundingClientRect().top + window.pageYOffset;
+    const offset = e.pageY - parentOffset - document.documentElement.clientTop;
+    const adjustedHeight = height * 0.8;
+    const adjustedOffset = offset - (height - adjustedHeight) / 2;
+    const newGain = adjustedOffset / adjustedHeight;
+
+    this.args.track.changeGainTo(newGain).from('inverseRatio');
+  }
+}

@@ -1,34 +1,31 @@
 <div class="content">
   <h2>XY Pad</h2>
 
-  {{xy-pad
-    padSize=padSize
-    updateCoordinates=(action "adjustSynthParams")
-    activate=(action "play")
-    deactivate=(action "stop")
-  }}
+  <XyPad @padSize={{this.padSize}} @updateCoordinates={{this.adjustSynthParams}} @activate={{this.play}} @deactivate={{this.stop}} />
 
-  <p>Frequency: {{frequency}}</p>
-  <p>Gain: {{gain}}</p>
+  <p>Frequency: {{this.frequency}}</p>
+  <p>Gain: {{this.gain}}</p>
+  <p>padsize: {{this.padSize}}</p>
 </div>
 
 <p>Template</p>
 
-{{#code-block language="handlebars"}}
-  \{{xy-pad
-    padSize=padSize
-    updateCoordinates="adjustSynthParams"
-    activate="play"
-    deactivate="stop"
-  }}
+<CodeBlock @language="handlebars">
+  {{'
+    <XyPad
+      @padSize={{this.padSize}}
+      @updateCoordinates={{action "adjustSynthParams" }}
+      @activate={{action "play" }}
+      @deactivate={{action "stop" }} />
 
-  &lt;p>Frequency: \{{frequency}}&lt;/p>
-  &lt;p>Gain: \{{gain}}&lt;/p>
-{{/code-block}}
+    <p>Frequency: {{frequency}}</p>
+    <p>Gain: {{gain}}</p>
+  '}}
+</CodeBlock>
 
 <p>Controller</p>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   import Ember from 'ember';
   import { exponentialRatio } from 'ember-audio/utils';
 
@@ -97,35 +94,37 @@
       }
     }
   });
-{{/code-block}}
+</CodeBlock>
 
 <p>
   <code>xy-pad</code> component template
 </p>
 
-{{#code-block language="handlebars"}}
-  &lt;canvas
-    width=\{{padSize}}
-    height=\{{padSize}}
-    style="background-color: black;"
+<CodeBlock @language="handlebars">
+  {{'
+    <canvas
+      width={{padSize}}
+      height={{padSize}}
+      style="background-color: black;"
 
-    onmousedown=\{{action "activate"}}
-    onmousemove=\{{action "updateCoordinates"}}
-    onmouseleave=\{{action "deactivate"}}
-    onmouseup=\{{action "deactivate"}}
+      onmousedown={{action "activate"}}
+      onmousemove={{action "updateCoordinates"}}
+      onmouseleave={{action "deactivate"}}
+      onmouseup={{action "deactivate"}}
 
-    ontouchstart=\{{action "activate"}}
-    ontouchmove=\{{action "updateCoordinates"}}
-    ontouchend=\{{action "deactivate"}}
-    ontouchcancel=\{{action "deactivate"}}
-  >&lt;/canvas>
-{{/code-block}}
+      ontouchstart={{action "activate"}}
+      ontouchmove={{action "updateCoordinates"}}
+      ontouchend={{action "deactivate"}}
+      ontouchcancel={{action "deactivate"}}
+    ></canvas>
+  '}}
+</CodeBlock>
 
 <p>
   <code>xy-pad</code> component javascript
 </p>
 
-{{#code-block language="javascript"}}
+<CodeBlock @language="javascript">
   // leaving out the code to draw the grid/text
   export default Ember.Component.extend({
     actions: {
@@ -142,7 +141,7 @@
       updateCoordinates(e) {
         e.preventDefault();
 
-        const [ canvas ] = this.$('canvas');
+        const [ canvas ] = this.element.childNodes;
         const canvasLocation = canvas.getBoundingClientRect();
         const xRelToScreen = e.x || e.touches[0].screenX;
         const yRelToScreen = e.y || e.touches[0].screenY;
@@ -155,4 +154,4 @@
       }
     }
   });
-{{/code-block}}
+</CodeBlock>

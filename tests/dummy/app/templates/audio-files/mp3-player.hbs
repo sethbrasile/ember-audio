@@ -5,8 +5,8 @@
     <div class="col-sm-3">
       <table class="table table-bordered">
         <tbody>
-          {{#each tracks as |track|}}
-            <tr role="button" class="{{if (eq track selectedTrack) "info"}} item" {{action "selectTrack" track}}>
+          {{#each this.tracks as |track|}}
+            <tr role="button" class="{{if (eq track this.selectedTrack) "info"}} item" {{on "click" (fn this.selectTrack track)}}>
               <td>{{undasherize track.name}}</td>
             </tr>
           {{/each}}
@@ -15,15 +15,15 @@
     </div>
 
     <div class="description col-sm-9">
-      {{#if selectedTrack}}
-        <p>{{selectedTrack.description}}</p>
+      {{#if this.selectedTrack}}
+        <p>{{this.selectedTrack.description}}</p>
       {{else}}
         <p>Select a Track...</p>
       {{/if}}
     </div>
   </div>
 
-  {{mp3-player track=selectedTrack.trackInstance loading=trackIsLoading}}
+  <Mp3Player @track={{this.selectedTrack.trackInstance}} @loading={{this.trackIsLoading}} />
 </div>
 
 <div class="content">
@@ -33,38 +33,40 @@
 
   <h4>Template</h4>
 
-  {{#code-block language="handlebars"}}
-  &lt;div class="track-list">
-    &lt;div class="select">
-      &lt;table>
-        \{{#each tracks as |track|}}
-          &lt;tbody>
-            &lt;tr \{{action "selectTrack" track}}>
-              &lt;td>\{{track.name}}&lt;/td>
-            &lt;/tr>
-          &lt;/tbody>
-        \{{/each}}
-      &lt;/table>
-    &lt;/div>
+  <CodeBlock @language="handlebars">
+  {{'
+    <div class="track-list">
+      <div class="select">
+        <table>
+          {{#each tracks as |track|}}
+            <tbody>
+              <tr {{action "selectTrack" track}}>
+                <td>{{track.name}}</td>
+              </tr>
+            </tbody>
+          {{/each}}
+        </table>
+      </div>
 
-    &lt;div class="description">
-      \{{#if selectedTrack}}
-        &lt;p>\{{{selectedTrack.description}}}&lt;/p>
-      \{{else}}
-        &lt;p>Select a Track...&lt;/p>
-      \{{/if}}
-    &lt;/div>
-  &lt;/div>
+      <div class="description">
+        {{#if selectedTrack}}
+          <p>{{selectedTrack.description}}</p>
+        {{else}}
+          <p>Select a Track...</p>
+        {{/if}}
+      </div>
+    </div>
 
-  \{{!-- mp3-player accepts a Track instance, and a loading boolean --}}
-  \{{mp3-player track=selectedTrack.trackInstance loading=trackIsLoading}}
-  {{/code-block}}
+    {{!-- mp3-player accepts a Track instance, and a loading boolean --}}
+    {{mp3-player track=selectedTrack.trackInstance loading=trackIsLoading}}
+  '}}
+  </CodeBlock>
 </div>
 
 <div class="content">
   <h4>Controller</h4>
 
-  {{#code-block language="javascript"}}
+  <CodeBlock @language="javascript">
   audio: Ember.inject.service(),
   trackIsLoading: false,
   selectedTrack: null,
@@ -100,43 +102,45 @@
       });
     }
   }
-  {{/code-block}}
+  </CodeBlock>
 </div>
 
 <div class="content">
   <h4><code>mp3-player</code> Component Template</h4>
 
-  {{#code-block language="handlebars"}}
-  \{{#if loading}}
-    \{{!-- some loading display --}}
-  \{{else if track}}
-    &lt;div class="audioplayer">
-      &lt;div class="play-pause \{{if track.isPlaying "playing"}}" \{{action "togglePlay"}}>&lt;a>&lt;/a>&lt;/div>
+  <CodeBlock @language="handlebars">
+  {{'
+    {{#if loading}}
+      {{!-- some loading display --}}
+    {{else if track}}
+      <div class="audioplayer">
+        <div class="play-pause {{if track.isPlaying "playing"}}" {{action "togglePlay"}}><a></a></div>
 
-      \{{!-- track.position and track.duration output a few different formats
-        as a POJO. We are interested in the "string" variant --}}
-      &lt;div class="time current">\{{track.position.string}}&lt;/div>
+        {{!-- track.position and track.duration output a few different formats
+          as a POJO. We are interested in the "string" variant --}}
+        <div class="time current">{{track.position.string}}</div>
 
-      \{{!-- An action bound to "onclick" is passed a javascript native "MouseEvent" object --}}
-      &lt;div class="bar" onclick=\{{action "seek"}}>
-        &lt;div style="width: 100%;">&lt;/div>
-        &lt;div class="played" style=\{{percentPlayed}}>&lt;/div>
-      &lt;/div>
+        {{!-- An action bound to "onclick" is passed a javascript native "MouseEvent" object --}}
+        <div class="bar" onclick={{action "seek"}}>
+          <div style="width: 100%;"></div>
+          <div class="played" style={{percentPlayed}}></div>
+        </div>
 
-      &lt;div class="time duration">\{{track.duration.string}}&lt;/div>
+        <div class="time duration">{{track.duration.string}}</div>
 
-      &lt;div class="volume" onclick=\{{action "changeVolume"}}>
-        &lt;div class="button">&lt;a>&lt;/a>&lt;/div>
+        <div class="volume" onclick={{action "changeVolume"}}>
+          <div class="button"><a></a></div>
 
-        &lt;div class="adjust">
-          &lt;div>
-            &lt;div style=\{{percentGain}}>&lt;/div>
-          &lt;/div>
-        &lt;/div>
-      &lt;/div>
-    &lt;/div>
-  \{{/if}}
-  {{/code-block}}
+          <div class="adjust">
+            <div>
+              <div style={{percentGain}}></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  '}}
+  </CodeBlock>
 </div>
 
 <div class="content">
@@ -149,7 +153,7 @@
     more easily using <code>range</code> inputs.
   </p>
 
-  {{#code-block language="javascript"}}
+  <CodeBlock @language="javascript">
   percentPlayed: Ember.computed('track.percentPlayed', function() {
     const percentPlayed = this.get('track.percentPlayed');
     return Ember.String.htmlSafe(`width: ${percentPlayed}%;`);
@@ -203,5 +207,5 @@
       this.get('track').changeGainTo(newGain).from('inverseRatio');
     }
   }
-  {{/code-block}}
+  </CodeBlock>
 </div>

@@ -70,9 +70,11 @@ export function octaveShift(octaves) {
   // octave, in the second octave
   const indexToShiftAt = secondOctaveNames.lastIndexOf(lastNote) + 1;
   // Split the octave array at that point, and move the first chunk to the end
-  return A(octaves.map((octave) => arraySwap(octave, indexToShiftAt)))
-  // Put first octave back at the beginning of the array
-  .unshiftObjects([firstOctave]);
+  return (
+    A(octaves.map((octave) => arraySwap(octave, indexToShiftAt)))
+      // Put first octave back at the beginning of the array
+      .unshiftObjects([firstOctave])
+  );
 }
 
 /**
@@ -103,7 +105,7 @@ export function octaveSort(octaves) {
  * array, [1] is an array of all the octaves in the original array.
  */
 export function extractOctaves(notes) {
-  return [ notes, A(A(notes).getEach('octave')) ];
+  return [notes, A(A(notes).getEach('octave'))];
 }
 
 /**
@@ -117,8 +119,8 @@ export function extractOctaves(notes) {
  *
  * @return {array} The mutated array.
  */
-export function stripDuplicateOctaves([ notes, octaves ]) {
-  return [ notes, A(octaves).uniq().sort() ];
+export function stripDuplicateOctaves([notes, octaves]) {
+  return [notes, A(octaves).uniq().sort()];
 }
 
 /**
@@ -134,7 +136,7 @@ export function stripDuplicateOctaves([ notes, octaves ]) {
  *
  * @return {Ember.MutableArray}
  */
-export function createOctavesWithNotes([ notes, octaves ]) {
+export function createOctavesWithNotes([notes, octaves]) {
   return A(octaves).map((octave) => A(notes).filterBy('octave', octave));
 }
 

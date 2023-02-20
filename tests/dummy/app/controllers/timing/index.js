@@ -1,23 +1,24 @@
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
-import { on } from '@ember/object/evented';
 import Controller from '@ember/controller';
 
-export default Controller.extend({
-  audio: service(),
+export default class IndexController extends Controller {
+  @service audio;
 
-  initSound: on('init', function() {
-    this.get('audio').load('/ember-audio/Db5.mp3').asSound('delayed-note');
-  }),
-
-  actions: {
-    playInOneSecond1() {
-      const audio = this.get('audio');
-      const currentTime = audio.get('audioContext.currentTime');
-      audio.getSound('delayed-note').playAt(currentTime + 1);
-    },
-
-    playInOneSecond2() {
-      this.get('audio').getSound('delayed-note').playIn(1);
-    }
+  constructor() {
+    super(...arguments);
+    this.audio.load('/ember-audio/Db5.mp3').asSound('delayed-note');
   }
-});
+
+  @action
+  playInOneSecond1() {
+    const { audio } = this;
+    const currentTime = audio.get('audioContext.currentTime');
+    audio.getSound('delayed-note').playAt(currentTime + 1);
+  }
+
+  @action
+  playInOneSecond2() {
+    this.audio.getSound('delayed-note').playIn(1);
+  }
+}

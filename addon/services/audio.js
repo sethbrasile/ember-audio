@@ -1,7 +1,5 @@
 import { resolve, all, Promise } from 'rsvp';
 import Service from '@ember/service';
-import fetch from 'fetch';
-import StereoPannerNode from 'stereo-panner-node';
 import {
   Sound,
   Note,
@@ -10,13 +8,13 @@ import {
   BeatTrack,
   Sampler,
   Oscillator,
-  Font
+  Font,
 } from 'ember-audio';
 import {
   sortNotes,
   base64ToUint8,
   mungeSoundFont,
-  frequencyMap
+  frequencyMap,
 } from 'ember-audio/utils';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -26,9 +24,11 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 if (!window.AudioContext && window.webkitAudioContext) {
   const oldFunction = AudioContext.prototype.decodeAudioData;
 
-  AudioContext.prototype.decodeAudioData = function(arraybuffer) {
-    return new Promise((resolve, reject) => oldFunction.call(this, arraybuffer, resolve, reject));
-  }
+  AudioContext.prototype.decodeAudioData = function (arraybuffer) {
+    return new Promise((resolve, reject) =>
+      oldFunction.call(this, arraybuffer, resolve, reject)
+    );
+  };
 
   StereoPannerNode.polyfill();
 }
@@ -40,9 +40,7 @@ if (!window.AudioContext && window.webkitAudioContext) {
  * @module AudioService
  */
 
-const {
-  error, warn
-} = console;
+const { error, warn } = console;
 
 /**
  * A {{#crossLink "Ember.Service"}}Service{{/crossLink}} that provides methods
@@ -165,12 +163,12 @@ export default Service.extend({
    * @todo find a better way than returning a POJO
    */
   load(src) {
-    const audioContext = this.get('audioContext');
+    const audioContext = this.audioContext;
     const _load = this._load.bind(this);
     const _loadFont = this._loadFont.bind(this);
     const _loadBeatTrack = this._loadBeatTrack.bind(this);
     const _createSoundsArray = this._createSoundsArray.bind(this);
-    const samplersRegister = this.get('_samplers');
+    const samplersRegister = this._samplers;
     const { createNoteArray } = this;
 
     return {
@@ -264,7 +262,7 @@ export default Service.extend({
         const response = await fetch(src);
         const json = await response.json();
         return createNoteArray(json);
-      }
+      },
     };
   },
 
@@ -306,8 +304,8 @@ export default Service.extend({
    *
    * @return {Sound} The created white noise Sound instance.
    */
-  createWhiteNoise(opts={}) {
-    const audioContext = this.get('audioContext');
+  createWhiteNoise(opts = {}) {
+    const audioContext = this.audioContext;
     const bufferSize = audioContext.sampleRate;
     const audioBuffer = audioContext.createBuffer(1, bufferSize, bufferSize);
     const output = audioBuffer.getChannelData(0);
@@ -329,8 +327,8 @@ export default Service.extend({
    *
    * @return {Oscillator} The created Oscillator instance.
    */
-  createOscillator(opts={}) {
-    const audioContext = this.get('audioContext');
+  createOscillator(opts = {}) {
+    const audioContext = this.audioContext;
     return Oscillator.create(Object.assign(opts, { audioContext }));
   },
 
@@ -346,7 +344,7 @@ export default Service.extend({
    * provided name.
    */
   getBeatTrack(name) {
-    return this.get('_beatTracks').get(name);
+    return this._beatTracks.get(name);
   },
 
   /**
@@ -361,7 +359,7 @@ export default Service.extend({
    * @return {Sound} returns the Sound instance that matches the provided name.
    */
   getSound(name) {
-    return this.get('_sounds').get(name);
+    return this._sounds.get(name);
   },
 
   /**
@@ -376,7 +374,7 @@ export default Service.extend({
    * @return {Track} Returns the Track instance that matches the provided name.
    */
   getTrack(name) {
-    return this.get('_tracks').get(name);
+    return this._tracks.get(name);
   },
 
   /**
@@ -396,7 +394,7 @@ export default Service.extend({
    * note from the requested font to be played.
    */
   getFont(name) {
-    return this.get('_fonts').get(name);
+    return this._fonts.get(name);
   },
 
   /**
@@ -411,12 +409,12 @@ export default Service.extend({
    * @return {Sampler} returns the Sampler instance that matches the provided name.
    */
   getSampler(name) {
-    return this.get('_samplers').get(name);
+    return this._samplers.get(name);
   },
 
   /**
-  * Gets all instances of requested type and calls
-  * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each.
+   * Gets all instances of requested type and calls
+   * {{#crossLink "Sound/stop:method"}}{{/crossLink}} on each.
    *
    * @public
    * @method stopAll
@@ -424,7 +422,7 @@ export default Service.extend({
    * @param {string} type='tracks' The type of the register that you wish
    * to stop all instances of. Can be `'tracks'`, or `'sounds'`.
    */
-  stopAll(type='tracks') {
+  stopAll(type = 'tracks') {
     for (let sound of this.get(`_${type}`).values()) {
       sound.stop();
     }
@@ -439,7 +437,7 @@ export default Service.extend({
    * @method pauseAll
    */
   pauseAll() {
-    for (let sound of this.get('_tracks').values()) {
+    for (let sound of this._tracks.values()) {
       sound.pause();
     }
   },
@@ -471,15 +469,15 @@ export default Service.extend({
   _getRegisterFor(type) {
     switch (type) {
       case 'sound':
-        return this.get('_sounds');
+        return this._sounds;
       case 'track':
-        return this.get('_tracks');
+        return this._tracks;
       case 'beatTrack':
-        return this.get('_beatTracks');
+        return this._beatTracks;
       case 'sampler':
-        return this.get('_samplers');
+        return this._samplers;
       case 'font':
-        return this.get('_fonts');
+        return this._fonts;
     }
   },
 
@@ -533,7 +531,7 @@ export default Service.extend({
    * to an instance of a Sound, Track, or BeatTrack
    */
   _load(name, src, type) {
-    const audioContext = this.get('audioContext');
+    const audioContext = this.audioContext;
     const register = this._getRegisterFor(type);
 
     if (register.has(name)) {
@@ -544,12 +542,20 @@ export default Service.extend({
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
       .then((audioBuffer) => {
-        const sound = this._createSoundFor(type, { audioBuffer, audioContext, name });
+        const sound = this._createSoundFor(type, {
+          audioBuffer,
+          audioContext,
+          name,
+        });
         register.set(name, sound);
         return sound;
       })
       .catch((err) => {
-        error('ember-audio:', err, 'This error was probably caused by a 404 or an incompatible audio file type');
+        error(
+          'ember-audio:',
+          err,
+          'This error was probably caused by a 404 or an incompatible audio file type'
+        );
       });
   },
 
@@ -585,28 +591,35 @@ export default Service.extend({
 
     // If the font already exists, no need to load it up again.
     if (fontsRegister.has(instrumentName)) {
-      warn(`ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you explicitly remove it with "audioService.removeFromRegister('font', '${instrumentName}')"`);
+      warn(
+        `ember-audio: You tried to load a soundfont instrument called "${name}", but it already exists. Repeatedly loading the same soundfont all willy-nilly is unnecessary and would have a negative impact on performance, so the previously loaded instrument has been cached and will be reused unless you explicitly remove it with "audioService.removeFromRegister('font', '${instrumentName}')"`
+      );
       return resolve(fontsRegister.get(instrumentName));
     }
 
     // Create a Font instance and place it in the _fonts register
     fontsRegister.set(instrumentName, Font.create());
 
-    return fetch(src).then((response) => response.text())
+    return (
+      fetch(src)
+        .then((response) => response.text())
 
-      // Strip extraneous stuff from soundfont (which is currently a long string)
-      // and split by line into an array
-      .then(mungeSoundFont)
+        // Strip extraneous stuff from soundfont (which is currently a long string)
+        // and split by line into an array
+        .then(mungeSoundFont)
 
-      // Decode base64 to audio data, splitting each line from the sound font
-      // into a key and value like, [noteName, decodedAudio]
-      .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
+        // Decode base64 to audio data, splitting each line from the sound font
+        // into a key and value like, [noteName, decodedAudio]
+        .then((audioData) => this._extractDecodedKeyValuePairs(audioData))
 
-      // Create a Note instance for each note from the decoded audio data.
-      // Also sets the note on the corresponding font in the _fonts register.
-      .then((keyValuePairs) => this._createNoteObjectsForFont(keyValuePairs, instrumentName))
+        // Create a Note instance for each note from the decoded audio data.
+        // Also sets the note on the corresponding font in the _fonts register.
+        .then((keyValuePairs) =>
+          this._createNoteObjectsForFont(keyValuePairs, instrumentName)
+        )
 
-      .catch((err) => error('ember-audio:', err));
+        .catch((err) => error('ember-audio:', err))
+    );
   },
 
   /**
@@ -624,7 +637,7 @@ export default Service.extend({
    * @return {Promise|BeatTrack} A promise that resolves to a BeatTrack instance.
    */
   _loadBeatTrack(name, srcArray) {
-    const audioContext = this.get('audioContext');
+    const audioContext = this.audioContext;
 
     return this._createSoundsArray(name, srcArray).then((soundsArray) => {
       const sounds = new Set(soundsArray);
@@ -666,7 +679,7 @@ export default Service.extend({
    * values, `[noteName, decodedAudio]`.
    */
   _extractDecodedKeyValuePairs(notes) {
-    const ctx = this.get('audioContext');
+    const ctx = this.audioContext;
     const promises = [];
 
     async function decodeNote(noteName, buffer) {
@@ -676,8 +689,7 @@ export default Service.extend({
     }
 
     for (let noteName in notes) {
-      if (notes.hasOwnProperty(noteName)) {
-
+      if (Object.prototype.hasOwnProperty.call(notes, noteName)) {
         // Transform base64 note value to Uint8Array
         const noteValue = base64ToUint8(notes[noteName]);
 
@@ -713,21 +725,21 @@ export default Service.extend({
    * @return {array} Returns an Array of {{#crossLink "Note"}}Notes{{/crossLink}}
    */
   _createNoteObjectsForFont(audioData, instrumentName) {
-    const audioContext = this.get('audioContext');
+    const audioContext = this.audioContext;
     const fontsRegister = this._getRegisterFor('font');
     const font = fontsRegister.get(instrumentName);
 
     const notes = audioData.map((note) => {
-      const [ identifier, audioBuffer ] = note;
+      const [identifier, audioBuffer] = note;
       return SampledNote.create({
         identifier,
         audioBuffer,
-        audioContext
+        audioContext,
       });
     });
 
     font.set('notes', sortNotes(notes));
 
     return font;
-  }
+  },
 });
