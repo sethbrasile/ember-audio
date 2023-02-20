@@ -7,7 +7,7 @@
     alternated so you never hear the same sample back-to-back.
   </p>
 
-  {{#if isLoading}}
+  {{#if this.isLoading}}
     <div class="spinner">
       <div class="rect1"></div>
       <div class="rect2"></div>
@@ -20,12 +20,12 @@
       <button class="btn btn-primary" type="button" {{action "play"}}>PLAY</button>
 
       <div>
-        <label>Tempo <Input @value={{bpm}} /></label>
+        <label>Tempo <Input @value={{this.bpm}} /></label>
       </div>
     </div>
 
     <div class="beat-machine">
-      {{#each beatTracks as |beatTrack|}}
+      {{#each this.beatTracks as |beatTrack|}}
         <div class="beat-lane">
           <p class="text">{{beatTrack.name}}</p>
 

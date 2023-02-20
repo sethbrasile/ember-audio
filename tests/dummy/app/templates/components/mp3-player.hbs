@@ -1,5 +1,5 @@
 {{! template-lint-disable no-inline-styles }}
-{{#if loading}}
+{{#if this.loading}}
   <div class="spinner">
     <div class="rect1"></div>
     <div class="rect2"></div>
@@ -7,24 +7,24 @@
     <div class="rect4"></div>
     <div class="rect5"></div>
   </div>
-{{else if track}}
+{{else if this.track}}
   <div class="audioplayer">
-    <div role="button" class="play-pause {{if track.isPlaying "playing"}}" {{action "togglePlay"}}><a></a></div>
-    <div class="time current">{{track.position.string}}</div>
+    <div role="button" class="play-pause {{if this.track.isPlaying "playing"}}" {{action "togglePlay"}}><a></a></div>
+    <div class="time current">{{this.track.position.string}}</div>
 
     <div role="button" class="bar" onclick={{action "seek"}}>
       <div style="width: 100%;"></div>
-      <div class="played" style={{percentPlayed}}></div>
+      <div class="played" style={{this.percentPlayed}}></div>
     </div>
 
-    <div class="time duration">{{track.duration.string}}</div>
+    <div class="time duration">{{this.track.duration.string}}</div>
 
     <div role="button" class="volume" onclick={{action "changeVolume"}}>
       <div class="button"><a></a></div>
 
       <div class="adjust">
         <div>
-          <div style={{percentGain}}></div>
+          <div style={{this.percentGain}}></div>
         </div>
       </div>
     </div>

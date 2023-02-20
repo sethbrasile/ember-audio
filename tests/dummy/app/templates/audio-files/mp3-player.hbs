@@ -5,8 +5,8 @@
     <div class="col-sm-3">
       <table class="table table-bordered">
         <tbody>
-          {{#each tracks as |track|}}
-            <tr role="button" class="{{if (eq track selectedTrack) "info"}} item" {{action "selectTrack" track}}>
+          {{#each this.tracks as |track|}}
+            <tr role="button" class="{{if (eq track this.selectedTrack) "info"}} item" {{action "selectTrack" track}}>
               <td>{{undasherize track.name}}</td>
             </tr>
           {{/each}}
@@ -15,15 +15,15 @@
     </div>
 
     <div class="description col-sm-9">
-      {{#if selectedTrack}}
-        <p>{{selectedTrack.description}}</p>
+      {{#if this.selectedTrack}}
+        <p>{{this.selectedTrack.description}}</p>
       {{else}}
         <p>Select a Track...</p>
       {{/if}}
     </div>
   </div>
 
-  <Mp3Player @track={{selectedTrack.trackInstance}} @loading={{trackIsLoading}} />
+  <Mp3Player @track={{this.selectedTrack.trackInstance}} @loading={{this.trackIsLoading}} />
 </div>
 
 <div class="content">

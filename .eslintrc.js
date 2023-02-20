@@ -21,6 +21,7 @@ module.exports = {
   },
   rules: {
     'ember/no-classic-classes': 0,
+    'ember/no-classic-components': 0,
     'ember/no-new-mixins': 0,
     'ember/no-mixins': 0,
     'ember/no-get': 0,
