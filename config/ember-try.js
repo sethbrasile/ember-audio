@@ -141,14 +141,6 @@ module.exports = async function () {
       },
       // embroiderSafe(),
       // embroiderOptimized(),
-      {
-        name: 'with-ember-cli-htmlbars-inline-precompile',
-        npm: {
-          devDependencies: {
-            'ember-cli-htmlbars-inline-precompile': '^3.0.0',
-          },
-        },
-      },
     ],
   };
 };
