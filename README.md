@@ -1,6 +1,6 @@
 # Ember-audio
 
-[![CircleCI](https://circleci.com/gh/sethbrasile/ember-audio.svg?style=svg)](https://circleci.com/gh/sethbrasile/ember-audio)
+[![Github CI Workflow](https://github.com/sethbrasile/ember-audio/actions/workflows/ci.yml/badge.svg)](https://circleci.com/gh/sethbrasile/ember-audio)
 [![codecov](https://codecov.io/gh/sethbrasile/ember-audio/branch/master/graph/badge.svg)](https://codecov.io/gh/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Ember Observer Score](https://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio) [![Greenkeeper badge](https://badges.greenkeeper.io/sethbrasile/ember-audio.svg)](https://greenkeeper.io/)
 
 #### Installation
@@ -33,8 +33,8 @@ contact me via `@sethbrasile` on the ember community discord, or via email.
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v2.18 or above
-* Ember CLI v2.13 or above
+* Ember.js v3.28 or above
+* Ember CLI v3.8 or above
 
 * `ember serve`
 * Visit your app at http://localhost:4200/ember-audio/.
