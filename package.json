@@ -27,7 +27,7 @@
   },
   "scripts": {
     "build": "ember build --environment=production",
-    "clean:ember-try": "rm -rf .node_modules.ember-try && rm *.json.ember-try",
+    "clean:ember-try": "rm -rf .node_modules.ember-try && rm *.ember-try",
     "lint": "concurrently \"npm:lint:*(!fix)\" --names \"lint:\"",
     "lint:fix": "concurrently \"npm:lint:*:fix\" --names \"fix:\"",
     "lint:hbs": "ember-template-lint .",
@@ -68,7 +68,7 @@
     "ember-decorators": "^6.1.1",
     "ember-load-initializers": "^2.1.2",
     "ember-page-title": "^7.0.0",
-    "ember-qunit": "^6.1.1",
+    "ember-qunit": "^5.1.5",
     "ember-resolver": "^10.0.0",
     "ember-source": "~3.28.0",
     "ember-source-channel-url": "^3.0.0",
