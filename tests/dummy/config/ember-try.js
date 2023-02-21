@@ -99,7 +99,6 @@ module.exports = async function () {
           devDependencies: {
             'ember-source': await getChannelURL('beta'),
           },
-
         },
       },
       {
@@ -117,17 +116,17 @@ module.exports = async function () {
             'application-template-wrapper': false,
             'default-async-observers': false,
             'jquery-integration': false,
-            'template-only-glimmer-components': true
+            'template-only-glimmer-components': true,
           }),
         },
         npm: {
           devDependencies: {
-              'ember-source': '~3.28.0',
-              'ember-cli': '~3.28.0',
-              'ember-resolver': '^8.0.0',
+            'ember-source': '~3.28.0',
+            'ember-cli': '~3.28.0',
+            'ember-resolver': '^8.0.0',
           },
           ember: {
-              edition: 'classic',
+            edition: 'classic',
           },
         },
       },

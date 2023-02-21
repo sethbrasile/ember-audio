@@ -28,8 +28,10 @@ jobs:
         run: yarn
       # - name: Lint
       #   run: npm run lint
-      - name: Run Tests
-        run: npm run test:ember
+      - name: Run tests and collect coverage
+        run: COVERAGE=true npm run test:ember
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
 
   floating:
     name: "Floating Dependencies"
