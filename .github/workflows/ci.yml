@@ -29,7 +29,14 @@ jobs:
       # - name: Lint
       #   run: npm run lint
       - name: Run Tests
-        run: npm run test:ember
+        run: COVERAGE=true npm run test:ember
+      - name: Upload Coverage
+      - uses: actions/checkout@master
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ./coverage/lcov.info # optional
+          verbose: true # optional (default = false)
 
   floating:
     name: "Floating Dependencies"
