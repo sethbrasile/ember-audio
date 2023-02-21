@@ -1,7 +1,10 @@
 # Ember-audio
 
-[![Github CI Workflow](https://github.com/sethbrasile/ember-audio/actions/workflows/ci.yml/badge.svg)](https://circleci.com/gh/sethbrasile/ember-audio)
-[![codecov](https://codecov.io/gh/sethbrasile/ember-audio/branch/master/graph/badge.svg?token=9wJSHppYJf)](https://codecov.io/gh/sethbrasile/ember-audio) [![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio) [![Ember Observer Score](https://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio)
+[![Github CI Workflow](https://github.com/sethbrasile/ember-audio/actions/workflows/ci.yml/badge.svg)](https://github.com/sethbrasile/ember-audio/actions)
+[![codecov](https://codecov.io/gh/sethbrasile/ember-audio/branch/master/graph/badge.svg?token=9wJSHppYJf)](https://codecov.io/gh/sethbrasile/ember-audio)
+[![Code Climate](https://codeclimate.com/github/sethbrasile/ember-audio/badges/gpa.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)
+[![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)
+[![Ember Observer Score](https://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio)
 
 #### Installation
 
