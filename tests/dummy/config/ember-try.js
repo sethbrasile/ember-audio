@@ -99,7 +99,6 @@ module.exports = async function () {
           devDependencies: {
             'ember-source': await getChannelURL('beta'),
           },
-
         },
       },
       {
@@ -117,7 +116,7 @@ module.exports = async function () {
             'application-template-wrapper': false,
             'default-async-observers': false,
             'jquery-integration': false,
-            'template-only-glimmer-components': true
+            'template-only-glimmer-components': true,
           }),
         },
         npm: {
