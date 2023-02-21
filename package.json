@@ -1,6 +1,6 @@
 {
   "name": "ember-audio",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0",
   "description": "An Ember addon that makes working with the Web Audio API super EZ",
   "keywords": [
     "ember-addon",
