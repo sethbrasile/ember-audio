@@ -6,11 +6,17 @@
 [![Issue Count](https://codeclimate.com/github/sethbrasile/ember-audio/badges/issue_count.svg)](https://codeclimate.com/github/sethbrasile/ember-audio)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-audio.svg)](http://emberobserver.com/addons/ember-audio)
 
-#### Installation
+## Please Note
+
+This readme refers to current the state of the master branch, which is a WIP. Please see the
+[Interactive Demo/Documentation](http://sethbrasile.github.io/ember-audio) and [npmjs](https://www.npmjs.com/package/ember-audio) to see the readme and
+documentation as of the current release.
+
+## Installation
 
 `ember install ember-audio`
 
-#### [Interactive Demo/Documentation](http://sethbrasile.github.io/ember-audio)
+## [Interactive Demo/Documentation](http://sethbrasile.github.io/ember-audio)
 
 Ember Audio provides an `audio` service and various classes/mixins that make
 working with the Web Audio API super EZ.
@@ -20,18 +26,18 @@ synthesizing, soundfonts, and working with audio in general.
 
 ---
 
-#### Need your help!
+## Need your help!
 
 Please give me feedback/suggestions if you have any. Pull requests and issues
 are welcome. You can also contact me on the Ember community discord: `@sethbrasile`.
 
-#### Using Ember Audio?
+## Using Ember Audio?
 
 Please let me know if you're building something with Ember Audio! It's a fairly
 large project, and I would love to know if it's working out for people! You can
 contact me via `@sethbrasile` on the ember community discord, or via email.
 
-#### Known Issues
+## Known Issues
 
 - Ember optional feature `default-async-observers` creates a race condition which will interfere with `connections` being available when you need them. We need
   to remove the observer that triggers the `_wireConnections` method in order to resolve this. I tried a computed property in the past, but I didn't have enough
@@ -43,22 +49,26 @@ contact me via `@sethbrasile` on the ember community discord, or via email.
 - Ember.js v3.28 or above
 - Ember CLI v3.8 or above
 
+## Run The Demo locally
+
 - `ember serve`
-- Visit your app at http://localhost:4200/ember-audio/.
+- Visit http://localhost:4200/ember-audio/.
 
 ## Roadmap
 
-1. Get Ember Audio up to date so it doesn't create issues with new ember apps. The current goal is keeping compatibility all the way back to Ember 2.18 but no
-   issues or deprecations in Ember 4+ - Don't know for certain this is possible, but that's the goal. If we need to bump compatibility to starting at Ember 3, I
-   could deal with that.
-2. Switch Ember Audio to 100% JS classes, no ember "classic classes" - but keep the mixins. Also don't know if this is possible, but this is my goal. I
-   understand that "mixins are considered harmful" but rules like this don't apply to every scenario. I like the composability of combining mixins to create new
-   playable/connectable types. Take a look at how `note`, `oscillator` and `sampled-note` are put together to see what I mean. I am open to suggestions if you
-   have an idea on how to maintain this composability without mixins. I have a feeling decorators could do something similar, but I've not authored one of those
-   yet so I'm uncertain.
-3. Move Ember Audio to Typescript - This might interfere with the mixin concept also. IIRC Typescript doesn't like mixins..
+1. ~~Get up to date so it doesn't create issues with new ember apps. The current goal is keeping compatibility all the way back to Ember 3.28 but no
+   issues or deprecations in Ember 4+~~ - Done
+2. Do some cleanup and testing and ensure compatibility, assess for breaking changes, then cut a new release.
+3. Switch to 100% JS classes, no ember "classic classes" - but I haven't decided on a strategy for the mixins yet. I like the composability of
+   combining mixins to create new playable/connectable types. Take a look at how most of the classes are built, and take a look at
+   [MusicallyAwareOscillator](https://sethbrasile.github.io/ember-audio/#/synthesis) to see what I mean. I am open to suggestions if you have an idea on how
+   to maintain this composability without mixins. I have a feeling decorators could do something similar, but I've not authored one of those yet and I see
+   similar warnings about them compared to mixins so I'm uncertain.
+4. Cut a 2.0 release (`.get` api will be broken for instance)
+5. Move Ember Audio to Typescript - This might interfere with the mixin concept also. IIRC Typescript doesn't like mixins.. At least provide TS definitions.
+6. Extract most of the important code into a non-ember project and reference that as a dependency here.
 
-### Building yuidoc Documentation
+## Building yuidoc Documentation
 
 - `ember ember-cli-yuidoc`
 
