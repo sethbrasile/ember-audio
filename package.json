@@ -40,11 +40,11 @@
     "test:ember-compatibility": "ember try:each && npm run clean:ember-try"
   },
   "dependencies": {
+    "@ember/string": "^4.0.0",
     "ember-cli-babel": "^7.26.11"
   },
   "devDependencies": {
     "@ember/optional-features": "^2.0.0",
-    "@ember/string": "^3.0.1",
     "@ember/test-helpers": "^2.9.3",
     "@embroider/test-setup": "^2.0.2",
     "@fortawesome/fontawesome-free": "^6.3.0",
@@ -60,6 +60,7 @@
     "ember-cli": "~4.10.0",
     "ember-cli-code-coverage": "^2.0.0",
     "ember-cli-dependency-checker": "^3.3.1",
+    "ember-cli-deprecation-workflow": "^3.0.2",
     "ember-cli-github-pages": "^0.2.2",
     "ember-cli-htmlbars": "^6.2.0",
     "ember-cli-inject-live-reload": "^2.1.0",
@@ -104,5 +105,8 @@
     "versionCompatibility": {
       "ember": ">=3.8.0 <5.0.0"
     }
+  },
+  "volta": {
+    "node": "18.20.4"
   }
 }
