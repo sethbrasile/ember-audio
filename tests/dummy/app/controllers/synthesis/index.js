@@ -26,6 +26,7 @@ export default class IndexController extends Controller {
     // or `audio.load(URL).asNoteArray().then(...)` providing a URL to a JSON file
     const notes = audio.createNoteArray();
 
+    console.log(notes)
     // Slicing so that the keyboard isn't massive
     const slicedNotes = notes.slice(48, 60);
 

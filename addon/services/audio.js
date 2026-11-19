@@ -17,21 +17,7 @@ import {
   frequencyMap,
 } from 'ember-audio/utils';
 
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-
-// Polyfill AudioContext for Safari
-// https://gist.github.com/jakearchibald/131d7101b134b6f7bed1d8320e4da599
-if (!window.AudioContext && window.webkitAudioContext) {
-  const oldFunction = AudioContext.prototype.decodeAudioData;
-
-  AudioContext.prototype.decodeAudioData = function (arraybuffer) {
-    return new Promise((resolve, reject) =>
-      oldFunction.call(this, arraybuffer, resolve, reject)
-    );
-  };
-
-  StereoPannerNode.polyfill();
-}
+const AudioContext = window.AudioContext
 
 /**
  * Provides the Audio Service

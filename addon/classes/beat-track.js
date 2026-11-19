@@ -8,7 +8,7 @@ const beatBank = new WeakMap();
  * An instance of this class has a single "sound" (comprised of one or multiple
  * audio sources) but provides methods to play that sound repeatedly, mixed with
  * "rests," in a rhythmic way. An instance of this class behaves very similarly
- * to a "lane" on a drum machine.
+ * to a "lane" on a drum machine. When a BeatTrack instance is created, you must pass
  *
  * @public
  * @class BeatTrack
