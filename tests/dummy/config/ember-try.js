@@ -1,11 +1,10 @@
 'use strict';
 
-const getChannelURL = require('ember-source-channel-url');
 // ember-try ignores yarn.lock. Later Testem 3 releases cannot run on the legacy CI Node versions.
 const testem3Resolution = { testem: '3.10.1' };
 // const { embroiderSafe, embroiderOptimized } = require('@embroider/test-setup');
 
-module.exports = async function () {
+module.exports = function () {
   return {
     useYarn: true,
     scenarios: [
@@ -99,26 +98,12 @@ module.exports = async function () {
         },
       },
       {
-        name: 'ember-release',
+        name: 'ember-lts-4.12',
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
-            'ember-source': await getChannelURL('release'),
-          },
-        },
-      },
-      {
-        name: 'ember-beta',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('beta'),
-          },
-        },
-      },
-      {
-        name: 'ember-canary',
-        npm: {
-          devDependencies: {
-            'ember-source': await getChannelURL('canary'),
+            'ember-source': '~4.12.0',
+            'ember-cli': '~4.12.0',
           },
         },
       },
