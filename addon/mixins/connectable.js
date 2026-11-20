@@ -1,7 +1,7 @@
 import EmberError from '@ember/error';
 import { A } from '@ember/array';
 import { on } from '@ember/object/evented';
-import { observer, set, get } from '@ember/object';
+import { set, get } from '@ember/object';
 import Mixin from '@ember/object/mixin';
 import { Connection } from 'ember-audio';
 
@@ -26,6 +26,22 @@ export default Mixin.create({
    * @type {Ember.MutableArray}
    */
   connections: null,
+
+  init() {
+    this._super(...arguments);
+    // A sound or a newly inserted effect can be used on the very next line.
+    this.addObserver('connections.[]', this, '_watchConnectionChanges', true);
+  },
+
+  willDestroy() {
+    this.removeObserver(
+      'connections.[]',
+      this,
+      '_watchConnectionChanges',
+      true
+    );
+    this._super(...arguments);
+  },
 
   /**
    * returns a connection's AudioNode from the connections array by the
@@ -163,13 +179,6 @@ export default Mixin.create({
     this.set('connections', A([ bufferSource, gain, panner, destination ]));
   }),
 
-  /*
-  * Note about _watchConnectionChanges:
-  * Yeah yeah yeah.. observers are bad. Making the connections array a computed
-  * property doesn't work very well because complete control over when it
-  * recalculates is needed.
-  */
-
   /**
    * Observes the connections array and runs wireConnections each time it
    * changes.
@@ -177,9 +186,9 @@ export default Mixin.create({
    * @private
    * @method _watchConnectionChanges
    */
-  _watchConnectionChanges: observer('connections.[]', function() {
+  _watchConnectionChanges() {
     this.wireConnections();
-  }),
+  },
 
   /**
    * Gets the array of Connection instances from the connections array and

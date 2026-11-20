@@ -9,4 +9,20 @@ module('Unit | Class | oscillator', function() {
     let result = Oscillator.create({ audioContext });
     assert.ok(result);
   });
+
+  test('creates one oscillator at initialization and a fresh one for playback', function (assert) {
+    let sourceCount = 0;
+    const audioContext = ContextMock.extend({
+      createOscillator() {
+        sourceCount++;
+        return this._super(...arguments);
+      },
+    }).create();
+
+    const oscillator = Oscillator.create({ audioContext });
+    assert.strictEqual(sourceCount, 1);
+    oscillator.play();
+    assert.strictEqual(sourceCount, 2);
+    assert.strictEqual(oscillator.getNodeFrom('audioSource').startCalled, true);
+  });
 });
