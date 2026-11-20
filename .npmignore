@@ -23,6 +23,7 @@
 /.watchmanconfig
 /bower.json
 /CONTRIBUTING.md
+/docs/plans/
 /ember-cli-build.js
 /testem.js
 /tests/

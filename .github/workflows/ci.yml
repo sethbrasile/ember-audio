@@ -46,7 +46,9 @@ jobs:
           cache: yarn
       - name: Install Dependencies
         run: yarn
-      - name: Run Tests
+      - name: Run tests with asynchronous observers
+        env:
+          EMBER_OPTIONAL_FEATURES: '{"default-async-observers":true}'
         run: npm run test:ember
 
   try-scenarios:
@@ -67,9 +69,7 @@ jobs:
           - ember-lts-3.28
           - ember-lts-4.4
           - ember-lts-4.8
-          - ember-release
-          - ember-beta
-          - ember-canary
+          - ember-lts-4.12
           - ember-classic
 
     steps:
