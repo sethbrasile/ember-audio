@@ -37,17 +37,12 @@ Please let me know if you're building something with Ember Audio! It's a fairly
 large project, and I would love to know if it's working out for people! You can
 contact me via `@sethbrasile` on the ember community discord, or via email.
 
-## Known Issues
-
-- Ember optional feature `default-async-observers` creates a race condition which will interfere with `connections` being available when you need them. We need
-  to remove the observer that triggers the `_wireConnections` method in order to resolve this. I tried a computed property in the past, but I didn't have enough
-  control over when the computed property recalculated, so I stayed with an observer. I have some ideas on how to resolve, but this will probably not happen
-  until I move this library to JS classes and remove the "classic classes."
-
 ## Compatibility
 
-- Ember.js v3.28 or above
+- Ember.js 3.8 through 3.28, or 4.x
 - Ember CLI v3.8 or above
+
+With either setting for `default-async-observers`, you can set gain and pan as soon as you create a sound.
 
 ## Run The Demo locally
 

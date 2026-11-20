@@ -2,6 +2,7 @@ import { A } from '@ember/array';
 import EmberObject from '@ember/object';
 import ContextMock from '../../helpers/context-mock';
 import ConnectableMixin from 'ember-audio/mixins/connectable';
+import { Connection, Sound } from 'ember-audio';
 import { module, test } from 'qunit';
 
 module('Unit | Mixin | connectable', function () {
@@ -31,6 +32,29 @@ module('Unit | Mixin | connectable', function () {
 
     assert.strictEqual(subject.get('connections')[0].name, 'otis');
     assert.strictEqual(subject.get('connections').length, 1);
+  });
+
+  test('editing connections wires the new route before the next call', function (assert) {
+    const sound = Sound.create({ audioContext: ContextMock.create() });
+    const effect = Connection.create({
+      name: 'meter',
+      source: 'audioContext',
+      createCommand: 'createAnalyser',
+    });
+
+    sound.connections.insertAt(1, effect);
+    assert.ok(effect.node);
+    assert.strictEqual(
+      sound.getNodeFrom('audioSource').connectedObject,
+      effect.node
+    );
+    assert.strictEqual(effect.node.connectedObject, sound.getNodeFrom('gain'));
+
+    sound.removeConnection('meter');
+    assert.strictEqual(
+      sound.getNodeFrom('audioSource').connectedObject,
+      sound.getNodeFrom('gain')
+    );
   });
 
   test('Connectable _createNode method throws when connection arg is missing props', function (assert) {

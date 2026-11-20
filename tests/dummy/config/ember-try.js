@@ -1,6 +1,8 @@
 'use strict';
 
 const getChannelURL = require('ember-source-channel-url');
+// ember-try ignores yarn.lock. Later Testem 3 releases cannot run on the legacy CI Node versions.
+const testem3Resolution = { testem: '3.10.1' };
 // const { embroiderSafe, embroiderOptimized } = require('@embroider/test-setup');
 
 module.exports = async function () {
@@ -30,6 +32,7 @@ module.exports = async function () {
       {
         name: 'ember-lts-3.16',
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
             'ember-source': '~3.16.0',
             'ember-cli': '~3.16.0',
@@ -40,6 +43,7 @@ module.exports = async function () {
       {
         name: 'ember-lts-3.20',
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
             'ember-source': '~3.20.5',
             'ember-cli': '~3.20.0',
@@ -50,6 +54,7 @@ module.exports = async function () {
       {
         name: 'ember-lts-3.24',
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
             'ember-source': '~3.24.3',
             'ember-cli': '~3.24.0',
@@ -59,7 +64,13 @@ module.exports = async function () {
       },
       {
         name: 'ember-lts-3.28',
+        env: {
+          EMBER_OPTIONAL_FEATURES: JSON.stringify({
+            'default-async-observers': true,
+          }),
+        },
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
             'ember-source': '~3.28.0',
             'ember-cli': '~3.28.0',
@@ -70,6 +81,7 @@ module.exports = async function () {
       {
         name: 'ember-lts-4.4',
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
             'ember-source': '~4.4.0',
             'ember-cli': '~4.4.0',
@@ -79,6 +91,7 @@ module.exports = async function () {
       {
         name: 'ember-lts-4.8',
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
             'ember-source': '~4.8.0',
             'ember-cli': '~4.8.0',
@@ -120,6 +133,7 @@ module.exports = async function () {
           }),
         },
         npm: {
+          resolutions: testem3Resolution,
           devDependencies: {
             'ember-source': '~3.28.0',
             'ember-cli': '~3.28.0',

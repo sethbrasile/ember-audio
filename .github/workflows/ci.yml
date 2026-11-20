@@ -46,7 +46,9 @@ jobs:
           cache: yarn
       - name: Install Dependencies
         run: yarn
-      - name: Run Tests
+      - name: Run tests with asynchronous observers
+        env:
+          EMBER_OPTIONAL_FEATURES: '{"default-async-observers":true}'
         run: npm run test:ember
 
   try-scenarios:
