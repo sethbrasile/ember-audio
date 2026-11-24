@@ -8,34 +8,50 @@ on:
     branches:
       - v1
 
+# The jobs install unpinned packages from npm, so the token they run with can
+# only read the repository.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-v1-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
   suite:
-    name: "Own suite, Ember ${{ matrix.ember }}"
+    name: "Own suite, Ember ${{ matrix.ember }}, Node ${{ matrix.node }}"
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     strategy:
       fail-fast: false
       matrix:
+        # This branch builds with Ember CLI 3.8, which runs on Node 6 through 16.
+        # Every Ember version it can build is tested on Node 8, and the locked
+        # one on each other Node version too.
         ember: ["locked", "2.18", "3.4", "3.12", "3.16", "3.20", "3.24"]
+        node: ["8"]
+        include:
+          - { ember: "locked", node: "6" }
+          - { ember: "locked", node: "10" }
+          - { ember: "locked", node: "12" }
+          - { ember: "locked", node: "14" }
+          - { ember: "locked", node: "16" }
 
     steps:
       - uses: actions/checkout@v4
-      # This branch builds with Ember CLI 3.8, which runs on Node 6 through 16.
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 8.17.0
+          node-version: ${{ matrix.node }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile --non-interactive
       - name: Run tests
         run: scripts/test-ember.sh ${{ matrix.ember != 'locked' && matrix.ember || '' }}
 
   consumer:
-    name: "Consuming app, Ember CLI ${{ matrix.cli }}, Ember ${{ matrix.ember }}"
+    name: "Consuming app, Ember CLI ${{ matrix.cli }}, Ember ${{ matrix.ember }}, Node ${{ matrix.node }}"
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -43,16 +59,21 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { cli: "3.28", ember: "3.28" }
-          - { cli: "4.12", ember: "4.12" }
-          - { cli: "5.12", ember: "5.12" }
-          - { cli: "6.4", ember: "6.12" }
-          - { cli: "7.4", ember: "7.4" }
+          - { cli: "3.28", ember: "3.28", node: "18" }
+          - { cli: "4.12", ember: "4.12", node: "20" }
+          - { cli: "5.12", ember: "5.12", node: "22" }
+          - { cli: "6.4", ember: "6.12", node: "22", browsers: "Chrome,Firefox" }
+          - { cli: "7.4", ember: "7.4", node: "24" }
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node }}
       - name: Run the addon's tests inside a new app
         run: scripts/test-consumer.sh ${{ matrix.cli }} ${{ matrix.ember }}
+        env:
+          TEST_BROWSERS: ${{ matrix.browsers }}
+          MOZ_HEADLESS: "1"
