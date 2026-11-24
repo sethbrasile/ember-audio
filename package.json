@@ -25,6 +25,14 @@
     "doc": "tests/dummy/public/docs",
     "test": "tests"
   },
+  "files": [
+    "addon/",
+    "app/",
+    "blueprints/",
+    "config/environment.js",
+    "index.js",
+    "vendor/"
+  ],
   "scripts": {
     "build": "ember build",
     "lint:hbs": "ember-template-lint .",
