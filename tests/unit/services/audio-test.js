@@ -136,6 +136,30 @@ module('Unit | Service | audio', function(hooks) {
     assert.strictEqual(service.getSound('unit-broken'), undefined, 'nothing is registered');
   });
 
+  test('load().asSound resolves with nothing when the request fails', async function(assert) {
+    let service = this.owner.lookup('service:audio');
+
+    window.fetch = () => Promise.reject(new TypeError('Failed to fetch'));
+    assert.strictEqual(await service.load('unreachable.wav').asSound('unit-unreachable'), undefined);
+
+    window.fetch = () => Promise.resolve(new Response('Not Found', { status: 404 }));
+    assert.strictEqual(await service.load('missing.wav').asSound('unit-missing'), undefined);
+
+    assert.strictEqual(service.getSound('unit-unreachable'), undefined, 'nothing is registered');
+    assert.strictEqual(service.getSound('unit-missing'), undefined);
+  });
+
+  test('a load in a browser without fetch fails through its promise', async function(assert) {
+    let service = this.owner.lookup('service:audio');
+    let promise;
+
+    window.fetch = undefined;
+    promise = service.load('anything.wav').asSound('unit-no-fetch');
+
+    assert.ok(promise instanceof RSVPPromise, 'it returns a promise and does not throw');
+    assert.strictEqual(await promise, undefined);
+  });
+
   test('load().asTrack registers a track with a duration', async function(assert) {
     let service = this.owner.lookup('service:audio');
 

@@ -21,9 +21,10 @@ import StereoPannerNode from 'ember-audio/utils/stereo-panner-node';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
 // The browser's fetch, wrapped in an RSVP promise so that everything chained
-// onto a load runs inside Ember's run loop.
+// onto a load runs inside Ember's run loop. Calling it inside the promise turns
+// a missing or throwing `window.fetch` into a rejection, like any failed load.
 function fetch(src) {
-  return resolve(window.fetch(src));
+  return new Promise((resolve) => resolve(window.fetch(src)));
 }
 
 // Polyfill AudioContext for Safari
