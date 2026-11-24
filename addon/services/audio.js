@@ -1,6 +1,5 @@
 import { resolve, all, Promise } from 'rsvp';
 import Service from '@ember/service';
-import fetch from 'fetch';
 import {
   Sound,
   Note,
@@ -20,6 +19,12 @@ import {
 import StereoPannerNode from 'ember-audio/utils/stereo-panner-node';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+// The browser's fetch, wrapped in an RSVP promise so that everything chained
+// onto a load runs inside Ember's run loop.
+function fetch(src) {
+  return resolve(window.fetch(src));
+}
 
 // Polyfill AudioContext for Safari
 // https://gist.github.com/jakearchibald/131d7101b134b6f7bed1d8320e4da599
