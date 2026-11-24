@@ -26,9 +26,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # This branch builds with Ember CLI 3.8, which runs on Node 6 through 16.
-        # Every Ember version it can build is tested on Node 8, and the locked
-        # one on each other Node version too.
+        # This branch builds with Ember CLI 3.8 and 2019's dependencies, which
+        # run on Node 6 through 14. Every Ember version they can build is tested
+        # on Node 8, and the locked one on each other Node version too. Node 16
+        # and later are covered by the consuming apps below.
         ember: ["locked", "2.18", "3.4", "3.12", "3.16", "3.20", "3.24"]
         node: ["8"]
         include:
@@ -36,7 +37,6 @@ jobs:
           - { ember: "locked", node: "10" }
           - { ember: "locked", node: "12" }
           - { ember: "locked", node: "14" }
-          - { ember: "locked", node: "16" }
 
     steps:
       - uses: actions/checkout@v4
@@ -59,9 +59,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { cli: "3.28", ember: "3.28", node: "18" }
-          - { cli: "4.12", ember: "4.12", node: "20" }
-          - { cli: "5.12", ember: "5.12", node: "22" }
+          - { cli: "3.28", ember: "3.28", node: "16" }
+          - { cli: "4.12", ember: "4.12", node: "18" }
+          - { cli: "5.12", ember: "5.12", node: "20" }
           - { cli: "6.4", ember: "6.12", node: "22", browsers: "Chrome,Firefox" }
           - { cli: "7.4", ember: "7.4", node: "24" }
 

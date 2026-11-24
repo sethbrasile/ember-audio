@@ -7,7 +7,7 @@
 #   scripts/test-consumer.sh 6.4 6.12        # Ember CLI 6.4 app with ember-source ~6.12.0
 #   scripts/test-consumer.sh 7.4             # Vite app
 #
-# Needs Node 18 or later (20.19 or later for Ember CLI 7), yarn 1 and Chrome.
+# Needs Node 16 or later (20.19 or later for Ember CLI 7), yarn 1 and Chrome.
 # The app is built in a temp directory, or in $CONSUMER_DIR if set. Set
 # $TEST_PORT to run two of these at once.
 #

@@ -7,7 +7,8 @@
 #   scripts/test-ember.sh 3.16         # ember-source ~3.16.0
 #   scripts/test-ember.sh 3.16 --filter "Connectable"
 #
-# Needs Node 6 through 16 (this branch builds with Ember CLI 3.8) and yarn 1.
+# Needs Node 6 through 14 (this branch builds with Ember CLI 3.8 and 2019's
+# dependencies; on Node 16 the build's worker pool can crash) and yarn 1.
 # This toolchain builds Ember 2.18 through 3.24. For newer Ember use
 # scripts/test-consumer.sh.
 #
