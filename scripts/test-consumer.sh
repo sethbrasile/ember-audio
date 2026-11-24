@@ -68,14 +68,17 @@ diff -r "$WORK/unpacked/package/addon" node_modules/ember-audio/addon \
 
 INSTALLED="$(node -p "require('ember-source/package.json').version")"
 
+# A module that fails to load can leave the test run waiting forever.
+limit() { if command -v timeout > /dev/null; then timeout 600 "$@"; else "$@"; fi; }
+
 run_tests() {
   if [ -f vite.config.mjs ]; then
     rm -rf dist
-    ./node_modules/.bin/vite build --mode development > "$WORK/build.log" 2>&1 \
+    limit ./node_modules/.bin/vite build --mode development > "$WORK/build.log" 2>&1 \
       || { cat "$WORK/build.log"; return 1; }
-    ./node_modules/.bin/testem ci --port "$PORT"
+    limit ./node_modules/.bin/testem ci --port "$PORT"
   else
-    ./node_modules/.bin/ember test --test-port "$PORT"
+    limit ./node_modules/.bin/ember test --test-port "$PORT"
   fi
 }
 

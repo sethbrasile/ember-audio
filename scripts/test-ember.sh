@@ -31,13 +31,16 @@ if [ -n "$VERSION" ]; then
   yarn add --dev "ember-source@~$VERSION.0" --ignore-engines --non-interactive > /dev/null
 fi
 
+# A module that fails to load can leave the test run waiting forever.
+limit() { if command -v timeout > /dev/null; then timeout 600 "$@"; else "$@"; fi; }
+
 INSTALLED="$(node -p "require('ember-source/package.json').version")"
 HAS_ASYNC="$(node -p "var v = '$INSTALLED'.split('.').map(Number); v[0] > 3 || (v[0] === 3 && v[1] >= 13)")"
 
 echo "== ember-source $INSTALLED, sync observers"
-DEFAULT_ASYNC_OBSERVERS=false ./node_modules/.bin/ember test "$@"
+DEFAULT_ASYNC_OBSERVERS=false limit ./node_modules/.bin/ember test "$@"
 
 if [ "$HAS_ASYNC" = "true" ]; then
   echo "== ember-source $INSTALLED, async observers"
-  DEFAULT_ASYNC_OBSERVERS=true ./node_modules/.bin/ember test "$@"
+  DEFAULT_ASYNC_OBSERVERS=true limit ./node_modules/.bin/ember test "$@"
 fi
