@@ -1,1 +1,1 @@
-export { default } from 'ember-audio/utils/utils';
+export * from 'ember-audio/utils';

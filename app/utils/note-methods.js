@@ -1,1 +1,1 @@
-export { default } from 'ember-audio/utils/note-methods';
+export * from 'ember-audio/utils/note-methods';
