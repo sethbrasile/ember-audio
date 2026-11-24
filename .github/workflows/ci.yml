@@ -1,0 +1,58 @@
+name: CI (v1)
+
+on:
+  push:
+    branches:
+      - v1
+  pull_request:
+    branches:
+      - v1
+
+concurrency:
+  group: ci-v1-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  suite:
+    name: "Own suite, Ember ${{ matrix.ember }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ember: ["locked", "2.18", "3.4", "3.12", "3.16", "3.20", "3.24"]
+
+    steps:
+      - uses: actions/checkout@v4
+      # This branch builds with Ember CLI 3.8, which runs on Node 6 through 16.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 8.17.0
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --non-interactive
+      - name: Run tests
+        run: scripts/test-ember.sh ${{ matrix.ember != 'locked' && matrix.ember || '' }}
+
+  consumer:
+    name: "Consuming app, Ember CLI ${{ matrix.cli }}, Ember ${{ matrix.ember }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { cli: "3.28", ember: "3.28" }
+          - { cli: "4.12", ember: "4.12" }
+          - { cli: "5.12", ember: "5.12" }
+          - { cli: "6.4", ember: "6.12" }
+          - { cli: "7.4", ember: "7.4" }
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run the addon's tests inside a new app
+        run: scripts/test-consumer.sh ${{ matrix.cli }} ${{ matrix.ember }}

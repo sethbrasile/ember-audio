@@ -7,6 +7,9 @@ module.exports = function(environment) {
     rootURL: '/ember-audio/',
     locationType: 'hash',
     EmberENV: {
+      // Set by scripts/test-ember.sh to run the suite with async observers
+      // (Ember 3.13 and later). Off unless asked for.
+      _DEFAULT_ASYNC_OBSERVERS: process.env.DEFAULT_ASYNC_OBSERVERS === 'true',
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
