@@ -207,7 +207,50 @@ export default Mixin.create({
     const wireConnection = this._wireConnection;
     const connections = this.get('connections');
 
-    connections.map(createNode).map(setAttrsOnNode).map(wireConnection);
+    const wired = connections.map(createNode).map(setAttrsOnNode);
+
+    this._unwireReplacedConnections(wired);
+    wired.map(wireConnection);
+  },
+
+  /**
+   * Cuts the link from a node to the node it was wired to last time, when the
+   * connections array now puts a different node (or none) after it. Without
+   * this, a node that had an effect inserted after it, or its neighbor removed,
+   * would feed both its old neighbor and its new one.
+   *
+   * Only links made by `wireConnections` are cut. Anything else the consuming
+   * app has connected to a node is left alone.
+   *
+   * @private
+   * @method _unwireReplacedConnections
+   *
+   * @param {array|Connection} connections Connection instances in the order
+   * they are about to be wired.
+   */
+  _unwireReplacedConnections(connections) {
+    const wiredTo = this._wiredTo || (this._wiredTo = new WeakMap());
+
+    connections.forEach((connection, idx) => {
+      const node = connection.node;
+      const next = connections[idx + 1];
+      const nextNode = next && next.node;
+      const previousNode = wiredTo.get(node);
+
+      if (previousNode && previousNode !== nextNode) {
+        try {
+          node.disconnect(previousNode);
+        } catch (e) {
+          // The app already cut this link itself, so there is nothing to undo.
+        }
+      }
+
+      if (nextNode && node) {
+        wiredTo.set(node, nextNode);
+      } else {
+        wiredTo.delete(node);
+      }
+    });
   },
 
   /**

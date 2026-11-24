@@ -136,6 +136,104 @@ module('Unit | Real audio', function () {
     near(assert, peak(rendered, 1), right, 'right channel');
   });
 
+  // Every position past the first only works if the route it replaces is cut:
+  // otherwise the sound reaches the output both through and around the effect.
+  [
+    { index: 2, where: 'between the gain and the panner' },
+    { index: 3, where: 'between the panner and the output' },
+  ].forEach(({ index, where }) => {
+    test(`an effect inserted ${where} replaces the old route`, async function (assert) {
+      const ctx = offlineContext();
+      const sound = newSound(ctx);
+      const trim = Connection.create({
+        name: 'trim',
+        source: 'audioContext',
+        createCommand: 'createGain',
+      });
+
+      sound.get('connections').insertAt(index, trim);
+      sound.getNodeFrom('trim').gain.value = 0.5;
+
+      sound.play();
+
+      const rendered = await ctx.startRendering();
+      const [left, right] = pannedPeaks(0.5, 0);
+      near(assert, peak(rendered, 0), left, 'left channel');
+      near(assert, peak(rendered, 1), right, 'right channel');
+    });
+  });
+
+  test('removing the panner leaves one route to the output', async function (assert) {
+    const ctx = offlineContext();
+    const sound = newSound(ctx);
+
+    sound.removeConnection('panner');
+    sound.play();
+
+    // Without the panner the mono sound goes to both channels at full level.
+    const rendered = await ctx.startRendering();
+    near(assert, peak(rendered, 0), 1, 'left channel');
+    near(assert, peak(rendered, 1), 1, 'right channel');
+  });
+
+  test('removing the last connection cuts the route to the output', async function (assert) {
+    const ctx = offlineContext();
+    const sound = newSound(ctx);
+
+    sound.removeConnection('destination');
+    sound.play();
+
+    const rendered = await ctx.startRendering();
+    near(assert, peak(rendered, 0), 0, 'left channel');
+    near(assert, peak(rendered, 1), 0, 'right channel');
+  });
+
+  test('an effect can be removed while the sound plays, and inserted again', async function (assert) {
+    const ctx = offlineContext();
+    const sound = newSound(ctx);
+    const trim = Connection.create({
+      name: 'trim',
+      source: 'audioContext',
+      createCommand: 'createGain',
+    });
+
+    sound.get('connections').insertAt(2, trim);
+    sound.getNodeFrom('trim').gain.value = 0.5;
+    sound.play();
+    sound.removeConnection('trim');
+    sound.get('connections').insertAt(3, trim);
+
+    const rendered = await ctx.startRendering();
+    const [left, right] = pannedPeaks(0.5, 0);
+    near(assert, peak(rendered, 0), left, 'left channel');
+    near(assert, peak(rendered, 1), right, 'right channel');
+  });
+
+  test('a link the app made itself survives a change to the connections', async function (assert) {
+    const ctx = offlineContext();
+    const sound = newSound(ctx);
+    const tap = ctx.createGain();
+    const trim = Connection.create({
+      name: 'trim',
+      source: 'audioContext',
+      createCommand: 'createGain',
+    });
+
+    // The app listens in on the gain node, the way it would to feed an analyser.
+    tap.gain.value = 0.25;
+    sound.getNodeFrom('gain').connect(tap);
+    tap.connect(ctx.destination);
+
+    sound.get('connections').insertAt(2, trim);
+    sound.getNodeFrom('trim').gain.value = 0.5;
+    sound.play();
+
+    const rendered = await ctx.startRendering();
+    const [left, right] = pannedPeaks(0.5, 0);
+    near(assert, peak(rendered, 0), left + 0.25, 'left channel');
+    near(assert, peak(rendered, 1), right + 0.25, 'right channel');
+  });
+
   test('an oscillator makes sound right after it is created', async function (assert) {
     const ctx = offlineContext();
     const oscillator = Oscillator.create({
