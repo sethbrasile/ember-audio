@@ -23,8 +23,11 @@ const AudioContext = window.AudioContext || window.webkitAudioContext;
 // The browser's fetch, wrapped in an RSVP promise so that everything chained
 // onto a load runs inside Ember's run loop. Calling it inside the promise turns
 // a missing or throwing `window.fetch` into a rejection, like any failed load.
+// The handlers go on the browser's promise at once: older Ember adopts a
+// promise a moment later, and until then a failed request would be reported
+// as an unhandled rejection.
 function fetch(src) {
-  return new Promise((resolve) => resolve(window.fetch(src)));
+  return new Promise((resolve, reject) => window.fetch(src).then(resolve, reject));
 }
 
 // Polyfill AudioContext for Safari
