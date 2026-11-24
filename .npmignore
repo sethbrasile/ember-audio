@@ -1,6 +1,7 @@
 # compiled output
 /dist/
 /tmp/
+/coverage/
 
 # dependencies
 /bower_components/
