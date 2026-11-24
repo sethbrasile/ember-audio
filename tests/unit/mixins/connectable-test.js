@@ -95,6 +95,10 @@ module('Unit | Mixin | connectable', function() {
       });
     };
 
-    assert.throws(createNode);
+    assert.throws(
+      createNode,
+      /^Error: ember-audio: The test connection is not configured correctly/,
+      'it throws an Error that names the connection'
+    );
   });
 });

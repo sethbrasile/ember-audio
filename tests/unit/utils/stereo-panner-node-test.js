@@ -101,6 +101,60 @@ module('Unit | Utility | stereo panner node', function() {
     assert.ok(right.curve[4095] > 0.9999, 'hard right is all right');
   });
 
+  test('the pan signal is a constant that the pan value scales', function(assert) {
+    const ctx = fakeContext();
+    new StereoPannerNode(ctx);
+    const [ dc, fix ] = ctx.ofKind('shaper');
+
+    assert.deepEqual(Array.from(dc.curve), [ 1, 1 ], 'any input becomes a steady 1 for pan to scale');
+    assert.deepEqual(Array.from(fix.curve), [ 0, 0 ], 'the keep-alive signal adds nothing to pan');
+  });
+
+  test('every node gets the channel settings the pan math depends on', function(assert) {
+    const ctx = fakeContext();
+    new StereoPannerNode(ctx);
+    const settings = (made) => [ made.channelCount, made.channelCountMode, made.channelInterpretation ];
+    const [ splitter ] = ctx.ofKind('splitter');
+
+    assert.deepEqual(settings(splitter), [ 2, 'explicit', 'speakers' ], 'the input is treated as stereo');
+    ctx.created.filter((made) => made !== splitter).forEach((made) => {
+      assert.deepEqual(settings(made), [ 1, 'explicit', 'discrete' ], `${made.kind} carries one plain channel`);
+    });
+    assert.strictEqual(ctx.created.length, 9);
+  });
+
+  test('connecting or disconnecting a panner acts on its output side', function(assert) {
+    const { connect, disconnect } = window.AudioNode.prototype;
+    const calls = [];
+    const target = {};
+    let ctx, panner;
+
+    // The panner borrows these two methods from AudioNode when it is built.
+    try {
+      window.AudioNode.prototype.connect = function(...args) {
+        calls.push({ method: 'connect', node: this, args });
+      };
+      window.AudioNode.prototype.disconnect = function(...args) {
+        calls.push({ method: 'disconnect', node: this, args });
+      };
+      ctx = fakeContext();
+      panner = new StereoPannerNode(ctx);
+    } finally {
+      window.AudioNode.prototype.connect = connect;
+      window.AudioNode.prototype.disconnect = disconnect;
+    }
+
+    const [ merger ] = ctx.ofKind('merger');
+
+    panner.connect(target);
+    panner.disconnect(target);
+
+    assert.deepEqual(calls, [
+      { method: 'connect', node: merger, args: [ target ] },
+      { method: 'disconnect', node: merger, args: [ target ] }
+    ]);
+  });
+
   test('polyfill adds createStereoPanner to a context class that lacks it', function(assert) {
     const original = window.BaseAudioContext;
     function LegacyContext() {
