@@ -1,7 +1,6 @@
-import EmberError from '@ember/error';
 import { A } from '@ember/array';
 import { on } from '@ember/object/evented';
-import { observer, set, get } from '@ember/object';
+import { set, get } from '@ember/object';
 import Mixin from '@ember/object/mixin';
 import { Connection } from 'ember-audio';
 
@@ -26,6 +25,22 @@ export default Mixin.create({
    * @type {Ember.MutableArray}
    */
   connections: null,
+
+  init() {
+    this._super(...arguments);
+    // A sound or a newly inserted effect can be used on the very next line.
+    this.addObserver('connections.[]', this, '_watchConnectionChanges', true);
+  },
+
+  willDestroy() {
+    this.removeObserver(
+      'connections.[]',
+      this,
+      '_watchConnectionChanges',
+      true
+    );
+    this._super(...arguments);
+  },
 
   /**
    * returns a connection's AudioNode from the connections array by the
@@ -163,13 +178,6 @@ export default Mixin.create({
     this.set('connections', A([ bufferSource, gain, panner, destination ]));
   }),
 
-  /*
-  * Note about _watchConnectionChanges:
-  * Yeah yeah yeah.. observers are bad. Making the connections array a computed
-  * property doesn't work very well because complete control over when it
-  * recalculates is needed.
-  */
-
   /**
    * Observes the connections array and runs wireConnections each time it
    * changes.
@@ -177,9 +185,9 @@ export default Mixin.create({
    * @private
    * @method _watchConnectionChanges
    */
-  _watchConnectionChanges: observer('connections.[]', function() {
+  _watchConnectionChanges() {
     this.wireConnections();
-  }),
+  },
 
   /**
    * Gets the array of Connection instances from the connections array and
@@ -199,7 +207,50 @@ export default Mixin.create({
     const wireConnection = this._wireConnection;
     const connections = this.get('connections');
 
-    connections.map(createNode).map(setAttrsOnNode).map(wireConnection);
+    const wired = connections.map(createNode).map(setAttrsOnNode);
+
+    this._unwireReplacedConnections(wired);
+    wired.map(wireConnection);
+  },
+
+  /**
+   * Cuts the link from a node to the node it was wired to last time, when the
+   * connections array now puts a different node (or none) after it. Without
+   * this, a node that had an effect inserted after it, or its neighbor removed,
+   * would feed both its old neighbor and its new one.
+   *
+   * Only links made by `wireConnections` are cut. Anything else the consuming
+   * app has connected to a node is left alone.
+   *
+   * @private
+   * @method _unwireReplacedConnections
+   *
+   * @param {array|Connection} connections Connection instances in the order
+   * they are about to be wired.
+   */
+  _unwireReplacedConnections(connections) {
+    const wiredTo = this._wiredTo || (this._wiredTo = new WeakMap());
+
+    connections.forEach((connection, idx) => {
+      const node = connection.node;
+      const next = connections[idx + 1];
+      const nextNode = next && next.node;
+      const previousNode = wiredTo.get(node);
+
+      if (previousNode && previousNode !== nextNode) {
+        try {
+          node.disconnect(previousNode);
+        } catch (e) {
+          // The app already cut this link itself, so there is nothing to undo.
+        }
+      }
+
+      if (nextNode && node) {
+        wiredTo.set(node, nextNode);
+      } else {
+        wiredTo.delete(node);
+      }
+    });
   },
 
   /**
@@ -230,7 +281,7 @@ export default Mixin.create({
     } else if (createCommand && source) {
       connection.node = this.get(source)[createCommand]();
     } else if (!connection.node) {
-      throw new EmberError(`ember-audio: The ${name} connection is not configured correctly. Please fix this connection.`);
+      throw new Error(`ember-audio: The ${name} connection is not configured correctly. Please fix this connection.`);
     }
 
     return connection;

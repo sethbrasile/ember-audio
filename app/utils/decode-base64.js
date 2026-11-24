@@ -1,1 +1,1 @@
-export { default } from 'ember-audio/utils/decode-base64';
+export * from 'ember-audio/utils/decode-base64';

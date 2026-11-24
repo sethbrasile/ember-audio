@@ -1,7 +1,5 @@
 import { resolve, all, Promise } from 'rsvp';
 import Service from '@ember/service';
-import fetch from 'fetch';
-import StereoPannerNode from 'stereo-panner-node';
 import {
   Sound,
   Note,
@@ -18,8 +16,19 @@ import {
   mungeSoundFont,
   frequencyMap
 } from 'ember-audio/utils';
+import StereoPannerNode from 'ember-audio/utils/stereo-panner-node';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+// The browser's fetch, wrapped in an RSVP promise so that everything chained
+// onto a load runs inside Ember's run loop. Calling it inside the promise turns
+// a missing or throwing `window.fetch` into a rejection, like any failed load.
+// The handlers go on the browser's promise at once: older Ember adopts a
+// promise a moment later, and until then a failed request would be reported
+// as an unhandled rejection.
+function fetch(src) {
+  return new Promise((resolve, reject) => window.fetch(src).then(resolve, reject));
+}
 
 // Polyfill AudioContext for Safari
 // https://gist.github.com/jakearchibald/131d7101b134b6f7bed1d8320e4da599

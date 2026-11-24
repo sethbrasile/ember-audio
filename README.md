@@ -31,8 +31,14 @@ contact me via `@sethbrasile` on the ember community slack, or via email.
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v2.18 or above
-* Ember CLI v2.13 or above
+* Ember.js v2.18 through v7.4
+* Ember CLI v3.8 through v7.4, with either the classic build or Vite
+* Ember CLI v2.13 through v3.7 probably work, but aren't tested
+* Node.js v10 or above (v6 and v8 still work too)
+  * On Node.js below v20, a new install with yarn stops on an engine check, because some of `ember-cli-babel` 7's current dependencies require Node.js v20. Install with `yarn add --dev ember-audio --ignore-engines` (the addon itself runs fine there)
+* Should work in any browser with the Web Audio API and `fetch`. Tested in Chrome and Firefox; Safari isn't tested
+
+ember-audio works whether Ember's `default-async-observers` optional feature is on or off.
 
 * `ember serve`
 * Visit your app at http://localhost:4200/ember-audio/.
