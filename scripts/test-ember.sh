@@ -15,6 +15,7 @@
 # and node_modules are put back afterwards.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+. scripts/checked-run.sh
 
 VERSION="${1:-}"
 [ $# -gt 0 ] && shift
@@ -31,16 +32,25 @@ if [ -n "$VERSION" ]; then
   yarn add --dev "ember-source@~$VERSION.0" --ignore-engines --non-interactive > /dev/null
 fi
 
-# A module that fails to load can leave the test run waiting forever.
-limit() { if command -v timeout > /dev/null; then timeout 600 "$@"; else "$@"; fi; }
-
 INSTALLED="$(node -p "require('ember-source/package.json').version")"
 HAS_ASYNC="$(node -p "var v = '$INSTALLED'.split('.').map(Number); v[0] > 3 || (v[0] === 3 && v[1] >= 13)")"
 
-echo "== ember-source $INSTALLED, sync observers"
-DEFAULT_ASYNC_OBSERVERS=false limit ./node_modules/.bin/ember test "$@"
+# A full run is checked for its test count and observer mode. A run narrowed
+# with extra arguments, such as --filter, is not.
+run_tests() {
+  local mode="$1"
+  shift
+  if [ $# -eq 0 ]; then
+    checked_run "$mode" "$(declared_tests tests/unit)" ./node_modules/.bin/ember test
+  else
+    limit ./node_modules/.bin/ember test "$@"
+  fi
+}
+
+echo "== node $(node --version), ember-source $INSTALLED, sync observers"
+DEFAULT_ASYNC_OBSERVERS=false run_tests sync "$@"
 
 if [ "$HAS_ASYNC" = "true" ]; then
-  echo "== ember-source $INSTALLED, async observers"
-  DEFAULT_ASYNC_OBSERVERS=true limit ./node_modules/.bin/ember test "$@"
+  echo "== node $(node --version), ember-source $INSTALLED, async observers"
+  DEFAULT_ASYNC_OBSERVERS=true run_tests async "$@"
 fi

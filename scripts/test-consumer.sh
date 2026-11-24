@@ -19,6 +19,7 @@ set -euo pipefail
 CLI="${1:?usage: scripts/test-consumer.sh <ember-cli version> [ember-source version]}"
 SOURCE="${2:-}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+. "$ROOT/scripts/checked-run.sh"
 WORK="${CONSUMER_DIR:-$(mktemp -d)}"
 PORT="${TEST_PORT:-7357}"
 APP=consumer
@@ -60,29 +61,41 @@ PACKAGES=("ember-audio@file:$TARBALL")
 yarn add --dev "${PACKAGES[@]}" --ignore-engines --non-interactive > "$WORK/install.log" 2>&1 \
   || { tail -30 "$WORK/install.log"; exit 1; }
 
-# yarn caches tarballs, so make sure the app got the code that was just packed.
+# yarn caches tarballs, so make sure the app got the package that was just
+# packed, file for file.
+rm -rf "$WORK/unpacked"
 mkdir -p "$WORK/unpacked"
 tar -xzf "$TARBALL" -C "$WORK/unpacked"
-diff -r "$WORK/unpacked/package/addon" node_modules/ember-audio/addon \
+diff -r --exclude=node_modules "$WORK/unpacked/package" node_modules/ember-audio \
   || { echo "The installed ember-audio is not the packed one."; exit 1; }
 
-INSTALLED="$(node -p "require('ember-source/package.json').version")"
+version_of() { node -p "require('$1/package.json').version"; }
+INSTALLED="$(version_of ember-source)"
+if [ -f vite.config.mjs ]; then BUILD="Vite $(version_of vite)"; else BUILD="classic build"; fi
+echo "== installed: node $(node --version), ember-cli $(version_of ember-cli), ember-source $INSTALLED, $BUILD"
+echo "== package: $(basename "$TARBALL"), $(find "$WORK/unpacked/package" -type f | wc -l | tr -d ' ') files, sha1 $(node -p "require('crypto').createHash('sha1').update(require('fs').readFileSync('$TARBALL')).digest('hex')")"
 
-# A module that fails to load can leave the test run waiting forever.
-limit() { if command -v timeout > /dev/null; then timeout 600 "$@"; else "$@"; fi; }
+FEWEST="$(declared_tests "$ROOT/tests/unit")"
+
+# $TEST_BROWSERS picks the browsers, e.g. "Chrome,Firefox". The default is the
+# app's own choice, which is Chrome.
+LAUNCH=()
+[ -n "${TEST_BROWSERS:-}" ] && LAUNCH=(--launch "$TEST_BROWSERS")
 
 run_tests() {
+  local mode="$1"
   if [ -f vite.config.mjs ]; then
     rm -rf dist
     limit ./node_modules/.bin/vite build --mode development > "$WORK/build.log" 2>&1 \
       || { cat "$WORK/build.log"; return 1; }
-    limit ./node_modules/.bin/testem ci --port "$PORT"
+    checked_run "$mode" "$FEWEST" ./node_modules/.bin/testem ci --port "$PORT" ${LAUNCH[@]+"${LAUNCH[@]}"}
   else
-    limit ./node_modules/.bin/ember test --test-port "$PORT"
+    checked_run "$mode" "$FEWEST" ./node_modules/.bin/ember test --test-port "$PORT" ${LAUNCH[@]+"${LAUNCH[@]}"}
   fi
 }
 
-for ASYNC in true false; do
-  echo "== ember-cli $CLI, ember-source $INSTALLED, default-async-observers: $ASYNC"
-  EMBER_OPTIONAL_FEATURES="{\"default-async-observers\":$ASYNC}" run_tests
-done
+echo "== ember-source $INSTALLED, async observers"
+EMBER_OPTIONAL_FEATURES='{"default-async-observers":true}' run_tests async
+
+echo "== ember-source $INSTALLED, sync observers"
+EMBER_OPTIONAL_FEATURES='{"default-async-observers":false}' run_tests sync
