@@ -1,7 +1,6 @@
 import { resolve, all, Promise } from 'rsvp';
 import Service from '@ember/service';
 import fetch from 'fetch';
-import StereoPannerNode from 'stereo-panner-node';
 import {
   Sound,
   Note,
@@ -18,6 +17,7 @@ import {
   mungeSoundFont,
   frequencyMap
 } from 'ember-audio/utils';
+import StereoPannerNode from 'ember-audio/utils/stereo-panner-node';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
